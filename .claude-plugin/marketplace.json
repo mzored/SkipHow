@@ -19,10 +19,7 @@
       },
       "repository": "https://github.com/mzored/SkipHow",
       "license": "MIT",
-      "source": {
-        "source": "github",
-        "repo": "mzored/SkipHow"
-      }
+      "source": "./"
     }
   ]
 }

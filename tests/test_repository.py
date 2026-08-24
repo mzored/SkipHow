@@ -182,7 +182,7 @@ class RepositoryContractTests(unittest.TestCase):
             "./adapters/claude/skills/cto-run", claude_manifest["skills"]
         )
         self.assertEqual(
-            {"source": "github", "repo": "mzored/SkipHow"},
+            "./",
             claude_marketplace["plugins"][0]["source"],
         )
         self.assertEqual(
