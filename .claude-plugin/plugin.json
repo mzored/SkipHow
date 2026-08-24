@@ -1,0 +1,19 @@
+{
+  "name": "skiphow",
+  "version": "0.1.0",
+  "description": "Skills for long-running software work.",
+  "author": {
+    "name": "mzored",
+    "url": "https://github.com/mzored"
+  },
+  "homepage": "https://github.com/mzored/SkipHow#readme",
+  "repository": "https://github.com/mzored/SkipHow",
+  "license": "MIT",
+  "keywords": [
+    "agent-skills",
+    "claude-code",
+    "codex",
+    "orchestration"
+  ],
+  "skills": "./adapters/claude/skills/cto-run"
+}

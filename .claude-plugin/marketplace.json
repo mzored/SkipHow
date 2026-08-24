@@ -1,0 +1,28 @@
+{
+  "name": "skiphow",
+  "owner": {
+    "name": "mzored",
+    "url": "https://github.com/mzored"
+  },
+  "metadata": {
+    "description": "Skills for long-running software work.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "skiphow",
+      "description": "Skills for long-running software work.",
+      "version": "0.1.0",
+      "author": {
+        "name": "mzored",
+        "url": "https://github.com/mzored"
+      },
+      "repository": "https://github.com/mzored/SkipHow",
+      "license": "MIT",
+      "source": {
+        "source": "github",
+        "repo": "mzored/SkipHow"
+      }
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+name: Bug report
+description: Report a reproducible problem in SkipHow.
+title: "bug: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: "Do not include secrets or vulnerability details. Use the security policy for private reports."
+  - type: input
+    id: host
+    attributes:
+      label: Host and version
+      description: Name the host and its version.
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command or invocation
+      description: Show the command or explicit skill request that failed.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Reproduction steps and evidence
+    validations:
+      required: true
