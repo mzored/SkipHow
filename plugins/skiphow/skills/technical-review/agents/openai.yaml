@@ -1,0 +1,6 @@
+interface:
+  display_name: "Technical review"
+  short_description: "Internal independent CTO review"
+  default_prompt: "Use $technical-review internally to review the exact CTO candidate commit."
+policy:
+  allow_implicit_invocation: false
