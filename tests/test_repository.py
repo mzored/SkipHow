@@ -24,6 +24,14 @@ PACKAGE_FILES = {
 }
 PACKAGE_VERSION = "0.1.0"
 PACKAGE_REPOSITORY = "https://github.com/mzored/SkipHow"
+PUBLIC_POLICY_FILES = {
+    "docs/architecture.md",
+    "CONTRIBUTING.md",
+    "CODE_OF_CONDUCT.md",
+    "SECURITY.md",
+    "CHANGELOG.md",
+    "LICENSE",
+}
 PORTABLE_POLICY_HEADINGS = {
     "# Operating policy",
     "## Authority and ownership",
@@ -217,3 +225,39 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("skills/cto-run/SKILL.md", body)
         for heading in PORTABLE_POLICY_HEADINGS:
             self.assertNotIn(heading, body)
+
+    def test_documentation_contract(self) -> None:
+        """Public documentation describes use, support, and repository policy."""
+        missing_paths = sorted(
+            path for path in PUBLIC_POLICY_FILES if not (ROOT / path).is_file()
+        )
+        self.assertEqual([], missing_paths)
+        if missing_paths:
+            return
+
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        for heading in (
+            "## Install with Codex",
+            "## Install with Claude Code",
+            "## Run cto-run",
+            "## Support policy",
+            "## Limitations",
+            "## Contributing",
+            "## Security",
+            "## License",
+        ):
+            self.assertIn(heading, readme)
+        for path in sorted(PUBLIC_POLICY_FILES):
+            self.assertIn(f"]({path})", readme)
+
+        ci = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+        self.assertIn("ubuntu-latest", ci)
+        self.assertIn("3.11", ci)
+        self.assertIn("pip install -r requirements-dev.txt", ci)
+        self.assertIn("python -m unittest discover -s tests -v", ci)
+        self.assertIn("git diff --check", ci)
+
+        dependabot = (ROOT / ".github/dependabot.yml").read_text(encoding="utf-8")
+        self.assertIn("pip", dependabot)
+        self.assertIn("github-actions", dependabot)
+        self.assertIn("weekly", dependabot)

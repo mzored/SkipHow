@@ -1,0 +1,34 @@
+name: Skill request
+description: Propose a skill that belongs in SkipHow.
+title: "skill: "
+labels:
+  - skill
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Describe the repeated work this skill would address.
+    validations:
+      required: true
+  - type: textarea
+    id: explicit_invocation
+    attributes:
+      label: Explicit invocation
+      description: Show the user request that should invoke the skill.
+    validations:
+      required: true
+  - type: textarea
+    id: workflow
+    attributes:
+      label: Proposed workflow
+      description: Describe inputs, durable files, and stop conditions.
+    validations:
+      required: true
+  - type: textarea
+    id: host_evidence
+    attributes:
+      label: Host support evidence
+      description: Explain how Codex and Claude Code would load and validate the skill.
+    validations:
+      required: true
