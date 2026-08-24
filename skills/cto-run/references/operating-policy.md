@@ -2,7 +2,15 @@
 
 ## Authority and ownership
 
-Apply constraints and safety rules first. Then apply repository instructions, the project runbook and accepted decisions, this policy, and task briefs. A more specific instruction wins. Host policy takes priority.
+Apply authority in this order:
+
+1. System, safety, legal, sandbox, and tool constraints.
+2. Repository instructions that apply to the current scope.
+3. The project runbook, accepted specifications, and approved architecture decisions.
+4. This operating policy.
+5. Task-local plans and worker briefs.
+
+Specificity breaks ties only within one authority tier. Host policy takes priority.
 
 The product owner decides product intent, priority, commercial limits, policy, and irreversible product or production actions. The orchestrator owns reversible technical choices within that intent. Never infer permission for destructive, production, credential, privacy, financial, or externally irreversible actions.
 
@@ -34,9 +42,9 @@ Resolve uncertainty by checking authoritative sources and current documentation,
 
 Before adding a subsystem, dependency, service, protocol, or general-purpose helper, search first-party code, platform facilities, official SDKs, maintained libraries, integrations, managed services, and a bounded spike. The gate also applies to parsing, serialization, retrying, scheduling, diffing, validation, transport, cryptography, time handling, caching, rate limits, state machines, templating, and similar solved work.
 
-Evaluate fit, integration cost, performance, operations, lock-in, exit path, total ownership cost, license compatibility, recent releases, maintainer breadth, stability signal, and high-severity vulnerabilities. Mark unavailable checks as `unverified`.
+Evaluate fit, integration cost, performance, operations, lock-in, exit path, total ownership cost, and license compatibility. Check for a release within the last 12 months, more than one maintainer, declared pre-1.0 risk, and known high-severity CVEs. Mark unavailable checks as `unverified`.
 
-Record one verdict: `ADOPT`, `INTEGRATE`, `BUILD`, `DEFER`, or `SPIKE`. `BUILD` needs evidence that maintained alternatives fail a material requirement or carry more risk or cost. Record significant decisions as ADRs with context, alternatives, decision, consequences, confidence, and invalidation conditions. Each receipt includes `reuse_check` with the verdict and what was searched.
+Record one verdict: `ADOPT`, `INTEGRATE`, `BUILD`, `DEFER`, or `SPIKE`. `BUILD` needs evidence that maintained alternatives fail a material requirement or carry more risk or cost. Record significant decisions as ADRs with context, alternatives, decision, consequences, confidence, and invalidation conditions. Each receipt includes `reuse_check` with `n/a` when the gate does not apply. Otherwise it records the verdict and what was searched.
 
 ## Delegation and execution health
 
@@ -54,4 +62,4 @@ Validate from the smallest targeted check through affected-component, integratio
 
 Preserve unrelated and reserved changes. Do not reset, clean, stash, overwrite, absorb, or commit paths outside the lane's scope. Fix an adjacent defect only when it blocks acceptance, makes the change unsafe, invalidates verification, or cannot be separated from the smallest correct fix. During an outage, continue only authorized local work, queue remote actions idempotently, and distinguish local completion from remote completion.
 
-The run ends only when every in-scope item has exact-commit evidence, an accepted no-code decision, proven supersession, or a decision-ready irreducible blocker. Reconcile branches, worktrees, and dirty paths from fresh evidence. Write `FINAL.md` with completed outcomes, pending external reconciliation, blocked items, evidence, residual risks, decisions, recurring failures, recommended improvements, and confirmation that no unauthorized protected action occurred.
+The run ends only when every in-scope item has exact-commit evidence, an accepted no-code decision, proven supersession, or a blocker caused by a product-owner decision, missing authority, protected action, or external prerequisite. No executable lane or unaccounted mutable state may remain. Reconcile branches, worktrees, and dirty paths from fresh evidence. Write `FINAL.md` with completed outcomes, pending external reconciliation, blocked items, evidence, residual risks, decisions, recurring failures, recommended improvements, and confirmation that no unauthorized protected action occurred.

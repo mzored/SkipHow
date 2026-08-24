@@ -26,4 +26,4 @@ Keep the task DAG, leases, ownership, path reservations, attempts, command budge
 
 `briefing.md` records the authority map, source hashes, decisions, exact source locations, open questions, and corrections discovered during the run. Keep it concise and queryable. Split it into indexed parts if it grows beyond a practical working size.
 
-Use `decisions/` for ADRs, `evidence/<task>/<commit>/` for raw check output, and `receipts/<task>.json` for a worker result with status, base and head commits, evidence, blocker, next action, and `reuse_check`. `FINAL.md` is the final reconciliation and handoff.
+Use `decisions/` for ADRs, `evidence/<task>/<commit>/` for raw check output, and `receipts/<task>.json` for a worker result with status, base and head commits, evidence, blocker, next action, and `reuse_check` as the verdict or `n/a`. Use `n/a` only when the build-versus-reuse gate did not apply. `FINAL.md` is the final reconciliation and handoff.

@@ -18,6 +18,21 @@ REQUIRED_PATHS = {
 
 CAPABILITY_ROLES = {"MECHANICAL", "IMPLEMENTATION", "CTO_REVIEW"}
 DURABLE_FILES = {"state.json", "journal.jsonl", "briefing.md", "FINAL.md"}
+AUTHORITY_ORDER = (
+    "1. System, safety, legal, sandbox, and tool constraints.",
+    "2. Repository instructions that apply to the current scope.",
+    "3. The project runbook, accepted specifications, and approved architecture decisions.",
+    "4. This operating policy.",
+    "5. Task-local plans and worker briefs.",
+)
+DEPENDENCY_CHECKS = (
+    "release within the last 12 months",
+    "more than one maintainer",
+    "declared pre-1.0 risk",
+    "license compatibility",
+    "known high-severity CVEs",
+    "`unverified`",
+)
 FORBIDDEN_TEXT = {
     "/Users/",
     "~/.codex",
@@ -68,3 +83,33 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("Host policy takes priority.", policy_text)
         for forbidden_text in FORBIDDEN_TEXT:
             self.assertNotIn(forbidden_text, policy_text)
+
+        operating_policy = (
+            ROOT / "skills/cto-run/references/operating-policy.md"
+        ).read_text(encoding="utf-8")
+        state_contract = (
+            ROOT / "skills/cto-run/references/state-contract.md"
+        ).read_text(encoding="utf-8")
+
+        for authority in AUTHORITY_ORDER:
+            self.assertIn(authority, operating_policy)
+        self.assertIn(
+            "Specificity breaks ties only within one authority tier.", operating_policy
+        )
+        self.assertIn(
+            "product-owner decision, missing authority, protected action, or external prerequisite",
+            operating_policy,
+        )
+        self.assertIn(
+            "No executable lane or unaccounted mutable state may remain.",
+            operating_policy,
+        )
+        self.assertNotIn("irreducible blocker", operating_policy)
+        for dependency_check in DEPENDENCY_CHECKS:
+            self.assertIn(dependency_check, operating_policy)
+        self.assertIn(
+            "`reuse_check` with `n/a` when the gate does not apply", operating_policy
+        )
+        self.assertIn(
+            "`reuse_check` as the verdict or `n/a`", state_contract
+        )
