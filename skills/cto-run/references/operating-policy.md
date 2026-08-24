@@ -58,7 +58,7 @@ After three consecutive failures with the same signature, set the lane to `CIRCU
 
 ## Validation, scope, and handoff
 
-Validate from the smallest targeted check through affected-component, integration, pre-integration, and post-integration gates. Run each required gate on the exact candidate commit. Bind every completion claim to acceptance criteria, command or procedure, environment, duration, result, and evidence location. Green checks do not replace review of the actual behavior, diff, architecture, security, compatibility, operations, and rollback path.
+Validate from the smallest targeted check through affected-component, integration, pre-integration, and post-integration gates. Run each required gate on the exact candidate commit. Bind every completion claim to the exact candidate commit, acceptance criteria, command or procedure, environment, duration, result, and evidence location. Green checks do not replace review of the actual behavior, diff, architecture, security, compatibility, operations, and rollback path.
 
 Preserve unrelated and reserved changes. Do not reset, clean, stash, overwrite, absorb, or commit paths outside the lane's scope. Fix an adjacent defect only when it blocks acceptance, makes the change unsafe, invalidates verification, or cannot be separated from the smallest correct fix. During an outage, continue only authorized local work, queue remote actions idempotently, and distinguish local completion from remote completion.
 

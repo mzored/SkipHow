@@ -33,6 +33,10 @@ DEPENDENCY_CHECKS = (
     "known high-severity CVEs",
     "`unverified`",
 )
+COMPLETION_CLAIM_STATEMENT = (
+    "Bind every completion claim to the exact candidate commit, acceptance criteria, "
+    "command or procedure, environment, duration, result, and evidence location."
+)
 FORBIDDEN_TEXT = {
     "/Users/",
     "~/.codex",
@@ -113,3 +117,4 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn(
             "`reuse_check` as the verdict or `n/a`", state_contract
         )
+        self.assertIn(COMPLETION_CLAIM_STATEMENT, operating_policy)
