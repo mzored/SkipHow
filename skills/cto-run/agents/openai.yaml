@@ -1,0 +1,6 @@
+interface:
+  display_name: CTO Run
+  short_description: Run long software campaigns with durable state
+  default_prompt: Start or resume this project's CTO run.
+policy:
+  allow_implicit_invocation: false

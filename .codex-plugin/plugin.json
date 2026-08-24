@@ -1,0 +1,20 @@
+{
+  "name": "skiphow",
+  "version": "0.1.0",
+  "description": "Skills for long-running software work.",
+  "author": {
+    "name": "mzored"
+  },
+  "repository": "https://github.com/mzored/SkipHow",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "SkipHow",
+    "shortDescription": "Run long software campaigns with durable state.",
+    "longDescription": "Run a CTO-led campaign from a durable run directory.",
+    "developerName": "mzored",
+    "category": "Productivity",
+    "capabilities": [],
+    "defaultPrompt": "Start a CTO run for this project."
+  }
+}
