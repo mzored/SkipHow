@@ -1,7 +1,7 @@
 {
   "name": "skiphow",
   "version": "0.4.0",
-  "description": "Route owner intent through product decisions and proportionate technical delivery.",
+  "description": "Route owner intent through product decisions and minimum sufficient technical delivery.",
   "author": {
     "name": "mzored",
     "url": "https://github.com/mzored"
@@ -19,11 +19,12 @@
   "interface": {
     "displayName": "SkipHow",
     "shortDescription": "Route ideas through product and technical delivery.",
-    "longDescription": "Capture ideas, shape product decisions, repair defects with adaptive rigor, and let an internal CTO choose direct or durable delivery.",
+    "longDescription": "Capture ideas, shape product decisions, repair defects, and let an internal CTO choose normal execution, focused diagnosis, or durable campaigns.",
     "developerName": "mzored",
     "category": "Developer Tools",
     "capabilities": [],
     "defaultPrompt": [
+      "Set up the standard GitHub work surface for this repository.",
       "Capture this product idea without researching it.",
       "Shape this feature into a product decision.",
       "Fix this broken behavior with verification proportional to its risk.",

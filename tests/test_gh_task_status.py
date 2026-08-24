@@ -136,7 +136,7 @@ class GitHubLifecycleHelperTests(unittest.TestCase):
         ):
             gh_task_status.set_option("owner/repo", 42, "In Progress")
 
-    def test_set_in_progress_requires_explicit_no_gate(self) -> None:
+    def test_set_in_progress_allows_absent_legacy_gate(self) -> None:
         task = gh_task_status.Task(
             repo="owner/repo",
             board=gh_task_status.Board("owner", 5, "main"),
@@ -144,14 +144,13 @@ class GitHubLifecycleHelperTests(unittest.TestCase):
             item_id="item",
             values={},
         )
-        fields = {"Status": ("field", {"In Progress": "option"})}
+        fields = {"Status": ("field", {"In progress": "option"})}
         with (
             patch.object(gh_task_status, "resolve_task", return_value=(task, fields)),
             patch.object(gh_task_status, "run") as run,
-            self.assertRaises(gh_task_status.LifecycleError),
         ):
-            gh_task_status.set_option("owner/repo", 42, "In Progress")
-        run.assert_not_called()
+            gh_task_status.set_option("owner/repo", 42, "In progress")
+        run.assert_called_once()
 
     def test_candidate_projects_paginates_owner_connection(self) -> None:
         pages = [
@@ -201,7 +200,11 @@ class GitHubLifecycleHelperTests(unittest.TestCase):
                 "linked_branch_names",
                 return_value={"42-fix-cache"},
             ),
-            patch.object(gh_task_status, "resolve_task", return_value=(task, {})),
+            patch.object(
+                gh_task_status,
+                "resolve_task",
+                return_value=(task, {"Status": ("field", {"In progress": "option"})}),
+            ),
             redirect_stdout(stdout),
         ):
             self.assertEqual(0, gh_task_status.hook_stop())
@@ -216,7 +219,7 @@ class GitHubLifecycleHelperTests(unittest.TestCase):
             board=gh_task_status.Board("owner", 5, "main"),
             project_id="project",
             item_id="item",
-            values={"Status": "In Progress"},
+            values={"Status": "In progress"},
         )
         stdout = io.StringIO()
         with (
@@ -228,7 +231,11 @@ class GitHubLifecycleHelperTests(unittest.TestCase):
                 "linked_branch_names",
                 return_value={"42-fix-cache"},
             ),
-            patch.object(gh_task_status, "resolve_task", return_value=(task, {})),
+            patch.object(
+                gh_task_status,
+                "resolve_task",
+                return_value=(task, {"Status": ("field", {"In progress": "option"})}),
+            ),
             redirect_stdout(stdout),
         ):
             self.assertEqual(0, gh_task_status.hook_stop())

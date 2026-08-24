@@ -1,7 +1,6 @@
 ---
 name: diagnose
-description: Internal diagnosis capability for hard bugs and performance regressions whose cause remains unclear after initial inspection.
-user-invocable: false
+description: Diagnose hard bugs and performance regressions whose cause remains unclear, reporting the cause for analysis requests or returning it to repair execution.
 ---
 
 # diagnose

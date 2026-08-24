@@ -21,8 +21,12 @@ ISSUE_REF_RE = re.compile(
     r"^(?:https://github\.com/)?(?P<repo>[^/\s]+/[^/#\s]+)(?:/issues/|#)(?P<number>\d+)$"
 )
 REMOTE_RE = re.compile(r"github\.com[:/]+([^/]+)/(.+?)(?:\.git)?$")
-STARTED = {"In Progress", "In Review", "Done", "Blocked"}
+STARTED = {"In progress", "Waiting", "Done", "In Progress", "In Review", "Blocked"}
 OPTION_FIELDS = {
+    "Backlog": "Status",
+    "Ready": "Status",
+    "In progress": "Status",
+    "Waiting": "Status",
     "Todo": "Status",
     "In Progress": "Status",
     "In Review": "Status",
@@ -33,10 +37,7 @@ OPTION_FIELDS = {
     "Product decision": "Human Gate",
     "External": "Human Gate",
 }
-REQUIRED_BOARD_OPTIONS = {
-    "Status": {"Todo", "In Progress", "Done", "Blocked"},
-    "Human Gate": {"No", "Deploy", "Product decision", "External"},
-}
+MINIMAL_STATUS_OPTIONS = {"Backlog", "Ready", "In progress", "Waiting", "Done"}
 MINIMUM_GH_VERSION = (2, 93, 0)
 
 
@@ -480,7 +481,7 @@ def command_queue(repo: str | None) -> int:
             if not content.get("number") or not content.get("title"):
                 continue
             values = lifecycle_values(item)
-            if values.get("Status") != "Todo":
+            if values.get("Status") not in {"Ready", "Todo"}:
                 continue
             labels = {node.get("name") for node in ((content.get("labels") or {}).get("nodes") or [])}
             issue_type = ((content.get("issueType") or {}).get("name") or "").lower()
@@ -499,7 +500,7 @@ def command_queue(repo: str | None) -> int:
 
 def set_option(repo: str, number: int, option: str) -> None:
     task, fields = resolve_task(repo, number)
-    if option == "In Progress" and task.gate != "No":
+    if option in {"In progress", "In Progress"} and task.gate and task.gate != "No":
         raise LifecycleError(f"issue #{number} has Human Gate={task.gate}")
     field_name = OPTION_FIELDS.get(option)
     if not field_name:
@@ -596,7 +597,7 @@ def validate_hook_config(payload: Any) -> None:
 
 
 def preflight_report(repo: str | None = None, *, cwd: str = ".") -> tuple[list[str], list[str]]:
-    """Check local prerequisites and the adopted board without changing either."""
+    """Check local prerequisites and optional GitHub Project without changing either."""
     failures: list[str] = []
     notes: list[str] = []
     if sys.version_info < (3, 10):
@@ -629,18 +630,25 @@ def preflight_report(repo: str | None = None, *, cwd: str = ".") -> tuple[list[s
             resolved_repo = repo or repo_at(cwd)
             board = board_for(resolved_repo)
             _, fields = project_fields(board)
-            for field_name, options in REQUIRED_BOARD_OPTIONS.items():
-                available = set((fields.get(field_name) or ("", {}))[1])
-                missing = sorted(options - available)
-                if missing:
-                    failures.append(
-                        f"board {board.owner}/{board.number} field {field_name!r} is missing options: "
-                        + ", ".join(missing)
-                    )
-            if not any("board " in failure for failure in failures):
-                notes.append(f"board {board.owner}/{board.number} lifecycle schema verified")
+            status_options = set((fields.get("Status") or ("", {}))[1])
+            missing = sorted(MINIMAL_STATUS_OPTIONS - status_options)
+            if missing:
+                failures.append(
+                    f"SETUP_NEEDED board {board.owner}/{board.number} Status is missing: "
+                    + ", ".join(missing)
+                    + "; run SkipHow setup"
+                )
+            else:
+                notes.append(f"READY board {board.owner}/{board.number} minimal Status verified")
+        except UntrackedLifecycle:
+            failures.append(
+                "SETUP_NEEDED no linked Project v2 detected; run SkipHow setup "
+                "(native Issues remain available)"
+            )
         except LifecycleError as exc:
-            failures.append(f"repair or select an adopted Project v2 board: {exc}")
+            notes.append(
+                f"DEGRADED Project v2 is unavailable: {exc}; native Issues remain available"
+            )
     hook_path = Path(__file__).resolve().parents[1] / "hooks" / "hooks.json"
     try:
         hooks = json.loads(hook_path.read_text(encoding="utf-8"))
@@ -797,10 +805,10 @@ def hook_pre() -> int:
     except LifecycleError as exc:
         print(f"Cannot verify GitHub lifecycle before branch creation: {exc}", file=sys.stderr)
         return 2
-    if task.gate != "No":
+    if task.gate and task.gate != "No":
         print(
-            f"Issue {target.repo}#{target.number} has Human Gate={task.gate or 'unset'}. "
-            "Set it to No or resolve the gate before creating a linked branch.",
+            f"Issue {target.repo}#{target.number} has Human Gate={task.gate}. "
+            "Resolve the gate before creating a linked branch.",
             file=sys.stderr,
         )
         return 2
@@ -824,15 +832,15 @@ def hook_stop() -> int:
         target = IssueRef(repo, number)
         if branch_name(cwd) not in linked_branch_names(target):
             return 0
-        task, _ = resolve_task(repo, number)
+        task, fields = resolve_task(repo, number)
     except LifecycleError:
         return 0
-    if task.status in STARTED:
+    if "Status" not in fields or task.status in STARTED:
         return 0
     reason = (
         f"Issue #{number} is linked to this branch but its Project status is "
-        f"{task.status or 'unset'}. Confirm Human Gate=No, then run gh-task-status set {number} "
-        "'In Progress', or repair the linked branch before stopping."
+        f"{task.status or 'unset'}. Run gh-task-status set {number} "
+        "'In progress', or repair the linked branch before stopping."
     )
     print(json.dumps({"decision": "block", "reason": reason}))
     return 0

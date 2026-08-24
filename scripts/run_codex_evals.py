@@ -19,8 +19,10 @@ DEFAULT_CORPUS = ROOT / "plugins/skiphow/evals/behavioral_scenarios.json"
 RESPONSE_SCHEMA = ROOT / "plugins/skiphow/evals/response_schema.json"
 REQUIRED_ASSERTIONS = {
     "route": str,
+    "execution_shape": str,
     "owner_question": bool,
     "ceremony": str,
+    "tracker_touched": bool,
     "durable": bool,
     "testing": str,
     "review": str,
@@ -40,6 +42,31 @@ ESCALATION_BRIEF_FIELDS = (
     "consequence_of_waiting",
     "decision_or_action_needed",
 )
+
+TOOL_ITEM_TYPES = {
+    "command_execution",
+    "mcp_tool_call",
+    "dynamic_tool_call",
+    "web_search",
+    "collaboration_tool_call",
+}
+
+
+def codex_metrics(output: str) -> dict[str, Any]:
+    """Extract secondary efficiency signals from Codex JSONL when available."""
+    metrics: dict[str, Any] = {"tool_calls": 0}
+    for line in output.splitlines():
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        item = event.get("item")
+        if isinstance(item, dict) and item.get("type") in TOOL_ITEM_TYPES:
+            metrics["tool_calls"] += 1
+        usage = event.get("usage")
+        if isinstance(usage, dict):
+            metrics["usage"] = usage
+    return metrics
 
 
 def snapshot_candidate(output_dir: Path) -> tuple[str, str, Path]:
@@ -119,8 +146,8 @@ def load_corpus(path: Path) -> dict[str, Any]:
     if not isinstance(document, dict) or document.get("schema_version") != 1:
         raise ValueError("eval corpus must be an object with schema_version 1")
     scenarios = document.get("scenarios")
-    if not isinstance(scenarios, list) or not 20 <= len(scenarios) <= 40:
-        raise ValueError("eval corpus must contain 20 to 40 scenarios")
+    if not isinstance(scenarios, list) or not 20 <= len(scenarios) <= 50:
+        raise ValueError("eval corpus must contain 20 to 50 scenarios")
     identifiers: set[str] = set()
     for index, scenario in enumerate(scenarios, start=1):
         if not isinstance(scenario, dict):
@@ -206,6 +233,8 @@ def run_live(*, codex: str) -> int:
                 "Load and follow $skiphow for this evaluation. Classify this SkipHow request. "
                 "Return only the requested JSON object. "
                 "Respect the Owner, Product Director, and CTO authority boundary. "
+                "Use execute as the normal technical shape, diagnose-then-execute only for an unknown cause, "
+                "and campaign only when orchestration needs durable state. Report whether the tracker is touched. "
                 "Set escalation to none unless the request needs an Owner decision, protected action, "
                 "missing authority, or external prerequisite. For any other escalation value, provide "
                 "a non-empty recommendation, evidence, consequence_of_waiting, and exact "
@@ -223,6 +252,7 @@ def run_live(*, codex: str) -> int:
                     str(schema),
                     "--output-last-message",
                     str(result_path),
+                    "--json",
                     prompt,
                 ],
                 cwd=evaluation_dir,
@@ -235,6 +265,11 @@ def run_live(*, codex: str) -> int:
             try:
                 response = json.loads(result_path.read_text(encoding="utf-8"))
                 record["mismatches"] = evaluate(response, scenario["assertions"])
+                record["metrics"] = {
+                    **codex_metrics(completed.stdout),
+                    "campaign_selected": response.get("execution_shape") == "campaign",
+                    "tracker_touched": response.get("tracker_touched"),
+                }
             except (OSError, json.JSONDecodeError) as exc:
                 record["error"] = f"invalid structured response: {exc}"
             results.append(record)

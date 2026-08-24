@@ -5,16 +5,16 @@ description: Internal independent review capability for CTO delivery, separating
 
 # technical-review
 
-Use this capability only at a CTO-selected review gate. It is internal and must not create an Owner checkpoint or ask the Owner to supply technical review inputs. Resolve the candidate commit, effective diff, accepted specification, and repository standards from available evidence. Escalate only for a genuine product or protected-action decision under repository policy.
+Use this capability only at a CTO-selected review gate. It is internal and must not create an Owner checkpoint or ask the Owner to supply technical review inputs. Resolve the delivered-state identity, effective diff, accepted specification, and repository standards from available evidence. Escalate only for a genuine product or protected-action decision under repository policy.
 
-For R2 work, assign one fresh reviewer with no implementation history. That reviewer reports two explicitly separate axes:
+Assign one fresh reviewer with no implementation history when independent review is required. That reviewer reports two explicitly separate axes:
 
 - The Spec axis checks for missing, partial, incorrect, or unrequested behavior against the accepted specification.
 - The Standards axis checks departures from repository standards and relevant design problems. Documented standards take priority.
 
-For R3 work, add a conditional security, privacy, data, or authentication lens when the changed surface makes that lens relevant. Name the lens and the evidence examined. Do not add it mechanically when the risk classification does not touch such a surface.
+Add a conditional security, privacy, data, authorization, compatibility, operations, or other specialist lens only when the changed surface makes it relevant. Name the lens and the evidence examined.
 
-Review the exact candidate commit and its effective diff. Findings identify the file or behavior, evidence, severity, and required disposition. A clean review is evidence, not a replacement for required validation.
+Review the delivered state and its effective diff. Findings identify the file or behavior, evidence, severity, and required disposition. A clean review is evidence, not a replacement for required validation.
 
 The first independent review examines the full relevant integration diff. After the CTO fixes findings, re-review only the original findings, their fix diff, and regressions plausibly introduced by those fixes. Do not restart review of untouched code or reopen settled observations. Route a new independent observation through the shared finding lifecycle without silently expanding the review loop.
 

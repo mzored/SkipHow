@@ -22,13 +22,17 @@ SKILL_NAMES = {
     "testing",
     "cto-run",
     "github-task",
+    "prototype",
+    "resolving-merge-conflicts",
+    "setup",
 }
 INTERNAL_SKILLS = {
     "codebase-design",
     "cto",
-    "diagnose",
     "cto-run",
     "github-task",
+    "prototype",
+    "resolving-merge-conflicts",
     "technical-review",
     "testing",
 }
@@ -66,7 +70,7 @@ PUBLIC_POLICY_FILES = {
 TECHNICAL_POLICY_HEADINGS = {
     "# Technical policy",
     "## Authority and ownership",
-    "## Readiness, risk, and decisions",
+    "## Readiness, surfaces, and decisions",
     "## Build versus reuse",
     "## Engineering capabilities",
     "## Delegation and execution health",
@@ -97,8 +101,8 @@ DEPENDENCY_CHECKS = (
     "`unverified`",
 )
 COMPLETION_CLAIM_STATEMENT = (
-    "Bind every completion claim to the exact candidate commit, acceptance criteria, "
-    "command or procedure, environment, duration, result, and evidence location."
+    "Bind every completion claim to the delivered-state identity, acceptance criteria, "
+    "command or procedure, environment, result, and evidence location."
 )
 FORBIDDEN_TEXT = {
     "/Users/",
@@ -183,8 +187,9 @@ class RepositoryContractTests(unittest.TestCase):
                 in {
                     "codebase-design",
                     "cto",
-                    "diagnose",
                     "github-task",
+                    "prototype",
+                    "resolving-merge-conflicts",
                     "technical-review",
                     "testing",
                 },
@@ -192,7 +197,7 @@ class RepositoryContractTests(unittest.TestCase):
             )
 
     def test_fix_policy_contract(self) -> None:
-        """Defect routing preserves progressive rigor across capability handoffs."""
+        """Defect routing uses execution, diagnosis, and campaign without risk modes."""
         fix = (ROOT / "plugins/skiphow/skills/fix/SKILL.md").read_text(
             encoding="utf-8"
         )
@@ -202,11 +207,27 @@ class RepositoryContractTests(unittest.TestCase):
 
         self.assertIn("bounded Product Director decision", fix)
         self.assertNotIn("read `../shape/SKILL.md`", fix)
-        self.assertIn("Continue locally", fix)
         self.assertIn("internal CTO controller", fix)
-        self.assertIn("do not choose `cto-run` from risk alone", fix)
+        self.assertIn("normal `EXECUTE` path", fix)
+        self.assertIn("Use `cto-run` only when", fix)
         self.assertIn("Phases 1 through 4", diagnose)
         self.assertIn("Do not execute Phase 5", diagnose)
+
+        controller = (ROOT / "plugins/skiphow/skills/cto/SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        for question in (
+            "What outcome is requested",
+            "smallest coherent scope",
+            "desired interaction, UI, logic, or state model still uncertain",
+            "unresolved causal uncertainty",
+            "orchestration itself require durable state",
+            "evidence do the changed surfaces require",
+        ):
+            self.assertIn(question, controller)
+        self.assertNotIn("tracked-direct", controller)
+        for risk_level in ("R1", "R2", "R3"):
+            self.assertNotIn(risk_level, controller)
 
         canonical_router = load_frontmatter(
             "plugins/skiphow/skills/skiphow/SKILL.md"
@@ -217,30 +238,34 @@ class RepositoryContractTests(unittest.TestCase):
         router = (ROOT / "plugins/skiphow/skills/skiphow/SKILL.md").read_text(
             encoding="utf-8"
         )
-        self.assertIn("readiness requests to `preflight`", router)
-        self.assertIn("Product acceptance is an internal Product Director phase", router)
+        self.assertIn("Route requests to configure or repair", router)
+        self.assertIn("readiness checks to `preflight`", router)
+        self.assertIn("Product acceptance is a SkipHow implementation", router)
         self.assertNotIn("Route product acceptance", router)
 
-    def test_durable_delivery_requires_exact_candidate_product_acceptance(self) -> None:
+    def test_durable_delivery_requires_final_state_product_acceptance(self) -> None:
         runbook = (
             ROOT / "plugins/skiphow/skills/develop/references/delivery-runbook.md"
         ).read_text(encoding="utf-8")
         state_contract = (
             ROOT / "plugins/skiphow/skills/cto-run/references/state-contract.md"
         ).read_text(encoding="utf-8")
-        self.assertIn("exact-candidate acceptance receipt", runbook)
+        self.assertIn("final-state acceptance receipt", runbook)
         self.assertIn("status `accepted` or `carried-forward`", runbook)
         self.assertIn('"product_acceptance"', state_contract)
         self.assertIn('"status": "accepted|returned|carried-forward"', state_contract)
         self.assertIn('"disposition": "RESOLVED|PERSISTED|DUPLICATE|DISMISSED"', state_contract)
         self.assertIn('"basis_receipt": "prior receipt or null"', state_contract)
+        self.assertIn('"state_identity": "exact delivered-state identifier"', state_contract)
+        self.assertIn('"current_state":', state_contract)
+        self.assertIn("interpret `repository_commit`", state_contract)
         self.assertIn("receipts/product-acceptance/<item>.json", state_contract)
 
         acceptance = (
             ROOT / "plugins/skiphow/skills/shape/references/product-acceptance.md"
         ).read_text(encoding="utf-8")
         self.assertIn(
-            ".skiphow/evidence/product-acceptance/<candidate-commit>/<contract-id>.json",
+            ".skiphow/evidence/product-acceptance/<state-identity>/<contract-id>.json",
             acceptance,
         )
 
@@ -256,12 +281,41 @@ class RepositoryContractTests(unittest.TestCase):
             encoding="utf-8"
         )
 
-        self.assertIn("Do not infer that code changes require an issue", github_task)
-        self.assertIn("does not select development methods", github_task)
-        self.assertIn("classifies the repair as tracked", fix)
+        self.assertIn("Issue remains the canonical work object", github_task)
+        self.assertIn("decision to persist work", github_task)
+        self.assertIn("native parent/sub-issue and blocking relationships", github_task)
+        self.assertIn("standard user-facing queue", github_task)
+        self.assertIn("Do not require `Human Gate`", github_task)
+        self.assertIn("only after that need is established", fix)
         self.assertIn("github-task", develop)
+        self.assertIn("Decide `PERSISTED` before loading a tracker capability", (
+            ROOT / "plugins/skiphow/skills/cto/references/technical-policy.md"
+        ).read_text(encoding="utf-8"))
         self.assertNotIn("test-driven-development", github_task)
         self.assertNotIn("Run the repo's full gate", github_task)
+
+    def test_new_capability_boundaries(self) -> None:
+        prototype = (ROOT / "plugins/skiphow/skills/prototype/SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        conflicts = (
+            ROOT / "plugins/skiphow/skills/resolving-merge-conflicts/SKILL.md"
+        ).read_text(encoding="utf-8")
+        technical_policy = (
+            ROOT / "plugins/skiphow/skills/cto/references/technical-policy.md"
+        ).read_text(encoding="utf-8")
+        durable_policy = (
+            ROOT / "plugins/skiphow/skills/cto-run/references/operating-policy.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("one design question", prototype)
+        self.assertIn("Do not silently turn prototype code into production code", prototype)
+        self.assertIn("already in a conflicted merge or rebase state", conflicts)
+        self.assertIn("Recover why each side changed", conflicts)
+        self.assertIn("hard to reverse", technical_policy)
+        self.assertIn("Human-action handoff", technical_policy)
+        self.assertIn("vertical slices", durable_policy)
+        self.assertIn("Do not pre-decompose uncertainty", durable_policy)
 
     def test_portable_policy(self) -> None:
         """The shipped cto-run policy stays portable and complete."""
@@ -320,6 +374,8 @@ class RepositoryContractTests(unittest.TestCase):
             "`reuse_check` as the verdict or `n/a`", state_contract
         )
         self.assertIn(COMPLETION_CLAIM_STATEMENT, technical_policy)
+        for risk_level in ("R1", "R2", "R3"):
+            self.assertNotIn(risk_level, technical_policy)
         self.assertIn("shared technical policy", durable_policy)
 
     def test_manifest_contract(self) -> None:
@@ -348,7 +404,13 @@ class RepositoryContractTests(unittest.TestCase):
 
         self.assertEqual("./skills/", codex_manifest["skills"])
         self.assertFalse((ROOT / "skills").exists())
-        self.assertEqual(4, len(codex_manifest["interface"]["defaultPrompt"]))
+        self.assertEqual(5, len(codex_manifest["interface"]["defaultPrompt"]))
+        self.assertTrue(
+            any(
+                "set up" in prompt.lower()
+                for prompt in codex_manifest["interface"]["defaultPrompt"]
+            )
+        )
         self.assertTrue(
             any(
                 "fix" in prompt.lower()

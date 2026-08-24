@@ -1,6 +1,6 @@
 ---
 name: fix
-description: Repair broken or regressed behavior with rigor proportional to uncertainty and risk, escalating only when diagnosis, product direction, or a durable CTO campaign is warranted.
+description: Repair broken or regressed behavior through normal execution, focused diagnosis when the cause is unknown, or a durable campaign when coordination requires it.
 ---
 
 # fix

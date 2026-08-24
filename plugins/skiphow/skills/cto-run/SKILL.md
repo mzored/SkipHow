@@ -1,11 +1,11 @@
 ---
 name: cto-run
-description: Run durable CTO delivery campaigns when the user explicitly names cto-run or the internal CTO controller selects durable execution.
+description: Run durable CTO delivery campaigns when the user explicitly names cto-run or the internal controller determines that orchestration itself needs durable state.
 ---
 
 # cto-run
 
-Use this durable runtime in the current session. Resolve `<runbook> <run-directory> [target]`. Reuse the run directory for a resumed campaign. The internal CTO controller decides whether work needs this runtime. Ask only if the project cannot be identified from the request and runbook.
+Use this specialized durable runtime in the current session. Resolve `<runbook> <run-directory> [target]`. Reuse the run directory for a resumed campaign. The internal CTO controller decides whether orchestration itself needs this runtime. `cto-run` is not the stricter form of ordinary engineering and is not a general-purpose workflow engine. Ask only if the project cannot be identified from the request and runbook.
 
 Read these references before acting:
 

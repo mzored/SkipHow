@@ -36,8 +36,10 @@ class BehavioralEvalTests(unittest.TestCase):
         self.assertIn("protected-action", escalations)
         security = next(item for item in scenarios if item["id"] == "security-sensitive-change")
         self.assertFalse(security["assertions"]["durable"])
+        self.assertEqual("execute", security["assertions"]["execution_shape"])
         long_low_risk = next(item for item in scenarios if item["id"] == "durability-not-risk")
         self.assertTrue(long_low_risk["assertions"]["durable"])
+        self.assertEqual("campaign", long_low_risk["assertions"]["execution_shape"])
         acceptance_mismatch = next(item for item in scenarios if item["id"] == "acceptance-mismatch")
         self.assertEqual("cto", acceptance_mismatch["assertions"]["route"])
         by_id = {item["id"]: item["assertions"] for item in scenarios}
@@ -54,6 +56,15 @@ class BehavioralEvalTests(unittest.TestCase):
         )
         self.assertFalse(by_id["acceptance-internal-delta"]["product_acceptance"])
         self.assertTrue(by_id["acceptance-semantic-delta"]["product_acceptance"])
+        self.assertFalse(by_id["tiny-css-fix"]["tracker_touched"])
+        self.assertFalse(by_id["untracked-coherent-feature"]["tracker_touched"])
+        self.assertTrue(by_id["independent-finding-persisted"]["tracker_touched"])
+        self.assertEqual("diagnose-only", by_id["diagnosis-only"]["execution_shape"])
+        self.assertEqual("prototype", by_id["prototype-design-question"]["ceremony"])
+        self.assertEqual("merge-conflict", by_id["merge-conflict-intent"]["ceremony"])
+        self.assertEqual("human-action-handoff", by_id["human-action-handoff"]["ceremony"])
+        self.assertEqual("setup", by_id["github-project-setup"]["route"])
+        self.assertEqual("campaign", by_id["campaign-fog-of-war"]["execution_shape"])
 
     def test_structured_evaluation_reports_only_mismatches(self) -> None:
         expected = {
@@ -97,6 +108,25 @@ class BehavioralEvalTests(unittest.TestCase):
         response = {"route": "fix", "reason": "bounded repair"}
         payload = '{"type":"result","structured_output":' + json.dumps(response) + "}"
         self.assertEqual(response, claude_evals.structured_response(payload))
+
+    def test_live_metric_extractors_keep_efficiency_signals_secondary(self) -> None:
+        codex_output = "\n".join(
+            (
+                '{"type":"item.completed","item":{"type":"command_execution"}}',
+                '{"type":"turn.completed","usage":{"input_tokens":12,"output_tokens":3}}',
+            )
+        )
+        self.assertEqual(
+            {"tool_calls": 1, "usage": {"input_tokens": 12, "output_tokens": 3}},
+            evals.codex_metrics(codex_output),
+        )
+        claude_output = json.dumps(
+            {"structured_output": {}, "usage": {"input_tokens": 7}, "num_turns": 1}
+        )
+        self.assertEqual(
+            {"usage": {"input_tokens": 7}, "num_turns": 1},
+            claude_evals.claude_metrics(claude_output),
+        )
 
     def test_codex_live_runner_binds_evidence_to_a_clean_snapshot(self) -> None:
         source = SCRIPT.read_text(encoding="utf-8")

@@ -31,6 +31,16 @@ def structured_response(output: str) -> dict[str, Any]:
     return candidate
 
 
+def claude_metrics(output: str) -> dict[str, Any]:
+    """Extract secondary efficiency signals from Claude's JSON result."""
+    document = json.loads(output)
+    return {
+        key: document[key]
+        for key in ("usage", "num_turns", "total_cost_usd")
+        if key in document
+    }
+
+
 def run_live(*, claude: str) -> int:
     """Run opt-in Claude Code evaluations against an exact isolated candidate."""
     results: list[dict[str, Any]] = []
@@ -61,6 +71,8 @@ def run_live(*, claude: str) -> int:
             prompt = (
                 "Load and follow the SkipHow plugin for this evaluation. "
                 "Classify the request under the Owner, Product Director, and CTO authority boundary. "
+                "Use execute as the normal technical shape, diagnose-then-execute only for an unknown cause, "
+                "and campaign only when orchestration needs durable state. Report whether the tracker is touched. "
                 "Return only the requested structured result. Set escalation to none unless the request "
                 "needs an Owner decision, protected action, missing authority, or external prerequisite. "
                 "For any other escalation value, provide a non-empty recommendation, evidence, "
@@ -97,6 +109,11 @@ def run_live(*, claude: str) -> int:
             try:
                 response = structured_response(completed.stdout)
                 record["mismatches"] = shared.evaluate(response, scenario["assertions"])
+                record["metrics"] = {
+                    **claude_metrics(completed.stdout),
+                    "campaign_selected": response.get("execution_shape") == "campaign",
+                    "tracker_touched": response.get("tracker_touched"),
+                }
             except (json.JSONDecodeError, ValueError) as exc:
                 record["error"] = f"invalid structured response: {exc}"
             results.append(record)

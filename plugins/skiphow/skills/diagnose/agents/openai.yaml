@@ -3,4 +3,4 @@ interface:
   short_description: "Internal root-cause diagnosis loop"
   default_prompt: "Use $diagnose internally to reproduce a hard failure and prove its root cause."
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

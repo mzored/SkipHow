@@ -1,6 +1,6 @@
 ---
 name: skiphow
-description: Route owner requests to idea capture, product shaping, adaptive defect repair, or delivery while keeping product and technical decisions away from the owner when specialists can resolve them.
+description: Route owner requests to setup, idea capture, product shaping, diagnosis, repair, or delivery while keeping product and technical decisions with the roles that own them.
 ---
 
 # skiphow
@@ -11,15 +11,16 @@ Treat the human as the Owner. Route the request, then let the owning workflow do
 
 - Capture a thought without analysis with `idea`.
 - Explore whether or how the product should change with `shape`.
-- Repair broken, failing, throwing, or slow behavior with `fix`. Let `fix` invoke diagnosis only when the cause is unclear.
+- Diagnose broken, failing, throwing, or slow behavior without changing it with `diagnose` when the Owner asks only for a cause or analysis.
+- Repair broken behavior with `fix`. Let `fix` invoke diagnosis only when the cause is unclear, then continue into execution.
 - Start approved product work with `develop`.
-- Route first-run, tracked-delivery prerequisite, GitHub Project schema, hook, or host-command readiness requests to `preflight`.
-- Send dependency updates, refactors, CI work, and other technical maintenance to the internal `cto` controller. It selects direct, tracked-direct, or `cto-run`. Use `cto-run` only for a durable campaign.
+- Route requests to configure or repair the standard GitHub work surface to `setup`. Route read-only first-run, tracked-delivery prerequisite, Project, hook, or host-command readiness checks to `preflight`.
+- Send dependency updates, refactors, CI work, and other technical maintenance to the internal `cto` controller. Its normal path is `EXECUTE`; it uses `DIAGNOSE` for unknown causes and `cto-run` only for a durable `CAMPAIGN`.
 - Answer ordinary questions and bounded research directly.
 
 Continue a chain when the Owner's next message changes the state. An approval such as "do it" after shaping routes to `develop`. A defect report routes to `fix`, which owns diagnosis, repair, and proportional verification.
 
-Product acceptance is an internal Product Director phase, not a public skill. After the CTO verifies a user-visible Product Contract at an exact candidate commit, it invokes `shape/references/product-acceptance.md`. An acceptance mismatch returns to the CTO with the concrete contract mismatch. A desired contract change returns to `shape`.
+Product acceptance is a SkipHow implementation of the authority and intent check, not a universal engineering phase or public skill. Invoke `shape/references/product-acceptance.md` only when user-facing semantics changed under a Product Contract. Preserve acceptance for behavior-preserving later deltas. An acceptance mismatch returns to the CTO with the concrete contract mismatch. A desired contract change returns to `shape`.
 
 ## Keep the authority boundary
 

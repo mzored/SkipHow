@@ -1,5 +1,5 @@
 {
-  "description": "Keep tracked GitHub lifecycle state consistent without loading full Project v2 payloads into context.",
+  "description": "Keep the standard GitHub Project lifecycle consistent while allowing Issue-only degraded operation.",
   "hooks": {
     "PreToolUse": [
       {

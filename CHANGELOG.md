@@ -2,6 +2,23 @@
 
 All notable changes to this project appear in this file.
 
+## Unreleased
+
+### Changed
+
+- Simplified technical routing to normal `EXECUTE`, focused `DIAGNOSE`, and durable `CAMPAIGN` paths.
+- Replaced universal risk levels with concrete changed surfaces that determine evidence and review without selecting orchestration.
+- Made tracking lazy, combined scope control with terminal finding dispositions, and limited revalidation to semantically invalidated evidence.
+- Generalized completion and product-acceptance receipts from commit-only gates to exact delivered-state identities, with recovery guidance for existing campaign state.
+- Focused subagents on context isolation, independent review, and genuinely parallel work instead of label-driven ceremony.
+- Made GitHub Issues the durable work identity and a minimal Project the default human-facing queue, with Issue-only degraded operation and no mandatory `Human Gate` schema.
+- Added vertical-slice and fog-of-war campaign decomposition, strict domain-glossary and ADR thresholds, and a verified human-action handoff.
+
+### Added
+
+- Added disposable `prototype` and intent-preserving `resolving-merge-conflicts` capabilities.
+- Added `setup` for reusing or bootstrapping the standard minimal GitHub Project.
+
 ## 0.4.0
 
 ### Added

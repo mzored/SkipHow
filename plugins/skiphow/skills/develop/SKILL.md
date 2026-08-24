@@ -7,7 +7,7 @@ description: Select approved product work and hand it to the internal CTO contro
 
 Act as the delivery handoff between Product Director and CTO. The Product Director chooses the approved work. The CTO decides how to deliver it.
 
-Use `references/delivery-runbook.md` only when the CTO selects a durable campaign. Reuse the same run directory when resuming. The internal CTO workflow is `../cto/SKILL.md`. It selects `direct`, `tracked-direct`, or `cto-run` after inspection. Do not create a campaign or invoke `cto-run` before that decision.
+Use `references/delivery-runbook.md` only when the CTO selects a durable campaign. Reuse the same run directory when resuming. The internal CTO workflow is `../cto/SKILL.md`. It uses normal `EXECUTE`, temporary `DIAGNOSE`, or `CAMPAIGN` after inspection. Do not create a campaign or invoke `cto-run` before that decision.
 
 `develop` owns approved-work selection. The CTO owns execution, including whether GitHub tracking is required. `github-task` handles only lifecycle operations after that classification.
 
@@ -21,10 +21,10 @@ Use `references/delivery-runbook.md` only when the CTO selects a durable campaig
 
 ## Hand off approved work
 
-1. Read the canonical tracker, current product strategy, item priority, dependencies, and exact Product Contract revisions.
+1. Resolve approved work from the request and repository's product source of truth. Read a tracker only when it owns that approved work or status must change. Read the current product strategy, item priority, dependencies, and exact Product Contract revisions.
 2. Let the Product Director choose a coherent workset tied to one product outcome. Resolve ordinary product trade-offs without asking the Owner.
 3. Freeze the selected workset, its exact Product Contract revisions, exclusions, and source snapshot. Hand this immutable delivery brief to the CTO with the repository target. Do not create durable state yet.
-4. Let the CTO inspect the work and choose direct, tracked-direct, or `cto-run`. The choice follows durability, not risk. The CTO applies risk to testing and review depth.
+4. Let the CTO inspect the work and choose `EXECUTE` or `CAMPAIGN`, using `DIAGNOSE` first only when a cause is genuinely unknown. Campaign routing follows coordination and recovery needs. Changed surfaces determine testing and review.
 5. Only when the CTO selects `cto-run`, create a durable run directory according to repository convention. Write `campaign.md` with:
 
    ```text
@@ -44,9 +44,9 @@ Use `references/delivery-runbook.md` only when the CTO selects a durable campaig
    <tracker revision, timestamp, and relevant commit>
    ```
 
-6. Mark included tracker items as in development only after the frozen brief exists, subject to the CTO's lifecycle classification.
-7. Let the CTO execute direct work or the canonical `cto-run` workflow with `references/delivery-runbook.md`, the run directory, and repository target. The durable campaign snapshot is authoritative for its scope.
+6. When included work is tracker-owned, mark those items as in development only after the frozen brief exists, subject to the CTO's lifecycle classification.
+7. Let the CTO execute normal work or the canonical `cto-run` workflow with `references/delivery-runbook.md`, the run directory, and repository target. The durable campaign snapshot is authoritative for its scope.
 8. Route implementation choices to the CTO. Route product questions to the Product Director. Escalate only a true Owner decision, protected action, missing authority, or external prerequisite.
-9. When the CTO verifies the terminal condition, including Product Director acceptance when the Product Contract requires it, update the same tracker items and report the completed product outcome. For `drain`, select the next workset only now.
+9. When the CTO verifies the terminal condition, including Product Director acceptance when the Product Contract requires it, update any tracker-owned items and report the completed product outcome. For `drain`, select the next workset only now.
 
 Do not copy the CTO operating policy, rewrite its technical plan, or absorb newly approved work into an active campaign.

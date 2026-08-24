@@ -1,6 +1,6 @@
 ---
 name: skiphow
-description: Route owner requests to idea capture, product shaping, adaptive defect repair, or delivery while keeping product and technical decisions away from the owner when specialists can resolve them.
+description: Route owner requests to setup, idea capture, product shaping, diagnosis, repair, or delivery while keeping product and technical decisions with the roles that own them.
 ---
 
 # skiphow

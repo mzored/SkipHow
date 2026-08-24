@@ -1,6 +1,6 @@
 ---
 name: github-task
-description: Maintain GitHub issue and Project v2 lifecycle after an owning workflow has classified work as tracked. Use for an explicit issue, a selected board item, or a caller-requested tracked unit. Do not decide whether work needs tracking or prescribe how to implement it.
+description: Maintain native GitHub Issue lifecycle and the default Project work surface after an owning workflow classifies work as tracked. This adapter does not decide scope or implementation.
 user-invocable: false
 ---
 

@@ -56,8 +56,46 @@ class PreflightTests(unittest.TestCase):
             patch.object(preflight, "project_fields", return_value=("project", fields)),
         ):
             failures, notes = preflight.preflight_report(cwd="/tmp/repo")
-        self.assertTrue(any("missing options" in failure for failure in failures))
+        self.assertTrue(any("SETUP_NEEDED" in failure for failure in failures))
         self.assertIn("shared lifecycle hooks are present", notes)
+
+    def test_missing_project_is_setup_needed_not_an_issue_failure(self) -> None:
+        with (
+            patch.object(preflight.shutil, "which", return_value="/bin/tool"),
+            patch.object(
+                preflight,
+                "run",
+                side_effect=["/tmp/repo", "gh version 2.98.0", "authenticated", "codex 1", "claude 1"],
+            ),
+            patch.object(preflight, "repo_at", return_value="owner/repo"),
+            patch.object(
+                preflight,
+                "board_for",
+                side_effect=preflight.UntrackedLifecycle("no project"),
+            ),
+        ):
+            failures, _ = preflight.preflight_report(cwd="/tmp/repo")
+        self.assertTrue(any("SETUP_NEEDED" in failure for failure in failures))
+        self.assertTrue(any("native Issues remain available" in failure for failure in failures))
+
+    def test_project_permission_failure_reports_degraded(self) -> None:
+        with (
+            patch.object(preflight.shutil, "which", return_value="/bin/tool"),
+            patch.object(
+                preflight,
+                "run",
+                side_effect=["/tmp/repo", "gh version 2.98.0", "authenticated", "codex 1", "claude 1"],
+            ),
+            patch.object(preflight, "repo_at", return_value="owner/repo"),
+            patch.object(
+                preflight,
+                "board_for",
+                side_effect=preflight.LifecycleError("missing project scope"),
+            ),
+        ):
+            failures, notes = preflight.preflight_report(cwd="/tmp/repo")
+        self.assertFalse(any("Project v2" in failure for failure in failures))
+        self.assertTrue(any("DEGRADED" in note for note in notes))
 
     def test_preflight_reports_missing_codex_plugin_command(self) -> None:
         def run(args, *, cwd=None):

@@ -45,7 +45,7 @@ Important product and technical work gets a fresh reviewer.
 
 ## Why not a traditional agent framework?
 
-Long scripted workflows decide the process before they inspect the problem. SkipHow inspects first. A clear, local bug gets a short repair. Risk or ambiguity increases research, recorded decisions, and verification. Work gets durable state only when coordination, waits, recovery, or session boundaries require it.
+Long scripted workflows decide the process before they inspect the problem. SkipHow inspects first. Normal work follows one execution path. An unknown cause adds focused diagnosis. Work becomes a durable campaign only when coordination, waits, recovery, or session boundaries make orchestration part of the problem. Sensitive surfaces increase evidence, not orchestration.
 
 Large fixed agent teams create coordination work even when the task needs only one specialist. SkipHow keeps the permanent team small. Research, design, security, and testing are capabilities to call on, not seats that must always be filled.
 
@@ -95,7 +95,7 @@ Build the approved activity report feature.
 
 The CTO owns the technical plan. It checks whether to reuse maintained software, delegates focused tasks, integrates the work, and runs the checks required by the repository. Long campaigns keep their state on disk, so a wait or context loss does not erase the decisions already made.
 
-The CTO does not make every change a campaign. Bounded work runs directly. Existing tracked work can keep its issue and branch without gaining durable run state. `cto-run` is reserved for work that spans tasks or sessions, waits on external dependencies, coordinates independent lanes, or must recover safely after interruption. Risk still controls review and validation depth.
+The CTO does not make every change a campaign. Normal work uses `EXECUTE`, whether it is a one-line fix or a coherent multi-file feature. Existing tracked work can keep its issue and branch without gaining durable run state. `cto-run` is reserved for work that spans independent workstreams or sessions, waits on dependencies, materially benefits from parallel lanes, or needs recovery and reconciliation. Authentication, data, billing, public contracts, infrastructure, shared primitives, and irreversible actions change the evidence required, not the runtime.
 
 ### Fix a defect
 
@@ -103,7 +103,7 @@ The CTO does not make every change a campaign. Bounded work runs directly. Exist
 The report download fails when the account has no activity. Fix it.
 ```
 
-A clear, low-risk defect takes the short path. An unclear defect gets a focused diagnosis. The CTO selects `cto-run` only when the repair needs durable state or coordination. Risk sets verification and review depth, not the runtime.
+A defect with a known cause uses normal execution. An unclear defect gets a focused diagnosis and then returns to execution. The CTO selects `cto-run` only when the repair needs durable state or coordination. Changed surfaces set verification and review depth, not the runtime.
 
 ## Who decides what
 
@@ -119,11 +119,11 @@ SkipHow sends a question to the lowest role that can answer it from the evidence
 
 ## What is included
 
-Most users interact with four skills. `idea` saves a thought, `shape` makes the product decision, `develop` builds approved work, and `fix` repairs broken behavior. The `skiphow` router chooses between them from an ordinary request. `preflight` checks first-run and tracked-delivery prerequisites without changing the repository or GitHub.
+Most users interact with six skills. `idea` saves a thought, `shape` makes the product decision, `develop` builds approved work, `fix` repairs broken behavior, `diagnose` investigates without repairing when only analysis was requested, and `setup` configures the standard GitHub work surface. The `skiphow` router chooses between them from an ordinary request. `preflight` checks first-run and tracked-delivery prerequisites without changing the repository or GitHub.
 
-The internal `cto` controller owns technical delivery. It can use `diagnose`, `testing`, `codebase-design`, and `technical-review` when the work needs them. `cto-run` supplies durable state and coordination. `github-task` manages GitHub issue and Project v2 state only after the CTO or repository classifies work as tracked.
+The internal `cto` controller owns technical delivery. It can use `diagnose`, `prototype`, `testing`, `codebase-design`, `resolving-merge-conflicts`, and `technical-review` when the work needs them. `cto-run` supplies durable state and coordination for campaigns. `github-task` is a lazy adapter: it manages native GitHub Issue relationships and the standard Project view only after the owning workflow has established a tracking need or decided to persist a material finding.
 
-The testing, review, and codebase-design capabilities adapt selected MIT-licensed material from `mattpocock/skills` at a pinned commit. SkipHow's wrappers keep testing seams, review depth, and architecture under CTO authority.
+The testing, review, codebase-design, prototype, and merge-conflict capabilities adapt selected MIT-licensed material from `mattpocock/skills` at a pinned commit. SkipHow's wrappers keep product decisions, test seams, review depth, and architecture under the appropriate SkipHow authority.
 
 ## Install with Codex
 
@@ -165,12 +165,17 @@ The run directory stores state, decisions, evidence, receipts, and the final rep
 
 ## Check prerequisites
 
-Run `preflight` before the first tracked delivery or when the environment changes. It checks Python, Git, GitHub CLI authentication and version, the adopted Project v2 fields, shared hooks, and installed host command interfaces. It reports fixes but does not install tools, authenticate, edit the board, or change files.
+Run `preflight` before the first tracked delivery or when the environment changes. It checks Python, Git, GitHub CLI authentication and version, the standard Project, shared hooks, and installed host command interfaces. It reports `READY`, `SETUP_NEEDED`, or `DEGRADED` and does not install tools, authenticate, edit the Project, or change files.
 
-The adopted board needs these single-select options:
+The standard Project is the default human control panel over canonical GitHub Issues. Its only required custom workflow surface is `Status` with:
 
-- `Status`: `Todo`, `In Progress`, `Done`, `Blocked`
-- `Human Gate`: `No`, `Deploy`, `Product decision`, `External`
+- `Backlog`
+- `Ready`
+- `In progress`
+- `Waiting`
+- `Done`
+
+Run `setup` to reuse or bootstrap that minimal Project. If Project permissions or platform support are unavailable, SkipHow reports `DEGRADED` and continues with native Issues. It does not require a `Human Gate` or a label-based state machine.
 
 Maintainers can run the deterministic release gate with `python scripts/verify_release.py --base <base-sha>`. Add `--host` only on a clean candidate commit to validate isolated Codex and Claude marketplace installation.
 

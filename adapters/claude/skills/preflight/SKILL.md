@@ -1,6 +1,6 @@
 ---
 name: preflight
-description: Check a SkipHow repository and its adopted GitHub lifecycle before delivery. It reports fixes and never changes local or remote state.
+description: Check SkipHow repository and GitHub readiness without mutation, distinguishing ready, setup-needed, and Issue-only degraded states.
 ---
 
 # preflight
