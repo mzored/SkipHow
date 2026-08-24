@@ -569,6 +569,32 @@ def version_parts(value: str) -> tuple[int, int, int] | None:
     return tuple(int(part) for part in match.groups())
 
 
+def validate_hook_config(payload: Any) -> None:
+    """Validate the two canonical lifecycle command hooks used by preflight."""
+    events = payload.get("hooks") if isinstance(payload, dict) else None
+    if not isinstance(events, dict) or set(events) != {"PreToolUse", "Stop"}:
+        raise ValueError("expected PreToolUse and Stop")
+    for event_name, phase in (("PreToolUse", "pre"), ("Stop", "stop")):
+        entries = events[event_name]
+        if not isinstance(entries, list) or not entries:
+            raise ValueError(f"{event_name} must contain a hook entry")
+        commands = [
+            hook
+            for entry in entries
+            if isinstance(entry, dict)
+            for hook in entry.get("hooks", [])
+            if isinstance(hook, dict)
+        ]
+        if not commands or not any(
+            hook.get("type") == "command"
+            and isinstance(hook.get("command"), str)
+            and "gh_task_status.py" in hook["command"]
+            and f"hook {phase}" in hook["command"]
+            for hook in commands
+        ):
+            raise ValueError(f"{event_name} must invoke gh_task_status.py hook {phase}")
+
+
 def preflight_report(repo: str | None = None, *, cwd: str = ".") -> tuple[list[str], list[str]]:
     """Check local prerequisites and the adopted board without changing either."""
     failures: list[str] = []
@@ -618,8 +644,7 @@ def preflight_report(repo: str | None = None, *, cwd: str = ".") -> tuple[list[s
     hook_path = Path(__file__).resolve().parents[1] / "hooks" / "hooks.json"
     try:
         hooks = json.loads(hook_path.read_text(encoding="utf-8"))
-        if set((hooks.get("hooks") or {})) != {"PreToolUse", "Stop"}:
-            raise ValueError("expected PreToolUse and Stop")
+        validate_hook_config(hooks)
         notes.append("shared lifecycle hooks are present")
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         failures.append(f"repair plugin hooks at {hook_path}: {exc}")

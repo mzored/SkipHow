@@ -6,9 +6,11 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
+import tempfile
 from typing import Any
 
 
@@ -29,53 +31,96 @@ def structured_response(output: str) -> dict[str, Any]:
     return candidate
 
 
-def run_live(corpus: dict[str, Any], *, claude: str) -> int:
-    """Run opt-in, isolated Claude Code evaluations against the local plugin."""
-    schema = json.loads(shared.RESPONSE_SCHEMA.read_text(encoding="utf-8"))
+def run_live(*, claude: str) -> int:
+    """Run opt-in Claude Code evaluations against an exact isolated candidate."""
     results: list[dict[str, Any]] = []
-    for scenario in corpus["scenarios"]:
-        prompt = (
-            "Load and follow the SkipHow plugin for this evaluation. "
-            "Classify the request under the Owner, Product Director, and CTO authority boundary. "
-            "Return only the requested structured result. Set escalation to none unless the request "
-            "needs an Owner decision, protected action, missing authority, or external prerequisite. "
-            "For any other escalation value, provide a non-empty recommendation, evidence, "
-            "consequence_of_waiting, and exact decision_or_action_needed.\n\n"
-            f"Request: {scenario['prompt']}"
+    with tempfile.TemporaryDirectory(prefix="skiphow-claude-evals-") as temporary:
+        output_dir = Path(temporary)
+        try:
+            candidate_commit, candidate_tree, candidate_dir = shared.snapshot_candidate(output_dir)
+        except ValueError as exc:
+            print(f"run_claude_evals: {exc}", file=sys.stderr)
+            return 2
+        corpus = shared.load_corpus(candidate_dir / shared.DEFAULT_CORPUS.relative_to(ROOT))
+        schema = json.loads(
+            (candidate_dir / shared.RESPONSE_SCHEMA.relative_to(ROOT)).read_text(encoding="utf-8")
         )
-        completed = subprocess.run(
-            [
-                claude,
-                "--plugin-dir",
-                str(ROOT),
-                "--print",
-                "--no-session-persistence",
-                "--permission-mode",
-                "dontAsk",
-                "--tools",
-                "",
-                "--json-schema",
-                json.dumps(schema, separators=(",", ":")),
-                "--output-format",
-                "json",
-                prompt,
-            ],
-            cwd=ROOT,
+        runtime_dir = output_dir / "runtime"
+        evaluation_dir = output_dir / "evaluation"
+        evaluation_dir.mkdir()
+        try:
+            shared.stage_runtime(candidate_dir, runtime_dir)
+        except (OSError, ValueError) as exc:
+            print(f"run_claude_evals: runtime staging failed: {exc}", file=sys.stderr)
+            return 2
+        environment = os.environ.copy()
+        claude_config = output_dir / "claude-config"
+        claude_config.mkdir()
+        environment["CLAUDE_CONFIG_DIR"] = str(claude_config)
+        for scenario in corpus["scenarios"]:
+            prompt = (
+                "Load and follow the SkipHow plugin for this evaluation. "
+                "Classify the request under the Owner, Product Director, and CTO authority boundary. "
+                "Return only the requested structured result. Set escalation to none unless the request "
+                "needs an Owner decision, protected action, missing authority, or external prerequisite. "
+                "For any other escalation value, provide a non-empty recommendation, evidence, "
+                "consequence_of_waiting, and exact decision_or_action_needed.\n\n"
+                f"Request: {scenario['prompt']}"
+            )
+            completed = subprocess.run(
+                [
+                    claude,
+                    "--plugin-dir",
+                    str(runtime_dir),
+                    "--print",
+                    "--no-session-persistence",
+                    "--permission-mode",
+                    "dontAsk",
+                    "--tools",
+                    "",
+                    "--json-schema",
+                    json.dumps(schema, separators=(",", ":")),
+                    "--output-format",
+                    "json",
+                    prompt,
+                ],
+                cwd=evaluation_dir,
+                env=environment,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            record: dict[str, Any] = {
+                "id": scenario["id"],
+                "returncode": completed.returncode,
+            }
+            try:
+                response = structured_response(completed.stdout)
+                record["mismatches"] = shared.evaluate(response, scenario["assertions"])
+            except (json.JSONDecodeError, ValueError) as exc:
+                record["error"] = f"invalid structured response: {exc}"
+            results.append(record)
+        final_status = subprocess.run(
+            ["git", "status", "--porcelain"],
+            cwd=candidate_dir,
             capture_output=True,
             text=True,
             check=False,
         )
-        record: dict[str, Any] = {
-            "id": scenario["id"],
-            "returncode": completed.returncode,
-        }
-        try:
-            response = structured_response(completed.stdout)
-            record["mismatches"] = shared.evaluate(response, scenario["assertions"])
-        except (json.JSONDecodeError, ValueError) as exc:
-            record["error"] = f"invalid structured response: {exc}"
-        results.append(record)
-    print(json.dumps({"results": results}, indent=2, sort_keys=True))
+        if final_status.returncode != 0 or final_status.stdout.strip():
+            print("run_claude_evals: candidate snapshot changed during evaluation", file=sys.stderr)
+            return 2
+    print(
+        json.dumps(
+            {
+                "candidate_commit": candidate_commit,
+                "candidate_tree": candidate_tree,
+                "results": results,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
     return 0 if all(
         item.get("returncode") == 0
         and not item.get("mismatches")
@@ -98,7 +143,10 @@ def main(argv: list[str] | None = None) -> int:
     if not args.execute:
         print(f"validated {len(corpus['scenarios'])} behavioral scenarios offline for Claude Code")
         return 0
-    return run_live(corpus, claude=args.claude)
+    if args.corpus.resolve() != shared.DEFAULT_CORPUS.resolve():
+        print("run_claude_evals: live evaluation uses only the corpus committed with the candidate", file=sys.stderr)
+        return 2
+    return run_live(claude=args.claude)
 
 
 if __name__ == "__main__":

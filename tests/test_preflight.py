@@ -1,6 +1,7 @@
 """Focused checks for read-only preflight behavior."""
 
 import importlib.util
+import json
 from pathlib import Path
 import sys
 import unittest
@@ -20,6 +21,16 @@ class PreflightTests(unittest.TestCase):
     def test_version_parts_accepts_and_rejects_versions(self) -> None:
         self.assertEqual((2, 93, 0), preflight.version_parts("gh version 2.93.0"))
         self.assertIsNone(preflight.version_parts("development build"))
+
+    def test_hook_config_rejects_empty_lifecycle_hooks(self) -> None:
+        with self.assertRaisesRegex(ValueError, "PreToolUse must contain"):
+            preflight.validate_hook_config(
+                {"hooks": {"PreToolUse": [], "Stop": []}}
+            )
+
+    def test_repository_hook_config_is_functional(self) -> None:
+        hook_path = ROOT / "plugins/skiphow/hooks/hooks.json"
+        preflight.validate_hook_config(json.loads(hook_path.read_text(encoding="utf-8")))
 
     def test_missing_gh_is_actionable_and_avoids_board_reads(self) -> None:
         with (

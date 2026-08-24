@@ -234,6 +234,14 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn('"status": "accepted|returned"', state_contract)
         self.assertIn("receipts/product-acceptance/<item>.json", state_contract)
 
+        acceptance = (
+            ROOT / "plugins/skiphow/skills/shape/references/product-acceptance.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn(
+            ".skiphow/evidence/product-acceptance/<candidate-commit>/<contract-id>.json",
+            acceptance,
+        )
+
     def test_github_lifecycle_contract(self) -> None:
         """Tracking decisions stay above the GitHub lifecycle adapter."""
         github_task = (

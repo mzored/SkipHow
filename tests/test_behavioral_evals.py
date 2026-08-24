@@ -3,6 +3,7 @@
 import importlib.util
 import json
 from pathlib import Path
+import tempfile
 import unittest
 
 
@@ -89,6 +90,43 @@ class BehavioralEvalTests(unittest.TestCase):
             '"status", "--porcelain"',
             '"HEAD^{tree}"',
             '"clone", "--quiet", "--shared", "--no-checkout"',
+            '"candidate_commit": candidate_commit',
+            '"candidate_tree": candidate_tree',
+        ):
+            self.assertIn(required, source)
+
+    def test_staged_runtime_excludes_behavioral_oracle(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            candidate = root / "candidate"
+            runtime = root / "runtime"
+            for relative in (".agents", ".claude-plugin", "adapters"):
+                directory = candidate / relative
+                directory.mkdir(parents=True)
+                (directory / "marker.txt").write_text("runtime\n", encoding="utf-8")
+            plugin = candidate / "plugins" / "skiphow"
+            (plugin / "skills" / "skiphow").mkdir(parents=True)
+            (plugin / "skills" / "skiphow" / "SKILL.md").write_text(
+                "---\nname: skiphow\ndescription: route\n---\n",
+                encoding="utf-8",
+            )
+            (plugin / "evals").mkdir()
+            (plugin / "evals" / "behavioral_scenarios.json").write_text(
+                "{}\n", encoding="utf-8"
+            )
+            evals.stage_runtime(candidate, runtime)
+            self.assertTrue(
+                (runtime / "plugins/skiphow/skills/skiphow/SKILL.md").is_file()
+            )
+            self.assertFalse(any(runtime.rglob("behavioral_scenarios.json")))
+
+    def test_claude_live_runner_uses_snapshot_runtime_and_isolated_config(self) -> None:
+        source = CLAUDE_SCRIPT.read_text(encoding="utf-8")
+        for required in (
+            "shared.snapshot_candidate(output_dir)",
+            "shared.stage_runtime(candidate_dir, runtime_dir)",
+            'environment["CLAUDE_CONFIG_DIR"]',
+            "cwd=evaluation_dir",
             '"candidate_commit": candidate_commit',
             '"candidate_tree": candidate_tree',
         ):

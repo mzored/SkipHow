@@ -7,6 +7,7 @@ import argparse
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -39,6 +40,74 @@ ESCALATION_BRIEF_FIELDS = (
     "consequence_of_waiting",
     "decision_or_action_needed",
 )
+
+
+def snapshot_candidate(output_dir: Path) -> tuple[str, str, Path]:
+    """Create a clean detached snapshot of the exact repository candidate."""
+    identity = subprocess.run(
+        ["git", "rev-parse", "HEAD", "HEAD^{tree}"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    status = subprocess.run(
+        ["git", "status", "--porcelain"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if identity.returncode != 0 or status.returncode != 0 or status.stdout.strip():
+        raise ValueError("live evaluation requires a clean candidate commit")
+    candidate_commit, candidate_tree = identity.stdout.splitlines()
+    candidate_dir = output_dir / "candidate"
+    for command, label in (
+        (["git", "clone", "--quiet", "--shared", "--no-checkout", str(ROOT), str(candidate_dir)], "candidate snapshot"),
+        (["git", "-C", str(candidate_dir), "checkout", "--quiet", "--detach", candidate_commit], "candidate checkout"),
+    ):
+        completed = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, check=False)
+        if completed.returncode != 0:
+            detail = (completed.stdout + completed.stderr).strip()
+            raise ValueError(f"{label} failed: {detail}")
+    snapshot_identity = subprocess.run(
+        ["git", "rev-parse", "HEAD", "HEAD^{tree}"],
+        cwd=candidate_dir,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    snapshot_status = subprocess.run(
+        ["git", "status", "--porcelain"],
+        cwd=candidate_dir,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if (
+        snapshot_identity.returncode != 0
+        or snapshot_identity.stdout.splitlines() != [candidate_commit, candidate_tree]
+        or snapshot_status.returncode != 0
+        or snapshot_status.stdout.strip()
+    ):
+        raise ValueError("candidate snapshot identity check failed")
+    return candidate_commit, candidate_tree, candidate_dir
+
+
+def stage_runtime(candidate_dir: Path, runtime_dir: Path) -> None:
+    """Stage host packages without exposing the behavioral oracle."""
+    for relative in (Path(".agents"), Path(".claude-plugin"), Path("adapters")):
+        shutil.copytree(candidate_dir / relative, runtime_dir / relative)
+    plugin_source = candidate_dir / "plugins" / "skiphow"
+    plugin_target = runtime_dir / "plugins" / "skiphow"
+    plugin_target.parent.mkdir(parents=True)
+    shutil.copytree(
+        plugin_source,
+        plugin_target,
+        ignore=shutil.ignore_patterns("evals", "__pycache__"),
+    )
+    if any(runtime_dir.rglob("behavioral_scenarios.json")):
+        raise ValueError("behavioral oracle leaked into the staged runtime")
 
 
 def load_corpus(path: Path) -> dict[str, Any]:
@@ -88,76 +157,40 @@ def evaluate(response: dict[str, Any], expected: dict[str, Any]) -> list[str]:
 
 def run_live(*, codex: str) -> int:
     """Snapshot the exact commit, install it in isolation, and run live evaluations."""
-    identity = subprocess.run(
-        ["git", "rev-parse", "HEAD", "HEAD^{tree}"],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    status = subprocess.run(
-        ["git", "status", "--porcelain"],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    if identity.returncode != 0 or status.returncode != 0 or status.stdout.strip():
-        print("run_codex_evals: live evaluation requires a clean candidate commit", file=sys.stderr)
-        return 2
-    candidate_commit, candidate_tree = identity.stdout.splitlines()
     results: list[dict[str, Any]] = []
     with tempfile.TemporaryDirectory(prefix="skiphow-evals-") as temporary:
         output_dir = Path(temporary)
-        candidate_dir = output_dir / "candidate"
-        for command, label in (
-            (["git", "clone", "--quiet", "--shared", "--no-checkout", str(ROOT), str(candidate_dir)], "candidate snapshot"),
-            (["git", "-C", str(candidate_dir), "checkout", "--quiet", "--detach", candidate_commit], "candidate checkout"),
-        ):
-            completed = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, check=False)
-            if completed.returncode != 0:
-                detail = (completed.stdout + completed.stderr).strip()
-                print(f"run_codex_evals: {label} failed: {detail}", file=sys.stderr)
-                return 2
-        snapshot_identity = subprocess.run(
-            ["git", "rev-parse", "HEAD", "HEAD^{tree}"],
-            cwd=candidate_dir,
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        snapshot_status = subprocess.run(
-            ["git", "status", "--porcelain"],
-            cwd=candidate_dir,
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        if (
-            snapshot_identity.returncode != 0
-            or snapshot_identity.stdout.splitlines() != [candidate_commit, candidate_tree]
-            or snapshot_status.returncode != 0
-            or snapshot_status.stdout.strip()
-        ):
-            print("run_codex_evals: candidate snapshot identity check failed", file=sys.stderr)
+        try:
+            candidate_commit, candidate_tree, candidate_dir = snapshot_candidate(output_dir)
+        except ValueError as exc:
+            print(f"run_codex_evals: {exc}", file=sys.stderr)
             return 2
-        schema = candidate_dir / RESPONSE_SCHEMA.relative_to(ROOT)
+        schema = output_dir / "response_schema.json"
+        shutil.copy2(candidate_dir / RESPONSE_SCHEMA.relative_to(ROOT), schema)
         corpus = load_corpus(candidate_dir / DEFAULT_CORPUS.relative_to(ROOT))
         if not schema.is_file():
             print(f"missing response schema: {schema}", file=sys.stderr)
+            return 2
+        runtime_dir = output_dir / "runtime"
+        evaluation_dir = output_dir / "evaluation"
+        evaluation_dir.mkdir()
+        try:
+            stage_runtime(candidate_dir, runtime_dir)
+        except (OSError, ValueError) as exc:
+            print(f"run_codex_evals: runtime staging failed: {exc}", file=sys.stderr)
             return 2
         codex_home = output_dir / "codex-home"
         codex_home.mkdir()
         environment = os.environ.copy()
         environment["CODEX_HOME"] = str(codex_home)
         for command, label in (
-            ([codex, "plugin", "marketplace", "add", str(candidate_dir), "--json"], "marketplace discovery"),
+            ([codex, "plugin", "marketplace", "add", str(runtime_dir), "--json"], "marketplace discovery"),
             ([codex, "plugin", "add", "skiphow@skiphow", "--json"], "candidate installation"),
             ([codex, "plugin", "list", "--json"], "candidate listing"),
         ):
             completed = subprocess.run(
                 command,
-                cwd=candidate_dir,
+                cwd=evaluation_dir,
                 env=environment,
                 capture_output=True,
                 text=True,
@@ -192,7 +225,7 @@ def run_live(*, codex: str) -> int:
                     str(result_path),
                     prompt,
                 ],
-                cwd=candidate_dir,
+                cwd=evaluation_dir,
                 env=environment,
                 capture_output=True,
                 text=True,
