@@ -16,6 +16,20 @@ REQUIRED_PATHS = {
     "LICENSE",
 }
 
+CAPABILITY_ROLES = {"MECHANICAL", "IMPLEMENTATION", "CTO_REVIEW"}
+DURABLE_FILES = {"state.json", "journal.jsonl", "briefing.md", "FINAL.md"}
+FORBIDDEN_TEXT = {
+    "/Users/",
+    "~/.codex",
+    "~/.claude",
+    "run-journal",
+    "launch.sh",
+    "gpt-",
+    "opus",
+    "sonnet",
+    "haiku",
+}
+
 
 def load_json(path: str) -> dict:
     """Load a JSON document from the repository root."""
@@ -36,3 +50,21 @@ class RepositoryContractTests(unittest.TestCase):
         )
 
         self.assertEqual([], missing_paths)
+
+    def test_portable_policy(self) -> None:
+        """The shipped cto-run policy stays portable and complete."""
+        policy_paths = sorted(
+            path for path in (ROOT / "skills/cto-run").rglob("*") if path.is_file()
+        )
+        policy_text = "\n".join(
+            path.read_text(encoding="utf-8") for path in policy_paths
+        )
+
+        self.assertTrue(policy_paths)
+        for role in CAPABILITY_ROLES:
+            self.assertIn(role, policy_text)
+        for durable_file in DURABLE_FILES:
+            self.assertIn(durable_file, policy_text)
+        self.assertIn("Host policy takes priority.", policy_text)
+        for forbidden_text in FORBIDDEN_TEXT:
+            self.assertNotIn(forbidden_text, policy_text)
