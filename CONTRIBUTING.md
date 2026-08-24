@@ -1,16 +1,14 @@
 # Contributing
 
-Use one issue for one change. Start from an existing issue or open one with a clear problem statement, expected result, and scope. Keep unrelated cleanup out of the same pull request.
+Use one issue for one material change when the repository workflow calls for tracking. Small coherent fixes do not need an issue solely because they modify code. Keep unrelated cleanup out of the same pull request.
 
-## Before you open a pull request
+## Before a pull request
 
-- Keep shared technical policy in `plugins/skiphow/skills/cto/` and durable runtime policy in `plugins/skiphow/skills/cto-run/`. Claude Code adapters must remain small links to canonical workflows.
-- Before adding a rule or skill, name the distinct failure mode it prevents, confirm no existing owner already covers it, decide whether it must be always loaded or can stay lazy, prefer the host or platform as source of truth, and add a behavioral eval when the rule is meant to change routing or authority. Delete instructions that do not change decisions. Keep one source of truth for each rule.
-- Add or update tests before you claim a behavior works. Run the focused test first, then the repository suite when the change reaches an integration point.
-- Run `python scripts/verify_release.py --base <base-sha>` at the integration boundary. It includes the repository suite, metadata and link validation, the source scan, behavioral corpus validation, and whitespace checks for the working tree and full candidate diff.
-- Use current host documentation and record reproducible Codex or Claude Code support evidence when the change affects packaging or `cto-run`.
-- Apply the `unslop` skill to repository text. Write direct English prose. Do not add em dashes, promotional filler, or vague claims.
+- Keep intent and mutation routing in `plugins/skiphow/skills/skiphow/SKILL.md`.
+- Keep product, technical, campaign, and tracker policy in their owned reference directories. The Claude adapter must remain a short link to the canonical skill.
+- Add a rule only when it prevents a distinct demonstrated failure. Remove duplicated policy.
+- Write direct English prose. Use concrete verbs, active voice, sentence-case headings, straight quotes, and short sentences. Remove promotional filler, vague claims, and unnecessary ceremony.
+- Run the focused check while iterating, then `python scripts/check.py --base <base-sha>` at integration.
+- Run `python scripts/check_hosts.py` when packaging or campaign support changed. Record exact host output for support claims.
 
-## Pull requests
-
-Explain the user-visible change, tests run, and evidence for each support claim. Call out changes to the canonical workflow, adapter, manifests, or durable state contract. A maintainer reviews the final integration diff before merge.
+Explain the user-visible result, checks run, and any `UNVERIFIED` host evidence. A maintainer reviews the final integration diff before merge.

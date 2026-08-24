@@ -69,14 +69,10 @@ def run_live(*, claude: str) -> int:
         environment["CLAUDE_CONFIG_DIR"] = str(claude_config)
         for scenario in corpus["scenarios"]:
             prompt = (
-                "Load and follow the SkipHow plugin for this evaluation. "
-                "Classify the request under the Owner, Product Director, and CTO authority boundary. "
-                "Use execute as the normal technical shape, diagnose-then-execute only for an unknown cause, "
-                "and campaign only when orchestration needs durable state. Report whether the tracker is touched. "
-                "Return only the requested structured result. Set escalation to none unless the request "
-                "needs an Owner decision, protected action, missing authority, or external prerequisite. "
-                "For any other escalation value, provide a non-empty recommendation, evidence, "
-                "consequence_of_waiting, and exact decision_or_action_needed.\n\n"
+                "Use the installed SkipHow candidate to classify this realistic project request. "
+                "Return only the requested structured result. Inspect the candidate's instructions "
+                "instead of assuming a routing policy. Fill every required field and explain the "
+                "classification briefly in reason.\n\n"
                 f"Request: {scenario['prompt']}"
             )
             completed = subprocess.run(
@@ -88,8 +84,6 @@ def run_live(*, claude: str) -> int:
                     "--no-session-persistence",
                     "--permission-mode",
                     "dontAsk",
-                    "--tools",
-                    "",
                     "--json-schema",
                     json.dumps(schema, separators=(",", ":")),
                     "--output-format",

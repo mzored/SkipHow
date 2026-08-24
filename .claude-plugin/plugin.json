@@ -1,7 +1,7 @@
 {
   "name": "skiphow",
   "version": "0.5.0",
-  "description": "Route owner intent through product decisions and minimum sufficient technical delivery.",
+  "description": "Deliver product and software work from one ordinary-language request.",
   "author": {
     "name": "mzored",
     "url": "https://github.com/mzored"
@@ -15,6 +15,5 @@
     "codex",
     "orchestration"
   ],
-  "skills": "./adapters/claude/skills/",
-  "hooks": "./plugins/skiphow/hooks/hooks.json"
+  "skills": "./adapters/claude/skills/"
 }

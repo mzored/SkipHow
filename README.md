@@ -1,213 +1,110 @@
 # SkipHow
 
-Build software without having to play CTO.
-
-SkipHow is an open-source workflow for Codex and Claude Code. It is for solo developers and small teams who know what they want to make but do not want to manage every technical decision.
-
-Tell it what the product should do. A Product Director decides what to build. A CTO decides how to build it. SkipHow comes back to you only when the choice belongs to the Owner.
+Give one ordinary-language request. SkipHow makes routine product and technical decisions, performs the authorized work, and returns evidence for the result.
 
 ```text
-You: "Customers should be able to pause their subscription. Shape this idea."
+Add a way to pause a subscription. Make the routine product and technical decisions and implement it.
 
-SkipHow studies the problem, defines the first useful version,
-reviews the proposal in a fresh context, and asks for approval.
+Payments are sometimes charged twice. Find the cause, fix it, and verify the result.
 
-You: "Approved. Build it."
-
-The CTO chooses the implementation, delegates the work,
-checks the result, and reports the evidence.
+Save this idea for later without expanding it: a monthly customer report.
 ```
 
-## Why SkipHow exists
-
-A coding agent can write the code. That does not mean you should have to choose its libraries, settle architecture questions, split the work into tasks, or work out how to test it.
-
-SkipHow began with a search for an existing framework that could take an owner's idea all the way to a checked result. The search turned up useful pieces. Some projects coordinated large teams of agents. Others handled product research, task routing, or code review. It did not turn up one system that answered the whole question that mattered here:
-
-> Can the owner stay the owner while the AI takes responsibility for product and technical decisions?
-
-SkipHow is our answer. It uses two permanent decision-making roles and brings in specialists only when the work needs them.
-
-```text
-Owner
-  │  vision, taste, priority, material trade-offs
-  ▼
-Product Director
-  │  user behavior, scope, evidence, success criteria
-  ▼
-CTO
-  │  architecture, reuse, implementation, tests, integration
-  ▼
-Focused workers
-
-Important product and technical work gets a fresh reviewer.
-```
-
-## Why not a traditional agent framework?
-
-Long scripted workflows decide the process before they inspect the problem. SkipHow inspects first. Normal work follows one execution path. An unknown cause adds focused diagnosis. Work becomes a durable campaign only when coordination, waits, recovery, or session boundaries make orchestration part of the problem. Sensitive surfaces increase evidence, not orchestration.
-
-Large fixed agent teams create coordination work even when the task needs only one specialist. SkipHow keeps the permanent team small. Research, design, security, and testing are capabilities to call on, not seats that must always be filled.
-
-Product copilots can give advice and hand the decision back to the user. SkipHow gives the Product Director room to decide. It asks the Owner about vision, audience, priority, major cost or risk, and irreversible actions. It does not ask the Owner to pick a database or testing strategy.
-
-Company control planes are useful for sessions, budgets, tasks, and audit trails. They do not define what a good Product Director or CTO should decide. SkipHow works at that decision layer.
-
-One more rule matters. The agent that wrote an important proposal should not be its only critic. SkipHow sends product contracts and major technical changes to a fresh reviewer.
-
-That is the bet behind the project. Keep the permanent team small. Add process only when the work justifies it.
-
-## Who it is for
-
-SkipHow fits people who own a product but do not have a full product and engineering organization behind them:
-
-- a solo developer maintaining a real product;
-- a founder or domain expert who knows the customer better than the codebase;
-- a small team without dedicated product and engineering leadership.
-
-You still own the vision. SkipHow takes the technical questions off your desk and records enough evidence for you to judge the result.
-
-## How you use it
-
-Speak normally. You do not need to memorize commands or skill names.
-
-### Save an idea
-
-```text
-Save an idea: let customers export a monthly activity report.
-```
-
-SkipHow saves the wording in the project's existing tracker. It does not research or expand the idea yet. If the project has no accessible tracker, it says so instead of creating a second backlog.
-
-### Decide what to build
-
-```text
-Shape the activity report idea. Decide what the first useful version should include.
-```
-
-The Product Director reads the product, prior decisions, and available evidence. It resolves ordinary product questions, compares small viable approaches, and writes a Product Contract. A fresh reviewer checks the contract before you see the recommendation.
-
-### Build approved work
-
-```text
-Build the approved activity report feature.
-```
-
-The CTO owns the technical plan. It checks whether to reuse maintained software, delegates focused tasks, integrates the work, and runs the checks required by the repository. Long campaigns keep their state on disk, so a wait or context loss does not erase the decisions already made.
-
-The CTO does not make every change a campaign. Normal work uses `EXECUTE`, whether it is a one-line fix or a coherent multi-file feature. Existing tracked work can keep its issue and branch without gaining durable run state. `cto-run` is reserved for work that spans independent workstreams or sessions, waits on dependencies, materially benefits from parallel lanes, or needs recovery and reconciliation. Authentication, data, billing, public contracts, infrastructure, shared primitives, and irreversible actions change the evidence required, not the runtime.
-
-### Fix a defect
-
-```text
-The report download fails when the account has no activity. Fix it.
-```
-
-A defect with a known cause uses normal execution. An unclear defect gets a focused diagnosis and then returns to execution. The CTO selects `cto-run` only when the repair needs durable state or coordination. Changed surfaces set verification and review depth, not the runtime.
-
-## Who decides what
-
-| Role | Decisions |
-| --- | --- |
-| Owner | Vision, taste, audience, priority changes, major cost or risk, protected actions, and irreversible actions |
-| Product Director | What to build, why it matters, user behavior, scope, priority, non-goals, and success criteria |
-| CTO | Architecture, libraries, reuse, implementation, tests, sequencing, delegation, and integration |
-| Specialists | Focused research or implementation assigned by the Product Director or CTO |
-| Reviewers | Independent criticism of important product and technical work |
-
-SkipHow sends a question to the lowest role that can answer it from the evidence. If the Product Director or CTO owns the choice, the Owner does not get a questionnaire.
-
-## What is included
-
-Most users interact with six skills. `idea` saves a thought, `shape` makes the product decision, `develop` builds approved work, `fix` repairs broken behavior, `diagnose` investigates without repairing when only analysis was requested, and `setup` configures the standard GitHub work surface. The `skiphow` router chooses between them from an ordinary request. `preflight` checks first-run and tracked-delivery prerequisites without changing the repository or GitHub.
-
-The internal `cto` controller owns technical delivery. It can use `diagnose`, `prototype`, `testing`, `codebase-design`, `resolving-merge-conflicts`, and `technical-review` when the work needs them. `cto-run` supplies durable state and coordination for campaigns. `github-task` is a lazy adapter: it manages native GitHub Issue relationships and the standard Project view only after the owning workflow has established a tracking need or decided to persist a material finding.
-
-The testing, review, codebase-design, prototype, and merge-conflict capabilities adapt selected MIT-licensed material from `mattpocock/skills` at a pinned commit. SkipHow's wrappers keep product decisions, test seams, review depth, and architecture under the appropriate SkipHow authority.
+No tracker, Project, Python, `gh`, setup command, or hook is required. SkipHow has no telemetry or remote service. It uses the files, commands, and connected services already available in the host, subject to the host and repository permissions.
 
 ## Install with Codex
-
-Use a current Codex installation with plugin marketplaces enabled:
 
 ```sh
 codex plugin marketplace add mzored/SkipHow
 codex plugin add skiphow@skiphow
 ```
 
-The marketplace name is `skiphow`.
+Start a new Codex task in a project and describe the outcome. SkipHow is available in Codex CLI and the Codex desktop project workflow.
 
 ## Install with Claude Code
-
-Use a current Claude Code installation with marketplace plugin commands:
 
 ```sh
 claude plugin marketplace add mzored/SkipHow
 claude plugin install skiphow@skiphow
 ```
 
-## Run cto-run
+Open a project and describe the outcome. The plugin exposes one public skill, `skiphow`; internal workflows are loaded only when needed.
 
-Most users should start with an idea, a product request, or approved work. You can invoke `cto-run` directly when you already have a technical runbook. Pass it the runbook, a directory for durable state, and an optional target.
+## What SkipHow decides
 
-In Codex:
+SkipHow resolves routine reversible product details, architecture, dependencies, implementation, testing, review, sequencing, and integration. It asks one focused question only when the choice belongs to the Owner.
 
-```text
-$cto-run docs/runbooks/release.md .skiphow/runs/release-0.1.0 main
+The Owner keeps authority over vision, audience, portfolio and business priority, material scope, commercial constraints, cost or risk commitments, protected actions, and irreversible external actions.
+
+Analysis, research, review, diagnosis-only, and planning requests are read-only unless you ask to save or change something.
+
+## How work is handled
+
+A clear feature goes straight from a small internal delivery brief to implementation and scenario evidence. It does not require a tracker item, product contract, reviewer ceremony, or acceptance receipt.
+
+A consequential product decision can use a longer decision record and independent product review. A hard bug gets focused diagnosis before repair. Work gets durable campaign state only when coordination, session recovery, dependency waits, or parallel work needs it.
+
+These are internal choices. You do not select a mode or command.
+
+## Optional persistence and GitHub
+
+When you explicitly ask to save an idea or finding, SkipHow uses the repository's configured tracker. With a GitHub origin and authenticated `gh`, it can create a GitHub Issue without a Project. With no tracker, it can use `.skiphow/inbox.md` as the canonical local fallback.
+
+A GitHub Project is an optional view. SkipHow connects or creates one only when you ask. It never scans all of your Projects to guess which one to use, and Project status does not block completed code.
+
+Optional overrides may live in `.skiphow/config.yml`:
+
+```yaml
+tracker: auto
+project: disabled
+strict_lifecycle: false
+campaign_root: .skiphow/runs
 ```
 
-In Claude Code:
+The file is not required. See [architecture](docs/architecture.md) for the adapter contract and campaign details.
 
-```text
-/skiphow:cto-run docs/runbooks/release.md .skiphow/runs/release-0.1.0 main
+## Support matrix
+
+| Product | Support |
+| --- | --- |
+| Codex CLI | Supported and package-validated |
+| Codex desktop project workflow | Supported through the same Codex plugin package |
+| Claude Code | Supported and package-validated |
+| Codex IDE extension | Plugin packaging is not supported |
+| ChatGPT Work | Not claimed until repository outcome evals pass with its available tools |
+
+Core work needs a host that can inspect a project and, for change requests, edit files and run the project's checks. Optional GitHub persistence needs authenticated `gh`. Optional helper scripts support Python 3.10 through 3.13, but Python is not a core requirement.
+
+## Trust, privacy, and removal
+
+SkipHow sends no telemetry and runs no background service. It may read or change local project files and run local commands when the request authorizes that work. It reads or changes GitHub only for explicit persistence, existing tracked work, repository-required lifecycle work, or requested setup. The default package installs no lifecycle hooks.
+
+See [trust and operations](docs/trust.md) for data access, diagnostics, updates, rollback, and uninstall instructions.
+
+## Maintainer checks
+
+```sh
+python scripts/check.py
+python scripts/check_hosts.py
 ```
 
-The run directory stores state, decisions, evidence, receipts, and the final report. Use the same directory to resume the campaign.
+The first command is deterministic and local. It does not require a Codex host validator. The second reports unavailable host proof as `UNVERIFIED`; release CI requires the configured official Codex validator.
 
-## Check prerequisites
+Routing, activation, and repository outcome corpora live under `plugins/skiphow/evals/`. Offline validation runs through `scripts/check.py`. Paid live runs are opt-in:
 
-Run `preflight` before the first tracked delivery or when the environment changes. It checks Python, Git, GitHub CLI authentication and version, the standard Project, shared hooks, and installed host command interfaces. It reports `READY`, `SETUP_NEEDED`, or `DEGRADED` and does not install tools, authenticate, edit the Project, or change files.
+```sh
+python scripts/run_codex_evals.py --execute
+python scripts/run_claude_evals.py --execute
+python scripts/run_outcome_evals.py --host codex
+python scripts/run_outcome_evals.py --host claude
+```
 
-The standard Project is the default human control panel over canonical GitHub Issues. Its only required custom workflow surface is `Status` with:
+## Project documents
 
-- `Backlog`
-- `Ready`
-- `In progress`
-- `Waiting`
-- `Done`
-
-Run `setup` to reuse or bootstrap that minimal Project. If Project permissions or platform support are unavailable, SkipHow reports `DEGRADED` and continues with native Issues. It does not require a `Human Gate` or a label-based state machine.
-
-Maintainers can run the deterministic release gate with `python scripts/verify_release.py --base <base-sha>`. Add `--host` only on a clean candidate commit to validate isolated Codex and Claude marketplace installation.
-
-## Behavioral evaluations
-
-`plugins/skiphow/evals/behavioral_scenarios.json` holds representative routing and authority cases. `python scripts/run_codex_evals.py` and `python scripts/run_claude_evals.py` validate the same corpus without a model call. Add `--execute` to either host adapter for opt-in live structured runs. Claude Code also has an early-access native plugin-eval command, but SkipHow does not require that feature to run the shared corpus.
-
-## Limitations
-
-SkipHow cannot supply product vision, access tools or accounts it has not been given, bypass repository policy, or approve protected actions. Material business choices stay with the Owner.
-
-SkipHow runs inside Codex or Claude Code. It has no model runtime, hosted service, agent dashboard, MCP server, telemetry, remote service, credential flow, or bundled runtime.
-
-SkipHow needs file access, command execution, task controls, Python 3.10 or newer, and a place to preserve the run directory. Tracker workflows also need access to the project's tracker. GitHub lifecycle support needs `git` and authenticated `gh` 2.93.0 or newer. On native Windows, Claude Code hooks use the Git Bash installed by Git for Windows.
-
-## Design and project documentation
-
-- [Architecture](docs/architecture.md) explains the workflows, host adapters, durable state, and release gates.
-- [Changelog](CHANGELOG.md) contains release notes.
-
-## Support policy
-
-The project targets current Codex and Claude Code plugin workflows. A release claims host support only after a reproducible check against that exact candidate. Report defects through the repository issue templates.
-
-## Contributing
-
-Read [CONTRIBUTING.md](CONTRIBUTING.md) before proposing a change. The repository follows its [Code of Conduct](CODE_OF_CONDUCT.md).
-
-## Security
-
-Read [SECURITY.md](SECURITY.md) before reporting a vulnerability.
-
-## License
-
-SkipHow is licensed under the [MIT License](LICENSE).
+- [Architecture](docs/architecture.md)
+- [Trust and operations](docs/trust.md)
+- [Changelog](CHANGELOG.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security policy](SECURITY.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [MIT License](LICENSE)

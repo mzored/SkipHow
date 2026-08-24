@@ -1,6 +1,0 @@
-interface:
-  display_name: "Codebase design"
-  short_description: "Internal module and seam design guidance"
-  default_prompt: "Use $codebase-design internally to resolve a CTO module or interface decision."
-policy:
-  allow_implicit_invocation: false

@@ -1,177 +1,167 @@
-"""Contract tests for the portable behavioral eval corpus."""
+"""Contract tests for routing, activation, and outcome evals."""
 
 import importlib.util
 import json
 from pathlib import Path
+import sys
 import tempfile
-import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCRIPT = ROOT / "scripts/run_codex_evals.py"
-SPEC = importlib.util.spec_from_file_location("run_codex_evals", SCRIPT)
-assert SPEC and SPEC.loader
-evals = importlib.util.module_from_spec(SPEC)
-SPEC.loader.exec_module(evals)
-CLAUDE_SCRIPT = ROOT / "scripts/run_claude_evals.py"
-CLAUDE_SPEC = importlib.util.spec_from_file_location("run_claude_evals", CLAUDE_SCRIPT)
-assert CLAUDE_SPEC and CLAUDE_SPEC.loader
-claude_evals = importlib.util.module_from_spec(CLAUDE_SPEC)
-CLAUDE_SPEC.loader.exec_module(claude_evals)
 
 
-class BehavioralEvalTests(unittest.TestCase):
-    def test_corpus_is_machine_valid_and_representative(self) -> None:
-        corpus = evals.load_corpus(evals.DEFAULT_CORPUS)
-        scenarios = corpus["scenarios"]
-        self.assertGreaterEqual(len(scenarios), 20)
-        prompts = "\n".join(item["prompt"] for item in scenarios).lower()
-        for topic in ("approved", "board", "product contract", "days"):
-            self.assertIn(topic, prompts)
-        reviews = {item["assertions"]["review"] for item in scenarios}
-        self.assertIn("independent", reviews)
-        self.assertTrue(any(item["assertions"]["owner_question"] for item in scenarios))
-        escalations = {item["assertions"]["escalation"] for item in scenarios}
-        self.assertIn("owner-decision", escalations)
-        self.assertIn("protected-action", escalations)
-        security = next(item for item in scenarios if item["id"] == "security-sensitive-change")
-        self.assertFalse(security["assertions"]["durable"])
-        self.assertEqual("execute", security["assertions"]["execution_shape"])
-        long_low_risk = next(item for item in scenarios if item["id"] == "durability-not-risk")
-        self.assertTrue(long_low_risk["assertions"]["durable"])
-        self.assertEqual("campaign", long_low_risk["assertions"]["execution_shape"])
-        acceptance_mismatch = next(item for item in scenarios if item["id"] == "acceptance-mismatch")
-        self.assertEqual("cto", acceptance_mismatch["assertions"]["route"])
-        by_id = {item["id"]: item["assertions"] for item in scenarios}
-        self.assertEqual("persist-follow-up", by_id["independent-finding-persisted"]["ceremony"])
-        self.assertEqual("link-duplicate", by_id["duplicate-finding-linked"]["ceremony"])
-        self.assertEqual("scoped-rereview", by_id["review-fix-scoped-rereview"]["review"])
-        self.assertEqual("independent", by_id["review-fix-material-redesign"]["review"])
-        self.assertEqual("resolve-current", by_id["resolved-in-scope-finding"]["ceremony"])
-        self.assertEqual("dismiss-finding", by_id["dismissed-speculative-finding"]["ceremony"])
-        self.assertEqual("UNVERIFIED", by_id["optional-validator-unavailable"]["testing"])
-        self.assertEqual(
-            "external-prerequisite",
-            by_id["required-validator-unavailable"]["escalation"],
+def load_module(name: str, path: Path):
+    spec = importlib.util.spec_from_file_location(name, path)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+evals = load_module("run_codex_evals", ROOT / "scripts/run_codex_evals.py")
+claude_evals = load_module("run_claude_evals", ROOT / "scripts/run_claude_evals.py")
+outcomes = load_module("run_outcome_evals", ROOT / "scripts/run_outcome_evals.py")
+
+
+def missing_load_bearing_rules(text: str) -> list[str]:
+    rules = (
+        "Analysis, research, review, diagnosis-only, and planning requests are read-only",
+        "For an ordinary clear change, create an ephemeral brief",
+        "`CAMPAIGN` is an internal execution shape, not an intent",
+        "Inspect a tracker only after persistence is requested",
+    )
+    return [rule for rule in rules if rule not in text]
+
+
+def test_routing_corpus_covers_the_product_contract() -> None:
+    scenarios = evals.load_corpus(evals.DEFAULT_CORPUS)["scenarios"]
+    assert len(scenarios) >= 20
+    intents = {row["assertions"]["intent"] for row in scenarios}
+    assert intents == {"ANSWER", "CAPTURE", "DECIDE", "CHANGE", "REPAIR", "CONTINUE"}
+    by_id = {row["id"]: row["assertions"] for row in scenarios}
+    assert by_id["clear-feature-direct"]["execution_shape"] == "execute"
+    assert not by_id["clear-feature-direct"]["tracker_touched"]
+    assert not by_id["clear-feature-direct"]["product_acceptance"]
+    assert by_id["analysis-read-only"]["tracker_touched"] is False
+    assert by_id["unclear-defect"]["execution_shape"] == "diagnose-then-execute"
+    assert by_id["campaign-migration"]["execution_shape"] == "campaign"
+    assert by_id["authorization-small-fix"]["execution_shape"] == "execute"
+    assert by_id["optional-validator"]["testing"] == "UNVERIFIED"
+    assert by_id["scoped-rereview"]["review"] == "scoped-rereview"
+
+
+def test_activation_and_outcome_corpora_are_representative() -> None:
+    activation, outcome = outcomes.validate_corpora()
+    categories = {row["category"] for row in activation["scenarios"]}
+    assert categories == {"direct", "indirect", "follow-up", "negative", "boundary"}
+    assert any(not row["activate"] for row in activation["scenarios"])
+    by_id = {row["id"]: row for row in outcome["scenarios"]}
+    assert by_id["analysis-only"]["graders"]["changed"] == []
+    assert ".skiphow/runs" in by_id["tiny-fix"]["graders"]["absent"]
+    assert by_id["local-capture"]["graders"]["changed"] == [".skiphow/inbox.md"]
+
+
+def test_policy_mutations_break_the_load_bearing_rule_check() -> None:
+    skill = (ROOT / "plugins/skiphow/skills/skiphow/SKILL.md").read_text(encoding="utf-8")
+    assert missing_load_bearing_rules(skill) == []
+    for rule in (
+        "Analysis, research, review, diagnosis-only, and planning requests are read-only",
+        "For an ordinary clear change, create an ephemeral brief",
+        "`CAMPAIGN` is an internal execution shape, not an intent",
+        "Inspect a tracker only after persistence is requested",
+    ):
+        assert rule in missing_load_bearing_rules(skill.replace(rule, ""))
+
+
+def test_structured_evaluation_reports_only_mismatches() -> None:
+    expected = {
+        name: False if expected_type is bool else "none" if name == "escalation" else name
+        for name, expected_type in evals.REQUIRED_ASSERTIONS.items()
+    }
+    assert evals.evaluate(expected, expected) == []
+    assert evals.evaluate(dict(expected, intent="wrong"), expected) == ["intent"]
+
+
+def test_escalation_requires_a_complete_brief() -> None:
+    expected = {
+        name: False if expected_type is bool else "owner-decision" if name == "escalation" else name
+        for name, expected_type in evals.REQUIRED_ASSERTIONS.items()
+    }
+    assert evals.evaluate(expected, expected) == list(evals.ESCALATION_BRIEF_FIELDS)
+    complete = dict(
+        expected,
+        recommendation="Choose the safer retention policy.",
+        evidence="The current decision does not choose one.",
+        consequence_of_waiting="Implementation cannot finalize the data flow.",
+        decision_or_action_needed="Choose whether customer data is hidden or deleted.",
+    )
+    assert evals.evaluate(complete, expected) == []
+
+
+def test_response_schema_uses_public_intents() -> None:
+    schema = json.loads(evals.RESPONSE_SCHEMA.read_text(encoding="utf-8"))
+    assert "intent" in schema["required"]
+    assert set(schema["properties"]["intent"]["enum"]) == {
+        "ANSWER", "CAPTURE", "DECIDE", "CHANGE", "REPAIR", "CONTINUE"
+    }
+    assert set(schema["properties"]["escalation"]["enum"]) == evals.ESCALATION_CLASSES
+
+
+def test_claude_adapter_extracts_schema_validated_output() -> None:
+    response = {"intent": "REPAIR", "reason": "bounded repair"}
+    payload = '{"type":"result","structured_output":' + json.dumps(response) + "}"
+    assert claude_evals.structured_response(payload) == response
+
+
+def test_efficiency_metrics_remain_secondary() -> None:
+    codex_output = "\n".join(
+        (
+            '{"type":"item.completed","item":{"type":"command_execution"}}',
+            '{"type":"turn.completed","usage":{"input_tokens":12,"output_tokens":3}}',
         )
-        self.assertFalse(by_id["acceptance-internal-delta"]["product_acceptance"])
-        self.assertTrue(by_id["acceptance-semantic-delta"]["product_acceptance"])
-        self.assertFalse(by_id["tiny-css-fix"]["tracker_touched"])
-        self.assertFalse(by_id["untracked-coherent-feature"]["tracker_touched"])
-        self.assertTrue(by_id["independent-finding-persisted"]["tracker_touched"])
-        self.assertEqual("diagnose-only", by_id["diagnosis-only"]["execution_shape"])
-        self.assertEqual("prototype", by_id["prototype-design-question"]["ceremony"])
-        self.assertEqual("merge-conflict", by_id["merge-conflict-intent"]["ceremony"])
-        self.assertEqual("human-action-handoff", by_id["human-action-handoff"]["ceremony"])
-        self.assertEqual("setup", by_id["github-project-setup"]["route"])
-        self.assertEqual("campaign", by_id["campaign-fog-of-war"]["execution_shape"])
+    )
+    assert evals.codex_metrics(codex_output) == {
+        "tool_calls": 1,
+        "usage": {"input_tokens": 12, "output_tokens": 3},
+    }
+    claude_output = json.dumps(
+        {"structured_output": {}, "usage": {"input_tokens": 7}, "num_turns": 1}
+    )
+    assert claude_evals.claude_metrics(claude_output) == {
+        "usage": {"input_tokens": 7},
+        "num_turns": 1,
+    }
 
-    def test_structured_evaluation_reports_only_mismatches(self) -> None:
-        expected = {
-            name: False if expected_type is bool else "none" if name == "escalation" else name
-            for name, expected_type in evals.REQUIRED_ASSERTIONS.items()
-        }
-        self.assertEqual([], evals.evaluate(expected, expected))
-        changed = dict(expected, route="wrong")
-        self.assertEqual(["route"], evals.evaluate(changed, expected))
 
-    def test_non_none_escalation_requires_a_complete_brief(self) -> None:
-        expected = {
-            name: False if expected_type is bool else "owner-decision" if name == "escalation" else name
-            for name, expected_type in evals.REQUIRED_ASSERTIONS.items()
-        }
-        mismatches = evals.evaluate(expected, expected)
-        self.assertEqual(list(evals.ESCALATION_BRIEF_FIELDS), mismatches)
-
-        complete = dict(
-            expected,
-            recommendation="Choose the safer retention policy.",
-            evidence="The Product Contract does not choose a retention policy.",
-            consequence_of_waiting="The implementation cannot finalize the data flow.",
-            decision_or_action_needed="Approve hiding or deleting customer data.",
+def test_runtime_staging_excludes_eval_oracles() -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+        root = Path(temporary)
+        candidate = root / "candidate"
+        runtime = root / "runtime"
+        for relative in (".agents", ".claude-plugin", "adapters"):
+            directory = candidate / relative
+            directory.mkdir(parents=True)
+            (directory / "marker.txt").write_text("runtime\n", encoding="utf-8")
+        plugin = candidate / "plugins" / "skiphow"
+        (plugin / "skills" / "skiphow").mkdir(parents=True)
+        (plugin / "skills" / "skiphow" / "SKILL.md").write_text(
+            "---\nname: skiphow\ndescription: route\n---\n", encoding="utf-8"
         )
-        self.assertEqual([], evals.evaluate(complete, expected))
+        (plugin / "evals").mkdir()
+        (plugin / "evals" / "behavioral_scenarios.json").write_text("{}\n", encoding="utf-8")
+        evals.stage_runtime(candidate, runtime)
+        assert (runtime / "plugins/skiphow/skills/skiphow/SKILL.md").is_file()
+        assert not any(runtime.rglob("behavioral_scenarios.json"))
 
-    def test_response_schema_requires_a_brief_only_for_escalations(self) -> None:
-        schema = json.loads(evals.RESPONSE_SCHEMA.read_text(encoding="utf-8"))
-        self.assertIn("escalation", schema["required"])
-        self.assertEqual(
-            evals.ESCALATION_CLASSES,
-            set(schema["properties"]["escalation"]["enum"]),
-        )
-        self.assertEqual(
-            list(evals.ESCALATION_BRIEF_FIELDS),
-            schema["allOf"][0]["else"]["required"],
-        )
 
-    def test_claude_adapter_extracts_schema_validated_output(self) -> None:
-        response = {"route": "fix", "reason": "bounded repair"}
-        payload = '{"type":"result","structured_output":' + json.dumps(response) + "}"
-        self.assertEqual(response, claude_evals.structured_response(payload))
-
-    def test_live_metric_extractors_keep_efficiency_signals_secondary(self) -> None:
-        codex_output = "\n".join(
-            (
-                '{"type":"item.completed","item":{"type":"command_execution"}}',
-                '{"type":"turn.completed","usage":{"input_tokens":12,"output_tokens":3}}',
-            )
-        )
-        self.assertEqual(
-            {"tool_calls": 1, "usage": {"input_tokens": 12, "output_tokens": 3}},
-            evals.codex_metrics(codex_output),
-        )
-        claude_output = json.dumps(
-            {"structured_output": {}, "usage": {"input_tokens": 7}, "num_turns": 1}
-        )
-        self.assertEqual(
-            {"usage": {"input_tokens": 7}, "num_turns": 1},
-            claude_evals.claude_metrics(claude_output),
-        )
-
-    def test_codex_live_runner_binds_evidence_to_a_clean_snapshot(self) -> None:
-        source = SCRIPT.read_text(encoding="utf-8")
-        for required in (
-            '"status", "--porcelain"',
-            '"HEAD^{tree}"',
-            '"clone", "--quiet", "--shared", "--no-checkout"',
-            '"candidate_commit": candidate_commit',
-            '"candidate_tree": candidate_tree',
-        ):
-            self.assertIn(required, source)
-
-    def test_staged_runtime_excludes_behavioral_oracle(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            candidate = root / "candidate"
-            runtime = root / "runtime"
-            for relative in (".agents", ".claude-plugin", "adapters"):
-                directory = candidate / relative
-                directory.mkdir(parents=True)
-                (directory / "marker.txt").write_text("runtime\n", encoding="utf-8")
-            plugin = candidate / "plugins" / "skiphow"
-            (plugin / "skills" / "skiphow").mkdir(parents=True)
-            (plugin / "skills" / "skiphow" / "SKILL.md").write_text(
-                "---\nname: skiphow\ndescription: route\n---\n",
-                encoding="utf-8",
-            )
-            (plugin / "evals").mkdir()
-            (plugin / "evals" / "behavioral_scenarios.json").write_text(
-                "{}\n", encoding="utf-8"
-            )
-            evals.stage_runtime(candidate, runtime)
-            self.assertTrue(
-                (runtime / "plugins/skiphow/skills/skiphow/SKILL.md").is_file()
-            )
-            self.assertFalse(any(runtime.rglob("behavioral_scenarios.json")))
-
-    def test_claude_live_runner_uses_snapshot_runtime_and_isolated_config(self) -> None:
-        source = CLAUDE_SCRIPT.read_text(encoding="utf-8")
-        for required in (
-            "shared.snapshot_candidate(output_dir)",
-            "shared.stage_runtime(candidate_dir, runtime_dir)",
-            'environment["CLAUDE_CONFIG_DIR"]',
-            "cwd=evaluation_dir",
-            '"candidate_commit": candidate_commit',
-            '"candidate_tree": candidate_tree',
-        ):
-            self.assertIn(required, source)
+def test_live_prompts_do_not_repeat_the_routing_oracle_and_claude_keeps_tools() -> None:
+    codex_source = (ROOT / "scripts/run_codex_evals.py").read_text(encoding="utf-8")
+    claude_source = (ROOT / "scripts/run_claude_evals.py").read_text(encoding="utf-8")
+    leaked = "Use execute as the normal technical shape"
+    assert leaked not in codex_source
+    assert leaked not in claude_source
+    assert '"--tools",\n                    ""' not in claude_source
+    for source in (codex_source, claude_source):
+        assert "candidate_commit" in source
+        assert "candidate_tree" in source

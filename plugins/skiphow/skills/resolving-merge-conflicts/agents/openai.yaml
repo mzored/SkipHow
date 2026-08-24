@@ -1,6 +1,0 @@
-interface:
-  display_name: "Resolve merge conflicts"
-  short_description: "Recover intent and finish a conflicted Git operation"
-  default_prompt: "Use $resolving-merge-conflicts internally to resolve this in-progress Git merge or rebase conflict."
-policy:
-  allow_implicit_invocation: false

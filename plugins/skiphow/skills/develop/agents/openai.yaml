@@ -1,6 +1,0 @@
-interface:
-  display_name: "Develop"
-  short_description: "Deliver approved work with proportionate rigor"
-  default_prompt: "Use $develop to select approved work and hand it to the CTO for delivery."
-policy:
-  allow_implicit_invocation: true

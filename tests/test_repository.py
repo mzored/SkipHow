@@ -1,529 +1,131 @@
-"""Repository contract checks for the SkipHow plugin."""
+"""Repository-level contracts for the 0.6 package."""
 
 import json
 from pathlib import Path
-import unittest
+import re
 
 import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILL_NAMES = {
-    "codebase-design",
-    "cto",
-    "skiphow",
-    "idea",
-    "shape",
-    "develop",
-    "fix",
-    "diagnose",
-    "preflight",
-    "technical-review",
-    "testing",
-    "cto-run",
-    "github-task",
-    "prototype",
-    "resolving-merge-conflicts",
-    "setup",
-}
-INTERNAL_SKILLS = {
-    "codebase-design",
-    "cto",
-    "cto-run",
-    "github-task",
-    "prototype",
-    "resolving-merge-conflicts",
-    "technical-review",
-    "testing",
-}
-REQUIRED_PATHS = {
-    "plugins/skiphow/.codex-plugin/plugin.json",
-    "plugins/skiphow/hooks/hooks.json",
-    "plugins/skiphow/scripts/gh_task_status.py",
-    "plugins/skiphow/evals/behavioral_scenarios.json",
-    "plugins/skiphow/evals/response_schema.json",
-    "scripts/gh_task_status.py",
-    "scripts/run_codex_evals.py",
-    "scripts/run_claude_evals.py",
-    "scripts/verify_release.py",
-    "plugins/skiphow/skills/diagnose/upstream/scripts/hitl-loop.template.sh",
-    "README.md",
-    "LICENSE",
-}
-
-PACKAGE_FILES = {
-    ".agents/plugins/marketplace.json",
-    ".claude-plugin/marketplace.json",
-    ".claude-plugin/plugin.json",
-    "plugins/skiphow/.codex-plugin/plugin.json",
-}
-PACKAGE_VERSION = "0.5.0"
-PACKAGE_REPOSITORY = "https://github.com/mzored/SkipHow"
-PUBLIC_POLICY_FILES = {
-    "docs/architecture.md",
-    "CONTRIBUTING.md",
-    "CODE_OF_CONDUCT.md",
-    "SECURITY.md",
-    "CHANGELOG.md",
-    "LICENSE",
-}
-TECHNICAL_POLICY_HEADINGS = {
-    "# Technical policy",
-    "## Authority and ownership",
-    "## Readiness, surfaces, and decisions",
-    "## Build versus reuse",
-    "## Engineering capabilities",
-    "## Delegation and execution health",
-    "## Validation, scope, and handoff",
-}
-DURABLE_POLICY_HEADINGS = {
-    "# Durable operating policy",
-    "## Recovery and control loop",
-    "## Durable execution health",
-    "## Durable handoff",
-}
-
-CAPABILITY_ROLES = {"MECHANICAL", "IMPLEMENTATION", "CTO_REVIEW"}
-DURABLE_FILES = {"state.json", "journal.jsonl", "briefing.md", "FINAL.md"}
-AUTHORITY_ORDER = (
-    "1. System, safety, legal, sandbox, and tool constraints.",
-    "2. Repository instructions that apply to the current scope.",
-    "3. The project runbook, accepted specifications, and approved architecture decisions.",
-    "4. This technical policy.",
-    "5. Task-local plans and worker briefs.",
-)
-DEPENDENCY_CHECKS = (
-    "release within the last 12 months",
-    "more than one maintainer",
-    "declared pre-1.0 risk",
-    "license compatibility",
-    "known high-severity CVEs",
-    "`unverified`",
-)
-COMPLETION_CLAIM_STATEMENT = (
-    "Bind every completion claim to the delivered-state identity, acceptance criteria, "
-    "command or procedure, environment, result, and evidence location."
-)
-FORBIDDEN_TEXT = {
-    "/Users/",
-    "~/.codex",
-    "~/.claude",
-    "run-journal",
-    "launch.sh",
-    "gpt-",
-    "opus",
-    "sonnet",
-    "haiku",
-}
 
 
-def load_json(path: str) -> dict:
-    """Load a JSON document from the repository root."""
-    return json.loads((ROOT / path).read_text(encoding="utf-8"))
+def read(relative: str) -> str:
+    return (ROOT / relative).read_text(encoding="utf-8")
 
 
-def load_frontmatter(path: str) -> dict:
-    """Load YAML frontmatter from a Markdown file in the repository root."""
-    contents = (ROOT / path).read_text(encoding="utf-8")
-    _, frontmatter, _ = contents.split("---", 2)
-    return yaml.safe_load(frontmatter)
+def test_only_skiphow_is_a_public_skill_for_both_hosts() -> None:
+    codex = sorted(path.parent.name for path in (ROOT / "plugins/skiphow/skills").glob("*/SKILL.md"))
+    claude = sorted(path.parent.name for path in (ROOT / "adapters/claude/skills").glob("*/SKILL.md"))
+    assert codex == ["skiphow"]
+    assert claude == ["skiphow"]
+    metadata = yaml.safe_load(read("plugins/skiphow/skills/skiphow/agents/openai.yaml"))
+    assert metadata["policy"]["allow_implicit_invocation"] is True
+    assert not list((ROOT / "plugins/skiphow/skills/skiphow/references").rglob("openai.yaml"))
 
 
-class RepositoryContractTests(unittest.TestCase):
-    def test_required_structure(self) -> None:
-        skill_paths = {
-            f"plugins/skiphow/skills/{name}/SKILL.md" for name in SKILL_NAMES
-        }
-        openai_metadata_paths = {
-            f"plugins/skiphow/skills/{name}/agents/openai.yaml"
-            for name in SKILL_NAMES
-        }
-        claude_adapter_paths = {
-            f"adapters/claude/skills/{name}/SKILL.md" for name in SKILL_NAMES
-        }
-        missing_paths = sorted(
-            path
-            for path in (
-                REQUIRED_PATHS
-                | skill_paths
-                | openai_metadata_paths
-                | claude_adapter_paths
-            )
-            if not (ROOT / path).is_file()
-        )
+def test_claude_controller_can_reach_internal_campaign_policy() -> None:
+    adapter = read("adapters/claude/skills/skiphow/SKILL.md")
+    controller_path = (
+        ROOT / "plugins/skiphow/skills/skiphow/references/engineering/cto/SKILL.md"
+    )
+    controller = controller_path.read_text(encoding="utf-8")
+    campaign = (controller_path.parent / "../../campaign/cto-run/SKILL.md").resolve()
+    assert "plugins/skiphow/skills/skiphow/SKILL.md" in adapter
+    assert "../../campaign/cto-run/SKILL.md" in controller
+    assert campaign.is_file()
+    assert "disable-model-invocation" not in campaign.read_text(encoding="utf-8")
 
-        self.assertEqual([], missing_paths)
 
-    def test_skill_invocation_contract(self) -> None:
-        """Owner-facing skills route implicitly while internal capabilities do not."""
-        for name in SKILL_NAMES:
-            canonical = load_frontmatter(
-                f"plugins/skiphow/skills/{name}/SKILL.md"
-            )
-            self.assertEqual(name, canonical["name"])
-            self.assertTrue(canonical["description"])
+def test_router_owns_intent_and_mutation_policy() -> None:
+    router = read("plugins/skiphow/skills/skiphow/SKILL.md")
+    for intent in ("ANSWER", "CAPTURE", "DECIDE", "CHANGE", "REPAIR", "CONTINUE"):
+        assert f"`{intent}`" in router
+    assert "Analysis, research, review, diagnosis-only, and planning requests are read-only" in router
+    assert "lightweight delivery brief" in router
+    assert "Do not require shaping" in router
+    assert "`CAMPAIGN` is an internal execution shape" in router
 
-            openai = yaml.safe_load(
-                (ROOT / f"plugins/skiphow/skills/{name}/agents/openai.yaml")
-                .read_text(encoding="utf-8")
-            )
-            expected_implicit = name not in INTERNAL_SKILLS
-            self.assertEqual(
-                expected_implicit,
-                openai["policy"]["allow_implicit_invocation"],
-            )
-            self.assertIn(f"${name}", openai["interface"]["default_prompt"])
 
-            adapter = load_frontmatter(
-                f"adapters/claude/skills/{name}/SKILL.md"
-            )
-            self.assertEqual(name, adapter["name"])
-            self.assertEqual(
-                name == "cto-run",
-                bool(adapter.get("disable-model-invocation")),
-            )
-            self.assertEqual(
-                name
-                in {
-                    "codebase-design",
-                    "cto",
-                    "github-task",
-                    "prototype",
-                    "resolving-merge-conflicts",
-                    "technical-review",
-                    "testing",
-                },
-                adapter.get("user-invocable") is False,
-            )
+def test_internal_reference_paths_resolve() -> None:
+    root = ROOT / "plugins/skiphow/skills/skiphow"
+    for source in root.rglob("*.md"):
+        if "upstream" in source.parts:
+            continue
+        for target in re.findall(r"`([^`]*?(?:SKILL\.md|references/[^`]+\.md))`", source.read_text(encoding="utf-8")):
+            candidate = (source.parent / target).resolve()
+            assert candidate.is_file(), f"{source.relative_to(ROOT)} -> {target}"
 
-    def test_fix_policy_contract(self) -> None:
-        """Defect routing uses execution, diagnosis, and campaign without risk modes."""
-        fix = (ROOT / "plugins/skiphow/skills/fix/SKILL.md").read_text(
-            encoding="utf-8"
-        )
-        diagnose = (ROOT / "plugins/skiphow/skills/diagnose/SKILL.md").read_text(
-            encoding="utf-8"
-        )
 
-        self.assertIn("bounded Product Director decision", fix)
-        self.assertNotIn("read `../shape/SKILL.md`", fix)
-        self.assertIn("internal CTO controller", fix)
-        self.assertIn("normal `EXECUTE` path", fix)
-        self.assertIn("Use `cto-run` only when", fix)
-        self.assertIn("Phases 1 through 4", diagnose)
-        self.assertIn("Do not execute Phase 5", diagnose)
+def test_product_records_and_acceptance_are_triggered() -> None:
+    product = read("plugins/skiphow/skills/skiphow/references/product/shape/references/product-contract.md")
+    acceptance = read("plugins/skiphow/skills/skiphow/references/product/shape/references/product-acceptance.md")
+    reviewer = read("plugins/skiphow/skills/skiphow/references/product/shape/references/reviewer.md")
+    assert "Lightweight delivery brief" in product
+    assert "Extended product decision record" in product
+    assert "Do not create an acceptance receipt for an ordinary clear change" in acceptance
+    assert "Ordinary clear features" in reviewer
 
-        controller = (ROOT / "plugins/skiphow/skills/cto/SKILL.md").read_text(
-            encoding="utf-8"
-        )
-        for question in (
-            "What outcome is requested",
-            "smallest coherent scope",
-            "desired interaction, UI, logic, or state model still uncertain",
-            "unresolved causal uncertainty",
-            "orchestration itself require durable state",
-            "evidence do the changed surfaces require",
-        ):
-            self.assertIn(question, controller)
-        self.assertNotIn("tracked-direct", controller)
-        for risk_level in ("R1", "R2", "R3"):
-            self.assertNotIn(risk_level, controller)
 
-        canonical_router = load_frontmatter(
-            "plugins/skiphow/skills/skiphow/SKILL.md"
-        )
-        claude_router = load_frontmatter("adapters/claude/skills/skiphow/SKILL.md")
-        self.assertEqual(canonical_router["description"], claude_router["description"])
+def test_tracking_is_optional_and_issues_first() -> None:
+    tracker = read("plugins/skiphow/skills/skiphow/references/trackers/github-task/SKILL.md")
+    setup = read("plugins/skiphow/skills/skiphow/references/trackers/setup/SKILL.md")
+    capture = read("plugins/skiphow/skills/skiphow/references/product/idea/SKILL.md")
+    assert "An Issue is the canonical tracked unit" in tracker
+    assert "Project absence is `NOT_CONFIGURED`" in tracker
+    assert "Never scan all Projects" in tracker
+    assert "Core SkipHow needs no setup" in setup
+    assert ".skiphow/inbox.md" in capture
 
-        router = (ROOT / "plugins/skiphow/skills/skiphow/SKILL.md").read_text(
-            encoding="utf-8"
-        )
-        self.assertIn("Route requests to configure or repair", router)
-        self.assertIn("readiness checks to `preflight`", router)
-        self.assertIn("Product acceptance is a SkipHow implementation", router)
-        self.assertNotIn("Route product acceptance", router)
 
-    def test_durable_delivery_requires_final_state_product_acceptance(self) -> None:
-        runbook = (
-            ROOT / "plugins/skiphow/skills/develop/references/delivery-runbook.md"
-        ).read_text(encoding="utf-8")
-        state_contract = (
-            ROOT / "plugins/skiphow/skills/cto-run/references/state-contract.md"
-        ).read_text(encoding="utf-8")
-        self.assertIn("final-state acceptance receipt", runbook)
-        self.assertIn("status `accepted` or `carried-forward`", runbook)
-        self.assertIn('"product_acceptance"', state_contract)
-        self.assertIn('"status": "accepted|returned|carried-forward"', state_contract)
-        self.assertIn('"disposition": "RESOLVED|PERSISTED|DUPLICATE|DISMISSED"', state_contract)
-        self.assertIn('"basis_receipt": "prior receipt or null"', state_contract)
-        self.assertIn('"state_identity": "exact delivered-state identifier"', state_contract)
-        self.assertIn('"current_state":', state_contract)
-        self.assertIn("interpret `repository_commit`", state_contract)
-        self.assertIn("receipts/product-acceptance/<item>.json", state_contract)
+def test_default_package_has_no_hooks_or_legacy_gate_policy() -> None:
+    claude = json.loads(read(".claude-plugin/plugin.json"))
+    codex = json.loads(read("plugins/skiphow/.codex-plugin/plugin.json"))
+    assert "hooks" not in claude
+    assert "hooks" not in codex
+    assert not (ROOT / "plugins/skiphow/hooks/hooks.json").exists()
+    runtime = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in (ROOT / "plugins/skiphow/scripts").glob("*.py")
+    )
+    assert "Human" + " Gate" not in runtime
 
-        acceptance = (
-            ROOT / "plugins/skiphow/skills/shape/references/product-acceptance.md"
-        ).read_text(encoding="utf-8")
-        self.assertIn(
-            ".skiphow/evidence/product-acceptance/<state-identity>/<contract-id>.json",
-            acceptance,
-        )
 
-    def test_github_lifecycle_contract(self) -> None:
-        """Tracking decisions stay above the GitHub lifecycle adapter."""
-        github_task = (
-            ROOT / "plugins/skiphow/skills/github-task/SKILL.md"
-        ).read_text(encoding="utf-8")
-        fix = (ROOT / "plugins/skiphow/skills/fix/SKILL.md").read_text(
-            encoding="utf-8"
-        )
-        develop = (ROOT / "plugins/skiphow/skills/develop/SKILL.md").read_text(
-            encoding="utf-8"
-        )
+def test_metadata_and_version_contract() -> None:
+    version = read("VERSION").strip()
+    manifest = json.loads(read("plugins/skiphow/.codex-plugin/plugin.json"))
+    assert re.fullmatch(r"\d+\.\d+\.\d+", version)
+    assert manifest["version"] == version
+    assert len(manifest["interface"]["shortDescription"]) <= 30
+    assert len(manifest["interface"]["defaultPrompt"]) <= 3
+    assert all("setup" not in prompt.lower() for prompt in manifest["interface"]["defaultPrompt"])
+    marketplace = json.loads(read(".agents/plugins/marketplace.json"))
+    assert marketplace["plugins"][0]["policy"]["products"] == ["CODEX"]
 
-        self.assertIn("Issue remains the canonical work object", github_task)
-        self.assertIn("decision to persist work", github_task)
-        self.assertIn("native parent/sub-issue and blocking relationships", github_task)
-        self.assertIn("standard user-facing queue", github_task)
-        self.assertIn("Do not require `Human Gate`", github_task)
-        self.assertIn("only after that need is established", fix)
-        self.assertIn("github-task", develop)
-        self.assertIn("Decide `PERSISTED` before loading a tracker capability", (
-            ROOT / "plugins/skiphow/skills/cto/references/technical-policy.md"
-        ).read_text(encoding="utf-8"))
-        self.assertNotIn("test-driven-development", github_task)
-        self.assertNotIn("Run the repo's full gate", github_task)
 
-    def test_new_capability_boundaries(self) -> None:
-        prototype = (ROOT / "plugins/skiphow/skills/prototype/SKILL.md").read_text(
-            encoding="utf-8"
-        )
-        conflicts = (
-            ROOT / "plugins/skiphow/skills/resolving-merge-conflicts/SKILL.md"
-        ).read_text(encoding="utf-8")
-        technical_policy = (
-            ROOT / "plugins/skiphow/skills/cto/references/technical-policy.md"
-        ).read_text(encoding="utf-8")
-        durable_policy = (
-            ROOT / "plugins/skiphow/skills/cto-run/references/operating-policy.md"
-        ).read_text(encoding="utf-8")
+def test_campaign_state_is_sparse() -> None:
+    state = read("plugins/skiphow/skills/skiphow/references/campaign/cto-run/references/state-contract.md")
+    policy = read("plugins/skiphow/skills/skiphow/references/campaign/cto-run/references/operating-policy.md")
+    assert "Keep only fields used by the campaign" in state
+    assert "Add `reuse_check` only" in state
+    assert "Generate `FINAL.md`" in policy
+    assert "After three consecutive failures" not in policy
 
-        self.assertIn("one design question", prototype)
-        self.assertIn("Do not silently turn prototype code into production code", prototype)
-        self.assertIn("already in a conflicted merge or rebase state", conflicts)
-        self.assertIn("Recover why each side changed", conflicts)
-        self.assertIn("hard to reverse", technical_policy)
-        self.assertIn("Human-action handoff", technical_policy)
-        self.assertIn("vertical slices", durable_policy)
-        self.assertIn("Do not pre-decompose uncertainty", durable_policy)
 
-    def test_portable_policy(self) -> None:
-        """The shipped cto-run policy stays portable and complete."""
-        policy_paths = sorted(
-            path
-            for root in (
-                ROOT / "plugins/skiphow/skills/cto",
-                ROOT / "plugins/skiphow/skills/cto-run",
-            )
-            for path in root.rglob("*")
-            if path.is_file()
-        )
-        policy_text = "\n".join(
-            path.read_text(encoding="utf-8") for path in policy_paths
-        )
+def test_technical_reuse_policy_is_contextual() -> None:
+    policy = read("plugins/skiphow/skills/skiphow/references/engineering/cto/references/technical-policy.md")
+    assert "maintenance evidence appropriate to the project's maturity" in policy
+    assert "universal thresholds" in policy
+    assert "release within the last 12 months" not in policy
+    assert "Each receipt includes `reuse_check`" not in policy
 
-        self.assertTrue(policy_paths)
-        for role in CAPABILITY_ROLES:
-            self.assertIn(role, policy_text)
-        for durable_file in DURABLE_FILES:
-            self.assertIn(durable_file, policy_text)
-        self.assertIn("Host policy takes priority.", policy_text)
-        for forbidden_text in FORBIDDEN_TEXT:
-            self.assertNotIn(forbidden_text, policy_text)
 
-        technical_policy = (
-            ROOT / "plugins/skiphow/skills/cto/references/technical-policy.md"
-        ).read_text(encoding="utf-8")
-        durable_policy = (
-            ROOT / "plugins/skiphow/skills/cto-run/references/operating-policy.md"
-        ).read_text(encoding="utf-8")
-        state_contract = (
-            ROOT / "plugins/skiphow/skills/cto-run/references/state-contract.md"
-        ).read_text(encoding="utf-8")
-
-        for authority in AUTHORITY_ORDER:
-            self.assertIn(authority, technical_policy)
-        self.assertIn(
-            "Specificity breaks ties only within one authority tier.", technical_policy
-        )
-        self.assertIn(
-            "Owner decision, missing authority, protected action, or external prerequisite",
-            technical_policy,
-        )
-        self.assertIn(
-            "No executable work or unaccounted mutable state may remain.",
-            technical_policy,
-        )
-        self.assertNotIn("irreducible blocker", technical_policy)
-        for dependency_check in DEPENDENCY_CHECKS:
-            self.assertIn(dependency_check, technical_policy)
-        self.assertIn(
-            "`reuse_check` with `n/a` when the gate does not apply", technical_policy
-        )
-        self.assertIn(
-            "`reuse_check` as the verdict or `n/a`", state_contract
-        )
-        self.assertIn(COMPLETION_CLAIM_STATEMENT, technical_policy)
-        for risk_level in ("R1", "R2", "R3"):
-            self.assertNotIn(risk_level, technical_policy)
-        self.assertIn("shared technical policy", durable_policy)
-
-    def test_manifest_contract(self) -> None:
-        """Both hosts publish the same plugin with public metadata."""
-        missing_paths = sorted(
-            path for path in PACKAGE_FILES if not (ROOT / path).is_file()
-        )
-        self.assertEqual([], missing_paths)
-
-        codex_manifest = load_json("plugins/skiphow/.codex-plugin/plugin.json")
-        codex_marketplace = load_json(".agents/plugins/marketplace.json")
-        claude_manifest = load_json(".claude-plugin/plugin.json")
-        claude_marketplace = load_json(".claude-plugin/marketplace.json")
-
-        for manifest in (codex_manifest, claude_manifest):
-            self.assertEqual("skiphow", manifest["name"])
-            self.assertEqual(PACKAGE_REPOSITORY, manifest["repository"])
-            self.assertEqual("MIT", manifest["license"])
-            self.assertTrue(manifest["author"]["name"])
-            self.assertTrue(manifest["homepage"].startswith("https://"))
-            self.assertTrue(manifest["keywords"])
-
-        for marketplace in (codex_marketplace, claude_marketplace):
-            self.assertEqual("skiphow", marketplace["name"])
-            self.assertEqual("skiphow", marketplace["plugins"][0]["name"])
-
-        self.assertEqual("./skills/", codex_manifest["skills"])
-        self.assertFalse((ROOT / "skills").exists())
-        self.assertEqual(5, len(codex_manifest["interface"]["defaultPrompt"]))
-        self.assertTrue(
-            any(
-                "set up" in prompt.lower()
-                for prompt in codex_manifest["interface"]["defaultPrompt"]
-            )
-        )
-        self.assertTrue(
-            any(
-                "fix" in prompt.lower()
-                for prompt in codex_manifest["interface"]["defaultPrompt"]
-            )
-        )
-        self.assertTrue({"hooks", "apps", "mcpServers"}.isdisjoint(codex_manifest))
-        self.assertTrue((ROOT / "plugins/skiphow/hooks/hooks.json").is_file())
-        self.assertEqual(
-            {"source": "local", "path": "./plugins/skiphow"},
-            codex_marketplace["plugins"][0]["source"],
-        )
-        self.assertEqual("./adapters/claude/skills/", claude_manifest["skills"])
-        self.assertEqual(
-            "./plugins/skiphow/hooks/hooks.json", claude_manifest["hooks"]
-        )
-        hooks = load_json("plugins/skiphow/hooks/hooks.json")
-        self.assertEqual({"PreToolUse", "Stop"}, set(hooks["hooks"]))
-        self.assertEqual(
-            "Bash|PowerShell", hooks["hooks"]["PreToolUse"][0]["matcher"]
-        )
-        for groups in hooks["hooks"].values():
-            for group in groups:
-                for hook in group["hooks"]:
-                    self.assertIn("command -v python3", hook["command"])
-                    self.assertIn("command -v python", hook["command"])
-                    self.assertIn("py -3", hook["command"])
-                    self.assertIn("commandWindows", hook)
-        self.assertEqual(
-            "./",
-            claude_marketplace["plugins"][0]["source"],
-        )
-        self.assertEqual(
-            PACKAGE_REPOSITORY, claude_marketplace["plugins"][0]["repository"]
-        )
-        self.assertEqual("MIT", claude_marketplace["plugins"][0]["license"])
-
-    def test_versions_match(self) -> None:
-        """Every versioned package record ships the release version."""
-        required_paths = (
-            "plugins/skiphow/.codex-plugin/plugin.json",
-            ".claude-plugin/plugin.json",
-            ".claude-plugin/marketplace.json",
-        )
-        missing_paths = [path for path in required_paths if not (ROOT / path).is_file()]
-        self.assertEqual([], missing_paths)
-        if missing_paths:
-            return
-
-        codex_manifest = load_json("plugins/skiphow/.codex-plugin/plugin.json")
-        claude_manifest = load_json(".claude-plugin/plugin.json")
-        claude_marketplace = load_json(".claude-plugin/marketplace.json")
-
-        self.assertEqual(PACKAGE_VERSION, codex_manifest["version"])
-        self.assertEqual(PACKAGE_VERSION, claude_manifest["version"])
-        self.assertEqual(PACKAGE_VERSION, claude_marketplace["metadata"]["version"])
-        self.assertEqual(PACKAGE_VERSION, claude_marketplace["plugins"][0]["version"])
-
-    def test_claude_adapter(self) -> None:
-        """Claude uses an explicit adapter instead of a copied policy."""
-        adapter_path = ROOT / "adapters/claude/skills/cto-run/SKILL.md"
-        self.assertTrue(adapter_path.is_file())
-        if not adapter_path.is_file():
-            return
-
-        adapter_text = adapter_path.read_text(encoding="utf-8")
-        _, frontmatter, body = adapter_text.split("---", 2)
-
-        self.assertTrue(yaml.safe_load(frontmatter)["disable-model-invocation"])
-        self.assertIn("plugins/skiphow/skills/cto-run/SKILL.md", body)
-        for heading in TECHNICAL_POLICY_HEADINGS | DURABLE_POLICY_HEADINGS:
-            self.assertNotIn(heading, body)
-
-    def test_documentation_contract(self) -> None:
-        """Public documentation describes use, support, and repository policy."""
-        missing_paths = sorted(
-            path for path in PUBLIC_POLICY_FILES if not (ROOT / path).is_file()
-        )
-        self.assertEqual([], missing_paths)
-        if missing_paths:
-            return
-
-        readme = (ROOT / "README.md").read_text(encoding="utf-8")
-        for heading in (
-            "## Install with Codex",
-            "## Install with Claude Code",
-            "## Run cto-run",
-            "## Support policy",
-            "## Limitations",
-            "## Contributing",
-            "## Security",
-            "## License",
-        ):
-            self.assertIn(heading, readme)
-        for path in sorted(PUBLIC_POLICY_FILES):
-            self.assertIn(f"]({path})", readme)
-        self.assertIn(
-            "$cto-run docs/runbooks/release.md .skiphow/runs/release-0.1.0 main",
-            readme,
-        )
-        self.assertIn(
-            "/skiphow:cto-run docs/runbooks/release.md .skiphow/runs/release-0.1.0 main",
-            readme,
-        )
-        self.assertIn("Git Bash", readme)
-
-        ci = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
-        self.assertIn("ubuntu-latest", ci)
-        self.assertIn("3.11", ci)
-        self.assertIn("pip install -r requirements-dev.txt", ci)
-        self.assertIn("python scripts/verify_release.py", ci)
-
-        dependabot = (ROOT / ".github/dependabot.yml").read_text(encoding="utf-8")
-        self.assertIn("pip", dependabot)
-        self.assertIn("github-actions", dependabot)
-        self.assertIn("weekly", dependabot)
+def test_documentation_has_zero_config_first_run_and_support_matrix() -> None:
+    readme = read("README.md")
+    assert "## Install with Codex" in readme
+    assert "## Install with Claude Code" in readme
+    assert "## Support matrix" in readme
+    assert "No tracker, Project, Python, `gh`, setup command, or hook is required" in readme
+    first_screen = "\n".join(readme.splitlines()[:80])
+    assert "preflight" not in first_screen.lower()
+    assert "cto-run" not in first_screen.lower()

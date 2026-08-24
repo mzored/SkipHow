@@ -1,6 +1,0 @@
-interface:
-  display_name: "Testing"
-  short_description: "Internal behavioral testing guidance"
-  default_prompt: "Use $testing internally to choose durable behavioral evidence for this CTO task."
-policy:
-  allow_implicit_invocation: false

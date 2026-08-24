@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "additionalProperties": false,
-  "required": ["route", "execution_shape", "owner_question", "ceremony", "tracker_touched", "durable", "testing", "review", "product_acceptance", "reason", "escalation"],
+  "required": ["intent", "execution_shape", "owner_question", "ceremony", "tracker_touched", "durable", "testing", "review", "product_acceptance", "reason", "escalation"],
   "properties": {
-    "route": {"type": "string"},
+    "intent": {"enum": ["ANSWER", "CAPTURE", "DECIDE", "CHANGE", "REPAIR", "CONTINUE"]},
     "execution_shape": {"enum": ["execute", "diagnose-then-execute", "diagnose-only", "campaign", "not-applicable"]},
     "owner_question": {"type": "boolean"},
     "ceremony": {"type": "string"},

@@ -1,6 +1,0 @@
-interface:
-  display_name: "Prototype"
-  short_description: "Resolve one product design question"
-  default_prompt: "Use $prototype internally to answer this unresolved interaction or state-model question with a disposable artifact."
-policy:
-  allow_implicit_invocation: false

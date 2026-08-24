@@ -1,7 +1,7 @@
 {
   "name": "skiphow",
   "version": "0.5.0",
-  "description": "Route owner intent through product decisions and minimum sufficient technical delivery.",
+  "description": "Deliver product and software work from one ordinary-language request.",
   "author": {
     "name": "mzored",
     "url": "https://github.com/mzored"
@@ -18,17 +18,15 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "SkipHow",
-    "shortDescription": "Route ideas through product and technical delivery.",
-    "longDescription": "Capture ideas, shape product decisions, repair defects, and let an internal CTO choose normal execution, focused diagnosis, or durable campaigns.",
+    "shortDescription": "Software delivery autopilot",
+    "longDescription": "Understand a project request, make routine product and technical decisions, perform authorized work, verify the result, and use tracking or durable coordination only when the request needs them.",
     "developerName": "mzored",
     "category": "Developer Tools",
     "capabilities": [],
     "defaultPrompt": [
-      "Set up the standard GitHub work surface for this repository.",
-      "Capture this product idea without researching it.",
-      "Shape this feature into a product decision.",
-      "Fix this broken behavior with verification proportional to its risk.",
-      "Develop the next approved product work."
+      "Add this feature and make the routine product and technical decisions.",
+      "Fix this bug, prove the cause when needed, and verify the result.",
+      "Save this product idea for later without expanding it."
     ]
   }
 }

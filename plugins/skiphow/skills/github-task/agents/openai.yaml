@@ -1,6 +1,0 @@
-interface:
-  display_name: "GitHub Issue lifecycle"
-  short_description: "Maintain native tracked GitHub state"
-  default_prompt: "Use $github-task to carry this already-tracked GitHub Issue through its native lifecycle."
-policy:
-  allow_implicit_invocation: false

@@ -1,6 +1,0 @@
-interface:
-  display_name: "Shape"
-  short_description: "Turn an idea into a product decision"
-  default_prompt: "Use $shape to research this idea and recommend a product decision."
-policy:
-  allow_implicit_invocation: true

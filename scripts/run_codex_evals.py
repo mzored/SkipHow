@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CORPUS = ROOT / "plugins/skiphow/evals/behavioral_scenarios.json"
 RESPONSE_SCHEMA = ROOT / "plugins/skiphow/evals/response_schema.json"
 REQUIRED_ASSERTIONS = {
-    "route": str,
+    "intent": str,
     "execution_shape": str,
     "owner_question": bool,
     "ceremony": str,
@@ -230,15 +230,10 @@ def run_live(*, codex: str) -> int:
         for scenario in corpus["scenarios"]:
             result_path = output_dir / f"{scenario['id']}.json"
             prompt = (
-                "Load and follow $skiphow for this evaluation. Classify this SkipHow request. "
-                "Return only the requested JSON object. "
-                "Respect the Owner, Product Director, and CTO authority boundary. "
-                "Use execute as the normal technical shape, diagnose-then-execute only for an unknown cause, "
-                "and campaign only when orchestration needs durable state. Report whether the tracker is touched. "
-                "Set escalation to none unless the request needs an Owner decision, protected action, "
-                "missing authority, or external prerequisite. For any other escalation value, provide "
-                "a non-empty recommendation, evidence, consequence_of_waiting, and exact "
-                "decision_or_action_needed.\n\n"
+                "Use the installed SkipHow candidate to classify this realistic project request. "
+                "Return only the requested JSON object. Inspect the candidate's instructions instead "
+                "of assuming a routing policy. Fill every required field and explain the classification "
+                "briefly in reason.\n\n"
                 f"Request: {scenario['prompt']}"
             )
             completed = subprocess.run(

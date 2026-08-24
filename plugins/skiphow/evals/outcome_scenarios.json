@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "scenarios": [
+    {"id":"clear-feature","prompt":"Add the requested greeting behavior in app.txt and verify it. Make routine decisions yourself.","fixture":{"app.txt":"hello\n"},"graders":{"changed":["app.txt"],"unchanged":[],"absent":[".skiphow/runs",".skiphow/evidence"],"gh_calls":0}},
+    {"id":"analysis-only","prompt":"Analyze app.txt and report whether its greeting is clear. Do not change or save anything.","fixture":{"app.txt":"hello\n"},"graders":{"changed":[],"unchanged":["app.txt"],"absent":[".skiphow","issue-created"],"gh_calls":0}},
+    {"id":"tiny-fix","prompt":"Fix the extra trailing space in style.css and verify it.","fixture":{"style.css":"button { padding: 4px; } \n"},"graders":{"changed":["style.css"],"unchanged":[],"absent":[".skiphow/runs",".skiphow/evidence","issue-created"],"gh_calls":0}},
+    {"id":"unknown-bug","prompt":"counter.py returns the wrong total for an empty list. Prove the cause, fix it, and run its test.","fixture":{"counter.py":"def total(values):\n    return sum(values) + 1\n","test_counter.py":"from counter import total\n\ndef test_empty():\n    assert total([]) == 0\n"},"graders":{"changed":["counter.py"],"unchanged":["test_counter.py"],"absent":[".skiphow/runs"],"gh_calls":0}},
+    {"id":"optional-proof","prompt":"Inspect app.txt. The optional external verifier is unavailable; finish without building a replacement.","fixture":{"app.txt":"ready\n"},"graders":{"changed":[],"unchanged":["app.txt"],"absent":[".github/workflows","validator.py"],"gh_calls":0}},
+    {"id":"local-capture","prompt":"Save this idea for later without expanding it: add weekly exports. No tracker is configured.","fixture":{},"graders":{"changed":[".skiphow/inbox.md"],"unchanged":[],"absent":[".skiphow/runs",".skiphow/evidence"],"gh_calls":0}}
+  ]
+}

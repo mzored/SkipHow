@@ -2,6 +2,31 @@
 
 All notable changes to this project appear in this file.
 
+## Unreleased
+
+### Changed
+
+- Replaced the public workflow catalog with one conversational `skiphow` entrypoint for answer, capture, decision, change, repair, and continuation requests.
+- Clear changes now execute from a lightweight delivery brief without mandatory shaping, tracking, Owner approval, product review, or acceptance receipts.
+- Made extended product records, independent product review, and product acceptance conditional on consequential decisions or repository policy.
+- Made GitHub Issues the optional default persistence integration and GitHub Projects an explicitly configured view.
+- Replaced blocking preflight semantics with a read-only doctor that reports optional capabilities independently.
+- Split deterministic local checks from optional host validation and added version consistency checks.
+- Added activation, routing, repository outcome, forbidden-side-effect, and policy mutation eval coverage.
+- Simplified dependency diligence and campaign state so optional fields and artifacts appear only when triggered.
+
+### Added
+
+- Added `.skiphow/inbox.md` as the local fallback for explicit capture requests with no configured tracker.
+- Added narrow optional `github_issues.py`, `github_project.py`, and `doctor.py` adapters.
+- Added a support matrix, privacy notes, diagnostics, update, rollback, and uninstall guidance.
+
+### Removed
+
+- Removed default lifecycle hooks and the monolithic GitHub lifecycle helper.
+- Removed runtime handling of the legacy `Human Gate` Project field. Existing fields are left untouched and ignored.
+- Removed separate public Codex skills and Claude wrappers for internal workflows.
+
 ## 0.5.0
 
 ### Changed

@@ -1,6 +1,0 @@
-interface:
-  display_name: "Set up SkipHow"
-  short_description: "Configure the standard GitHub work surface"
-  default_prompt: "Use $setup to configure or repair SkipHow's minimal GitHub Project for this repository."
-policy:
-  allow_implicit_invocation: true

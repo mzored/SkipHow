@@ -1,6 +1,0 @@
-interface:
-  display_name: "CTO"
-  short_description: "Internal technical delivery controller"
-  default_prompt: "Use $cto internally to choose and own proportionate technical delivery."
-policy:
-  allow_implicit_invocation: false
