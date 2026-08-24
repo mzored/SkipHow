@@ -47,7 +47,7 @@ def checked(
 
 
 def repository_files(suffixes: Iterable[str]) -> Iterable[Path]:
-    ignored = {".git", ".venv", "__pycache__"}
+    ignored = {".codex-validator", ".git", ".venv", "__pycache__"}
     for path in ROOT.rglob("*"):
         if any(part in ignored for part in path.parts) or not path.is_file():
             continue

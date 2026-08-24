@@ -2,6 +2,7 @@
 
 import importlib.util
 from pathlib import Path
+import tempfile
 import unittest
 from unittest.mock import patch
 
@@ -22,6 +23,17 @@ class ReleaseVerificationTests(unittest.TestCase):
 
     def test_source_scan_checks_only_distributable_source(self) -> None:
         self.assertEqual([], release.source_scan())
+
+    def test_repository_scan_excludes_ci_validator_checkout(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            external = root / ".codex-validator" / "invalid.yaml"
+            external.parent.mkdir()
+            external.write_text("invalid: [", encoding="utf-8")
+            owned = root / "owned.yaml"
+            owned.write_text("valid: true\n", encoding="utf-8")
+            with patch.object(release, "ROOT", root):
+                self.assertEqual([owned], list(release.repository_files({".yaml"})))
 
     def test_candidate_diff_failure_is_reported(self) -> None:
         with patch.object(
