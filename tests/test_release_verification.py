@@ -41,6 +41,19 @@ class ReleaseVerificationTests(unittest.TestCase):
             self.assertEqual(4, len(errors))
             self.assertTrue(all("non-portable personal path" in error for error in errors))
 
+    def test_source_scan_includes_distributable_shell_files(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            script = root / "plugins" / "example" / "install.sh"
+            script.parent.mkdir(parents=True)
+            script.write_text("exec /Users/alice/private/tool\n", encoding="utf-8")
+            subprocess.run(["git", "init", "--quiet"], cwd=root, check=True)
+            subprocess.run(["git", "add", "plugins/example/install.sh"], cwd=root, check=True)
+            with patch.object(release, "ROOT", root):
+                errors = release.source_scan()
+            self.assertEqual(1, len(errors))
+            self.assertIn("plugins/example/install.sh", errors[0])
+
     def test_repository_scan_uses_only_git_owned_files(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

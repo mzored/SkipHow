@@ -54,7 +54,7 @@ def checked(
     return result.returncode == 0, output
 
 
-def repository_files(suffixes: Iterable[str]) -> Iterable[Path]:
+def repository_files(suffixes: Iterable[str] | None = None) -> Iterable[Path]:
     """Yield candidate-owned files from Git, excluding ambient workspace state."""
     result = subprocess.run(
         ["git", "ls-files", "-z"],
@@ -69,7 +69,7 @@ def repository_files(suffixes: Iterable[str]) -> Iterable[Path]:
         if not raw_path:
             continue
         path = ROOT / os.fsdecode(raw_path)
-        if path.suffix.lower() in suffixes:
+        if suffixes is None or path.suffix.lower() in suffixes:
             yield path
 
 
@@ -136,10 +136,16 @@ def source_scan() -> list[str]:
         ROOT / "CONTRIBUTING.md",
         ROOT / "SECURITY.md",
     ]
-    for path in repository_files({".md", ".py", ".json", ".yaml", ".yml"}):
+    for path in repository_files():
         if not any(path == source or path.is_relative_to(source) for source in roots):
             continue
-        text = path.read_text(encoding="utf-8")
+        try:
+            text = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            continue
+        except OSError as exc:
+            errors.append(f"cannot read distributable source {path.relative_to(ROOT)}: {exc}")
+            continue
         for match in PERSONAL_PATH.finditer(text):
             errors.append(
                 f"non-portable personal path {match.group(0)!r} in {path.relative_to(ROOT)}"
