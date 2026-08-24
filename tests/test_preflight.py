@@ -47,3 +47,21 @@ class PreflightTests(unittest.TestCase):
             failures, notes = preflight.preflight_report(cwd="/tmp/repo")
         self.assertTrue(any("missing options" in failure for failure in failures))
         self.assertIn("shared lifecycle hooks are present", notes)
+
+    def test_preflight_reports_missing_codex_plugin_command(self) -> None:
+        def run(args, *, cwd=None):
+            if args[0] == "/bin/codex":
+                self.assertEqual(["/bin/codex", "plugin", "--help"], args)
+                raise preflight.LifecycleError("unknown command: plugin")
+            return "/tmp/repo"
+
+        with (
+            patch.object(
+                preflight.shutil,
+                "which",
+                side_effect=lambda name: {"git": "/bin/git", "codex": "/bin/codex"}.get(name),
+            ),
+            patch.object(preflight, "run", side_effect=run),
+        ):
+            failures, _ = preflight.preflight_report(cwd="/tmp/repo")
+        self.assertTrue(any("repair codex" in failure for failure in failures))

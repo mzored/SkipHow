@@ -623,7 +623,7 @@ def preflight_report(repo: str | None = None, *, cwd: str = ".") -> tuple[list[s
         notes.append("shared lifecycle hooks are present")
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         failures.append(f"repair plugin hooks at {hook_path}: {exc}")
-    host_commands = {"codex": ["exec", "--help"], "claude": ["plugin", "--help"]}
+    host_commands = {"codex": ["plugin", "--help"], "claude": ["plugin", "--help"]}
     for host, command_args in host_commands.items():
         executable = shutil.which(host)
         if not executable:

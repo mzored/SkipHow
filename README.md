@@ -103,7 +103,7 @@ The CTO does not make every change a campaign. Bounded work runs directly. Exist
 The report download fails when the account has no activity. Fix it.
 ```
 
-A clear, low-risk defect takes the short path. An unclear defect gets a focused diagnosis. SkipHow creates a tracked or durable campaign only when the repair is broad, risky, or hard to verify.
+A clear, low-risk defect takes the short path. An unclear defect gets a focused diagnosis. The CTO selects `cto-run` only when the repair needs durable state or coordination. Risk sets verification and review depth, not the runtime.
 
 ## Who decides what
 

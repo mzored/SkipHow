@@ -1,7 +1,6 @@
 ---
 name: cto
 description: Internal technical controller for SkipHow delivery. It selects proportionate engineering work and direct, tracked-direct, or durable execution.
-disable-model-invocation: true
 ---
 
 # CTO

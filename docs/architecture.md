@@ -79,6 +79,6 @@ It also contains `decisions/`, `evidence/`, and `receipts/`. After recovery, the
 
 ## Release gates
 
-`python scripts/verify_release.py --base <base-sha>` is the deterministic release entrypoint. It parses JSON and YAML, validates the behavioral corpus, scans distributable source and manifests for personal paths, checks local Markdown links, runs the repository suite, and checks whitespace in both the working tree and full candidate diff. CI calls this entrypoint with the event's base commit.
+`python scripts/verify_release.py --base <base-sha>` is the deterministic release entrypoint. It parses JSON and YAML, runs the official Codex plugin validator, validates the behavioral corpus, scans distributable source and manifests for personal paths, checks local Markdown links, runs the repository suite, and checks whitespace in both the working tree and full candidate diff. Local runs resolve the validator from the active `CODEX_HOME`. CI checks out the official OpenAI validator at pinned commit `333beecd41281b1350688b417a2f20c66e2a743e` and supplies its path through `CODEX_PLUGIN_VALIDATOR`.
 
 `python scripts/verify_release.py --host` is the exact-candidate host gate. It requires a clean commit, records the commit and host versions, validates the Claude plugin strictly, and installs the local marketplace candidate into isolated Codex and Claude homes. It fails when an installed host cannot validate or install the candidate. It does not publish, deploy, or mutate the user's normal host configuration.

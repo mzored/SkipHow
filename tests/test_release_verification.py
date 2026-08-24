@@ -32,3 +32,33 @@ class ReleaseVerificationTests(unittest.TestCase):
             errors = release.validate_diff("base-sha")
         self.assertEqual(1, len(errors))
         self.assertIn("base-sha HEAD", errors[0])
+
+    def test_codex_plugin_validator_failure_is_reported(self) -> None:
+        validator = Path("/runtime/validate_plugin.py")
+        with (
+            patch.object(release, "bundled_codex_plugin_validator", return_value=validator),
+            patch.object(release, "checked", return_value=(False, "invalid manifest")) as checked,
+        ):
+            errors = release.validate_codex_plugin()
+        self.assertEqual(["Codex plugin validation failed: invalid manifest"], errors)
+        checked.assert_called_once_with(
+            [
+                release.sys.executable,
+                str(validator),
+                str(ROOT / "plugins" / "skiphow"),
+            ]
+        )
+
+    def test_missing_codex_plugin_validator_fails_release_gate(self) -> None:
+        with patch.object(release, "bundled_codex_plugin_validator", return_value=None):
+            errors = release.validate_codex_plugin()
+        self.assertEqual(1, len(errors))
+        self.assertIn("Codex plugin validator is unavailable", errors[0])
+
+    def test_configured_codex_plugin_validator_takes_precedence(self) -> None:
+        validator = ROOT / "configured-validator.py"
+        with (
+            patch.dict(release.os.environ, {"CODEX_PLUGIN_VALIDATOR": str(validator)}),
+            patch.object(Path, "is_file", return_value=True),
+        ):
+            self.assertEqual(validator.resolve(), release.bundled_codex_plugin_validator())

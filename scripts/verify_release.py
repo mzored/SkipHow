@@ -136,8 +136,50 @@ def validate_diff(base: str | None) -> list[str]:
     return errors
 
 
+def bundled_codex_plugin_validator() -> Path | None:
+    """Find the plugin validator supplied by the active Codex runtime."""
+    configured = os.environ.get("CODEX_PLUGIN_VALIDATOR")
+    if configured:
+        validator = Path(configured).expanduser().resolve()
+        return validator if validator.is_file() else None
+    codex_home = os.environ.get("CODEX_HOME")
+    if not codex_home:
+        return None
+    validator = (
+        Path(codex_home)
+        / "skills"
+        / ".system"
+        / "plugin-creator"
+        / "scripts"
+        / "validate_plugin.py"
+    )
+    return validator if validator.is_file() else None
+
+
+def validate_codex_plugin() -> list[str]:
+    """Validate the distributable Codex plugin with the bundled validator."""
+    validator = bundled_codex_plugin_validator()
+    if validator is None:
+        return [
+            "Codex plugin validator is unavailable; run release verification from a Codex runtime "
+            "that bundles plugin-creator"
+        ]
+    command = [sys.executable, str(validator), str(ROOT / "plugins" / "skiphow")]
+    passed, output = checked(command)
+    if passed:
+        return []
+    detail = output or "validator exited without output"
+    return [f"Codex plugin validation failed: {detail}"]
+
+
 def offline_checks(base: str | None = None) -> list[str]:
-    errors = validate_json() + validate_yaml() + validate_markdown_links() + source_scan()
+    errors = (
+        validate_json()
+        + validate_yaml()
+        + validate_markdown_links()
+        + source_scan()
+        + validate_codex_plugin()
+    )
     commands = [
         [sys.executable, "scripts/run_codex_evals.py"],
         [sys.executable, "scripts/run_claude_evals.py"],
