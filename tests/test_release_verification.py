@@ -25,6 +25,22 @@ class ReleaseVerificationTests(unittest.TestCase):
     def test_source_scan_checks_only_distributable_source(self) -> None:
         self.assertEqual([], release.source_scan())
 
+    def test_source_scan_rejects_cross_platform_personal_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            readme = root / "README.md"
+            readme.write_text(
+                "Linux /home/alice/.codex/skills Windows C:\\Users\\alice\\.codex\\skills "
+                "$HOME/.codex/skills %USERPROFILE%\\.claude\\skills\n",
+                encoding="utf-8",
+            )
+            subprocess.run(["git", "init", "--quiet"], cwd=root, check=True)
+            subprocess.run(["git", "add", "README.md"], cwd=root, check=True)
+            with patch.object(release, "ROOT", root):
+                errors = release.source_scan()
+            self.assertEqual(4, len(errors))
+            self.assertTrue(all("non-portable personal path" in error for error in errors))
+
     def test_repository_scan_uses_only_git_owned_files(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

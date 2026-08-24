@@ -7,6 +7,7 @@ import argparse
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -19,8 +20,14 @@ import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
-FORBIDDEN_PORTABLE_TEXT = ("/" + "Users/", "~/" + ".codex", "~/" + ".claude")
 MARKDOWN = MarkdownIt("commonmark")
+PERSONAL_PATH = re.compile(
+    r"(?:/(?:Users|home)/[^/\s]+/|"
+    + "/"
+    + "root/"
+    + r"|[A-Za-z]:[\\/]+Users[\\/]+[^\\/\s]+[\\/]|~/\.(?:codex|claude)(?:/|\b)"
+    + r"|\$(?:\{)?HOME(?:\})?[\\/]|%USERPROFILE%[\\/])"
+)
 
 
 def checked(
@@ -133,9 +140,10 @@ def source_scan() -> list[str]:
         if not any(path == source or path.is_relative_to(source) for source in roots):
             continue
         text = path.read_text(encoding="utf-8")
-        for forbidden in FORBIDDEN_PORTABLE_TEXT:
-            if forbidden in text:
-                errors.append(f"non-portable text {forbidden!r} in {path.relative_to(ROOT)}")
+        for match in PERSONAL_PATH.finditer(text):
+            errors.append(
+                f"non-portable personal path {match.group(0)!r} in {path.relative_to(ROOT)}"
+            )
     return errors
 
 
