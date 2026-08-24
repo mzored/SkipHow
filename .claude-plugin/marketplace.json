@@ -6,13 +6,13 @@
   },
   "metadata": {
     "description": "Route owner intent through product decisions and minimum sufficient technical delivery.",
-    "version": "0.4.0"
+    "version": "0.5.0"
   },
   "plugins": [
     {
       "name": "skiphow",
       "description": "Route owner intent through product decisions and minimum sufficient technical delivery.",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "author": {
         "name": "mzored",
         "url": "https://github.com/mzored"

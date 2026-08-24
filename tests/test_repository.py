@@ -57,7 +57,7 @@ PACKAGE_FILES = {
     ".claude-plugin/plugin.json",
     "plugins/skiphow/.codex-plugin/plugin.json",
 }
-PACKAGE_VERSION = "0.4.0"
+PACKAGE_VERSION = "0.5.0"
 PACKAGE_REPOSITORY = "https://github.com/mzored/SkipHow"
 PUBLIC_POLICY_FILES = {
     "docs/architecture.md",
