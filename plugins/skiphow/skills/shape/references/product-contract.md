@@ -24,6 +24,9 @@ What it intentionally excludes.
 Success
 An observable signal, baseline when known, measurement window, and guardrails.
 
+Delivery acceptance
+Whether Product Director acceptance is required after implementation, the contract scenarios to check, and the evidence that can prove them.
+
 Product constraints
 Business, policy, market, accessibility, or user constraints only.
 

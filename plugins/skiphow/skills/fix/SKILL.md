@@ -34,9 +34,9 @@ If the cause is unclear, read `../diagnose/SKILL.md` and follow its diagnostic l
 
 ## Increase rigor from evidence
 
-Move into the repository's normal technical workflow when the repair no longer meets the fast-path criteria. Hand technical decisions to the CTO. Start `cto-run` only when the work needs a durable, long-running, or multi-task campaign, using the canonical workflow at `../cto-run/SKILL.md`.
+Move into the internal CTO controller at `../cto/SKILL.md` when the repair no longer meets the fast-path criteria. Hand it the proven cause, repair target, and evidence. The CTO selects direct, tracked-direct, or `cto-run`; do not choose `cto-run` from risk alone.
 
-When that workflow or repository policy classifies the repair as tracked GitHub development, read `../github-task/SKILL.md` and delegate only issue, board, linked-branch, Human Gate, and final reconciliation operations to it. `github-task` does not reclassify the repair or choose its engineering rigor.
+When the CTO or repository policy classifies the repair as tracked GitHub development, read `../github-task/SKILL.md` and delegate only issue, board, linked-branch, Human Gate, and final reconciliation operations to it. `github-task` does not reclassify the repair or choose its engineering rigor.
 
 Signals for higher rigor include a new dependency, cross-module behavior, architecture or subsystem-boundary decisions, public API or schema changes, migrations, authentication, payments, privacy, security, concurrency, substantial performance work, difficult verification, or multiple viable fixes with material lifetime-cost differences.
 

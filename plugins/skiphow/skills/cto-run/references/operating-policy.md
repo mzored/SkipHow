@@ -12,7 +12,7 @@ Apply authority in this order:
 
 Specificity breaks ties only within one authority tier. Host policy takes priority.
 
-The product owner decides product intent, priority, commercial limits, policy, and irreversible product or production actions. The orchestrator owns reversible technical choices within that intent. Never infer permission for destructive, production, credential, privacy, financial, or externally irreversible actions.
+The product owner decides product intent, priority, commercial limits, policy, and irreversible product or production actions. The Product Director decides product behavior within that intent. The CTO owns reversible technical choices. The internal CTO controller applies this policy to every technical delivery; `cto-run` adds durable state and coordination. Never infer permission for destructive, production, credential, privacy, financial, or externally irreversible actions.
 
 Record conflicts in durable state. Take the safest non-destructive reading, block only the affected lane, and continue independent work.
 

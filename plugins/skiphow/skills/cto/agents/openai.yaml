@@ -1,0 +1,5 @@
+interface:
+  display_name: "CTO"
+  short_description: "Internal technical delivery controller"
+policy:
+  allow_implicit_invocation: false

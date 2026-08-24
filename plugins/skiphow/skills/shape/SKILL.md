@@ -12,6 +12,7 @@ Read these references when their step applies:
 - `references/research-brief.md` before delegating product research.
 - `references/product-contract.md` before drafting the decision.
 - `references/reviewer.md` before the independent review.
+- `references/product-acceptance.md` when a Product Contract governs user-visible delivery.
 
 ## Shape the product decision
 
@@ -20,7 +21,7 @@ Read these references when their step applies:
 3. Identify only unknowns that could change the product decision. Resolve them from available evidence, focused research, or bounded specialist work. Ask the Owner only when the answer changes vision, audience, material scope, priority, risk, or cost.
 4. Consult the CTO only for feasibility constraints that could change the product choice. Do not ask the CTO to choose the product behavior.
 5. Compare the smallest viable approaches. Recommend one and explain why it best fits the evidence and current product.
-6. Draft a Product Contract and assign product priority. Do not include components, endpoints, schemas, libraries, file paths, state management, or a testing strategy.
+6. Draft a Product Contract and assign product priority. For user-visible delivery, record the contract scenarios the Product Director must accept after implementation. Do not include components, endpoints, schemas, libraries, file paths, state management, or a testing strategy.
 7. Give the contract and evidence to a fresh, no-history reviewer using `references/reviewer.md`. Resolve every P0 and P1 finding. Do not expose internal review chatter to the Owner.
 8. Present the recommendation, material evidence, scope, non-goals, success signal, and the exact Owner approval needed.
 9. After approval, update the same tracker item to the project's product-approved or ready state. Store the reviewed Product Contract there. If rejected, keep the item and record the reason.
