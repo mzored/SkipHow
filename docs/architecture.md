@@ -1,18 +1,27 @@
 # Architecture
 
-SkipHow ships one portable workflow and thin host adapters. The portable workflow is the canonical source. Host adapters only tell each host how to reach it.
+SkipHow ships portable workflows and thin host adapters. Each workflow under `plugins/skiphow/skills/` is canonical. Host adapters only tell each host how to reach it.
 
-## Canonical skill
+## Canonical skills
 
-`plugins/skiphow/skills/cto-run/SKILL.md` is the canonical `cto-run` skill. It requires explicit user invocation, reads the operating policy and the project runbook, and creates durable records before important waits, handoffs, integrations, and context loss.
+The plugin separates owner intent, product direction, diagnosis, delivery control, and technical execution:
+
+- `skiphow` routes the request and enforces the Owner, Product Director, and CTO authority boundary.
+- `idea` captures without shaping.
+- `shape` produces a reviewed Product Contract without prescribing implementation.
+- `develop` freezes approved work and starts an immutable delivery campaign.
+- `diagnose` runs a disciplined diagnostic loop with an organization-specific authority overlay.
+- `cto-run` executes the campaign and keeps durable state.
+
+`plugins/skiphow/skills/cto-run/SKILL.md` remains the technical execution workflow. It requires explicit invocation, either by the user or by `develop`, reads the operating policy and project runbook, and creates durable records before important waits, handoffs, integrations, and context loss.
 
 The skill has no MCP server, telemetry, remote service, credential flow, hook, or bundled command-line program. Hosts supply filesystem access, command execution, task controls, and any connected services.
 
 ## Claude Code adapter
 
-The Claude Code adapter at `adapters/claude/skills/cto-run/SKILL.md` disables model invocation. It directs Claude Code to the canonical skill instead of copying orchestration policy. Codex installs the nested `plugins/skiphow/` package and loads its `skills/` directory directly. Keeping that package below the repository root prevents Claude Code from discovering both copies.
+Claude Code loads the adapters under `adapters/claude/skills/`. Each adapter directs Claude Code to its canonical skill instead of copying policy. The `cto-run` adapter disables model invocation; the owner-facing routing skills may activate when their descriptions match. Codex installs the nested `plugins/skiphow/` package and loads its `skills/` directory directly. Keeping that package below the repository root prevents Claude Code from discovering both copies.
 
-This keeps behavior in one place. A change to the workflow belongs in the canonical skill, not in an adapter.
+This keeps behavior in one place. A workflow change belongs in its canonical skill, not in an adapter.
 
 ## Capability roles
 
@@ -40,5 +49,3 @@ It also contains `decisions/`, `evidence/`, and `receipts/`. After recovery, the
 ## Release gates
 
 Before release, the repository runs contract tests, package validators, a source scan, and local Markdown link checks. The release process also checks Codex discovery and Claude Code marketplace installation in isolated environments. CI runs the deterministic repository checks only. It does not download or authenticate proprietary hosts.
-
-For the full rationale and package layout, read the [plugin design](superpowers/specs/2026-08-24-skiphow-plugin-design.md).

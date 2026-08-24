@@ -1,7 +1,7 @@
 {
   "name": "skiphow",
-  "version": "0.1.0",
-  "description": "Skills for long-running software work.",
+  "version": "0.2.0",
+  "description": "Route owner intent from ideas through verified software delivery.",
   "author": {
     "name": "mzored",
     "url": "https://github.com/mzored"
@@ -15,5 +15,5 @@
     "codex",
     "orchestration"
   ],
-  "skills": "./adapters/claude/skills/cto-run"
+  "skills": "./adapters/claude/skills/"
 }

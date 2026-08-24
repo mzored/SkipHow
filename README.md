@@ -1,6 +1,6 @@
 # SkipHow
 
-SkipHow is an open source plugin collection for agent skills. Version 0.1.0 contains `cto-run`, a skill for running a software campaign from a runbook while keeping durable state that can be checked after a restart.
+SkipHow is an open source plugin collection that carries work from an owner's idea to verified delivery. It keeps product decisions with a Product Director, technical decisions with a CTO, and asks the owner only for decisions that require owner authority.
 
 SkipHow supports Codex and Claude Code as first-class hosts. The plugin has no MCP server, telemetry, remote service, or credential flow.
 
@@ -24,9 +24,24 @@ claude plugin marketplace add mzored/SkipHow
 claude plugin install skiphow@skiphow
 ```
 
+## Skills
+
+Most requests can use ordinary language. The plugin routes them through these skills:
+
+| Skill | Purpose |
+| --- | --- |
+| `skiphow` | Route owner intent and enforce decision ownership. |
+| `idea` | Capture a raw idea in the canonical tracker. |
+| `shape` | Research and shape an idea into an approved Product Contract. |
+| `develop` | Freeze approved work into a campaign and hand it to the CTO. |
+| `diagnose` | Reproduce and diagnose bugs with a deterministic feedback loop. |
+| `cto-run` | Execute or resume a durable technical campaign. |
+
+The owner's normal interface is `idea`, `shape`, and `develop`. `skiphow` can select them implicitly. `diagnose` handles defect reports. `cto-run` remains the internal execution engine for large campaigns.
+
 ## Run cto-run
 
-Invoke `cto-run` explicitly. It does not run from an incidental mention or automatic skill selection. Give it a repository runbook, a durable run directory, and an optional target.
+You can still invoke `cto-run` explicitly for a prepared technical campaign. Give it a repository runbook, a durable run directory, and an optional target.
 
 In Codex:
 
@@ -66,7 +81,7 @@ SkipHow supports the current Codex and Claude Code plugin workflows. A support c
 
 ## Limitations
 
-`cto-run` coordinates work inside a host session. It does not ship hooks, a bundled command-line program, an MCP server, telemetry, or a remote control plane. It cannot bypass host policy, repository instructions, protected-action approval, or missing authority.
+SkipHow coordinates work inside a host session. It does not ship hooks, a bundled command-line program, an MCP server, telemetry, or a remote control plane. It cannot bypass host policy, repository instructions, protected-action approval, or missing authority. Tracker-based skills require the host to have access to the project's canonical tracker.
 
 ## Architecture
 

@@ -8,10 +8,17 @@ import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
+SKILL_NAMES = {
+    "skiphow",
+    "idea",
+    "shape",
+    "develop",
+    "diagnose",
+    "cto-run",
+}
 REQUIRED_PATHS = {
     "plugins/skiphow/.codex-plugin/plugin.json",
-    "plugins/skiphow/skills/cto-run/SKILL.md",
-    "plugins/skiphow/skills/cto-run/agents/openai.yaml",
+    "plugins/skiphow/skills/diagnose/upstream/scripts/hitl-loop.template.sh",
     "README.md",
     "LICENSE",
 }
@@ -22,7 +29,7 @@ PACKAGE_FILES = {
     ".claude-plugin/plugin.json",
     "plugins/skiphow/.codex-plugin/plugin.json",
 }
-PACKAGE_VERSION = "0.1.0"
+PACKAGE_VERSION = "0.2.0"
 PACKAGE_REPOSITORY = "https://github.com/mzored/SkipHow"
 PUBLIC_POLICY_FILES = {
     "docs/architecture.md",
@@ -90,11 +97,54 @@ def load_frontmatter(path: str) -> dict:
 
 class RepositoryContractTests(unittest.TestCase):
     def test_required_structure(self) -> None:
+        skill_paths = {
+            f"plugins/skiphow/skills/{name}/SKILL.md" for name in SKILL_NAMES
+        }
+        openai_metadata_paths = {
+            f"plugins/skiphow/skills/{name}/agents/openai.yaml"
+            for name in SKILL_NAMES
+        }
+        claude_adapter_paths = {
+            f"adapters/claude/skills/{name}/SKILL.md" for name in SKILL_NAMES
+        }
         missing_paths = sorted(
-            path for path in REQUIRED_PATHS if not (ROOT / path).is_file()
+            path
+            for path in (
+                REQUIRED_PATHS
+                | skill_paths
+                | openai_metadata_paths
+                | claude_adapter_paths
+            )
+            if not (ROOT / path).is_file()
         )
 
         self.assertEqual([], missing_paths)
+
+    def test_skill_invocation_contract(self) -> None:
+        """Public skills route implicitly while cto-run stays an internal engine."""
+        for name in SKILL_NAMES:
+            canonical = load_frontmatter(
+                f"plugins/skiphow/skills/{name}/SKILL.md"
+            )
+            self.assertEqual(name, canonical["name"])
+            self.assertTrue(canonical["description"])
+
+            openai = yaml.safe_load(
+                (ROOT / f"plugins/skiphow/skills/{name}/agents/openai.yaml")
+                .read_text(encoding="utf-8")
+            )
+            expected_implicit = name != "cto-run"
+            self.assertEqual(
+                expected_implicit,
+                openai["policy"]["allow_implicit_invocation"],
+            )
+            self.assertIn(f"${name}", openai["interface"]["default_prompt"])
+
+            adapter = load_frontmatter(
+                f"adapters/claude/skills/{name}/SKILL.md"
+            )
+            self.assertEqual(name, adapter["name"])
+            self.assertEqual(name == "cto-run", bool(adapter.get("disable-model-invocation")))
 
     def test_portable_policy(self) -> None:
         """The shipped cto-run policy stays portable and complete."""
@@ -181,9 +231,7 @@ class RepositoryContractTests(unittest.TestCase):
             {"source": "local", "path": "./plugins/skiphow"},
             codex_marketplace["plugins"][0]["source"],
         )
-        self.assertEqual(
-            "./adapters/claude/skills/cto-run", claude_manifest["skills"]
-        )
+        self.assertEqual("./adapters/claude/skills/", claude_manifest["skills"])
         self.assertEqual(
             "./",
             claude_marketplace["plugins"][0]["source"],

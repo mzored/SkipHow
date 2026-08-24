@@ -1,0 +1,6 @@
+interface:
+  display_name: "SkipHow"
+  short_description: "Route owner intent to the right workflow"
+  default_prompt: "Use $skiphow to route this owner request and carry it through the right workflow."
+policy:
+  allow_implicit_invocation: true

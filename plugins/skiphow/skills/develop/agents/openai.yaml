@@ -1,0 +1,6 @@
+interface:
+  display_name: "Develop"
+  short_description: "Turn approved work into a delivery campaign"
+  default_prompt: "Use $develop to select approved work and deliver the next campaign."
+policy:
+  allow_implicit_invocation: true

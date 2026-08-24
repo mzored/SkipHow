@@ -1,7 +1,7 @@
 {
   "name": "skiphow",
-  "version": "0.1.0",
-  "description": "Skills for long-running software work.",
+  "version": "0.2.0",
+  "description": "Route owner intent from ideas through verified software delivery.",
   "author": {
     "name": "mzored",
     "url": "https://github.com/mzored"
@@ -18,15 +18,15 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "SkipHow",
-    "shortDescription": "Run software work with durable state.",
-    "longDescription": "Plan, run, and resume software campaigns from a durable run directory.",
+    "shortDescription": "Route ideas through product and technical delivery.",
+    "longDescription": "Capture ideas, shape product decisions, diagnose failures, and deliver approved software campaigns with durable state.",
     "developerName": "mzored",
     "category": "Developer Tools",
     "capabilities": [],
     "defaultPrompt": [
-      "Start a CTO run from this runbook.",
-      "Resume the CTO run in this directory.",
-      "Run this project plan with cto-run."
+      "Capture this product idea without researching it.",
+      "Shape this feature into a product decision.",
+      "Develop the next approved product campaign."
     ]
   }
 }
