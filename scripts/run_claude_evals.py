@@ -37,7 +37,10 @@ def run_live(corpus: dict[str, Any], *, claude: str) -> int:
         prompt = (
             "Load and follow the SkipHow plugin for this evaluation. "
             "Classify the request under the Owner, Product Director, and CTO authority boundary. "
-            "Return only the requested structured result.\n\n"
+            "Return only the requested structured result. Set escalation to none unless the request "
+            "needs an Owner decision, protected action, missing authority, or external prerequisite. "
+            "For any other escalation value, provide a non-empty recommendation, evidence, "
+            "consequence_of_waiting, and exact decision_or_action_needed.\n\n"
             f"Request: {scenario['prompt']}"
         )
         completed = subprocess.run(

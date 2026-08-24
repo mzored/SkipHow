@@ -24,7 +24,21 @@ REQUIRED_ASSERTIONS = {
     "testing": str,
     "review": str,
     "product_acceptance": bool,
+    "escalation": str,
 }
+ESCALATION_CLASSES = {
+    "none",
+    "owner-decision",
+    "protected-action",
+    "missing-authority",
+    "external-prerequisite",
+}
+ESCALATION_BRIEF_FIELDS = (
+    "recommendation",
+    "evidence",
+    "consequence_of_waiting",
+    "decision_or_action_needed",
+)
 
 
 def load_corpus(path: Path) -> dict[str, Any]:
@@ -54,13 +68,22 @@ def load_corpus(path: Path) -> dict[str, Any]:
         for name, expected_type in REQUIRED_ASSERTIONS.items():
             if type(assertions[name]) is not expected_type or assertions[name] == "":
                 raise ValueError(f"scenario {identifier} has an invalid {name} assertion")
+        if assertions["escalation"] not in ESCALATION_CLASSES:
+            raise ValueError(f"scenario {identifier} has an invalid escalation assertion")
         identifiers.add(identifier)
     return document
 
 
 def evaluate(response: dict[str, Any], expected: dict[str, Any]) -> list[str]:
     """Return assertion names whose structured response differs from the oracle."""
-    return [name for name, value in expected.items() if response.get(name) != value]
+    mismatches = [name for name, value in expected.items() if response.get(name) != value]
+    if response.get("escalation") != "none":
+        mismatches.extend(
+            name
+            for name in ESCALATION_BRIEF_FIELDS
+            if not isinstance(response.get(name), str) or not response[name].strip()
+        )
+    return mismatches
 
 
 def run_live(*, codex: str) -> int:
@@ -149,7 +172,11 @@ def run_live(*, codex: str) -> int:
             prompt = (
                 "Load and follow $skiphow for this evaluation. Classify this SkipHow request. "
                 "Return only the requested JSON object. "
-                "Respect the Owner, Product Director, and CTO authority boundary.\n\n"
+                "Respect the Owner, Product Director, and CTO authority boundary. "
+                "Set escalation to none unless the request needs an Owner decision, protected action, "
+                "missing authority, or external prerequisite. For any other escalation value, provide "
+                "a non-empty recommendation, evidence, consequence_of_waiting, and exact "
+                "decision_or_action_needed.\n\n"
                 f"Request: {scenario['prompt']}"
             )
             completed = subprocess.run(

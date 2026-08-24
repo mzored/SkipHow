@@ -214,6 +214,26 @@ class RepositoryContractTests(unittest.TestCase):
         claude_router = load_frontmatter("adapters/claude/skills/skiphow/SKILL.md")
         self.assertEqual(canonical_router["description"], claude_router["description"])
 
+        router = (ROOT / "plugins/skiphow/skills/skiphow/SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("readiness requests to `preflight`", router)
+        self.assertIn("Product acceptance is an internal Product Director phase", router)
+        self.assertNotIn("Route product acceptance", router)
+
+    def test_durable_delivery_requires_exact_candidate_product_acceptance(self) -> None:
+        runbook = (
+            ROOT / "plugins/skiphow/skills/develop/references/delivery-runbook.md"
+        ).read_text(encoding="utf-8")
+        state_contract = (
+            ROOT / "plugins/skiphow/skills/cto-run/references/state-contract.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("exact-candidate Product Director acceptance receipt", runbook)
+        self.assertIn("status `accepted`", runbook)
+        self.assertIn('"product_acceptance"', state_contract)
+        self.assertIn('"status": "accepted|returned"', state_contract)
+        self.assertIn("receipts/product-acceptance/<item>.json", state_contract)
+
     def test_github_lifecycle_contract(self) -> None:
         """Tracking decisions stay above the GitHub lifecycle adapter."""
         github_task = (

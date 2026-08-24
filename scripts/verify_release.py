@@ -7,19 +7,20 @@ import argparse
 import json
 import os
 from pathlib import Path
-import re
 import shutil
 import subprocess
 import sys
 import tempfile
 from typing import Iterable
+from urllib.parse import unquote, urlsplit
 
+from markdown_it import MarkdownIt
 import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
-LOCAL_LINK = re.compile(r"(?<!!)\[[^]]*\]\(([^)\s]+)(?:\s+[^)]*)?\)")
 FORBIDDEN_PORTABLE_TEXT = ("/" + "Users/", "~/" + ".codex", "~/" + ".claude")
+MARKDOWN = MarkdownIt("commonmark")
 
 
 def checked(
@@ -47,10 +48,20 @@ def checked(
 
 
 def repository_files(suffixes: Iterable[str]) -> Iterable[Path]:
-    ignored = {".codex-validator", ".git", ".venv", "__pycache__"}
-    for path in ROOT.rglob("*"):
-        if any(part in ignored for part in path.parts) or not path.is_file():
+    """Yield candidate-owned files from Git, excluding ambient workspace state."""
+    result = subprocess.run(
+        ["git", "ls-files", "-z"],
+        cwd=ROOT,
+        capture_output=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        detail = result.stderr.decode("utf-8", errors="replace").strip()
+        raise RuntimeError(f"cannot enumerate candidate files: {detail}")
+    for raw_path in result.stdout.split(b"\0"):
+        if not raw_path:
             continue
+        path = ROOT / os.fsdecode(raw_path)
         if path.suffix.lower() in suffixes:
             yield path
 
@@ -80,20 +91,27 @@ def validate_markdown_links() -> list[str]:
     errors: list[str] = []
     for path in repository_files({".md"}):
         text = path.read_text(encoding="utf-8")
-        for target in LOCAL_LINK.findall(text):
-            if target.startswith(("#", "http://", "https://", "mailto:", "<")):
-                continue
-            target_path = target.split("#", 1)[0]
-            if not target_path:
-                continue
-            candidate = (path.parent / target_path).resolve()
-            try:
-                candidate.relative_to(ROOT)
-            except ValueError:
-                errors.append(f"link escapes repository: {path.relative_to(ROOT)} -> {target}")
-                continue
-            if not candidate.exists():
-                errors.append(f"broken local link: {path.relative_to(ROOT)} -> {target}")
+        for token in MARKDOWN.parse(text):
+            for child in token.children or ():
+                if child.type != "link_open":
+                    continue
+                target = child.attrGet("href")
+                if not target:
+                    continue
+                parsed = urlsplit(target)
+                if parsed.scheme or parsed.netloc or (not parsed.path and parsed.fragment):
+                    continue
+                target_path = unquote(parsed.path)
+                if not target_path:
+                    continue
+                candidate = (path.parent / target_path).resolve()
+                try:
+                    candidate.relative_to(ROOT)
+                except ValueError:
+                    errors.append(f"link escapes repository: {path.relative_to(ROOT)} -> {target}")
+                    continue
+                if not candidate.exists():
+                    errors.append(f"broken local link: {path.relative_to(ROOT)} -> {target}")
     return errors
 
 
@@ -111,15 +129,13 @@ def source_scan() -> list[str]:
         ROOT / "CONTRIBUTING.md",
         ROOT / "SECURITY.md",
     ]
-    for source in roots:
-        paths = [source] if source.is_file() else source.rglob("*")
-        for path in paths:
-            if not path.is_file() or path.suffix.lower() not in {".md", ".py", ".json", ".yaml", ".yml"}:
-                continue
-            text = path.read_text(encoding="utf-8")
-            for forbidden in FORBIDDEN_PORTABLE_TEXT:
-                if forbidden in text:
-                    errors.append(f"non-portable text {forbidden!r} in {path.relative_to(ROOT)}")
+    for path in repository_files({".md", ".py", ".json", ".yaml", ".yml"}):
+        if not any(path == source or path.is_relative_to(source) for source in roots):
+            continue
+        text = path.read_text(encoding="utf-8")
+        for forbidden in FORBIDDEN_PORTABLE_TEXT:
+            if forbidden in text:
+                errors.append(f"non-portable text {forbidden!r} in {path.relative_to(ROOT)}")
     return errors
 
 

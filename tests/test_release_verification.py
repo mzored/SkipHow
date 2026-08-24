@@ -2,6 +2,7 @@
 
 import importlib.util
 from pathlib import Path
+import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -24,16 +25,35 @@ class ReleaseVerificationTests(unittest.TestCase):
     def test_source_scan_checks_only_distributable_source(self) -> None:
         self.assertEqual([], release.source_scan())
 
-    def test_repository_scan_excludes_ci_validator_checkout(self) -> None:
+    def test_repository_scan_uses_only_git_owned_files(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            external = root / ".codex-validator" / "invalid.yaml"
-            external.parent.mkdir()
-            external.write_text("invalid: [", encoding="utf-8")
             owned = root / "owned.yaml"
             owned.write_text("valid: true\n", encoding="utf-8")
+            subprocess.run(["git", "init", "--quiet"], cwd=root, check=True)
+            subprocess.run(["git", "add", "owned.yaml"], cwd=root, check=True)
+            external = root / ".worktrees" / "other" / "invalid.yaml"
+            external.parent.mkdir(parents=True)
+            external.write_text("invalid: [", encoding="utf-8")
             with patch.object(release, "ROOT", root):
                 self.assertEqual([owned], list(release.repository_files({".yaml"})))
+                self.assertEqual([], release.validate_yaml())
+
+    def test_markdown_links_support_angle_and_reference_destinations(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            document = root / "README.md"
+            document.write_text(
+                "[angle](<missing file.md>)\n\n[reference][missing]\n\n[missing]: absent.md\n",
+                encoding="utf-8",
+            )
+            subprocess.run(["git", "init", "--quiet"], cwd=root, check=True)
+            subprocess.run(["git", "add", "README.md"], cwd=root, check=True)
+            with patch.object(release, "ROOT", root):
+                errors = release.validate_markdown_links()
+            self.assertEqual(2, len(errors))
+            self.assertTrue(any("missing%20file.md" in error for error in errors))
+            self.assertTrue(any("absent.md" in error for error in errors))
 
     def test_candidate_diff_failure_is_reported(self) -> None:
         with patch.object(

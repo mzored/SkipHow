@@ -12,6 +12,7 @@ The run directory is durable state, not a substitute for the repository, tracker
   "blocked_lanes": [{"task": "id", "status": "blocked", "blocker": "reason", "next_action": "action"}],
   "decisions": [{"id": "ADR-1", "verdict": "ADOPT|INTEGRATE|BUILD|DEFER|SPIKE", "evidence": "path"}],
   "evidence": [{"task": "id", "commit": "id", "path": "evidence/task/commit/"}],
+  "product_acceptance": [{"product_contract_revision": "exact revision", "candidate_commit": "exact commit identifier", "status": "accepted|returned", "receipt": "receipts/product-acceptance/item.json", "evidence": "path", "reviewer": "id", "at": "timestamp"}],
   "last_reconciliation": {"at": "timestamp", "summary": "result", "sources": ["repository", "tracker", "CI"]}
 }
 ```
@@ -26,4 +27,4 @@ Keep the task DAG, leases, ownership, path reservations, attempts, command budge
 
 `briefing.md` records the authority map, source hashes, decisions, exact source locations, open questions, and corrections discovered during the run. Keep it concise and queryable. Split it into indexed parts if it grows beyond a practical working size.
 
-Use `decisions/` for ADRs, `evidence/<task>/<commit>/` for raw check output, and `receipts/<task>.json` for a worker result with status, base and head commits, evidence, blocker, next action, and `reuse_check` as the verdict or `n/a`. Use `n/a` only when the build-versus-reuse gate did not apply. `FINAL.md` is the final reconciliation and handoff.
+Use `decisions/` for ADRs, `evidence/<task>/<commit>/` for raw check output, and `receipts/<task>.json` for a worker result with status, base and head commits, evidence, blocker, next action, and `reuse_check` as the verdict or `n/a`. Store Product Director acceptance at `receipts/product-acceptance/<item>.json`. Each acceptance receipt records the Product Contract revision, exact candidate commit, `accepted` or `returned` status, evidence location, reviewer, timestamp, and a concrete mismatch when returned. Use `n/a` only when the build-versus-reuse gate did not apply. `FINAL.md` is the final reconciliation and handoff.
