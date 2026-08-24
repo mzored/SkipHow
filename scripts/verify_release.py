@@ -99,7 +99,18 @@ def validate_markdown_links() -> list[str]:
 
 def source_scan() -> list[str]:
     errors: list[str] = []
-    roots = [ROOT / "plugins", ROOT / "adapters", ROOT / "scripts", ROOT / "docs", ROOT / "README.md"]
+    roots = [
+        ROOT / ".agents",
+        ROOT / ".claude-plugin",
+        ROOT / "plugins",
+        ROOT / "adapters",
+        ROOT / "scripts",
+        ROOT / "docs",
+        ROOT / "README.md",
+        ROOT / "CHANGELOG.md",
+        ROOT / "CONTRIBUTING.md",
+        ROOT / "SECURITY.md",
+    ]
     for source in roots:
         paths = [source] if source.is_file() else source.rglob("*")
         for path in paths:
@@ -112,19 +123,31 @@ def source_scan() -> list[str]:
     return errors
 
 
-def offline_checks() -> list[str]:
-    errors = validate_json() + validate_yaml() + validate_markdown_links() + source_scan()
-    commands = [
-        [sys.executable, "scripts/run_codex_evals.py"],
-        [sys.executable, "scripts/run_claude_evals.py"],
-        [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-v"],
-        ["git", "diff", "--check"],
-    ]
+def validate_diff(base: str | None) -> list[str]:
+    """Check working changes and the committed candidate diff for whitespace errors."""
+    errors: list[str] = []
+    commands = [["git", "diff", "--check"]]
+    if base:
+        commands.append(["git", "diff", "--check", base, "HEAD"])
     for command in commands:
         passed, output = checked(command)
         if not passed:
             errors.append(f"failed {' '.join(command)}: {output}")
     return errors
+
+
+def offline_checks(base: str | None = None) -> list[str]:
+    errors = validate_json() + validate_yaml() + validate_markdown_links() + source_scan()
+    commands = [
+        [sys.executable, "scripts/run_codex_evals.py"],
+        [sys.executable, "scripts/run_claude_evals.py"],
+        [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-v"],
+    ]
+    for command in commands:
+        passed, output = checked(command)
+        if not passed:
+            errors.append(f"failed {' '.join(command)}: {output}")
+    return errors + validate_diff(base)
 
 
 def host_checks() -> list[str]:
@@ -192,9 +215,10 @@ def host_checks() -> list[str]:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--host", action="store_true", help="run paid host smoke checks when hosts are installed")
+    parser.add_argument("--base", help="base commit for candidate-diff validation")
+    parser.add_argument("--host", action="store_true", help="run isolated host installation checks")
     args = parser.parse_args(argv)
-    errors = offline_checks()
+    errors = offline_checks(args.base)
     if args.host:
         errors.extend(host_checks())
     if errors:

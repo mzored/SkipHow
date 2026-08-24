@@ -172,7 +172,7 @@ The adopted board needs these single-select options:
 - `Status`: `Todo`, `In Progress`, `Done`, `Blocked`
 - `Human Gate`: `No`, `Deploy`, `Product decision`, `External`
 
-Maintainers can run the deterministic release gate with `python scripts/verify_release.py`. Add `--host` only on a clean candidate commit to validate isolated Codex and Claude marketplace installation.
+Maintainers can run the deterministic release gate with `python scripts/verify_release.py --base <base-sha>`. Add `--host` only on a clean candidate commit to validate isolated Codex and Claude marketplace installation.
 
 ## Behavioral evaluations
 

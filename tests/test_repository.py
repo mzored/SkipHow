@@ -175,13 +175,14 @@ class RepositoryContractTests(unittest.TestCase):
             )
             self.assertEqual(name, adapter["name"])
             self.assertEqual(
-                name in {"cto", "cto-run"},
+                name == "cto-run",
                 bool(adapter.get("disable-model-invocation")),
             )
             self.assertEqual(
                 name
                 in {
                     "codebase-design",
+                    "cto",
                     "diagnose",
                     "github-task",
                     "technical-review",

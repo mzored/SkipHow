@@ -48,3 +48,14 @@ class BehavioralEvalTests(unittest.TestCase):
         response = {"route": "fix", "reason": "bounded repair"}
         payload = '{"type":"result","structured_output":' + json.dumps(response) + "}"
         self.assertEqual(response, claude_evals.structured_response(payload))
+
+    def test_codex_live_runner_binds_evidence_to_a_clean_snapshot(self) -> None:
+        source = SCRIPT.read_text(encoding="utf-8")
+        for required in (
+            '"status", "--porcelain"',
+            '"HEAD^{tree}"',
+            '"clone", "--quiet", "--shared", "--no-checkout"',
+            '"candidate_commit": candidate_commit',
+            '"candidate_tree": candidate_tree',
+        ):
+            self.assertIn(required, source)

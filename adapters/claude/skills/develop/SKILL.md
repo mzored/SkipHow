@@ -1,6 +1,6 @@
 ---
 name: develop
-description: Select approved product work, freeze an immutable delivery campaign, and run it through cto-run until verified completion or a genuine gate.
+description: Select approved product work and hand it to the internal CTO controller for proportionate delivery.
 ---
 
 # develop

@@ -56,7 +56,7 @@ The active host maps available agents to those roles and records any limitation 
 
 ## Engineering references
 
-The testing, technical-review, and codebase-design skills wrap selected material from `mattpocock/skills` at commit `6654f6b60cd9d5be8b54c6fafe44346dabeb3b76`. The source is MIT licensed and was released as v1.2.3 on 2026-08-06. Maintainer count and high-severity advisory status are unverified. The imported files are Markdown and YAML, not runtime dependencies.
+The testing, technical-review, and codebase-design skills wrap selected MIT-licensed material from `mattpocock/skills`. The project released v1.2.3 on 2026-08-06. SkipHow pins later source commit `6654f6b60cd9d5be8b54c6fafe44346dabeb3b76`. Maintainer count and high-severity advisory status are unverified. The imported files are Markdown and YAML, not runtime dependencies.
 
 SkipHow's wrappers take priority over upstream process. The CTO chooses test seams and whether TDD adds value. One fresh reviewer can cover separate Spec and Standards axes for R2. A security, privacy, data, or authentication lens is added only when the changed R3 area needs it. Codebase design does not force an Owner checkpoint or a fixed number of agents.
 
@@ -79,6 +79,6 @@ It also contains `decisions/`, `evidence/`, and `receipts/`. After recovery, the
 
 ## Release gates
 
-`python scripts/verify_release.py` is the deterministic release entrypoint. It parses JSON and YAML, validates the behavioral corpus, scans distributable source for personal paths, checks local Markdown links, runs the repository suite, and runs `git diff --check`. CI calls this entrypoint.
+`python scripts/verify_release.py --base <base-sha>` is the deterministic release entrypoint. It parses JSON and YAML, validates the behavioral corpus, scans distributable source and manifests for personal paths, checks local Markdown links, runs the repository suite, and checks whitespace in both the working tree and full candidate diff. CI calls this entrypoint with the event's base commit.
 
 `python scripts/verify_release.py --host` is the exact-candidate host gate. It requires a clean commit, records the commit and host versions, validates the Claude plugin strictly, and installs the local marketplace candidate into isolated Codex and Claude homes. It fails when an installed host cannot validate or install the candidate. It does not publish, deploy, or mutate the user's normal host configuration.

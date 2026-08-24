@@ -1,7 +1,7 @@
 ---
 name: cto
 description: Internal SkipHow technical delivery controller.
-disable-model-invocation: true
+user-invocable: false
 ---
 
 # CTO

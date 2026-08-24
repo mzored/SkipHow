@@ -3,6 +3,7 @@
 import importlib.util
 from pathlib import Path
 import unittest
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -21,3 +22,13 @@ class ReleaseVerificationTests(unittest.TestCase):
 
     def test_source_scan_checks_only_distributable_source(self) -> None:
         self.assertEqual([], release.source_scan())
+
+    def test_candidate_diff_failure_is_reported(self) -> None:
+        with patch.object(
+            release,
+            "checked",
+            side_effect=[(True, ""), (False, "file.md:1: trailing whitespace")],
+        ):
+            errors = release.validate_diff("base-sha")
+        self.assertEqual(1, len(errors))
+        self.assertIn("base-sha HEAD", errors[0])
