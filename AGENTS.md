@@ -12,4 +12,6 @@ Run the smallest relevant deterministic check before making a claim about a chan
 
 Do not add personal paths, home-directory assumptions, private helpers, credentials, telemetry, MCP servers, hooks, or bundled runtimes without an approved product decision. Keep one canonical workflow. Adapters may point to it but must not copy its policy.
 
+For work that the owning product or technical workflow classifies as tracked development, route GitHub lifecycle operations through `github-task`. The owning workflow decides whether the work needs an issue, branch, review, or orchestrated run from its actual risk, scope, uncertainty, and repository requirements. Low-risk fast fixes must not acquire lifecycle steps solely because they modify code.
+
 Changes to packaging or `cto-run` require validation in both Codex and Claude Code. Support claims require fresh evidence for the exact candidate commit.

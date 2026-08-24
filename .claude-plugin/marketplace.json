@@ -6,13 +6,13 @@
   },
   "metadata": {
     "description": "Route owner intent from ideas through verified software delivery.",
-    "version": "0.2.0"
+    "version": "0.3.0"
   },
   "plugins": [
     {
       "name": "skiphow",
       "description": "Route owner intent from ideas through verified software delivery.",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "author": {
         "name": "mzored",
         "url": "https://github.com/mzored"

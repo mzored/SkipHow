@@ -2,6 +2,18 @@
 
 All notable changes to this project appear in this file.
 
+## 0.3.0
+
+### Added
+
+- The internal `github-task` lifecycle adapter for tracked GitHub work.
+- Portable Codex and Claude Code hooks for linked-branch status and compact Project v2 operations.
+
+### Changed
+
+- `fix`, `develop`, and `cto-run` now decide when GitHub tracking applies before handing lifecycle work to `github-task`.
+- GitHub lifecycle no longer selects implementation methods, test policy, review depth, or verification cadence.
+
 ## 0.2.0
 
 ### Added

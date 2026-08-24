@@ -37,8 +37,9 @@ Most requests can use ordinary language. The plugin routes them through these sk
 | `fix` | Repair defects with rigor proportional to uncertainty and risk. |
 | `diagnose` | Internal root-cause loop used when initial inspection is inconclusive. |
 | `cto-run` | Execute or resume a durable technical campaign. |
+| `github-task` | Internal GitHub issue and Project v2 lifecycle adapter for work already classified as tracked. |
 
-The owner's normal interface is `idea`, `shape`, `develop`, and `fix`. `skiphow` can select them implicitly. `fix` handles defect reports, calls `diagnose` only for unclear causes, and starts `cto-run` only when the repair needs a durable campaign. Both `diagnose` and `cto-run` remain internal capabilities.
+The owner's normal interface is `idea`, `shape`, `develop`, and `fix`. `skiphow` can select them implicitly. `fix` handles defect reports, calls `diagnose` only for unclear causes, and starts `cto-run` only when the repair needs a durable campaign. `github-task` handles GitHub lifecycle only after one of those workflows has decided tracking is warranted. `diagnose`, `cto-run`, and `github-task` remain internal capabilities.
 
 ## Run cto-run
 
@@ -60,7 +61,7 @@ The run directory records `state.json`, `journal.jsonl`, `briefing.md`, decision
 
 ## Host requirements
 
-The host must provide file access, command execution, task controls, and a way to preserve the run directory. The workflow reads repository instructions and the runbook before it changes a project. Host policy takes priority.
+The host must provide file access, command execution, task controls, Python 3, and a way to preserve the run directory. GitHub lifecycle support also requires authenticated `gh` 2.93.0 or newer and `git`. On native Windows, Claude Code hook execution requires the Git Bash installed by Git for Windows; the hook selects `python3`, `python`, or the Windows `py -3` launcher inside that shell. The workflow reads repository instructions and the runbook before it changes a project. Host policy takes priority.
 
 ## Clean uninstall
 
@@ -82,7 +83,7 @@ SkipHow supports the current Codex and Claude Code plugin workflows. A support c
 
 ## Limitations
 
-SkipHow coordinates work inside a host session. It does not ship hooks, a bundled command-line program, an MCP server, telemetry, or a remote control plane. It cannot bypass host policy, repository instructions, protected-action approval, or missing authority. Tracker-based skills require the host to have access to the project's canonical tracker.
+SkipHow coordinates work inside a host session. It ships local lifecycle hooks and a Python helper for compact GitHub Project v2 operations. The hooks run only local `git`, authenticated `gh`, and the bundled helper. The plugin has no MCP server, telemetry, remote service, credential flow, or bundled runtime. It cannot bypass host policy, repository instructions, protected-action approval, or missing authority. Tracker-based skills require access to the project's canonical tracker.
 
 ## Architecture
 

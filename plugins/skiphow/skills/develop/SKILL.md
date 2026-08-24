@@ -9,6 +9,8 @@ Act as the delivery controller between Product Director and CTO. The Product Dir
 
 Use `references/delivery-runbook.md` as the runbook for each new campaign. Reuse the same run directory when resuming. `cto-run` stays unavailable for implicit invocation. Start it by reading and executing the canonical workflow at `../cto-run/SKILL.md` and every reference that workflow requires.
 
+Approved GitHub-backed campaign items use `../github-task/SKILL.md` for their issue, Project v2, linked-branch, Human Gate, and reconciliation operations. `develop` still owns campaign selection and `cto-run` owns execution.
+
 ## Resolve the request
 
 - With no scope, select the highest-priority coherent workset from the canonical product-approved or ready queue.
