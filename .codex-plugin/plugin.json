@@ -3,18 +3,30 @@
   "version": "0.1.0",
   "description": "Skills for long-running software work.",
   "author": {
-    "name": "mzored"
+    "name": "mzored",
+    "url": "https://github.com/mzored"
   },
+  "homepage": "https://github.com/mzored/SkipHow#readme",
   "repository": "https://github.com/mzored/SkipHow",
   "license": "MIT",
+  "keywords": [
+    "agent-skills",
+    "claude-code",
+    "codex",
+    "orchestration"
+  ],
   "skills": "./skills/",
   "interface": {
     "displayName": "SkipHow",
-    "shortDescription": "Run long software campaigns with durable state.",
-    "longDescription": "Run a CTO-led campaign from a durable run directory.",
+    "shortDescription": "Run software work with durable state.",
+    "longDescription": "Plan, run, and resume software campaigns from a durable run directory.",
     "developerName": "mzored",
-    "category": "Productivity",
+    "category": "Developer Tools",
     "capabilities": [],
-    "defaultPrompt": "Start a CTO run for this project."
+    "defaultPrompt": [
+      "Start a CTO run from this runbook.",
+      "Resume the CTO run in this directory.",
+      "Run this project plan with cto-run."
+    ]
   }
 }
