@@ -2,7 +2,7 @@
 
 All notable changes to this project appear in this file.
 
-## Unreleased
+## 0.6.0
 
 ### Changed
 
