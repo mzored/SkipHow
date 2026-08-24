@@ -13,4 +13,4 @@ Classify dependencies before choosing a seam: in-process, locally substitutable,
 
 Compare alternatives when uncertainty warrants it, but choose the lightest analysis that resolves the decision. Do not require a three-agent design exercise or a user-facing checkpoint.
 
-Read `upstream/SKILL.md` and `upstream/DEEPENING.md` for the pinned vocabulary and dependency guidance. This wrapper, repository policy, and CTO decisions take precedence. `DESIGN-IT-TWICE.md` is deliberately not vendored because its mandatory multi-agent and user-facing procedure does not apply here.
+Read `upstream/SKILL.md` and `upstream/DEEPENING.md` for the pinned vocabulary and dependency guidance. `upstream/DESIGN-IT-TWICE.md` is preserved for source completeness, but its mandatory multi-agent and user-facing procedure does not apply. This wrapper, repository policy, and CTO decisions take precedence.

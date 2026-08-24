@@ -5,14 +5,14 @@
     "url": "https://github.com/mzored"
   },
   "metadata": {
-    "description": "Route owner intent from ideas through verified software delivery.",
-    "version": "0.3.0"
+    "description": "Route owner intent through product decisions and proportionate technical delivery.",
+    "version": "0.4.0"
   },
   "plugins": [
     {
       "name": "skiphow",
-      "description": "Route owner intent from ideas through verified software delivery.",
-      "version": "0.3.0",
+      "description": "Route owner intent through product decisions and proportionate technical delivery.",
+      "version": "0.4.0",
       "author": {
         "name": "mzored",
         "url": "https://github.com/mzored"

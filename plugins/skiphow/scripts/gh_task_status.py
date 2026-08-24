@@ -34,7 +34,7 @@ OPTION_FIELDS = {
     "External": "Human Gate",
 }
 REQUIRED_BOARD_OPTIONS = {
-    "Status": {"Todo", "In Progress", "In Review", "Done", "Blocked"},
+    "Status": {"Todo", "In Progress", "Done", "Blocked"},
     "Human Gate": {"No", "Deploy", "Product decision", "External"},
 }
 MINIMUM_GH_VERSION = (2, 93, 0)
@@ -623,17 +623,17 @@ def preflight_report(repo: str | None = None, *, cwd: str = ".") -> tuple[list[s
         notes.append("shared lifecycle hooks are present")
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         failures.append(f"repair plugin hooks at {hook_path}: {exc}")
-    host_validator = {"codex": ["exec", "--help"], "claude": ["plugin", "--help"]}
-    for host, validator_args in host_validator.items():
+    host_commands = {"codex": ["exec", "--help"], "claude": ["plugin", "--help"]}
+    for host, command_args in host_commands.items():
         executable = shutil.which(host)
         if not executable:
             notes.append(f"{host} not found; its host validation is skipped")
             continue
         try:
-            run([executable, *validator_args])
-            notes.append(f"{host} validator help is available")
+            run([executable, *command_args])
+            notes.append(f"{host} plugin command interface is available")
         except LifecycleError as exc:
-            failures.append(f"repair {host} before running its host validation: {exc}")
+            failures.append(f"repair {host} before running host checks: {exc}")
     return failures, notes
 
 

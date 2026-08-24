@@ -95,6 +95,8 @@ Build the approved activity report feature.
 
 The CTO owns the technical plan. It checks whether to reuse maintained software, delegates focused tasks, integrates the work, and runs the checks required by the repository. Long campaigns keep their state on disk, so a wait or context loss does not erase the decisions already made.
 
+The CTO does not make every change a campaign. Bounded work runs directly. Existing tracked work can keep its issue and branch without gaining durable run state. `cto-run` is reserved for work that spans tasks or sessions, waits on external dependencies, coordinates independent lanes, or must recover safely after interruption. Risk still controls review and validation depth.
+
 ### Fix a defect
 
 ```text
@@ -117,9 +119,11 @@ SkipHow sends a question to the lowest role that can answer it from the evidence
 
 ## What is included
 
-Most users interact with four skills. `idea` saves a thought, `shape` makes the product decision, `develop` builds approved work, and `fix` repairs broken behavior. The `skiphow` router chooses between them from an ordinary request.
+Most users interact with four skills. `idea` saves a thought, `shape` makes the product decision, `develop` builds approved work, and `fix` repairs broken behavior. The `skiphow` router chooses between them from an ordinary request. `preflight` checks first-run and tracked-delivery prerequisites without changing the repository or GitHub.
 
-Three internal skills handle the heavier work. `diagnose` proves unclear root causes. `cto-run` manages durable technical campaigns. `github-task` manages GitHub issue and Project v2 state after another workflow decides that the work needs tracking.
+The internal `cto` controller owns technical delivery. It can use `diagnose`, `testing`, `codebase-design`, and `technical-review` when the work needs them. `cto-run` supplies durable state and coordination. `github-task` manages GitHub issue and Project v2 state only after the CTO or repository classifies work as tracked.
+
+The testing, review, and codebase-design capabilities adapt selected MIT-licensed material from `mattpocock/skills` at a pinned commit. SkipHow's wrappers keep testing seams, review depth, and architecture under CTO authority.
 
 ## Install with Codex
 
@@ -159,13 +163,28 @@ In Claude Code:
 
 The run directory stores state, decisions, evidence, receipts, and the final report. Use the same directory to resume the campaign.
 
+## Check prerequisites
+
+Run `preflight` before the first tracked delivery or when the environment changes. It checks Python, Git, GitHub CLI authentication and version, the adopted Project v2 fields, shared hooks, and installed host command interfaces. It reports fixes but does not install tools, authenticate, edit the board, or change files.
+
+The adopted board needs these single-select options:
+
+- `Status`: `Todo`, `In Progress`, `Done`, `Blocked`
+- `Human Gate`: `No`, `Deploy`, `Product decision`, `External`
+
+Maintainers can run the deterministic release gate with `python scripts/verify_release.py`. Add `--host` only on a clean candidate commit to validate isolated Codex and Claude marketplace installation.
+
+## Behavioral evaluations
+
+`plugins/skiphow/evals/behavioral_scenarios.json` holds representative routing and authority cases. `python scripts/run_codex_evals.py` and `python scripts/run_claude_evals.py` validate the same corpus without a model call. Add `--execute` to either host adapter for opt-in live structured runs. Claude Code also has an early-access native plugin-eval command, but SkipHow does not require that feature to run the shared corpus.
+
 ## Limitations
 
 SkipHow cannot supply product vision, access tools or accounts it has not been given, bypass repository policy, or approve protected actions. Material business choices stay with the Owner.
 
 SkipHow runs inside Codex or Claude Code. It has no model runtime, hosted service, agent dashboard, MCP server, telemetry, remote service, credential flow, or bundled runtime.
 
-SkipHow needs file access, command execution, task controls, Python 3, and a place to preserve the run directory. Tracker workflows also need access to the project's tracker. GitHub lifecycle support needs `git` and authenticated `gh` 2.93.0 or newer. On native Windows, Claude Code hooks use the Git Bash installed by Git for Windows.
+SkipHow needs file access, command execution, task controls, Python 3.10 or newer, and a place to preserve the run directory. Tracker workflows also need access to the project's tracker. GitHub lifecycle support needs `git` and authenticated `gh` 2.93.0 or newer. On native Windows, Claude Code hooks use the Git Bash installed by Git for Windows.
 
 ## Design and project documentation
 

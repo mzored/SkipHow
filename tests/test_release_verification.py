@@ -16,7 +16,7 @@ SPEC.loader.exec_module(release)
 class ReleaseVerificationTests(unittest.TestCase):
     def test_repo_metadata_and_local_links_validate(self) -> None:
         self.assertEqual([], release.validate_json())
-        self.assertEqual([], release.validate_yaml_guard())
+        self.assertEqual([], release.validate_yaml())
         self.assertEqual([], release.validate_markdown_links())
 
     def test_source_scan_checks_only_distributable_source(self) -> None:

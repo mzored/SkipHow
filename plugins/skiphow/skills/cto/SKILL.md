@@ -10,7 +10,7 @@ This is an internal authority boundary, not an Owner-facing command. `develop`, 
 
 The CTO owns architecture, reuse decisions, implementation, testing, review, tracking, sequencing, and integration. The Product Director owns product behavior and acceptance. The Owner decides only matters reserved by repository instructions or the authority boundary.
 
-Read `../cto-run/references/operating-policy.md` before making technical decisions. It is the shared technical policy. Do not copy it into this skill or make `cto-run` the name for all technical work.
+Read `references/technical-policy.md` before making technical decisions. It is the shared technical policy. Do not copy it into another skill or make `cto-run` the name for all technical work.
 
 ## Inspect and classify
 
@@ -29,9 +29,9 @@ Risk sets validation and review depth under the shared policy. It never selects 
 ## Deliver
 
 1. Keep the work inside the accepted product scope or the established repair target. Route ambiguous product behavior to the Product Director. Do not ask the Owner to choose a library, architecture, testing seam, implementation plan, or review method.
-2. Select the smallest useful verification. Use regression tests when they provide durable evidence. Use runtime, rendered, or other behavior evidence where that proves the change better. Apply the policy's independent-review requirement to the exact candidate.
+2. Select the smallest useful verification. Read `../testing/SKILL.md` when a stable behavioral seam can provide durable evidence. Use runtime, rendered, or other behavior evidence where that proves the change better. The CTO selects the seam and whether TDD adds value.
 3. Classify GitHub lifecycle separately from execution mode. Use `github-task` only when repository policy or the accepted delivery item requires tracking. It cannot choose technical rigor or architecture.
-4. Integrate only after the candidate has evidence for its acceptance criteria and required review. Preserve unrelated changes and follow repository integration rules.
+4. Read `../codebase-design/SKILL.md` when the work needs an interface, module, adapter, dependency, or seam decision. Read `../technical-review/SKILL.md` at a required independent-review gate. Integrate only after the candidate has evidence for its acceptance criteria and required review.
 5. For user-visible work governed by a Product Contract, request Product Director acceptance at the exact candidate commit before declaring completion. Read `../shape/references/product-acceptance.md`. A rejection returns a concrete contract mismatch to the CTO. A contract change returns to `shape`.
 
 For durable work, the controller gives `cto-run` the immutable campaign, acceptance criteria, repository target, and relevant Product Contract revision. When the caller has no campaign, create the bounded runbook and run directory required by repository convention before starting `cto-run`. `cto-run` owns durable state, recovery, lane coordination, and final reconciliation. For direct work, do not create a campaign merely to mimic those records.

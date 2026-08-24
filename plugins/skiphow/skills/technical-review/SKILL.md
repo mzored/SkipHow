@@ -9,8 +9,8 @@ Use this capability only at a CTO-selected review gate. It is internal and must 
 
 For R2 work, assign one fresh reviewer with no implementation history. That reviewer reports two explicitly separate axes:
 
-- **Spec**: missing, partial, incorrect, or unrequested behavior against the accepted specification.
-- **Standards**: departures from repository standards and relevant design smells, with documented standards taking priority.
+- The Spec axis checks for missing, partial, incorrect, or unrequested behavior against the accepted specification.
+- The Standards axis checks departures from repository standards and relevant design problems. Documented standards take priority.
 
 For R3 work, add a conditional security, privacy, data, or authentication lens when the changed surface makes that lens relevant. Name the lens and the evidence examined. Do not add it mechanically when the risk classification does not touch such a surface.
 

@@ -6,6 +6,7 @@ Files:
 
 - `SKILL.md` from `skills/engineering/codebase-design/SKILL.md`
 - `DEEPENING.md` from `skills/engineering/codebase-design/DEEPENING.md`
+- `DESIGN-IT-TWICE.md` from `skills/engineering/codebase-design/DESIGN-IT-TWICE.md`
 - `LICENSE` from the repository root
 
-`DESIGN-IT-TWICE.md` is excluded because SkipHow does not require its multi-agent or Owner-facing procedure. Copyright and permission terms are in `LICENSE`. The parent SkipHow wrapper is authoritative for invocation, authority, and delivery policy.
+Copyright and permission terms are in `LICENSE`. The parent SkipHow wrapper is authoritative for invocation, authority, and delivery policy. It does not require the upstream multi-agent or Owner-facing procedure.

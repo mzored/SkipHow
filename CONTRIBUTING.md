@@ -4,9 +4,9 @@ Use one issue for one change. Start from an existing issue or open one with a cl
 
 ## Before you open a pull request
 
-- Keep skill policy in the canonical `plugins/skiphow/skills/cto-run/` directory. The Claude Code adapter must remain a small link to that workflow.
+- Keep shared technical policy in `plugins/skiphow/skills/cto/` and durable runtime policy in `plugins/skiphow/skills/cto-run/`. Claude Code adapters must remain small links to canonical workflows.
 - Add or update tests before you claim a behavior works. Run the focused test first, then the repository suite when the change reaches an integration point.
-- Run `git diff --check` and fix whitespace errors.
+- Run `python scripts/verify_release.py` at the integration boundary. It includes the repository suite, metadata and link validation, the source scan, behavioral corpus validation, and `git diff --check`.
 - Use current host documentation and record reproducible Codex or Claude Code support evidence when the change affects packaging or `cto-run`.
 - Apply the `unslop` skill to repository text. Write direct English prose. Do not add em dashes, promotional filler, or vague claims.
 

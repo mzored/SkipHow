@@ -9,6 +9,7 @@ Use this durable runtime in the current session. Resolve `<runbook> <run-directo
 
 Read these references before acting:
 
+- `../cto/references/technical-policy.md`
 - `references/operating-policy.md`
 - `references/state-contract.md`
 - `references/capability-routing.md`

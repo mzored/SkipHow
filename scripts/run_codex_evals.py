@@ -74,7 +74,8 @@ def run_live(corpus: dict[str, Any], *, codex: str) -> int:
         for scenario in corpus["scenarios"]:
             result_path = output_dir / f"{scenario['id']}.json"
             prompt = (
-                "Classify this SkipHow request. Return only the requested JSON object. "
+                "Load and follow $skiphow for this evaluation. Classify this SkipHow request. "
+                "Return only the requested JSON object. "
                 "Respect the Owner, Product Director, and CTO authority boundary.\n\n"
                 f"Request: {scenario['prompt']}"
             )

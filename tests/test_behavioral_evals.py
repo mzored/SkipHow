@@ -11,6 +11,11 @@ SPEC = importlib.util.spec_from_file_location("run_codex_evals", SCRIPT)
 assert SPEC and SPEC.loader
 evals = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(evals)
+CLAUDE_SCRIPT = ROOT / "scripts/run_claude_evals.py"
+CLAUDE_SPEC = importlib.util.spec_from_file_location("run_claude_evals", CLAUDE_SCRIPT)
+assert CLAUDE_SPEC and CLAUDE_SPEC.loader
+claude_evals = importlib.util.module_from_spec(CLAUDE_SPEC)
+CLAUDE_SPEC.loader.exec_module(claude_evals)
 
 
 class BehavioralEvalTests(unittest.TestCase):
@@ -24,6 +29,10 @@ class BehavioralEvalTests(unittest.TestCase):
         reviews = {item["assertions"]["review"] for item in scenarios}
         self.assertIn("independent", reviews)
         self.assertTrue(any(item["assertions"]["owner_question"] for item in scenarios))
+        security = next(item for item in scenarios if item["id"] == "security-sensitive-change")
+        self.assertFalse(security["assertions"]["durable"])
+        long_low_risk = next(item for item in scenarios if item["id"] == "durability-not-risk")
+        self.assertTrue(long_low_risk["assertions"]["durable"])
 
     def test_structured_evaluation_reports_only_mismatches(self) -> None:
         expected = {
@@ -33,3 +42,8 @@ class BehavioralEvalTests(unittest.TestCase):
         self.assertEqual([], evals.evaluate(expected, expected))
         changed = dict(expected, route="wrong")
         self.assertEqual(["route"], evals.evaluate(changed, expected))
+
+    def test_claude_adapter_extracts_schema_validated_output(self) -> None:
+        response = {"route": "fix", "reason": "bounded repair"}
+        payload = '{"type":"result","structured_output":' + __import__("json").dumps(response) + "}"
+        self.assertEqual(response, claude_evals.structured_response(payload))

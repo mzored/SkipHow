@@ -1,6 +1,6 @@
 interface:
   display_name: "Develop"
-  short_description: "Turn approved work into a delivery campaign"
-  default_prompt: "Use $develop to select approved work and deliver the next campaign."
+  short_description: "Deliver approved work with proportionate rigor"
+  default_prompt: "Use $develop to select approved work and hand it to the CTO for delivery."
 policy:
   allow_implicit_invocation: true

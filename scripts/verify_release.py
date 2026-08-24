@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
 import re
 import shutil
@@ -13,18 +14,27 @@ import sys
 import tempfile
 from typing import Iterable
 
+import yaml
+
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCAL_LINK = re.compile(r"(?<!!)\[[^]]*\]\(([^)\s]+)(?:\s+[^)]*)?\)")
 FORBIDDEN_PORTABLE_TEXT = ("/" + "Users/", "~/" + ".codex", "~/" + ".claude")
 
 
-def checked(command: list[str], *, timeout: int = 120) -> tuple[bool, str]:
+def checked(
+    command: list[str],
+    *,
+    timeout: int = 120,
+    cwd: Path = ROOT,
+    env: dict[str, str] | None = None,
+) -> tuple[bool, str]:
     """Run one bounded command and retain concise evidence for the release log."""
     try:
         result = subprocess.run(
             command,
-            cwd=ROOT,
+            cwd=cwd,
+            env=env,
             capture_output=True,
             text=True,
             timeout=timeout,
@@ -55,19 +65,14 @@ def validate_json() -> list[str]:
     return errors
 
 
-def validate_yaml_guard() -> list[str]:
-    """Check the portable YAML subset used for metadata and GitHub Actions files."""
+def validate_yaml() -> list[str]:
+    """Parse every YAML document with the repository's pinned parser."""
     errors: list[str] = []
     for path in repository_files({".yml", ".yaml"}):
-        lines = path.read_text(encoding="utf-8").splitlines()
-        if any("\t" in line for line in lines):
-            errors.append(f"invalid YAML indentation in {path.relative_to(ROOT)}: tabs are not allowed")
-        if not any(line and not line.lstrip().startswith("#") for line in lines):
-            errors.append(f"empty YAML document {path.relative_to(ROOT)}")
-        for number, line in enumerate(lines, start=1):
-            content = line.strip()
-            if content and not content.startswith(("#", "- ")) and ":" not in content:
-                errors.append(f"invalid YAML mapping at {path.relative_to(ROOT)}:{number}")
+        try:
+            yaml.safe_load(path.read_text(encoding="utf-8"))
+        except (OSError, yaml.YAMLError) as exc:
+            errors.append(f"invalid YAML {path.relative_to(ROOT)}: {exc}")
     return errors
 
 
@@ -108,8 +113,10 @@ def source_scan() -> list[str]:
 
 
 def offline_checks() -> list[str]:
-    errors = validate_json() + validate_yaml_guard() + validate_markdown_links() + source_scan()
+    errors = validate_json() + validate_yaml() + validate_markdown_links() + source_scan()
     commands = [
+        [sys.executable, "scripts/run_codex_evals.py"],
+        [sys.executable, "scripts/run_claude_evals.py"],
         [sys.executable, "-m", "unittest", "discover", "-s", "tests", "-v"],
         ["git", "diff", "--check"],
     ]
@@ -121,44 +128,65 @@ def offline_checks() -> list[str]:
 
 
 def host_checks() -> list[str]:
-    """Run opt-in, ephemeral host checks. Missing hosts are explicitly skipped."""
+    """Install the exact candidate in isolated host homes and run smoke checks."""
     errors: list[str] = []
     head_ok, head = checked(["git", "rev-parse", "HEAD"])
     print(f"HEAD: {head if head_ok else 'unavailable: ' + head}")
-    for executable in ("codex", "claude", "gh"):
+    clean_ok, dirty = checked(["git", "status", "--porcelain"])
+    if not clean_ok or dirty:
+        errors.append("host verification requires a clean exact candidate commit")
+    for executable in ("codex", "claude"):
         found = shutil.which(executable)
         if not found:
-            print(f"SKIP {executable}: not installed")
+            errors.append(f"{executable} is not installed; host support is unverified")
             continue
         passed, output = checked([found, "--version"])
         if not passed:
             errors.append(f"{executable} version check failed: {output}")
             continue
         print(f"TOOL {executable}: {output.splitlines()[0]}")
-    codex = shutil.which("codex")
-    if codex:
-        with tempfile.TemporaryDirectory(prefix="skiphow-codex-smoke-") as temporary:
-            schema = Path(temporary) / "schema.json"
-            output = Path(temporary) / "response.json"
-            schema.write_text('{"type":"object","required":["ok"],"properties":{"ok":{"type":"boolean"}}}', encoding="utf-8")
-            passed, detail = checked([
-                codex, "exec", "--ephemeral", "--sandbox", "read-only", "--skip-git-repo-check",
-                "--output-schema", str(schema), "--output-last-message", str(output),
-                "Return JSON with ok set to true.",
-            ])
-            if not passed:
-                errors.append(f"Codex ephemeral structured smoke failed: {detail}")
+    with tempfile.TemporaryDirectory(prefix="skiphow-host-smoke-") as temporary:
+        temporary_path = Path(temporary)
+        codex = shutil.which("codex")
+        if codex:
+            codex_home = temporary_path / "codex-home"
+            codex_home.mkdir()
+            codex_env = os.environ.copy()
+            codex_env["CODEX_HOME"] = str(codex_home)
+            for command, label in (
+                ([codex, "plugin", "marketplace", "add", str(ROOT), "--json"], "Codex marketplace discovery"),
+                ([codex, "plugin", "add", "skiphow@skiphow", "--json"], "Codex plugin installation"),
+                ([codex, "plugin", "list", "--json"], "Codex plugin listing"),
+            ):
+                passed, detail = checked(command, env=codex_env)
+                if not passed or (label == "Codex plugin listing" and "skiphow" not in detail):
+                    errors.append(f"{label} failed: {detail}")
+                    break
             else:
-                print("PASS Codex ephemeral structured smoke")
-    claude = shutil.which("claude")
-    if claude:
-        passed, detail = checked([
-            claude, "--plugin-dir", str(ROOT), "--print", "--tools", "", "Reply with SKIPHOW_SMOKE."
-        ])
-        if not passed:
-            errors.append(f"Claude local-plugin smoke failed: {detail}")
-        else:
-            print("PASS Claude local-plugin smoke")
+                print("PASS Codex isolated marketplace installation")
+
+        claude = shutil.which("claude")
+        if claude:
+            passed, detail = checked([claude, "plugin", "validate", "--strict", str(ROOT)])
+            if not passed:
+                errors.append(f"Claude strict plugin validation failed: {detail}")
+            else:
+                print("PASS Claude strict plugin validation")
+            claude_home = temporary_path / "claude-home"
+            claude_home.mkdir()
+            claude_env = os.environ.copy()
+            claude_env["CLAUDE_CONFIG_DIR"] = str(claude_home)
+            for command, label in (
+                ([claude, "plugin", "marketplace", "add", str(ROOT), "--scope", "user"], "Claude marketplace discovery"),
+                ([claude, "plugin", "install", "skiphow@skiphow", "--scope", "user", "--yes"], "Claude plugin installation"),
+                ([claude, "plugin", "list"], "Claude plugin listing"),
+            ):
+                passed, detail = checked(command, env=claude_env)
+                if not passed or (label == "Claude plugin listing" and "skiphow" not in detail):
+                    errors.append(f"{label} failed: {detail}")
+                    break
+            else:
+                print("PASS Claude isolated marketplace installation")
     return errors
 
 

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Preflight"
+  short_description: "Check SkipHow delivery prerequisites"
+  default_prompt: "Use $preflight to check this repository and its adopted lifecycle without changing either."
+policy:
+  allow_implicit_invocation: true

@@ -4,20 +4,25 @@ SkipHow ships portable workflows and thin host adapters. Each workflow under `pl
 
 ## Canonical skills
 
-The plugin separates owner intent, product direction, diagnosis, delivery control, and technical execution:
+The plugin separates owner intent, product direction, technical control, focused engineering capabilities, and durable execution:
 
 - `skiphow` routes the request and enforces the Owner, Product Director, and CTO authority boundary.
 - `idea` captures without shaping.
 - `shape` produces a reviewed Product Contract without prescribing implementation.
-- `develop` freezes approved work and starts an immutable delivery campaign.
-- `fix` routes defects through a direct repair, internal diagnosis, product decision, or CTO campaign according to evidence.
+- `develop` freezes approved work and hands it to the CTO for proportionate delivery.
+- `fix` routes defects through a direct repair, internal diagnosis, product decision, or CTO control according to evidence.
+- `cto` is the internal technical controller. It chooses direct, tracked-direct, or durable execution and owns architecture, reuse, testing, review, sequencing, and integration.
 - `diagnose` is the internal diagnostic loop for causes that remain unclear after initial inspection.
-- `cto-run` executes the campaign and keeps durable state.
+- `testing`, `codebase-design`, and `technical-review` are internal engineering capabilities selected by the CTO.
+- `preflight` checks local and GitHub lifecycle prerequisites without changing them.
+- `cto-run` supplies durable state, recovery, lane coordination, and final reconciliation for campaigns that need it.
 - `github-task` performs GitHub issue and Project v2 lifecycle operations only after the owning workflow classifies work as tracked.
 
-`plugins/skiphow/skills/cto-run/SKILL.md` remains the technical execution workflow. It requires explicit invocation by the user, `develop`, or `fix` after a repair qualifies as a durable campaign. It reads the operating policy and project runbook and creates durable records before important waits, handoffs, integrations, and context loss.
+Shared technical policy lives under `plugins/skiphow/skills/cto/`. The `cto-run` skill reads that policy, then adds only durable mechanics. It requires explicit invocation by the user or selection by the CTO after inspection. Risk controls review and validation depth. Multi-task work, external waits, session boundaries, coordinated lanes, and recovery needs control whether work becomes a durable campaign.
 
-The plugin has no MCP server, telemetry, remote service, credential flow, or bundled runtime. Hosts supply filesystem access, command execution, task controls, and connected services. GitHub lifecycle support adds local plugin hooks and a bundled Python helper. It requires Python 3, `git`, and authenticated `gh` 2.93.0 or newer. Claude Code on native Windows additionally uses the Git Bash shipped by Git for Windows so one shell-form hook can select `python3`, `python`, or `py -3` without duplicating lifecycle policy.
+User-visible work governed by a Product Contract gets Product Director acceptance at the exact implementation candidate. The Product Director checks runtime, rendered, API, or other product evidence against the contract. A mismatch returns to the CTO. A requested behavior change returns to `shape`.
+
+The plugin has no MCP server, telemetry, remote service, credential flow, or bundled runtime. Hosts supply filesystem access, command execution, task controls, and connected services. GitHub lifecycle support adds local plugin hooks and a bundled Python helper. It requires Python 3.10 or newer, `git`, and authenticated `gh` 2.93.0 or newer. Claude Code on native Windows additionally uses the Git Bash shipped by Git for Windows so one shell-form hook can select `python3`, `python`, or `py -3` without duplicating lifecycle policy.
 
 ## GitHub lifecycle integration
 
@@ -49,6 +54,16 @@ The operating policy uses capability roles instead of provider-specific model na
 
 The active host maps available agents to those roles and records any limitation in a receipt.
 
+## Engineering references
+
+The testing, technical-review, and codebase-design skills wrap selected material from `mattpocock/skills` at commit `6654f6b60cd9d5be8b54c6fafe44346dabeb3b76`. The source is MIT licensed and was released as v1.2.3 on 2026-08-06. Maintainer count and high-severity advisory status are unverified. The imported files are Markdown and YAML, not runtime dependencies.
+
+SkipHow's wrappers take priority over upstream process. The CTO chooses test seams and whether TDD adds value. One fresh reviewer can cover separate Spec and Standards axes for R2. A security, privacy, data, or authentication lens is added only when the changed R3 area needs it. Codebase design does not force an Owner checkpoint or a fixed number of agents.
+
+## Behavioral evaluations
+
+The shared JSON corpus under `plugins/skiphow/evals/` covers request routing, Owner questions, lifecycle ceremony, durability, testing selection, review depth, and product acceptance. Offline verification validates its schema and representative coverage. Codex and Claude Code adapters can run every case as an opt-in structured model evaluation. Live runs are separate from CI because they consume host resources and can vary across models.
+
 ## Durable state
 
 A run directory must contain these root files:
@@ -64,4 +79,6 @@ It also contains `decisions/`, `evidence/`, and `receipts/`. After recovery, the
 
 ## Release gates
 
-Before release, the repository runs contract tests, package validators, a source scan, and local Markdown link checks. The release process also checks Codex discovery and Claude Code marketplace installation in isolated environments. CI runs the deterministic repository checks only. It does not download or authenticate proprietary hosts.
+`python scripts/verify_release.py` is the deterministic release entrypoint. It parses JSON and YAML, validates the behavioral corpus, scans distributable source for personal paths, checks local Markdown links, runs the repository suite, and runs `git diff --check`. CI calls this entrypoint.
+
+`python scripts/verify_release.py --host` is the exact-candidate host gate. It requires a clean commit, records the commit and host versions, validates the Claude plugin strictly, and installs the local marketplace candidate into isolated Codex and Claude homes. It fails when an installed host cannot validate or install the candidate. It does not publish, deploy, or mutate the user's normal host configuration.

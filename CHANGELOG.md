@@ -2,6 +2,23 @@
 
 All notable changes to this project appear in this file.
 
+## 0.4.0
+
+### Added
+
+- The internal `cto` controller for direct, tracked-direct, or durable technical delivery.
+- Internal testing, technical-review, and codebase-design capabilities adapted from pinned MIT sources.
+- Product Director acceptance for user-visible Product Contract work.
+- A read-only `preflight` workflow for local tools, GitHub authentication, board schema, hooks, and host commands.
+- A 24-scenario behavioral corpus, a structured Codex runner, and one deterministic release-verification entrypoint.
+
+### Changed
+
+- `develop`, `fix`, and technical maintenance now route through the CTO instead of treating `cto-run` as all technical execution.
+- Risk controls validation and review depth. Durability controls whether work uses `cto-run`.
+- CI now runs package metadata, YAML, source, Markdown-link, behavioral-corpus, repository-test, and whitespace checks through `scripts/verify_release.py`.
+- Python 3.10 or newer is now the documented minimum for the bundled lifecycle helper.
+
 ## 0.3.0
 
 ### Added

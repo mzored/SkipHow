@@ -9,21 +9,39 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 SKILL_NAMES = {
+    "codebase-design",
+    "cto",
     "skiphow",
     "idea",
     "shape",
     "develop",
     "fix",
     "diagnose",
+    "preflight",
+    "technical-review",
+    "testing",
     "cto-run",
     "github-task",
 }
-INTERNAL_SKILLS = {"diagnose", "cto-run", "github-task"}
+INTERNAL_SKILLS = {
+    "codebase-design",
+    "cto",
+    "diagnose",
+    "cto-run",
+    "github-task",
+    "technical-review",
+    "testing",
+}
 REQUIRED_PATHS = {
     "plugins/skiphow/.codex-plugin/plugin.json",
     "plugins/skiphow/hooks/hooks.json",
     "plugins/skiphow/scripts/gh_task_status.py",
+    "plugins/skiphow/evals/behavioral_scenarios.json",
+    "plugins/skiphow/evals/response_schema.json",
     "scripts/gh_task_status.py",
+    "scripts/run_codex_evals.py",
+    "scripts/run_claude_evals.py",
+    "scripts/verify_release.py",
     "plugins/skiphow/skills/diagnose/upstream/scripts/hitl-loop.template.sh",
     "README.md",
     "LICENSE",
@@ -35,7 +53,7 @@ PACKAGE_FILES = {
     ".claude-plugin/plugin.json",
     "plugins/skiphow/.codex-plugin/plugin.json",
 }
-PACKAGE_VERSION = "0.3.0"
+PACKAGE_VERSION = "0.4.0"
 PACKAGE_REPOSITORY = "https://github.com/mzored/SkipHow"
 PUBLIC_POLICY_FILES = {
     "docs/architecture.md",
@@ -45,14 +63,20 @@ PUBLIC_POLICY_FILES = {
     "CHANGELOG.md",
     "LICENSE",
 }
-PORTABLE_POLICY_HEADINGS = {
-    "# Operating policy",
+TECHNICAL_POLICY_HEADINGS = {
+    "# Technical policy",
     "## Authority and ownership",
-    "## Recovery and control loop",
     "## Readiness, risk, and decisions",
     "## Build versus reuse",
+    "## Engineering capabilities",
     "## Delegation and execution health",
     "## Validation, scope, and handoff",
+}
+DURABLE_POLICY_HEADINGS = {
+    "# Durable operating policy",
+    "## Recovery and control loop",
+    "## Durable execution health",
+    "## Durable handoff",
 }
 
 CAPABILITY_ROLES = {"MECHANICAL", "IMPLEMENTATION", "CTO_REVIEW"}
@@ -61,7 +85,7 @@ AUTHORITY_ORDER = (
     "1. System, safety, legal, sandbox, and tool constraints.",
     "2. Repository instructions that apply to the current scope.",
     "3. The project runbook, accepted specifications, and approved architecture decisions.",
-    "4. This operating policy.",
+    "4. This technical policy.",
     "5. Task-local plans and worker briefs.",
 )
 DEPENDENCY_CHECKS = (
@@ -150,9 +174,19 @@ class RepositoryContractTests(unittest.TestCase):
                 f"adapters/claude/skills/{name}/SKILL.md"
             )
             self.assertEqual(name, adapter["name"])
-            self.assertEqual(name == "cto-run", bool(adapter.get("disable-model-invocation")))
             self.assertEqual(
-                name in {"diagnose", "github-task"},
+                name in {"cto", "cto-run"},
+                bool(adapter.get("disable-model-invocation")),
+            )
+            self.assertEqual(
+                name
+                in {
+                    "codebase-design",
+                    "diagnose",
+                    "github-task",
+                    "technical-review",
+                    "testing",
+                },
                 adapter.get("user-invocable") is False,
             )
 
@@ -168,7 +202,8 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("bounded Product Director decision", fix)
         self.assertNotIn("read `../shape/SKILL.md`", fix)
         self.assertIn("Continue locally", fix)
-        self.assertIn("Start `cto-run` only", fix)
+        self.assertIn("internal CTO controller", fix)
+        self.assertIn("do not choose `cto-run` from risk alone", fix)
         self.assertIn("Phases 1 through 4", diagnose)
         self.assertIn("Do not execute Phase 5", diagnose)
 
@@ -201,7 +236,11 @@ class RepositoryContractTests(unittest.TestCase):
         """The shipped cto-run policy stays portable and complete."""
         policy_paths = sorted(
             path
-            for path in (ROOT / "plugins/skiphow/skills/cto-run").rglob("*")
+            for root in (
+                ROOT / "plugins/skiphow/skills/cto",
+                ROOT / "plugins/skiphow/skills/cto-run",
+            )
+            for path in root.rglob("*")
             if path.is_file()
         )
         policy_text = "\n".join(
@@ -217,7 +256,10 @@ class RepositoryContractTests(unittest.TestCase):
         for forbidden_text in FORBIDDEN_TEXT:
             self.assertNotIn(forbidden_text, policy_text)
 
-        operating_policy = (
+        technical_policy = (
+            ROOT / "plugins/skiphow/skills/cto/references/technical-policy.md"
+        ).read_text(encoding="utf-8")
+        durable_policy = (
             ROOT / "plugins/skiphow/skills/cto-run/references/operating-policy.md"
         ).read_text(encoding="utf-8")
         state_contract = (
@@ -225,28 +267,29 @@ class RepositoryContractTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
 
         for authority in AUTHORITY_ORDER:
-            self.assertIn(authority, operating_policy)
+            self.assertIn(authority, technical_policy)
         self.assertIn(
-            "Specificity breaks ties only within one authority tier.", operating_policy
+            "Specificity breaks ties only within one authority tier.", technical_policy
         )
         self.assertIn(
-            "product-owner decision, missing authority, protected action, or external prerequisite",
-            operating_policy,
+            "Owner decision, missing authority, protected action, or external prerequisite",
+            technical_policy,
         )
         self.assertIn(
-            "No executable lane or unaccounted mutable state may remain.",
-            operating_policy,
+            "No executable work or unaccounted mutable state may remain.",
+            technical_policy,
         )
-        self.assertNotIn("irreducible blocker", operating_policy)
+        self.assertNotIn("irreducible blocker", technical_policy)
         for dependency_check in DEPENDENCY_CHECKS:
-            self.assertIn(dependency_check, operating_policy)
+            self.assertIn(dependency_check, technical_policy)
         self.assertIn(
-            "`reuse_check` with `n/a` when the gate does not apply", operating_policy
+            "`reuse_check` with `n/a` when the gate does not apply", technical_policy
         )
         self.assertIn(
             "`reuse_check` as the verdict or `n/a`", state_contract
         )
-        self.assertIn(COMPLETION_CLAIM_STATEMENT, operating_policy)
+        self.assertIn(COMPLETION_CLAIM_STATEMENT, technical_policy)
+        self.assertIn("shared technical policy", durable_policy)
 
     def test_manifest_contract(self) -> None:
         """Both hosts publish the same plugin with public metadata."""
@@ -345,7 +388,7 @@ class RepositoryContractTests(unittest.TestCase):
 
         self.assertTrue(yaml.safe_load(frontmatter)["disable-model-invocation"])
         self.assertIn("plugins/skiphow/skills/cto-run/SKILL.md", body)
-        for heading in PORTABLE_POLICY_HEADINGS:
+        for heading in TECHNICAL_POLICY_HEADINGS | DURABLE_POLICY_HEADINGS:
             self.assertNotIn(heading, body)
 
     def test_documentation_contract(self) -> None:
@@ -385,8 +428,7 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertIn("ubuntu-latest", ci)
         self.assertIn("3.11", ci)
         self.assertIn("pip install -r requirements-dev.txt", ci)
-        self.assertIn("python -m unittest discover -s tests -v", ci)
-        self.assertIn("git diff --check", ci)
+        self.assertIn("python scripts/verify_release.py", ci)
 
         dependabot = (ROOT / ".github/dependabot.yml").read_text(encoding="utf-8")
         self.assertIn("pip", dependabot)
