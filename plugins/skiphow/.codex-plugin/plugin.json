@@ -19,13 +19,14 @@
   "interface": {
     "displayName": "SkipHow",
     "shortDescription": "Route ideas through product and technical delivery.",
-    "longDescription": "Capture ideas, shape product decisions, diagnose failures, and deliver approved software campaigns with durable state.",
+    "longDescription": "Capture ideas, shape product decisions, repair defects with adaptive rigor, and deliver approved software campaigns with durable state.",
     "developerName": "mzored",
     "category": "Developer Tools",
     "capabilities": [],
     "defaultPrompt": [
       "Capture this product idea without researching it.",
       "Shape this feature into a product decision.",
+      "Fix this broken behavior with verification proportional to its risk.",
       "Develop the next approved product campaign."
     ]
   }

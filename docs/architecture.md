@@ -10,10 +10,11 @@ The plugin separates owner intent, product direction, diagnosis, delivery contro
 - `idea` captures without shaping.
 - `shape` produces a reviewed Product Contract without prescribing implementation.
 - `develop` freezes approved work and starts an immutable delivery campaign.
-- `diagnose` runs a disciplined diagnostic loop with an organization-specific authority overlay.
+- `fix` routes defects through a direct repair, internal diagnosis, product decision, or CTO campaign according to evidence.
+- `diagnose` is the internal diagnostic loop for causes that remain unclear after initial inspection.
 - `cto-run` executes the campaign and keeps durable state.
 
-`plugins/skiphow/skills/cto-run/SKILL.md` remains the technical execution workflow. It requires explicit invocation, either by the user or by `develop`, reads the operating policy and project runbook, and creates durable records before important waits, handoffs, integrations, and context loss.
+`plugins/skiphow/skills/cto-run/SKILL.md` remains the technical execution workflow. It requires explicit invocation by the user, `develop`, or `fix` after a repair qualifies as a durable campaign. It reads the operating policy and project runbook and creates durable records before important waits, handoffs, integrations, and context loss.
 
 The skill has no MCP server, telemetry, remote service, credential flow, hook, or bundled command-line program. Hosts supply filesystem access, command execution, task controls, and any connected services.
 

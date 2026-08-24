@@ -34,10 +34,11 @@ Most requests can use ordinary language. The plugin routes them through these sk
 | `idea` | Capture a raw idea in the canonical tracker. |
 | `shape` | Research and shape an idea into an approved Product Contract. |
 | `develop` | Freeze approved work into a campaign and hand it to the CTO. |
-| `diagnose` | Reproduce and diagnose bugs with a deterministic feedback loop. |
+| `fix` | Repair defects with rigor proportional to uncertainty and risk. |
+| `diagnose` | Internal root-cause loop used when initial inspection is inconclusive. |
 | `cto-run` | Execute or resume a durable technical campaign. |
 
-The owner's normal interface is `idea`, `shape`, and `develop`. `skiphow` can select them implicitly. `diagnose` handles defect reports. `cto-run` remains the internal execution engine for large campaigns.
+The owner's normal interface is `idea`, `shape`, `develop`, and `fix`. `skiphow` can select them implicitly. `fix` handles defect reports, calls `diagnose` only for unclear causes, and starts `cto-run` only when the repair needs a durable campaign. Both `diagnose` and `cto-run` remain internal capabilities.
 
 ## Run cto-run
 

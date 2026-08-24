@@ -1,6 +1,6 @@
 interface:
   display_name: "Diagnose"
-  short_description: "Build a tight loop and find the root cause"
-  default_prompt: "Use $diagnose to reproduce this failure and identify its root cause."
+  short_description: "Internal root-cause diagnosis loop"
+  default_prompt: "Use $diagnose internally to reproduce a hard failure and prove its root cause."
 policy:
-  allow_implicit_invocation: true
+  allow_implicit_invocation: false

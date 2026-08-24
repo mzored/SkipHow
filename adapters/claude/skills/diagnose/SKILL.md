@@ -1,6 +1,7 @@
 ---
 name: diagnose
-description: Diagnose hard bugs and performance regressions with a deterministic red-green loop while keeping technical investigation inside the CTO boundary.
+description: Internal diagnosis capability for hard bugs and performance regressions whose cause remains unclear after initial inspection.
+user-invocable: false
 ---
 
 # diagnose

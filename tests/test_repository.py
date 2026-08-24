@@ -13,9 +13,11 @@ SKILL_NAMES = {
     "idea",
     "shape",
     "develop",
+    "fix",
     "diagnose",
     "cto-run",
 }
+INTERNAL_SKILLS = {"diagnose", "cto-run"}
 REQUIRED_PATHS = {
     "plugins/skiphow/.codex-plugin/plugin.json",
     "plugins/skiphow/skills/diagnose/upstream/scripts/hitl-loop.template.sh",
@@ -121,7 +123,7 @@ class RepositoryContractTests(unittest.TestCase):
         self.assertEqual([], missing_paths)
 
     def test_skill_invocation_contract(self) -> None:
-        """Public skills route implicitly while cto-run stays an internal engine."""
+        """Owner-facing skills route implicitly while internal capabilities do not."""
         for name in SKILL_NAMES:
             canonical = load_frontmatter(
                 f"plugins/skiphow/skills/{name}/SKILL.md"
@@ -133,7 +135,7 @@ class RepositoryContractTests(unittest.TestCase):
                 (ROOT / f"plugins/skiphow/skills/{name}/agents/openai.yaml")
                 .read_text(encoding="utf-8")
             )
-            expected_implicit = name != "cto-run"
+            expected_implicit = name not in INTERNAL_SKILLS
             self.assertEqual(
                 expected_implicit,
                 openai["policy"]["allow_implicit_invocation"],
@@ -145,6 +147,29 @@ class RepositoryContractTests(unittest.TestCase):
             )
             self.assertEqual(name, adapter["name"])
             self.assertEqual(name == "cto-run", bool(adapter.get("disable-model-invocation")))
+            self.assertEqual(name == "diagnose", adapter.get("user-invocable") is False)
+
+    def test_fix_policy_contract(self) -> None:
+        """Defect routing preserves progressive rigor across capability handoffs."""
+        fix = (ROOT / "plugins/skiphow/skills/fix/SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        diagnose = (ROOT / "plugins/skiphow/skills/diagnose/SKILL.md").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertIn("bounded Product Director decision", fix)
+        self.assertNotIn("read `../shape/SKILL.md`", fix)
+        self.assertIn("Continue locally", fix)
+        self.assertIn("Start `cto-run` only", fix)
+        self.assertIn("Phases 1 through 4", diagnose)
+        self.assertIn("Do not execute Phase 5", diagnose)
+
+        canonical_router = load_frontmatter(
+            "plugins/skiphow/skills/skiphow/SKILL.md"
+        )
+        claude_router = load_frontmatter("adapters/claude/skills/skiphow/SKILL.md")
+        self.assertEqual(canonical_router["description"], claude_router["description"])
 
     def test_portable_policy(self) -> None:
         """The shipped cto-run policy stays portable and complete."""
@@ -223,7 +248,13 @@ class RepositoryContractTests(unittest.TestCase):
 
         self.assertEqual("./skills/", codex_manifest["skills"])
         self.assertFalse((ROOT / "skills").exists())
-        self.assertEqual(3, len(codex_manifest["interface"]["defaultPrompt"]))
+        self.assertEqual(4, len(codex_manifest["interface"]["defaultPrompt"]))
+        self.assertTrue(
+            any(
+                "fix" in prompt.lower()
+                for prompt in codex_manifest["interface"]["defaultPrompt"]
+            )
+        )
         self.assertTrue(
             {"hooks", "apps", "mcpServers"}.isdisjoint(codex_manifest)
         )
