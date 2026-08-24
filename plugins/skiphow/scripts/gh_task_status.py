@@ -6,8 +6,10 @@ from __future__ import annotations
 import argparse
 from dataclasses import dataclass
 import json
+from pathlib import Path
 import re
 import shlex
+import shutil
 import subprocess
 import sys
 from typing import Any, Iterable
@@ -31,6 +33,11 @@ OPTION_FIELDS = {
     "Product decision": "Human Gate",
     "External": "Human Gate",
 }
+REQUIRED_BOARD_OPTIONS = {
+    "Status": {"Todo", "In Progress", "In Review", "Done", "Blocked"},
+    "Human Gate": {"No", "Deploy", "Product decision", "External"},
+}
+MINIMUM_GH_VERSION = (2, 93, 0)
 
 
 LINKED_PROJECTS_QUERY = """
@@ -554,6 +561,95 @@ def command_verify(number_value: str | None) -> int:
     return 1
 
 
+def version_parts(value: str) -> tuple[int, int, int] | None:
+    """Extract a semantic CLI version without adding a package dependency."""
+    match = re.search(r"(?:version\s+)?(\d+)\.(\d+)\.(\d+)", value)
+    if not match:
+        return None
+    return tuple(int(part) for part in match.groups())
+
+
+def preflight_report(repo: str | None = None, *, cwd: str = ".") -> tuple[list[str], list[str]]:
+    """Check local prerequisites and the adopted board without changing either."""
+    failures: list[str] = []
+    notes: list[str] = []
+    if sys.version_info < (3, 10):
+        failures.append("Python 3.10 or newer is required")
+    else:
+        notes.append(f"Python {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}")
+    if not shutil.which("git"):
+        failures.append("install git and retry")
+    else:
+        try:
+            run(["git", "-C", cwd, "rev-parse", "--show-toplevel"])
+            notes.append("git repository detected")
+        except LifecycleError as exc:
+            failures.append(f"open a git repository before preflight: {exc}")
+    if not shutil.which("gh"):
+        failures.append("install GitHub CLI 2.93.0 or newer and authenticate with gh auth login")
+    else:
+        try:
+            gh_version = version_parts(run(["gh", "--version"]))
+            if gh_version is None or gh_version < MINIMUM_GH_VERSION:
+                failures.append("upgrade GitHub CLI to version 2.93.0 or newer")
+            else:
+                notes.append("gh " + ".".join(str(part) for part in gh_version))
+            run(["gh", "auth", "status"])
+            notes.append("gh authentication verified")
+        except LifecycleError as exc:
+            failures.append(f"authenticate GitHub CLI with gh auth login: {exc}")
+    if not failures or not any("GitHub CLI" in failure or "authenticate" in failure for failure in failures):
+        try:
+            resolved_repo = repo or repo_at(cwd)
+            board = board_for(resolved_repo)
+            _, fields = project_fields(board)
+            for field_name, options in REQUIRED_BOARD_OPTIONS.items():
+                available = set((fields.get(field_name) or ("", {}))[1])
+                missing = sorted(options - available)
+                if missing:
+                    failures.append(
+                        f"board {board.owner}/{board.number} field {field_name!r} is missing options: "
+                        + ", ".join(missing)
+                    )
+            if not any("board " in failure for failure in failures):
+                notes.append(f"board {board.owner}/{board.number} lifecycle schema verified")
+        except LifecycleError as exc:
+            failures.append(f"repair or select an adopted Project v2 board: {exc}")
+    hook_path = Path(__file__).resolve().parents[1] / "hooks" / "hooks.json"
+    try:
+        hooks = json.loads(hook_path.read_text(encoding="utf-8"))
+        if set((hooks.get("hooks") or {})) != {"PreToolUse", "Stop"}:
+            raise ValueError("expected PreToolUse and Stop")
+        notes.append("shared lifecycle hooks are present")
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        failures.append(f"repair plugin hooks at {hook_path}: {exc}")
+    host_validator = {"codex": ["exec", "--help"], "claude": ["plugin", "--help"]}
+    for host, validator_args in host_validator.items():
+        executable = shutil.which(host)
+        if not executable:
+            notes.append(f"{host} not found; its host validation is skipped")
+            continue
+        try:
+            run([executable, *validator_args])
+            notes.append(f"{host} validator help is available")
+        except LifecycleError as exc:
+            failures.append(f"repair {host} before running its host validation: {exc}")
+    return failures, notes
+
+
+def command_preflight(repo: str | None) -> int:
+    failures, notes = preflight_report(repo)
+    for note in notes:
+        print(f"PASS {note}")
+    for failure in failures:
+        print(f"FAIL {failure}", file=sys.stderr)
+    if failures:
+        print("Preflight made no changes. Fix the listed items, then rerun this command.", file=sys.stderr)
+        return 1
+    print("Preflight passed. No files, hooks, board items, or remote state were changed.")
+    return 0
+
+
 def hook_command(event: dict[str, Any]) -> str:
     tool_input = event.get("tool_input") or {}
     command = tool_input.get("command") or tool_input.get("cmd") or ""
@@ -731,6 +827,8 @@ def parser() -> argparse.ArgumentParser:
     set_parser.add_argument("option")
     verify = commands.add_parser("verify")
     verify.add_argument("number", nargs="?")
+    preflight = commands.add_parser("preflight")
+    preflight.add_argument("repo", nargs="?")
     hook = commands.add_parser("hook")
     hook.add_argument("event", choices=("pre", "stop"))
     return root
@@ -749,6 +847,8 @@ def main(argv: list[str] | None = None) -> int:
             return command_set(args.number, args.option)
         if args.command == "verify":
             return command_verify(args.number)
+        if args.command == "preflight":
+            return command_preflight(args.repo)
         if args.command == "hook" and args.event == "pre":
             return hook_pre()
         if args.command == "hook" and args.event == "stop":
