@@ -26,10 +26,18 @@ claude plugin install skiphow@skiphow
 
 ## Run cto-run
 
-Invoke `cto-run` explicitly. It does not run from an incidental mention or automatic skill selection. Give it a repository runbook, a durable run directory, and an optional target:
+Invoke `cto-run` explicitly. It does not run from an incidental mention or automatic skill selection. Give it a repository runbook, a durable run directory, and an optional target.
+
+In Codex:
 
 ```text
-cto-run docs/runbooks/release.md .skiphow/runs/release-0.1.0 main
+$cto-run docs/runbooks/release.md .skiphow/runs/release-0.1.0 main
+```
+
+In Claude Code, plugin skills use the plugin namespace:
+
+```text
+/skiphow:cto-run docs/runbooks/release.md .skiphow/runs/release-0.1.0 main
 ```
 
 The run directory records `state.json`, `journal.jsonl`, `briefing.md`, decisions, evidence, receipts, and `FINAL.md`. Reuse that directory to resume the same campaign.

@@ -249,6 +249,14 @@ class RepositoryContractTests(unittest.TestCase):
             self.assertIn(heading, readme)
         for path in sorted(PUBLIC_POLICY_FILES):
             self.assertIn(f"]({path})", readme)
+        self.assertIn(
+            "$cto-run docs/runbooks/release.md .skiphow/runs/release-0.1.0 main",
+            readme,
+        )
+        self.assertIn(
+            "/skiphow:cto-run docs/runbooks/release.md .skiphow/runs/release-0.1.0 main",
+            readme,
+        )
 
         ci = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
         self.assertIn("ubuntu-latest", ci)
