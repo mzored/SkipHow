@@ -45,7 +45,7 @@ Important product and technical work gets a fresh reviewer.
 
 ## Why not a traditional agent framework?
 
-Long scripted workflows decide the process before they inspect the problem. SkipHow inspects first. A clear, local bug gets a short repair. Risky or ambiguous work gets research, recorded decisions, stronger checks, and durable state.
+Long scripted workflows decide the process before they inspect the problem. SkipHow inspects first. A clear, local bug gets a short repair. Risk or ambiguity increases research, recorded decisions, and verification. Work gets durable state only when coordination, waits, recovery, or session boundaries require it.
 
 Large fixed agent teams create coordination work even when the task needs only one specialist. SkipHow keeps the permanent team small. Research, design, security, and testing are capabilities to call on, not seats that must always be filled.
 
