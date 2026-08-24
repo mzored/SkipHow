@@ -1,6 +1,7 @@
 """Contract tests for the portable behavioral eval corpus."""
 
 import importlib.util
+import json
 from pathlib import Path
 import unittest
 
@@ -45,5 +46,5 @@ class BehavioralEvalTests(unittest.TestCase):
 
     def test_claude_adapter_extracts_schema_validated_output(self) -> None:
         response = {"route": "fix", "reason": "bounded repair"}
-        payload = '{"type":"result","structured_output":' + __import__("json").dumps(response) + "}"
+        payload = '{"type":"result","structured_output":' + json.dumps(response) + "}"
         self.assertEqual(response, claude_evals.structured_response(payload))

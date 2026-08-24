@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -63,7 +64,7 @@ def evaluate(response: dict[str, Any], expected: dict[str, Any]) -> list[str]:
 
 
 def run_live(corpus: dict[str, Any], *, codex: str) -> int:
-    """Run opt-in ephemeral structured Codex evaluations and print JSON results."""
+    """Install this candidate in an isolated Codex home, then run live evaluations."""
     schema = RESPONSE_SCHEMA.resolve()
     if not schema.is_file():
         print(f"missing response schema: {schema}", file=sys.stderr)
@@ -71,6 +72,27 @@ def run_live(corpus: dict[str, Any], *, codex: str) -> int:
     results: list[dict[str, Any]] = []
     with tempfile.TemporaryDirectory(prefix="skiphow-evals-") as temporary:
         output_dir = Path(temporary)
+        codex_home = output_dir / "codex-home"
+        codex_home.mkdir()
+        environment = os.environ.copy()
+        environment["CODEX_HOME"] = str(codex_home)
+        for command, label in (
+            ([codex, "plugin", "marketplace", "add", str(ROOT), "--json"], "marketplace discovery"),
+            ([codex, "plugin", "add", "skiphow@skiphow", "--json"], "candidate installation"),
+            ([codex, "plugin", "list", "--json"], "candidate listing"),
+        ):
+            completed = subprocess.run(
+                command,
+                cwd=ROOT,
+                env=environment,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            detail = (completed.stdout + completed.stderr).strip()
+            if completed.returncode != 0 or (label == "candidate listing" and "skiphow" not in detail):
+                print(f"run_codex_evals: {label} failed: {detail}", file=sys.stderr)
+                return 2
         for scenario in corpus["scenarios"]:
             result_path = output_dir / f"{scenario['id']}.json"
             prompt = (
@@ -93,6 +115,7 @@ def run_live(corpus: dict[str, Any], *, codex: str) -> int:
                     prompt,
                 ],
                 cwd=ROOT,
+                env=environment,
                 capture_output=True,
                 text=True,
                 check=False,
