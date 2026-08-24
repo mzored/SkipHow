@@ -4,13 +4,13 @@ SkipHow ships one portable workflow and thin host adapters. The portable workflo
 
 ## Canonical skill
 
-`skills/cto-run/SKILL.md` is the canonical `cto-run` skill. It requires explicit user invocation, reads the operating policy and the project runbook, and creates durable records before important waits, handoffs, integrations, and context loss.
+`plugins/skiphow/skills/cto-run/SKILL.md` is the canonical `cto-run` skill. It requires explicit user invocation, reads the operating policy and the project runbook, and creates durable records before important waits, handoffs, integrations, and context loss.
 
 The skill has no MCP server, telemetry, remote service, credential flow, hook, or bundled command-line program. Hosts supply filesystem access, command execution, task controls, and any connected services.
 
 ## Claude Code adapter
 
-The Claude Code adapter at `adapters/claude/skills/cto-run/SKILL.md` disables model invocation. It directs Claude Code to the canonical skill instead of copying orchestration policy. Codex loads the canonical `skills/` directory directly.
+The Claude Code adapter at `adapters/claude/skills/cto-run/SKILL.md` disables model invocation. It directs Claude Code to the canonical skill instead of copying orchestration policy. Codex installs the nested `plugins/skiphow/` package and loads its `skills/` directory directly. Keeping that package below the repository root prevents Claude Code from discovering both copies.
 
 This keeps behavior in one place. A change to the workflow belongs in the canonical skill, not in an adapter.
 

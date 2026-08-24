@@ -6,4 +6,4 @@ disable-model-invocation: true
 
 # cto-run
 
-From the plugin root, read `skills/cto-run/SKILL.md` and every reference it names before executing. Use that canonical workflow unchanged. Resolve its relative references from the plugin root.
+From the plugin root, read `plugins/skiphow/skills/cto-run/SKILL.md` and every reference it names before executing. Use that canonical workflow unchanged. Resolve its relative references from the plugin root.

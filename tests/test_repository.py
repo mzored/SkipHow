@@ -9,9 +9,9 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 REQUIRED_PATHS = {
-    ".codex-plugin/plugin.json",
-    "skills/cto-run/SKILL.md",
-    "skills/cto-run/agents/openai.yaml",
+    "plugins/skiphow/.codex-plugin/plugin.json",
+    "plugins/skiphow/skills/cto-run/SKILL.md",
+    "plugins/skiphow/skills/cto-run/agents/openai.yaml",
     "README.md",
     "LICENSE",
 }
@@ -20,7 +20,7 @@ PACKAGE_FILES = {
     ".agents/plugins/marketplace.json",
     ".claude-plugin/marketplace.json",
     ".claude-plugin/plugin.json",
-    ".codex-plugin/plugin.json",
+    "plugins/skiphow/.codex-plugin/plugin.json",
 }
 PACKAGE_VERSION = "0.1.0"
 PACKAGE_REPOSITORY = "https://github.com/mzored/SkipHow"
@@ -99,7 +99,9 @@ class RepositoryContractTests(unittest.TestCase):
     def test_portable_policy(self) -> None:
         """The shipped cto-run policy stays portable and complete."""
         policy_paths = sorted(
-            path for path in (ROOT / "skills/cto-run").rglob("*") if path.is_file()
+            path
+            for path in (ROOT / "plugins/skiphow/skills/cto-run").rglob("*")
+            if path.is_file()
         )
         policy_text = "\n".join(
             path.read_text(encoding="utf-8") for path in policy_paths
@@ -115,10 +117,10 @@ class RepositoryContractTests(unittest.TestCase):
             self.assertNotIn(forbidden_text, policy_text)
 
         operating_policy = (
-            ROOT / "skills/cto-run/references/operating-policy.md"
+            ROOT / "plugins/skiphow/skills/cto-run/references/operating-policy.md"
         ).read_text(encoding="utf-8")
         state_contract = (
-            ROOT / "skills/cto-run/references/state-contract.md"
+            ROOT / "plugins/skiphow/skills/cto-run/references/state-contract.md"
         ).read_text(encoding="utf-8")
 
         for authority in AUTHORITY_ORDER:
@@ -152,7 +154,7 @@ class RepositoryContractTests(unittest.TestCase):
         )
         self.assertEqual([], missing_paths)
 
-        codex_manifest = load_json(".codex-plugin/plugin.json")
+        codex_manifest = load_json("plugins/skiphow/.codex-plugin/plugin.json")
         codex_marketplace = load_json(".agents/plugins/marketplace.json")
         claude_manifest = load_json(".claude-plugin/plugin.json")
         claude_marketplace = load_json(".claude-plugin/marketplace.json")
@@ -170,12 +172,13 @@ class RepositoryContractTests(unittest.TestCase):
             self.assertEqual("skiphow", marketplace["plugins"][0]["name"])
 
         self.assertEqual("./skills/", codex_manifest["skills"])
+        self.assertFalse((ROOT / "skills").exists())
         self.assertEqual(3, len(codex_manifest["interface"]["defaultPrompt"]))
         self.assertTrue(
             {"hooks", "apps", "mcpServers"}.isdisjoint(codex_manifest)
         )
         self.assertEqual(
-            {"source": "url", "url": "./"},
+            {"source": "local", "path": "./plugins/skiphow"},
             codex_marketplace["plugins"][0]["source"],
         )
         self.assertEqual(
@@ -193,7 +196,7 @@ class RepositoryContractTests(unittest.TestCase):
     def test_versions_match(self) -> None:
         """Every versioned package record ships the release version."""
         required_paths = (
-            ".codex-plugin/plugin.json",
+            "plugins/skiphow/.codex-plugin/plugin.json",
             ".claude-plugin/plugin.json",
             ".claude-plugin/marketplace.json",
         )
@@ -202,7 +205,7 @@ class RepositoryContractTests(unittest.TestCase):
         if missing_paths:
             return
 
-        codex_manifest = load_json(".codex-plugin/plugin.json")
+        codex_manifest = load_json("plugins/skiphow/.codex-plugin/plugin.json")
         claude_manifest = load_json(".claude-plugin/plugin.json")
         claude_marketplace = load_json(".claude-plugin/marketplace.json")
 
@@ -222,7 +225,7 @@ class RepositoryContractTests(unittest.TestCase):
         _, frontmatter, body = adapter_text.split("---", 2)
 
         self.assertTrue(yaml.safe_load(frontmatter)["disable-model-invocation"])
-        self.assertIn("skills/cto-run/SKILL.md", body)
+        self.assertIn("plugins/skiphow/skills/cto-run/SKILL.md", body)
         for heading in PORTABLE_POLICY_HEADINGS:
             self.assertNotIn(heading, body)
 

@@ -7,8 +7,8 @@
     {
       "name": "skiphow",
       "source": {
-        "source": "url",
-        "url": "./"
+        "source": "local",
+        "path": "./plugins/skiphow"
       },
       "policy": {
         "installation": "AVAILABLE",

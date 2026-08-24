@@ -4,7 +4,7 @@ Use one issue for one change. Start from an existing issue or open one with a cl
 
 ## Before you open a pull request
 
-- Keep skill policy in the canonical `skills/cto-run/` directory. The Claude Code adapter must remain a small link to that workflow.
+- Keep skill policy in the canonical `plugins/skiphow/skills/cto-run/` directory. The Claude Code adapter must remain a small link to that workflow.
 - Add or update tests before you claim a behavior works. Run the focused test first, then the repository suite when the change reaches an integration point.
 - Run `git diff --check` and fix whitespace errors.
 - Use current host documentation and record reproducible Codex or Claude Code support evidence when the change affects packaging or `cto-run`.
