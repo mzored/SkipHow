@@ -1,0 +1,30 @@
+{
+  "description": "Keep tracked GitHub lifecycle state consistent without loading full Project v2 payloads into context.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if command -v python3 >/dev/null 2>&1; then exec python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/gh_task_status.py\" hook pre; elif command -v python >/dev/null 2>&1; then exec python \"${CLAUDE_PLUGIN_ROOT}/scripts/gh_task_status.py\" hook pre; else exec py -3 \"${CLAUDE_PLUGIN_ROOT}/scripts/gh_task_status.py\" hook pre; fi",
+            "commandWindows": "py -3 \"${CLAUDE_PLUGIN_ROOT}\\scripts\\gh_task_status.py\" hook pre",
+            "timeout": 25
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if command -v python3 >/dev/null 2>&1; then exec python3 \"${CLAUDE_PLUGIN_ROOT}/scripts/gh_task_status.py\" hook stop; elif command -v python >/dev/null 2>&1; then exec python \"${CLAUDE_PLUGIN_ROOT}/scripts/gh_task_status.py\" hook stop; else exec py -3 \"${CLAUDE_PLUGIN_ROOT}/scripts/gh_task_status.py\" hook stop; fi",
+            "commandWindows": "py -3 \"${CLAUDE_PLUGIN_ROOT}\\scripts\\gh_task_status.py\" hook stop",
+            "timeout": 25
+          }
+        ]
+      }
+    ]
+  }
+}

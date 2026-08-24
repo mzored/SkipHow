@@ -1,0 +1,6 @@
+interface:
+  display_name: "GitHub lifecycle"
+  short_description: "Maintain tracked GitHub work state"
+  default_prompt: "Use $github-task to carry this already-tracked GitHub item through its lifecycle."
+policy:
+  allow_implicit_invocation: false

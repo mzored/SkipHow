@@ -1,6 +1,6 @@
 {
   "name": "skiphow",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Route owner intent from ideas through verified software delivery.",
   "author": {
     "name": "mzored",
@@ -15,5 +15,6 @@
     "codex",
     "orchestration"
   ],
-  "skills": "./adapters/claude/skills/"
+  "skills": "./adapters/claude/skills/",
+  "hooks": "./plugins/skiphow/hooks/hooks.json"
 }

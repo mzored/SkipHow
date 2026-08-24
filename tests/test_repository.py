@@ -16,10 +16,14 @@ SKILL_NAMES = {
     "fix",
     "diagnose",
     "cto-run",
+    "github-task",
 }
-INTERNAL_SKILLS = {"diagnose", "cto-run"}
+INTERNAL_SKILLS = {"diagnose", "cto-run", "github-task"}
 REQUIRED_PATHS = {
     "plugins/skiphow/.codex-plugin/plugin.json",
+    "plugins/skiphow/hooks/hooks.json",
+    "plugins/skiphow/scripts/gh_task_status.py",
+    "scripts/gh_task_status.py",
     "plugins/skiphow/skills/diagnose/upstream/scripts/hitl-loop.template.sh",
     "README.md",
     "LICENSE",
@@ -31,7 +35,7 @@ PACKAGE_FILES = {
     ".claude-plugin/plugin.json",
     "plugins/skiphow/.codex-plugin/plugin.json",
 }
-PACKAGE_VERSION = "0.2.0"
+PACKAGE_VERSION = "0.3.0"
 PACKAGE_REPOSITORY = "https://github.com/mzored/SkipHow"
 PUBLIC_POLICY_FILES = {
     "docs/architecture.md",
@@ -147,7 +151,10 @@ class RepositoryContractTests(unittest.TestCase):
             )
             self.assertEqual(name, adapter["name"])
             self.assertEqual(name == "cto-run", bool(adapter.get("disable-model-invocation")))
-            self.assertEqual(name == "diagnose", adapter.get("user-invocable") is False)
+            self.assertEqual(
+                name in {"diagnose", "github-task"},
+                adapter.get("user-invocable") is False,
+            )
 
     def test_fix_policy_contract(self) -> None:
         """Defect routing preserves progressive rigor across capability handoffs."""
@@ -170,6 +177,25 @@ class RepositoryContractTests(unittest.TestCase):
         )
         claude_router = load_frontmatter("adapters/claude/skills/skiphow/SKILL.md")
         self.assertEqual(canonical_router["description"], claude_router["description"])
+
+    def test_github_lifecycle_contract(self) -> None:
+        """Tracking decisions stay above the GitHub lifecycle adapter."""
+        github_task = (
+            ROOT / "plugins/skiphow/skills/github-task/SKILL.md"
+        ).read_text(encoding="utf-8")
+        fix = (ROOT / "plugins/skiphow/skills/fix/SKILL.md").read_text(
+            encoding="utf-8"
+        )
+        develop = (ROOT / "plugins/skiphow/skills/develop/SKILL.md").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertIn("Do not infer that code changes require an issue", github_task)
+        self.assertIn("does not select development methods", github_task)
+        self.assertIn("classifies the repair as tracked", fix)
+        self.assertIn("github-task", develop)
+        self.assertNotIn("test-driven-development", github_task)
+        self.assertNotIn("Run the repo's full gate", github_task)
 
     def test_portable_policy(self) -> None:
         """The shipped cto-run policy stays portable and complete."""
@@ -255,14 +281,28 @@ class RepositoryContractTests(unittest.TestCase):
                 for prompt in codex_manifest["interface"]["defaultPrompt"]
             )
         )
-        self.assertTrue(
-            {"hooks", "apps", "mcpServers"}.isdisjoint(codex_manifest)
-        )
+        self.assertTrue({"hooks", "apps", "mcpServers"}.isdisjoint(codex_manifest))
+        self.assertTrue((ROOT / "plugins/skiphow/hooks/hooks.json").is_file())
         self.assertEqual(
             {"source": "local", "path": "./plugins/skiphow"},
             codex_marketplace["plugins"][0]["source"],
         )
         self.assertEqual("./adapters/claude/skills/", claude_manifest["skills"])
+        self.assertEqual(
+            "./plugins/skiphow/hooks/hooks.json", claude_manifest["hooks"]
+        )
+        hooks = load_json("plugins/skiphow/hooks/hooks.json")
+        self.assertEqual({"PreToolUse", "Stop"}, set(hooks["hooks"]))
+        self.assertEqual(
+            "Bash|PowerShell", hooks["hooks"]["PreToolUse"][0]["matcher"]
+        )
+        for groups in hooks["hooks"].values():
+            for group in groups:
+                for hook in group["hooks"]:
+                    self.assertIn("command -v python3", hook["command"])
+                    self.assertIn("command -v python", hook["command"])
+                    self.assertIn("py -3", hook["command"])
+                    self.assertIn("commandWindows", hook)
         self.assertEqual(
             "./",
             claude_marketplace["plugins"][0]["source"],
@@ -339,6 +379,7 @@ class RepositoryContractTests(unittest.TestCase):
             "/skiphow:cto-run docs/runbooks/release.md .skiphow/runs/release-0.1.0 main",
             readme,
         )
+        self.assertIn("Git Bash", readme)
 
         ci = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
         self.assertIn("ubuntu-latest", ci)
