@@ -26,6 +26,8 @@ For a fast fix:
 3. Run the smallest verification that proves the affected behavior.
 4. Finish without creating an issue, plan, campaign, independent review, or new regression test unless repository policy or the repair's actual risk requires one.
 
+If inspection or repair exposes another material problem, validate it cheaply and give it one terminal disposition: resolve it only when inseparable from the smallest correct repair, persist or link it as independent work when actionable, or dismiss it with a reason. Do not absorb it merely because it is nearby, and do not leave it unaccounted for.
+
 A test is evidence, not a ritual. Add regression coverage when a stable seam can reproduce meaningful behavior. For a visual-only correction, browser or rendered-output evidence plus affected checks may be sufficient.
 
 ## Diagnose only when needed

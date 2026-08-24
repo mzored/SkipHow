@@ -54,8 +54,21 @@ Give each operation an expected duration, no-progress limit, cancellation path, 
 
 ## Validation, scope, and handoff
 
-Validate from the smallest targeted check through affected-component, integration, pre-integration, and post-integration gates. Run each required gate on the exact candidate commit. Bind every completion claim to the exact candidate commit, acceptance criteria, command or procedure, environment, duration, result, and evidence location. Green checks do not replace review of the actual behavior, diff, architecture, security, compatibility, operations, and rollback path.
+Validate from the smallest targeted check through affected-component, integration, pre-integration, and post-integration gates. During iteration, rerun only checks invalidated by the delta. At the repository integration boundary, run the required whole-candidate gates once. Bind every completion claim to the exact candidate commit, acceptance criteria, command or procedure, environment, duration, result, and evidence location. A changed commit invalidates only evidence whose subject, assumptions, environment, or behavior changed. Green checks do not replace review of the actual behavior, diff, architecture, security, compatibility, operations, and rollback path.
+
+When planned verification is unavailable because an environment, credential, permission, host, or external service is unavailable, record the affected claim as `UNVERIFIED`. If that proof is required for the requested outcome or release, stop at an external prerequisite. Otherwise report the bounded gap and continue with the evidence that remains valid. Do not build a new validator, CI path, or workaround infrastructure unless the accepted scope authorizes that work.
 
 Preserve unrelated and reserved changes. Do not reset, clean, stash, overwrite, absorb, or commit paths outside the lane's scope. Fix an adjacent defect only when it blocks acceptance, makes the change unsafe, invalidates verification, or cannot be separated from the smallest correct fix.
+
+Every material finding discovered during inspection, diagnosis, implementation, tests, review, or verification must reach one terminal disposition:
+
+- `RESOLVED`: it belongs to the current coherent scope and is fixed or otherwise satisfied;
+- `PERSISTED`: it is independent, actionable, supported by enough evidence, and saved in the canonical tracker for later work;
+- `DUPLICATE`: an existing canonical item already owns it and is linked;
+- `DISMISSED`: it is invalid, immaterial, speculative, or not actionable, with the reason recorded.
+
+Validate a finding cheaply before disposition. A preference or vague concern is not automatically backlog work. Persistence must not expand the current repair or delivery scope. Before completion, reconcile all material findings and mutable state so none remains orphaned.
+
+For structured routing output, use ceremony `resolve-current` for `RESOLVED`, `persist-follow-up` for `PERSISTED`, `link-duplicate` for `DUPLICATE`, and `dismiss-finding` for `DISMISSED`. Report a scoped follow-up review as `scoped-rereview` and unavailable planned proof as testing status `UNVERIFIED`.
 
 Technical work ends only when every in-scope item has exact-commit evidence, an accepted no-code decision, proven supersession, or a blocker caused by an Owner decision, missing authority, protected action, or external prerequisite. No executable work or unaccounted mutable state may remain.

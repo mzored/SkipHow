@@ -40,6 +40,20 @@ class BehavioralEvalTests(unittest.TestCase):
         self.assertTrue(long_low_risk["assertions"]["durable"])
         acceptance_mismatch = next(item for item in scenarios if item["id"] == "acceptance-mismatch")
         self.assertEqual("cto", acceptance_mismatch["assertions"]["route"])
+        by_id = {item["id"]: item["assertions"] for item in scenarios}
+        self.assertEqual("persist-follow-up", by_id["independent-finding-persisted"]["ceremony"])
+        self.assertEqual("link-duplicate", by_id["duplicate-finding-linked"]["ceremony"])
+        self.assertEqual("scoped-rereview", by_id["review-fix-scoped-rereview"]["review"])
+        self.assertEqual("independent", by_id["review-fix-material-redesign"]["review"])
+        self.assertEqual("resolve-current", by_id["resolved-in-scope-finding"]["ceremony"])
+        self.assertEqual("dismiss-finding", by_id["dismissed-speculative-finding"]["ceremony"])
+        self.assertEqual("UNVERIFIED", by_id["optional-validator-unavailable"]["testing"])
+        self.assertEqual(
+            "external-prerequisite",
+            by_id["required-validator-unavailable"]["escalation"],
+        )
+        self.assertFalse(by_id["acceptance-internal-delta"]["product_acceptance"])
+        self.assertTrue(by_id["acceptance-semantic-delta"]["product_acceptance"])
 
     def test_structured_evaluation_reports_only_mismatches(self) -> None:
         expected = {

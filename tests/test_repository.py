@@ -228,10 +228,12 @@ class RepositoryContractTests(unittest.TestCase):
         state_contract = (
             ROOT / "plugins/skiphow/skills/cto-run/references/state-contract.md"
         ).read_text(encoding="utf-8")
-        self.assertIn("exact-candidate Product Director acceptance receipt", runbook)
-        self.assertIn("status `accepted`", runbook)
+        self.assertIn("exact-candidate acceptance receipt", runbook)
+        self.assertIn("status `accepted` or `carried-forward`", runbook)
         self.assertIn('"product_acceptance"', state_contract)
-        self.assertIn('"status": "accepted|returned"', state_contract)
+        self.assertIn('"status": "accepted|returned|carried-forward"', state_contract)
+        self.assertIn('"disposition": "RESOLVED|PERSISTED|DUPLICATE|DISMISSED"', state_contract)
+        self.assertIn('"basis_receipt": "prior receipt or null"', state_contract)
         self.assertIn("receipts/product-acceptance/<item>.json", state_contract)
 
         acceptance = (
