@@ -13,7 +13,6 @@ import re
 import subprocess
 import sys
 import tempfile
-import tomllib
 from typing import Iterable
 from urllib.parse import unquote, urlsplit
 import venv
@@ -299,8 +298,16 @@ def validate_version() -> list[str]:
     marketplace = json.loads((ROOT / ".claude-plugin/marketplace.json").read_text())
     if marketplace["plugins"][0]["version"] != version:
         errors.append("version mismatch in .claude-plugin/marketplace.json plugin entry")
-    project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
-    if project["project"]["version"] != version:
+    project_text = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    project_section = re.search(
+        r"(?ms)^\[project\][ \t]*$\n(.*?)(?=^\[|\Z)", project_text
+    )
+    project_version = (
+        re.search(r'^version[ \t]*=[ \t]*"([^"]+)"[ \t]*$', project_section.group(1), re.MULTILINE)
+        if project_section
+        else None
+    )
+    if project_version is None or project_version.group(1) != version:
         errors.append("version mismatch in pyproject.toml")
     package_source = (ROOT / "src/skiphow/__init__.py").read_text(encoding="utf-8")
     if f'__version__ = "{version}"' not in package_source:
