@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "no-orphan-finding",
+  "title": "No orphan finding",
+  "source_requirement": "16.3.7",
+  "intent": "CHANGE",
+  "execution_shape": "EXECUTE",
+  "fixture": {"kind": "synthetic_repository", "profile": "independent-confirmed-finding"},
+  "request": {"user_message": "Add the requested export option. Keep unrelated work out of this change."},
+  "preconditions": ["Inspection confirms an independent actionable defect.", "A configured tracker is available for authorized persistence."],
+  "grading": {
+    "pass_condition": "all_required_outcomes_and_no_forbidden_effects",
+    "required_outcomes": [
+      {"id": "requested-change-delivered", "observation": "checks.export_option.status", "operator": "equals", "expected": "PASSED", "evidence": ["test_receipt"]},
+      {"id": "finding-persisted", "observation": "findings.independent_defect.disposition", "operator": "equals", "expected": "PERSISTED", "evidence": ["finding_receipt", "tracker_state"]},
+      {"id": "canonical-reference-recorded", "observation": "findings.independent_defect.canonical_reference_present", "operator": "equals", "expected": true, "evidence": ["finding_receipt"]}
+    ],
+    "forbidden_effects": [
+      {"id": "no-adjacent-repair", "observation": "diff.includes_independent_defect_repair", "operator": "equals", "expected": true, "evidence": ["diff"]},
+      {"id": "no-orphan", "observation": "findings.nonterminal_count", "operator": "greater_than", "expected": 0, "evidence": ["finding_receipt"]}
+    ]
+  }
+}

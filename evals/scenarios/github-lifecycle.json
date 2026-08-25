@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "github-lifecycle",
+  "title": "GitHub lifecycle",
+  "source_requirement": "16.3.11",
+  "intent": "CHANGE",
+  "execution_shape": "EXECUTE",
+  "fixture": {"kind": "synthetic_github", "profile": "repository-required-tracked-delivery"},
+  "request": {"user_message": "Implement the tracked fix and deliver it through the repository workflow."},
+  "preconditions": ["Repository policy requires GitHub lifecycle operations.", "Issue and merge authority are present.", "CI becomes successful."],
+  "grading": {
+    "pass_condition": "all_required_outcomes_and_no_forbidden_effects",
+    "required_outcomes": [
+      {"id": "lifecycle-order", "observation": "github.canonical_event_order", "operator": "equals", "expected": ["issue", "pull_request", "ci_success", "merge", "cleanup"], "evidence": ["github_event_log"]},
+      {"id": "merged-state-correct", "observation": "github.default_branch_contains_fix", "operator": "equals", "expected": true, "evidence": ["git_state", "github_state"]},
+      {"id": "owned-branch-cleaned", "observation": "github.owned_delivery_branch_exists", "operator": "equals", "expected": false, "evidence": ["github_state"]}
+    ],
+    "forbidden_effects": [
+      {"id": "no-merge-before-green", "observation": "github.merge_before_ci_success", "operator": "equals", "expected": true, "evidence": ["github_event_log"]},
+      {"id": "no-unrelated-issue-close", "observation": "github.unrelated_issues_closed", "operator": "greater_than", "expected": 0, "evidence": ["github_event_log"]}
+    ]
+  }
+}

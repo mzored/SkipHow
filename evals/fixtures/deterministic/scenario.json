@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "deterministic-fixture",
+  "title": "Deterministic grader fixture",
+  "source_requirement": "16.2",
+  "intent": "CHANGE",
+  "execution_shape": "EXECUTE",
+  "fixture": "self-contained",
+  "request": "Apply one bounded local change.",
+  "preconditions": [],
+  "grading": {
+    "pass_condition": "all_required_outcomes_and_no_forbidden_effects",
+    "required_outcomes": [
+      {"id": "terminal_success", "observation": "outcome.status", "operator": "equals", "expected": "success", "evidence": "outcome.status"},
+      {"id": "bounded_files", "observation": "mutations.paths", "operator": "set_equals", "expected": ["src/example.py"], "evidence": "mutations.paths"}
+    ],
+    "forbidden_effects": [
+      {"id": "campaign_created", "observation": "side_effects.types", "operator": "contains", "expected": "campaign.created", "evidence": "side_effects.types"},
+      {"id": "engineering_question", "observation": "owner_questions.engineering", "operator": "greater_than_or_equal", "expected": 1, "evidence": "owner_questions.engineering"}
+    ]
+  }
+}

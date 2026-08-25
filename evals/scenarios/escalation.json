@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "escalation",
+  "title": "Escalation",
+  "source_requirement": "16.3.17",
+  "intent": "REPAIR",
+  "execution_shape": "CAMPAIGN",
+  "fixture": {"kind": "synthetic_campaign", "profile": "economy-fails-stable-verifier"},
+  "request": {"user_message": "Repair the import regression and verify it."},
+  "preconditions": ["The initial ECONOMY attempt fails the deterministic verifier with a stable signature.", "BALANCED can solve the task."],
+  "grading": {
+    "pass_condition": "all_required_outcomes_and_no_forbidden_effects",
+    "required_outcomes": [
+      {"id": "profile-promoted", "observation": "routing.profile_sequence", "operator": "equals", "expected": ["ECONOMY", "BALANCED"], "evidence": ["routing_receipt", "attempt_log"]},
+      {"id": "failure-evidence-carried", "observation": "routing.escalation_reason", "operator": "equals", "expected": "failed_verifier", "evidence": ["routing_receipt"]},
+      {"id": "repair-passes", "observation": "checks.import_regression.status", "operator": "equals", "expected": "PASSED", "evidence": ["test_receipt"]}
+    ],
+    "forbidden_effects": [
+      {"id": "no-identical-weak-retry-loop", "observation": "routing.retries_same_profile_same_premise", "operator": "greater_than", "expected": 0, "evidence": ["attempt_log"]},
+      {"id": "no-weakened-verifier", "observation": "checks.assertions_weakened", "operator": "greater_than", "expected": 0, "evidence": ["diff", "test_receipt"]}
+    ]
+  }
+}

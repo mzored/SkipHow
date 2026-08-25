@@ -1,25 +1,23 @@
 ---
 name: cto-run
-description: Internal durable runtime used when the technical controller determines that coordination needs persistent recovery state.
+description: Legacy semantic handoff for durable execution.
 ---
 
-# cto-run
+# Durable campaign handoff
 
-Use this specialized durable runtime after the technical controller selects a campaign. Resolve the runbook, run directory, and target from its handoff. Reuse the run directory for a resumed campaign. This is not the stricter form of ordinary engineering and is not a user-facing workflow.
+This compatibility contract does not provide a runner. The technical controller selects durable work and invokes the installed `durable_execution` capability described in `../../host-capabilities.md`.
 
-Read these references before acting:
+Pass the runner:
 
-- `../../engineering/cto/references/technical-policy.md`
-- `references/operating-policy.md`
-- `references/state-contract.md`
-- `references/capability-routing.md`
-- `references/host-notes.md`
-- `../../host-capabilities.md`
+- the original outcome verbatim;
+- granted authority and protected-action limits;
+- the task graph, dependencies, scope, and exclusions;
+- required evidence and repository gates;
+- saved decisions, findings, state identities, and exact next action;
+- product-level cost, time, parallelism, merge, persistence, and stop settings.
 
-Then read the runbook and every repository instruction that applies. Establish the durable state in the run directory, record the policy and runbook hashes, and reconstruct current state from repository, tracker, CI, and other primary evidence. Treat prior summaries, seeds, branch names, and worker reports as claims to verify.
+The executable runner owns transactions, revisions, attempts, leases, checkpoints, provider sessions, external waits, retries, circuit breaking, pause, resume, cancel, recovery, reconciliation, and cleanup. Do not reproduce these mechanics in a runbook or claim that Markdown state makes a process durable.
 
-When the runbook identifies tracked GitHub items, read `../../trackers/github-task/SKILL.md` and use it only for lifecycle operations. The CTO remains the owner of architecture, implementation, verification, review, and integration decisions. This runtime owns only durable state, recovery, lane coordination, and final reconciliation.
+Defining a hard-stop condition does not stop the run. The runner must record and enforce it. If `durable_execution` is unavailable, bounded work may continue in-session, but background and recovery claims remain `UNVERIFIED`.
 
-Before dispatch, preserve the original outcome unchanged, relate every lane to its parent goal and reason, set a budget envelope from reliable host signals or bounded attempts, commands, or wall-clock, and define the hard stop. Run the control loop: observe, reconcile, assess, decide, execute or delegate, verify, review, integrate, and learn. Keep the whole ready frontier moving while preserving one writer per mutable scope. Persist a compact checkpoint before an external wait, handoff, long operation, integration, or context loss.
-
-After a restart or context loss, reread the contracts, rebuild the projection from `state.json`, `journal.jsonl`, receipts, and `briefing.md`, verify it against primary systems, recover orphaned work, and resume idempotently. Stop when the terminal or hard-stop condition occurs, the budget is exhausted, or an authorized blocker stops the affected lane. Defining a hard-stop condition does not stop the run. Always reconcile final campaign and external state.
+Use `../../trackers/github-task/SKILL.md` only for authorized tracked lifecycle operations. Git, GitHub, CI, and providers remain authoritative for their own state.

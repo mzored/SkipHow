@@ -1,8 +1,10 @@
 """Focused tests for optional GitHub adapters."""
 
 import importlib.util
+import hashlib
 import json
 from pathlib import Path
+import re
 import sys
 from unittest.mock import patch
 
@@ -10,6 +12,8 @@ import pytest
 
 
 ROOT = Path(__file__).resolve().parents[1]
+HEAD = "a" * 40
+OTHER_HEAD = "b" * 40
 
 
 def load(name: str, relative: str):
@@ -53,7 +57,15 @@ def test_candidate_search_uses_evidence_and_deduplicates() -> None:
         rows = issues.find_candidates("owner/repo", "Weekly export", "timeout in exporter")
     assert rows == [issues.Issue(7, "Export failure", "https://x/7")]
     assert command.call_count == 2
-    assert command.call_args_list[1].args[0][8] == "timeout in exporter"
+    assert command.call_args_list[1].args[0][8] == '"timeout in exporter"'
+
+
+def test_candidate_search_quotes_qualifiers_and_rejects_empty_input() -> None:
+    with patch.object(issues, "run", return_value="[]") as run:
+        assert issues.find_candidates("owner/repo", 'export is:closed "failure"') == []
+    assert run.call_args.args[0][8] == '"export is:closed  failure " in:title'
+    with pytest.raises(issues.GitHubError, match="non-empty"):
+        issues.find_candidates("owner/repo", "   ")
 
 
 def test_persist_uses_native_relationships_when_supported() -> None:
@@ -127,12 +139,363 @@ def test_feature_detection_is_cached_and_optional_failures_degrade() -> None:
 
 
 def test_delivery_branch_creation_and_provenance_are_distinct() -> None:
-    with patch.object(issues, "run") as run:
+    with patch.object(issues, "run", side_effect=["", "[]", ""]) as run:
         issues.create_linked_branch("owner/repo", 7, "feature/export")
         issues.record_delivery("owner/repo", 7, "https://github.com/owner/repo/pull/8")
     assert run.call_args_list[0].args[0][:3] == ["gh", "issue", "develop"]
-    assert run.call_args_list[1].args[0][:3] == ["gh", "issue", "comment"]
-    assert "Delivery: https://github.com/owner/repo/pull/8" in run.call_args_list[1].args[0]
+    assert run.call_args_list[1].args[0][:3] == ["gh", "api", "repos/owner/repo/issues/7/comments"]
+    assert run.call_args_list[2].args[0][:3] == ["gh", "issue", "comment"]
+    assert any(
+        "https://github.com/owner/repo/pull/8" in value
+        for value in run.call_args_list[2].args[0]
+    )
+
+
+def test_persist_does_not_make_a_duplicate_decision() -> None:
+    with (
+        patch.object(issues, "find_duplicate") as duplicate,
+        patch.object(issues, "supported_create_flags", return_value=set()),
+        patch.object(issues, "available_issue_types", return_value=set()),
+        patch.object(issues, "run", return_value="https://github.com/owner/repo/issues/8"),
+    ):
+        assert issues.persist("owner/repo", "Feature", "Export", "body").endswith("/8")
+    duplicate.assert_not_called()
+
+
+def test_ensure_issue_replays_by_operation_marker_and_rejects_payload_reuse() -> None:
+    created_body = ""
+
+    def create(repo, kind, title, body, **relationships):
+        nonlocal created_body
+        created_body = body
+        return "https://github.com/owner/repo/issues/8"
+
+    with (
+        patch.object(issues, "run", return_value="[]"),
+        patch.object(issues, "persist", side_effect=create) as persist,
+    ):
+        result = issues.ensure_issue(
+            "owner/repo",
+            "intake:42",
+            "Feature",
+            "Export",
+            "body",
+            allow_create=True,
+        )
+    assert result.status == "CREATED"
+    assert "skiphow-operation:intake:42:" in created_body
+    persist.assert_called_once()
+
+    existing = json.dumps(
+        [{"number": 8, "title": "Export", "body": created_body, "url": result.url}]
+    )
+    with (
+        patch.object(issues, "run", return_value=existing),
+        patch.object(issues, "persist") as persist,
+    ):
+        replay = issues.ensure_issue("owner/repo", "intake:42", "Feature", "Export", "body")
+    assert replay.status == "UNCHANGED"
+    persist.assert_not_called()
+
+    conflicting_body = re.sub(
+        r"(skiphow-operation:intake:42:)[0-9a-f]+", r"\1deadbeef", created_body
+    )
+    conflicting = json.dumps(
+        [{"number": 8, "title": "Export", "body": conflicting_body, "url": result.url}]
+    )
+    with patch.object(issues, "run", return_value=conflicting):
+        with pytest.raises(issues.GitHubError, match="different payload"):
+            issues.ensure_issue("owner/repo", "intake:42", "Feature", "Export", "changed")
+
+
+def test_provenance_is_idempotent_by_caller_key() -> None:
+    canonical = json.dumps(
+        {"source": "support", "excerpt": "export failed", "evidence": None},
+        ensure_ascii=False,
+        sort_keys=True,
+    )
+    marker = (
+        "<!-- skiphow-provenance:signal-7:"
+        + hashlib.sha256(canonical.encode()).hexdigest()
+        + " -->"
+    )
+    with patch.object(
+        issues, "run", return_value=json.dumps([{"body": f"{marker}\nexisting"}])
+    ) as run:
+        outcome = issues.record_provenance(
+            "owner/repo", 8, "support", "export failed", key="signal-7"
+        )
+    assert outcome == "UNCHANGED"
+    run.assert_called_once()
+
+
+def test_relationship_is_native_idempotent_or_honestly_unverified() -> None:
+    existing = json.dumps([{"number": 8}])
+    with patch.object(issues, "run", return_value=existing) as run:
+        assert issues.create_relationship("owner/repo", 8, "parent", 2) == "UNCHANGED"
+    run.assert_called_once()
+    with patch.object(issues, "run", side_effect=issues.GitHubError("unsupported")):
+        assert issues.create_relationship("owner/repo", 8, "parent", 2) == "UNVERIFIED"
+
+
+def test_update_issue_skips_matching_fields() -> None:
+    current = json.dumps(
+        {"title": "Export", "body": "body", "state": "OPEN", "url": "https://x/8"}
+    )
+    with patch.object(issues, "run", return_value=current) as run:
+        assert issues.update_issue(
+            "owner/repo",
+            8,
+            title="Export",
+            body="body",
+            state="open",
+            expected_title_digest=hashlib.sha256(b"Export").hexdigest(),
+            expected_body_digest=hashlib.sha256(b"body").hexdigest(),
+        ) == "https://x/8"
+    run.assert_called_once()
+
+    with patch.object(issues, "run", return_value=current):
+        with pytest.raises(issues.GitHubError, match="changed concurrently"):
+            issues.update_issue(
+                "owner/repo",
+                8,
+                body="replacement",
+                expected_body_digest=hashlib.sha256(b"stale").hexdigest(),
+            )
+
+
+def test_owned_worktree_refuses_to_claim_user_branch(tmp_path: Path) -> None:
+    with (
+        patch.object(issues, "_worktrees", return_value=[]),
+        patch.object(issues, "_branch_metadata", return_value=(None, None)),
+        patch.object(issues, "run", return_value="refs/heads/feature/export"),
+        pytest.raises(issues.GitHubError, match="unowned branch"),
+    ):
+        issues.ensure_owned_worktree(
+            str(tmp_path), str(tmp_path / "lane"), "feature/export", "main", "run-7"
+        )
+
+
+def test_owned_worktree_replay_requires_exact_owner_and_path(tmp_path: Path) -> None:
+    target = str((tmp_path / "lane").resolve())
+    rows = [{"worktree": target, "branch": "refs/heads/feature/export"}]
+    with (
+        patch.object(issues, "_worktrees", return_value=rows),
+        patch.object(issues, "_branch_metadata", return_value=("run-7", target)),
+        patch.object(issues, "run") as run,
+    ):
+        assert (
+            issues.ensure_owned_worktree(
+                str(tmp_path), target, "feature/export", "main", "run-7"
+            )
+            == "UNCHANGED"
+        )
+    run.assert_not_called()
+
+
+def test_existing_pull_request_is_reused() -> None:
+    existing = json.dumps(
+        [{"url": "https://github.com/owner/repo/pull/8", "headRefOid": HEAD}]
+    )
+    with patch.object(issues, "run", return_value=existing) as run:
+        assert issues.ensure_pull_request(
+            "owner/repo",
+            "feature/export",
+            "main",
+            "Export",
+            "body",
+            expected_head=HEAD,
+        ).endswith("/8")
+    run.assert_called_once()
+
+
+def test_pull_request_gate_rejects_stale_head() -> None:
+    payload = json.dumps(
+        {
+            "headRefOid": OTHER_HEAD,
+            "mergeable": "MERGEABLE",
+            "reviewDecision": "APPROVED",
+            "statusCheckRollup": [],
+        }
+    )
+    with patch.object(issues, "run", return_value=payload):
+        with pytest.raises(issues.GitHubError, match="head changed"):
+            issues.pull_request_gate("owner/repo", 8, HEAD, [])
+
+
+def test_pull_request_gate_requires_named_checks_on_exact_head() -> None:
+    payload = json.dumps(
+        {
+            "headRefOid": HEAD,
+            "mergeable": "MERGEABLE",
+            "reviewDecision": "APPROVED",
+            "statusCheckRollup": [
+                {"name": "test", "conclusion": "SUCCESS"},
+                {"context": "lint", "state": "PENDING"},
+            ],
+        }
+    )
+    with patch.object(issues, "run", return_value=payload):
+        gate = issues.pull_request_gate("owner/repo", 8, HEAD, ["test", "lint"])
+    assert gate.checks_green is False
+    assert gate.missing_checks == ("lint",)
+
+
+def test_merge_policy_defaults_closed_and_uses_exact_head_guard() -> None:
+    with patch.object(issues, "run") as run:
+        assert (
+            issues.merge_pull_request(
+                "owner/repo", 8, policy="never", expected_head=HEAD
+            )
+            == "NOT_AUTHORIZED"
+        )
+    run.assert_not_called()
+
+    with patch.object(issues, "pull_request_gate") as gate:
+        assert (
+            issues.merge_pull_request(
+                "owner/repo", 8, policy="when_green", expected_head=HEAD
+            )
+            == "UNVERIFIED"
+        )
+    gate.assert_not_called()
+
+    gate = issues.PullRequestGate(HEAD, True, True, True, ())
+    with (
+        patch.object(issues, "pull_request_gate", return_value=gate),
+        patch.object(issues, "run") as run,
+    ):
+        assert (
+            issues.merge_pull_request(
+                "owner/repo",
+                8,
+                policy="when_green_and_approved",
+                expected_head=HEAD,
+                required_checks=["test"],
+                checks_verified=True,
+            )
+            == "MERGE_REQUESTED"
+        )
+    assert "--match-head-commit" in run.call_args.args[0]
+    assert HEAD in run.call_args.args[0]
+    assert "--delete-branch" not in run.call_args.args[0]
+
+
+def test_cleanup_refuses_dirty_or_unique_owned_worktree(tmp_path: Path) -> None:
+    target = str((tmp_path / "lane").resolve())
+    rows = [{"worktree": target, "branch": "refs/heads/feature/export"}]
+    with (
+        patch.object(issues, "_worktrees", return_value=rows),
+        patch.object(issues, "_branch_metadata", return_value=("run-7", target)),
+        patch.object(issues, "run", side_effect=[HEAD, " M user.txt"]),
+        pytest.raises(issues.GitHubError, match="dirty worktree"),
+    ):
+        issues.cleanup_owned_worktree(
+            str(tmp_path),
+            target,
+            "feature/export",
+            "run-7",
+            expected_head=HEAD,
+            merged_into="main",
+        )
+
+    with (
+        patch.object(issues, "_worktrees", return_value=rows),
+        patch.object(issues, "_branch_metadata", return_value=("run-7", target)),
+        patch.object(issues, "run", side_effect=[HEAD, "", "unique"]),
+        pytest.raises(issues.GitHubError, match="commits absent"),
+    ):
+        issues.cleanup_owned_worktree(
+            str(tmp_path),
+            target,
+            "feature/export",
+            "run-7",
+            expected_head=HEAD,
+            merged_into="main",
+        )
+
+
+def test_cleanup_remote_branch_refuses_changed_oid(tmp_path: Path) -> None:
+    merged = json.dumps(
+        {
+            "headRefName": "feature/export",
+            "headRefOid": HEAD,
+            "headRepository": {"name": "repo"},
+            "headRepositoryOwner": {"login": "owner"},
+            "mergedAt": "now",
+        }
+    )
+    with (
+        patch.object(issues, "_branch_metadata", return_value=("run-7", "/lane")),
+        patch.object(
+            issues,
+            "run",
+            side_effect=[
+                "git@github.com:owner/repo.git",
+                merged,
+                f"{OTHER_HEAD} refs/heads/feature/export",
+            ],
+        ),
+        pytest.raises(issues.GitHubError, match="remote branch head changed"),
+    ):
+        issues.cleanup_owned_remote_branch(
+            str(tmp_path),
+            "owner/repo",
+            "origin",
+            "feature/export",
+            "run-7",
+            expected_head=HEAD,
+            merged_pull_request=8,
+        )
+
+
+def test_remote_cleanup_refuses_a_different_repository(tmp_path: Path) -> None:
+    merged = json.dumps(
+        {
+            "headRefName": "feature/export",
+            "headRefOid": HEAD,
+            "headRepository": {"name": "fork"},
+            "headRepositoryOwner": {"login": "owner"},
+            "mergedAt": "now",
+        }
+    )
+    with (
+        patch.object(
+            issues,
+            "run",
+            side_effect=["git@github.com:owner/repo.git", merged],
+        ) as run,
+        pytest.raises(issues.GitHubError, match="head repository"),
+    ):
+        issues.cleanup_owned_remote_branch(
+            str(tmp_path),
+            "owner/base",
+            "origin",
+            "feature/export",
+            "run-7",
+            expected_head=HEAD,
+            merged_pull_request=8,
+        )
+    assert all(command.args[0][:2] != ["git", "push"] for command in run.call_args_list)
+
+
+def test_repeated_local_cleanup_is_unchanged(tmp_path: Path) -> None:
+    with (
+        patch.object(issues, "_worktrees", return_value=[]),
+        patch.object(issues, "run", return_value="") as run,
+    ):
+        assert (
+            issues.cleanup_owned_worktree(
+                str(tmp_path),
+                str(tmp_path / "lane"),
+                "feature/export",
+                "run-7",
+                expected_head=HEAD,
+                merged_into="main",
+            )
+            == "UNCHANGED"
+        )
+    assert run.call_args.args[0][:3] == ["git", "for-each-ref", "--format=%(refname)"]
 
 
 def test_project_requires_explicit_owner_and_number() -> None:

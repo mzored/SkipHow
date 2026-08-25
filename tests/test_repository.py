@@ -71,10 +71,10 @@ def test_product_records_and_acceptance_are_triggered() -> None:
 def test_tracking_is_optional_and_issues_first() -> None:
     tracker = read("plugins/skiphow/skills/skiphow/references/trackers/github-task/SKILL.md")
     setup = read("plugins/skiphow/skills/skiphow/references/trackers/setup/SKILL.md")
-    capture = read("plugins/skiphow/skills/skiphow/references/product/idea/SKILL.md")
+    capture = read("plugins/skiphow/skills/skiphow/references/product/intake/SKILL.md")
     assert "An Issue is the canonical tracked unit" in tracker
     assert "Project absence is `NOT_CONFIGURED`" in tracker
-    assert "Never scan all Projects" in tracker
+    assert "Never scan Projects to guess" in tracker
     assert "Core SkipHow needs no setup" in setup
     assert ".skiphow/config.json" in setup
     assert ".skiphow/config.yml" not in setup

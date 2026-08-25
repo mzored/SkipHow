@@ -12,14 +12,14 @@ def read(relative: str) -> str:
 
 def test_read_only_requests_forbid_mutation() -> None:
     router = read("plugins/skiphow/skills/skiphow/SKILL.md")
-    assert "requests are read-only unless the user explicitly asks to persist or change state" in router
+    assert "requests are read-only unless the user asks to persist or change state" in router
     assert "Read-only permits no file, tracker, branch, campaign, setup, or remote mutation" in router
 
 
 def test_ordinary_changes_do_not_start_campaigns() -> None:
     router = read("plugins/skiphow/skills/skiphow/SKILL.md")
-    assert "Project mutation does not authorize tracking, branches, records, receipts, or campaigns" in router
-    assert "For an ordinary clear change, keep this ephemeral brief in working context" in router
+    assert "Project mutation alone does not authorize tracking or durable execution" in router
+    assert "For an ordinary clear change, keep only this brief in working context" in router
 
 
 def test_rereview_stays_scoped_to_the_fix() -> None:
@@ -35,13 +35,13 @@ def test_unavailable_optional_proof_is_unverified() -> None:
         "plugins/skiphow/skills/skiphow/references/engineering/cto/references/technical-policy.md"
     )
     assert "mark the affected claim `UNVERIFIED`" in policy
-    assert "Do not build new validation infrastructure unless scope authorizes it" in policy
+    assert "Do not build validation infrastructure unless the scope authorizes it" in policy
 
 
 def test_verbatim_request_remains_normative() -> None:
     router = read("plugins/skiphow/skills/skiphow/SKILL.md")
-    assert "Keep the original request verbatim as normative input" in router
-    assert "never replace, narrow, or extend it" in router
+    assert "Keep the verbatim request as the contract" in router
+    assert "compare the delivered result with the verbatim request" in router
 
 
 def test_repository_checks_cannot_launch_models() -> None:

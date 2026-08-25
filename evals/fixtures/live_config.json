@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "suite_id": "local-fixture",
+  "candidate": {
+    "repository_revision": "fixture-revision",
+    "plugin_version": "fixture-plugin",
+    "runner_version": "fixture-runner",
+    "evaluator_version": "fixture-evaluator"
+  },
+  "trials": 2,
+  "adapters": {
+    "balanced": {
+      "command": ["python3", "evals/fixtures/fake_live_adapter.py"],
+      "required_env": [],
+      "max_cost_usd_per_trial": 0.01
+    },
+    "frontier": {
+      "command": ["python3", "evals/fixtures/fake_live_adapter.py"],
+      "required_env": [],
+      "max_cost_usd_per_trial": 0.02
+    }
+  },
+  "scenarios": [
+    {
+      "id": "fixture-scenario",
+      "prompt": "This prompt must not appear in receipts.",
+      "features": {
+        "task_kind": "implementation",
+        "mutation": "local",
+        "error_cost": "low",
+        "reversibility": "easy",
+        "blast_radius": "local",
+        "verification_strength": "strong"
+      }
+    }
+  ]
+}

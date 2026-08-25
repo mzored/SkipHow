@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {"receipt": "pass.json", "verdict": "PASS"},
+    {"receipt": "fail.json", "verdict": "FAIL"},
+    {"receipt": "missing-evidence.json", "verdict": "FAIL"}
+  ]
+}

@@ -13,6 +13,7 @@ import re
 import subprocess
 import sys
 import tempfile
+import tomllib
 from typing import Iterable
 from urllib.parse import unquote, urlsplit
 import venv
@@ -160,13 +161,16 @@ def repository_files(suffixes: Iterable[str] | None = None) -> Iterable[Path]:
         capture_output=True,
         check=False,
     )
-    if result.returncode != 0:
-        detail = result.stderr.decode("utf-8", errors="replace").strip()
-        raise RuntimeError(f"cannot enumerate repository files: {detail}")
-    for raw_path in result.stdout.split(b"\0"):
-        if not raw_path:
-            continue
-        path = ROOT / os.fsdecode(raw_path)
+    if result.returncode == 0:
+        paths = (ROOT / os.fsdecode(raw) for raw in result.stdout.split(b"\0") if raw)
+    else:
+        ignored = {".git", ".venv", ".pytest_cache", "__pycache__", "build"}
+        paths = (
+            path
+            for path in ROOT.rglob("*")
+            if not any(part in ignored or part.endswith(".egg-info") for part in path.parts)
+        )
+    for path in paths:
         if not path.is_file():
             continue
         if suffixes is None or path.suffix.lower() in suffixes:
@@ -235,7 +239,11 @@ def source_scan() -> list[str]:
         ROOT / "plugins",
         ROOT / "adapters",
         ROOT / "scripts",
+        ROOT / "src",
+        ROOT / "schemas",
+        ROOT / "evals",
         ROOT / "docs",
+        ROOT / "pyproject.toml",
         ROOT / "README.md",
         ROOT / "CHANGELOG.md",
         ROOT / "CONTRIBUTING.md",
@@ -260,6 +268,8 @@ def source_scan() -> list[str]:
 
 def validate_diff(base: str | None) -> list[str]:
     """Check working changes and the committed candidate diff for whitespace errors."""
+    if not (ROOT / ".git").exists():
+        return []
     errors: list[str] = []
     commands = [["git", "diff", "--check"]]
     if base:
@@ -289,6 +299,12 @@ def validate_version() -> list[str]:
     marketplace = json.loads((ROOT / ".claude-plugin/marketplace.json").read_text())
     if marketplace["plugins"][0]["version"] != version:
         errors.append("version mismatch in .claude-plugin/marketplace.json plugin entry")
+    project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    if project["project"]["version"] != version:
+        errors.append("version mismatch in pyproject.toml")
+    package_source = (ROOT / "src/skiphow/__init__.py").read_text(encoding="utf-8")
+    if f'__version__ = "{version}"' not in package_source:
+        errors.append("version mismatch in src/skiphow/__init__.py")
     if f"## {version}" not in (ROOT / "CHANGELOG.md").read_text(encoding="utf-8"):
         errors.append(f"CHANGELOG.md has no {version} release heading")
     if f"| {version.rsplit('.', 1)[0]}.x | Yes |" not in (
@@ -342,7 +358,15 @@ def offline_checks(base: str | None = None) -> list[str]:
 
 
 def main(argv: list[str] | None = None) -> int:
+    raw_args = list(sys.argv[1:] if argv is None else argv)
     if not requirements_satisfied():
+        if "--offline" in raw_args:
+            print(
+                "repository checks UNVERIFIED: pinned dependencies are absent from the "
+                f"prepared cache at {MANAGED_ENV}; run scripts/check.py --prepare-only while online",
+                file=sys.stderr,
+            )
+            return 2
         if os.environ.get("SKIPHOW_CHECK_BOOTSTRAPPED") == "1":
             print("managed check environment does not satisfy requirements-dev.txt", file=sys.stderr)
             return 2
@@ -359,7 +383,12 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="prepare the managed environment without running repository checks",
     )
-    args = parser.parse_args(argv)
+    parser.add_argument(
+        "--offline",
+        action="store_true",
+        help="never bootstrap dependencies from the network; report missing cache as UNVERIFIED",
+    )
+    args = parser.parse_args(raw_args)
     if args.prepare_only:
         print(sys.executable)
         return 0

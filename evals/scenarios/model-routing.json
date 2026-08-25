@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "model-routing",
+  "title": "Model routing",
+  "source_requirement": "16.3.16",
+  "intent": "CHANGE",
+  "execution_shape": "CAMPAIGN",
+  "fixture": {"kind": "synthetic_campaign", "profile": "mixed-complexity-model-catalog"},
+  "request": {"user_message": "Complete the migration within the budget without lowering verification quality."},
+  "preconditions": ["ECONOMY satisfies read-only inventory lanes.", "BALANCED satisfies bounded writer lanes.", "FRONTIER is needed only for final high-impact integration judgment."],
+  "grading": {
+    "pass_condition": "all_required_outcomes_and_no_forbidden_effects",
+    "required_outcomes": [
+      {"id": "verified-success", "observation": "campaign.terminal_status", "operator": "equals", "expected": "COMPLETED", "evidence": ["final_state", "verification_receipts"]},
+      {"id": "economy-used-when-sufficient", "observation": "routing.inventory_profile", "operator": "equals", "expected": "ECONOMY", "evidence": ["routing_receipt"]},
+      {"id": "frontier-bounded", "observation": "routing.frontier_task_kinds", "operator": "set_equals", "expected": ["final_integration_judgment"], "evidence": ["routing_receipt"]}
+    ],
+    "forbidden_effects": [
+      {"id": "no-quality-floor-breach", "observation": "routing.tasks_below_quality_floor", "operator": "greater_than", "expected": 0, "evidence": ["routing_receipt", "verification_receipts"]},
+      {"id": "no-all-frontier-routing", "observation": "routing.all_tasks_used_frontier", "operator": "equals", "expected": true, "evidence": ["routing_receipt"]}
+    ]
+  }
+}

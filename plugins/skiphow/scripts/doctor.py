@@ -107,6 +107,7 @@ def report(
         shutil.which(executable) is not None and succeeds([executable, "--version"])
         for executable in ("codex", "claude")
     )
+    runner_available = shutil.which("skiphow") is not None
     return [
         "Core: READY",
         f"Repository: {'READY' if repository_ready else 'LIMITED'}",
@@ -114,6 +115,7 @@ def report(
         f"GitHub Project: {project_state}",
         f"Configuration: {config_state}",
         f"Host CLI: {'AVAILABLE' if host_available else 'NOT AVAILABLE'}",
+        f"Durable runner: {'AVAILABLE' if runner_available else 'NOT AVAILABLE'}",
         f"Package proof: {package_proof(package_receipt)}",
     ]
 
@@ -123,7 +125,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("repo", nargs="?")
     parser.add_argument(
         "--require",
-        choices=("repository", "github", "project", "configuration", "host", "package"),
+        choices=("repository", "github", "project", "configuration", "host", "runner", "package"),
     )
     parser.add_argument("--package-proof-receipt")
     args = parser.parse_args(argv)
@@ -138,6 +140,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.require == "configuration" and "Configuration: VALID" not in lines:
         return 1
     if args.require == "host" and "Host CLI: AVAILABLE" not in lines:
+        return 1
+    if args.require == "runner" and "Durable runner: AVAILABLE" not in lines:
         return 1
     if args.require == "package" and not any(
         line.startswith("Package proof: VERIFIED ") for line in lines

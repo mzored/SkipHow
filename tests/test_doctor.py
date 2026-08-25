@@ -28,6 +28,7 @@ def test_no_optional_tools_still_reports_core_ready() -> None:
     assert "GitHub Project: NOT CONFIGURED" in lines
     assert "Configuration: VALID" in lines
     assert "Host CLI: NOT AVAILABLE" in lines
+    assert "Durable runner: NOT AVAILABLE" in lines
     assert "Package proof: UNVERIFIED (no receipt supplied)" in lines
 
 
@@ -91,3 +92,4 @@ def test_nonzero_status_is_reserved_for_required_workflow() -> None:
         assert doctor.main([]) == 0
         assert doctor.main(["--require", "repository"]) == 1
         assert doctor.main(["--require", "host"]) == 1
+        assert doctor.main(["--require", "runner"]) == 1
