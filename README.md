@@ -2,8 +2,6 @@
 
 SkipHow is one Agent Skill for product and project work in Codex and Claude Code. Describe the outcome. It chooses the smallest sufficient path and finishes only the work your request allows.
 
-Current stable version: 1.0.0.
-
 ```text
 The totals overlap on small screens. Find the cause and fix it.
 
@@ -11,6 +9,10 @@ Research our caching options. Record the decision, but do not change code.
 
 Finish GitHub issues #41, #44, and #48 end to end. Merge accepted pull requests.
 ```
+
+## Why I built it
+
+I built SkipHow after trying [GSD](https://github.com/open-gsd/gsd-core), [OpenSpec](https://github.com/Fission-AI/OpenSpec), [Superpowers](https://github.com/obra/superpowers), [Matt Pocock's skills](https://github.com/mattpocock/skills), [BMAD](https://github.com/bmad-code-org/bmad-method), [Paperclip](https://github.com/paperclipai/paperclip), [Mesa](https://github.com/msoedov/mesa), and [Autonomous PM](https://github.com/mlobo2012/autonomous-pm-plugin). Each got a different part right. SkipHow brings the practices I kept returning to into one skill, so I no longer have to choose a method before every task. [Prior art](docs/prior-art.md) records what came from where and what I deliberately left out.
 
 ## Install
 
@@ -55,7 +57,5 @@ Production changes, payments, credential changes, operations on private data, re
 ## Docs
 
 - [User guide](docs/user-guide.md) for request patterns and tracked work
-- [Trust](docs/trust.md), [threat model](docs/threat-model.md), and [security policy](SECURITY.md) for authority and safety
-- [Evaluation policy](docs/evals.md) for current evidence and known limits
-- [Documentation index](docs/README.md) for architecture, prior art, and project records
-- [Contributing](CONTRIBUTING.md) and the [MIT license](LICENSE)
+- [Trust](docs/trust.md) and [evaluation policy](docs/evals.md) for authority, safety, current evidence, and known limits
+- [Documentation index](docs/README.md) for architecture, security, research, and contributor docs

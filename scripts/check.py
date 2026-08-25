@@ -333,9 +333,6 @@ def validate_version() -> list[str]:
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
     if not re.search(rf"^## {re.escape(release)} \(\d{{4}}-\d{{2}}-\d{{2}}\)$", changelog, re.MULTILINE):
         errors.append(f"CHANGELOG.md has no {release} release heading")
-    readme = (ROOT / "README.md").read_text(encoding="utf-8")
-    if f"Current stable version: {release}." not in readme:
-        errors.append(f"README.md does not name {release} as the current stable version")
     if f"| {release.rsplit('.', 1)[0]}.x | Yes |" not in (
         ROOT / "SECURITY.md"
     ).read_text(encoding="utf-8"):
