@@ -1,12 +1,16 @@
-# Release 1.0 research from 2026-08-26
+# Research from 2026-08-26
 
-This directory records the final architecture, packaging, security, and release audit for SkipHow 1.0.
+This directory records the 1.0 release audit and the review that sets the direction for 1.1.
 
 | Topic | What it records |
 | --- | --- |
 | [Release 1.0 audit](release-1.0-audit.md) | Audit findings, current primary documentation, verified package facts, workflow pins, security settings, and remaining evidence gaps |
 | [Real-task application audit](real-task-application-audit.md) | Observed policy-application gaps in tracked delivery, durable privacy decisions, finding triage, and dirty-state attribution |
+| [System review](system-review.md) | Critical review of 1.0.1 against the owner's brief: inert routing, continuity, policy density, brittle tests, doc duplication, hygiene |
+| [Host routing and continuity](host-routing-and-continuity.md) | Verified Claude Code and Codex facts on per-agent model and effort, plugin agents and hooks, compaction, and unattended launch |
+| [Prior-art mechanics](prior-art-mechanics.md) | Concrete mechanics from nine projects worth borrowing or leaving out |
+| [1.1 brief](v1.1-brief.md) | The work order for the next release |
 
-The accepted campaign and engineering decision is in [ADR 0006](../../decisions/0006-host-native-campaign-and-engineering-policy.md). Earlier research for the host-native rewrite remains under [2026-08-25](../2026-08-25/README.md).
+The accepted campaign and engineering decision is in [ADR 0006](../../decisions/0006-host-native-campaign-and-engineering-policy.md). The proposed routing and continuity decision for 1.1 is [ADR 0007](../../decisions/0007-host-adapters-for-routing-and-continuity.md). Earlier research for the host-native rewrite remains under [2026-08-25](../2026-08-25/README.md).
 
 Facts in this directory describe the dated audit. Host behavior, repository settings, action tags, and vendor formats can change. Recheck the linked primary sources before changing packaging or making a support claim.
