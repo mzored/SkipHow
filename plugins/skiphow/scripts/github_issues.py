@@ -653,7 +653,7 @@ def _branch_metadata(cwd: str, branch: str) -> tuple[str | None, str | None]:
     metadata: dict[str, str] = {}
     for line in values.splitlines():
         key, _, value = line.partition(" ")
-        metadata[key.rsplit(".", 1)[-1]] = value
+        metadata[key.rsplit(".skiphow-", 1)[-1]] = value
     return metadata.get("owner"), metadata.get("worktree")
 
 

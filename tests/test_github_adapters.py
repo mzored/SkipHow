@@ -411,6 +411,24 @@ def test_owned_worktree_replay_requires_exact_owner_and_path(tmp_path: Path) -> 
     run.assert_not_called()
 
 
+def test_branch_metadata_reads_the_owned_lane_keys(tmp_path: Path) -> None:
+    repository = tmp_path / "repository"
+    repository.mkdir()
+    branch = "release/0.8.0-external"
+    target = str((tmp_path / "lane").resolve())
+    issues.run(["git", "init"], cwd=str(repository))
+    issues.run(
+        ["git", "config", "--local", f"branch.{branch}.skiphow-owner", "run-7"],
+        cwd=str(repository),
+    )
+    issues.run(
+        ["git", "config", "--local", f"branch.{branch}.skiphow-worktree", target],
+        cwd=str(repository),
+    )
+
+    assert issues._branch_metadata(str(repository), branch) == ("run-7", target)
+
+
 def test_existing_pull_request_is_reused() -> None:
     existing = json.dumps(
         [{"url": "https://github.com/owner/repo/pull/8", "headRefOid": HEAD}]
