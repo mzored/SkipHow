@@ -24,7 +24,7 @@ codex
 
 Start a new session after installation. `/plugins` is the canonical install, update, enable, and removal interface. See the [OpenAI plugin guide](https://learn.chatgpt.com/docs/plugins).
 
-Package discovery and activation still need a release receipt before this release can claim support. The Codex IDE extension is not claimed. The current marketplace policy limits the package to Codex, so ChatGPT Chat and Work are not claimed.
+Package validation can check the manifest and isolated CLI installation. It does not prove how a model will interpret the installed instructions. The Codex IDE extension is not claimed. The current marketplace policy limits the package to Codex, so ChatGPT Chat and Work are not claimed.
 
 ## Install with Claude Code
 
@@ -33,7 +33,7 @@ Package discovery and activation still need a release receipt before this releas
 /plugin install skiphow@skiphow
 ```
 
-Start a new session after installation. If Claude Code says that plugins changed on disk, run `/reload-plugins`. See the [Claude Code plugin guide](https://code.claude.com/docs/en/discover-plugins). Package discovery and activation still need a release receipt before this release can claim support.
+Start a new session after installation. If Claude Code says that plugins changed on disk, run `/reload-plugins`. See the [Claude Code plugin guide](https://code.claude.com/docs/en/discover-plugins). Package validation can check the manifest and isolated CLI installation, but not model behavior.
 
 ## What SkipHow decides
 
@@ -67,15 +67,15 @@ When you explicitly ask to save an idea or finding, SkipHow uses the configured 
 
 ## Support matrix
 
-No host has package-validated support until release CI produces a fresh receipt for that exact package and host profile.
+Host evidence covers package format and isolated installation only. This repository does not run live model evaluations, so activation and model behavior are not claimed by these checks.
 
-| Product | Discover/install | Skill activation | Inspect | Mutate | Commands | Subagents | Live outcomes |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Codex CLI | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` |
-| Codex desktop | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` |
-| Claude Code | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` |
-| Codex IDE | not claimed | not claimed | not claimed | not claimed | not claimed | not claimed | not claimed |
-| ChatGPT Chat/Work | policy excluded | policy excluded | not claimed | not claimed | not claimed | not claimed | not claimed |
+| Product | Package format | Isolated install | Runtime behavior |
+| --- | --- | --- | --- |
+| Codex CLI | `UNVERIFIED` | `UNVERIFIED` | not live-evaluated |
+| Codex desktop | same Codex package | not separately tested | not live-evaluated |
+| Claude Code | `UNVERIFIED` | `UNVERIFIED` | not live-evaluated |
+| Codex IDE | not claimed | not claimed | not claimed |
+| ChatGPT Chat/Work | policy excluded | policy excluded | not claimed |
 
 Core work needs project inspection. Change requests also need file mutation, and repository checks need command execution. Missing subagents do not block bounded work. Optional GitHub persistence needs authenticated `gh`; optional helper scripts support Python 3.10 through 3.13.
 
@@ -92,7 +92,13 @@ python scripts/check.py
 python scripts/check_hosts.py --output path/to/host-proof.json
 ```
 
-The first command is deterministic and local. The second writes host proof as `VERIFIED`, `UNVERIFIED`, or `FAILED`; pass that receipt to doctor with `--package-proof-receipt`. Paid live evals are opt-in; release claims come from machine-readable receipts bound to the candidate commit, not an installed CLI version.
+The first command is deterministic and local. On its first run, it creates the ignored `.venv`, installs the exact versions from `requirements-dev.txt`, and then reuses that environment. The second command validates package structure and isolated installation in available hosts. It writes package proof as `VERIFIED`, `UNVERIFIED`, or `FAILED`; pass that receipt to doctor with `--package-proof-receipt`. Neither command launches a model or proves runtime behavior.
+
+Run a focused pytest selection through the same environment:
+
+```sh
+python scripts/check.py --pytest tests/test_config.py -q
+```
 
 ## Research and prior art
 

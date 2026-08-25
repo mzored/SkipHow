@@ -23,6 +23,16 @@ check = load("skiphow_check", "scripts/check.py")
 hosts = load("skiphow_check_hosts", "scripts/check_hosts.py")
 
 
+def test_local_check_dependencies_are_pinned_and_repo_managed() -> None:
+    assert check.pinned_requirements() == {
+        "PyYAML": "6.0.3",
+        "markdown-it-py": "4.2.0",
+        "pytest": "9.1.1",
+    }
+    assert check.MANAGED_ENV == ROOT / ".venv"
+    assert ".venv/" in (ROOT / ".gitignore").read_text(encoding="utf-8").splitlines()
+
+
 def test_local_metadata_links_and_version_validate() -> None:
     assert check.validate_json() == []
     assert check.validate_yaml() == []

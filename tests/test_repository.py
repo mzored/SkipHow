@@ -126,10 +126,7 @@ def test_host_capability_vocabulary_stays_in_sync() -> None:
     )[0]
     canonical_names = set(re.findall(r"^- `([^`]+)`:", canonical, re.MULTILINE))
     documented_names = set(re.findall(r"^- `([^`]+)`$", architecture_section, re.MULTILINE))
-    profile_names = set(
-        json.loads(read("plugins/skiphow/evals/host_profiles.json"))["capabilities"]
-    )
-    assert canonical_names == documented_names == profile_names
+    assert canonical_names == documented_names
 
 
 def test_campaign_and_authority_boundaries_are_explicit() -> None:

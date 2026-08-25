@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
+from importlib.metadata import PackageNotFoundError, version
 import json
 import os
 from pathlib import Path
@@ -12,13 +14,13 @@ import subprocess
 import sys
 from typing import Iterable
 from urllib.parse import unquote, urlsplit
-
-from markdown_it import MarkdownIt
-import yaml
+import venv
 
 
 ROOT = Path(__file__).resolve().parents[1]
-MARKDOWN = MarkdownIt("commonmark")
+REQUIREMENTS = ROOT / "requirements-dev.txt"
+MANAGED_ENV = ROOT / ".venv"
+DEPENDENCY_STAMP = MANAGED_ENV / ".skiphow-requirements"
 PERSONAL_PATH = re.compile(
     r"(?:/(?:Users|home)/[^/\s]+/|"
     + "/"
@@ -28,6 +30,84 @@ PERSONAL_PATH = re.compile(
 )
 
 
+def pinned_requirements() -> dict[str, str]:
+    """Read the exact development dependency versions used by local checks."""
+    result: dict[str, str] = {}
+    for line in REQUIREMENTS.read_text(encoding="utf-8").splitlines():
+        value = line.strip()
+        if not value or value.startswith("#"):
+            continue
+        name, separator, expected = value.partition("==")
+        if not separator or not name or not expected:
+            raise ValueError(f"development requirement must pin one exact version: {value}")
+        result[name] = expected
+    return result
+
+
+def requirements_satisfied() -> bool:
+    """Return whether the current interpreter has every pinned check dependency."""
+    try:
+        return all(version(name) == expected for name, expected in pinned_requirements().items())
+    except PackageNotFoundError:
+        return False
+
+
+def managed_python() -> Path:
+    """Return the interpreter path for the repository-managed virtual environment."""
+    return MANAGED_ENV / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+
+
+def bootstrap_dependencies() -> int:
+    """Prepare pinned check dependencies and restart this command in the managed env."""
+    try:
+        fingerprint = hashlib.sha256(REQUIREMENTS.read_bytes()).hexdigest()
+    except OSError as exc:
+        print(f"cannot read {REQUIREMENTS.relative_to(ROOT)}: {exc}", file=sys.stderr)
+        return 2
+    python = managed_python()
+    if not python.is_file():
+        print("preparing .venv for repository checks", flush=True)
+        try:
+            venv.EnvBuilder(with_pip=True).create(MANAGED_ENV)
+        except OSError as exc:
+            print(f"cannot create {MANAGED_ENV.relative_to(ROOT)}: {exc}", file=sys.stderr)
+            return 2
+    current_is_managed = Path(sys.executable).resolve() == python.resolve()
+    try:
+        installed_fingerprint = DEPENDENCY_STAMP.read_text(encoding="utf-8").strip()
+    except OSError:
+        installed_fingerprint = ""
+    if current_is_managed or installed_fingerprint != fingerprint:
+        try:
+            completed = subprocess.run(
+                [
+                    str(python),
+                    "-m",
+                    "pip",
+                    "install",
+                    "--disable-pip-version-check",
+                    "-r",
+                    str(REQUIREMENTS),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                timeout=300,
+                check=False,
+            )
+        except subprocess.TimeoutExpired:
+            print("installing check dependencies timed out after 300 seconds", file=sys.stderr)
+            return 2
+        if completed.returncode:
+            print(completed.stdout + completed.stderr, file=sys.stderr)
+            return 2
+        DEPENDENCY_STAMP.write_text(fingerprint + "\n", encoding="utf-8")
+    environment = os.environ.copy()
+    environment["SKIPHOW_CHECK_BOOTSTRAPPED"] = "1"
+    os.execve(str(python), [str(python), str(Path(__file__).resolve()), *sys.argv[1:]], environment)
+    return 2
+
+
 def checked(
     command: list[str],
     *,
@@ -35,7 +115,7 @@ def checked(
     cwd: Path = ROOT,
     env: dict[str, str] | None = None,
 ) -> tuple[bool, str]:
-    """Run one bounded command and retain concise evidence for the release log."""
+    """Run one bounded local command and retain concise failure output."""
     try:
         result = subprocess.run(
             command,
@@ -85,6 +165,8 @@ def validate_json() -> list[str]:
 
 def validate_yaml() -> list[str]:
     """Parse every YAML document with the repository's pinned parser."""
+    import yaml
+
     errors: list[str] = []
     for path in repository_files({".yml", ".yaml"}):
         try:
@@ -95,10 +177,13 @@ def validate_yaml() -> list[str]:
 
 
 def validate_markdown_links() -> list[str]:
+    from markdown_it import MarkdownIt
+
+    markdown = MarkdownIt("commonmark")
     errors: list[str] = []
     for path in repository_files({".md"}):
         text = path.read_text(encoding="utf-8")
-        for token in MARKDOWN.parse(text):
+        for token in markdown.parse(text):
             for child in token.children or ():
                 if child.type != "link_open":
                     continue
@@ -227,9 +312,6 @@ def offline_checks(base: str | None = None) -> list[str]:
         context_budget.extend(["--base", base])
     commands = [
         context_budget,
-        [sys.executable, "scripts/run_codex_evals.py"],
-        [sys.executable, "scripts/run_claude_evals.py"],
-        [sys.executable, "scripts/run_outcome_evals.py"],
         [sys.executable, "-m", "pytest", "-q"],
     ]
     for command in commands:
@@ -240,12 +322,34 @@ def offline_checks(base: str | None = None) -> list[str]:
 
 
 def main(argv: list[str] | None = None) -> int:
+    if not requirements_satisfied():
+        if os.environ.get("SKIPHOW_CHECK_BOOTSTRAPPED") == "1":
+            print("managed check environment does not satisfy requirements-dev.txt", file=sys.stderr)
+            return 2
+        return bootstrap_dependencies()
     parser = argparse.ArgumentParser()
     parser.add_argument("--base", help="base commit for candidate-diff validation")
+    parser.add_argument(
+        "--pytest",
+        nargs=argparse.REMAINDER,
+        help="run pytest with the remaining arguments inside the managed environment",
+    )
     args = parser.parse_args(argv)
+    if args.pytest is not None:
+        try:
+            completed = subprocess.run(
+                [sys.executable, "-m", "pytest", *args.pytest],
+                cwd=ROOT,
+                timeout=120,
+                check=False,
+            )
+        except subprocess.TimeoutExpired:
+            print("focused pytest run timed out after 120 seconds", file=sys.stderr)
+            return 2
+        return completed.returncode
     errors = offline_checks(args.base)
     if errors:
-        print("release verification failed:", file=sys.stderr)
+        print("repository checks failed:", file=sys.stderr)
         for error in errors:
             print(f"- {error}", file=sys.stderr)
         return 1

@@ -2,6 +2,18 @@
 
 All notable changes to this project appear in this file.
 
+## Unreleased
+
+### Changed
+
+- Replaced live model evaluations with direct deterministic tests for the runtime policy contracts.
+- Limited host checks to package validation and isolated installation. Package evidence no longer implies skill activation or model behavior.
+- Made `scripts/check.py` prepare and reuse an ignored `.venv` when the current Python lacks the pinned check dependencies.
+
+### Removed
+
+- Removed the Codex and Claude Code live eval runners, outcome scenarios, multi-trial release gate, and live eval receipts.
+
 ## 0.7.0
 
 ### Changed

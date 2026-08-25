@@ -44,7 +44,7 @@ The controller selects mechanisms by capability, not by product name. The vocabu
 
 Missing delegation does not block bounded work; one agent can execute it sequentially. A required independent review without a fresh-review capability remains `UNVERIFIED` or follows a repository-defined blocker. Protected actions still need the authority the host and user require.
 
-Product support is not architecture truth. The README derives its matrix from release receipts and keeps untested cells `UNVERIFIED` or not claimed.
+Product support is not architecture truth. The README reports package validation separately from runtime behavior. Package checks do not prove how a model will interpret the installed instructions.
 
 ## Campaign state
 
@@ -68,13 +68,13 @@ Future domain or integration extensions stay internal and lazy. Each extension d
 - protected actions;
 - output and evidence contract;
 - fallback when unavailable;
-- context budget and eval scenarios;
+- context budget and deterministic regression coverage;
 - source and license when adapted.
 
-An extension belongs outside the kernel unless an observed failure and an outcome eval show that every request needs it.
+An extension belongs outside the kernel unless an observed failure and a deterministic regression test show that every request needs it.
 
 ## Verification
 
-Deterministic checks cover structured files, links, portability, version consistency, instruction budgets, runtime source boundaries, eval corpora, tests, and whitespace. Outcome fixtures grade final repository state, required evidence, forbidden mutations, questions, tracker and campaign touches, review work, and available cost signals.
+Deterministic checks cover structured files, links, portability, version consistency, instruction budgets, runtime policy contracts, tests, and whitespace. Direct contract tests protect the mutation boundary, campaign threshold, scoped re-review, verification limits, and verbatim user intent.
 
-Correctness is a hard gate. Economy becomes a regression gate only after a reliable baseline exists. Host availability and package proof are separate: finding a CLI does not prove that the package installs, activates, or completes an outcome.
+Host availability and package proof are separate. Finding a CLI does not prove that the package installs. Package validation and isolated installation do not prove skill activation or model behavior. This repository does not launch models as part of tests or release checks.
