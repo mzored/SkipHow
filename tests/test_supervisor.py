@@ -200,7 +200,7 @@ def test_duration_limit_interrupts_quiet_provider_and_preserves_retry(tmp_path: 
     runner.add_task(run.run_id, "Long task", task_id="task")
     provider = QuietProvider()
     limits = SupervisionLimits(
-        max_duration=0.03, lease_seconds=0.03, poll_interval=0.01
+        max_duration=0.2, lease_seconds=0.2, poll_interval=0.02
     )
 
     receipt = asyncio.run(

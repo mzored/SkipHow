@@ -154,6 +154,10 @@ class CampaignExecutor:
                     compaction_requested = True
                 if event.kind in self.TERMINAL_EVENTS:
                     break
+            heartbeat.cancel()
+            with suppress(asyncio.CancelledError):
+                await heartbeat
+            heartbeat = None
             task = self.runner.store.transition_attempt(
                 attempt_id,
                 worker_id,
@@ -231,15 +235,15 @@ class CampaignExecutor:
         *,
         lease_seconds: float,
     ) -> None:
-        interval = min(30.0, lease_seconds / 3)
+        interval = min(30.0, lease_seconds / 4)
         while True:
-            await asyncio.sleep(interval)
             self.runner.store.renew_lease(
                 attempt_id,
                 worker_id,
                 lease_seconds=lease_seconds,
                 next_action="consume provider events",
             )
+            await asyncio.sleep(interval)
 
 
 def _recovery_prompt(capsule: dict[str, Any]) -> str:
