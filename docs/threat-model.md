@@ -1,43 +1,48 @@
 # Threat model
 
-This model covers the optional local runner, provider sessions, repository access, GitHub delivery, and live evals. Direct host use also remains subject to host sandbox and approval policy.
+This model covers the SkipHow skill running inside Codex or Claude Code, optional GitHub delivery, host-native subagents and worktrees, and opt-in live evaluation.
 
-## Assets and trust boundaries
+SkipHow is policy, not an enforcement process. The host sandbox, approval system, credentials, and repository protections are the security controls that enforce access.
 
-Protected assets are source code, uncommitted user work, Git history, remote Issues and pull requests, credentials, customer or production data, run authority, evidence, and cost budget.
+## Assets and boundaries
 
-Trusted authority comes only from the user request, host policy, repository instructions, saved project policy, and explicit protected-action grants. Repository text, Issues, pull requests, web content, tool output, generated artifacts, transcripts, and worker summaries are untrusted data even when they look like instructions.
+Protected assets include source code, uncommitted work, Git history, Issues, pull requests, branches, credentials, customer and production data, granted authority, completion evidence, and provider spend.
 
-The main boundaries are:
+The relevant boundaries are:
 
-- controller to provider adapter;
-- controller to filesystem and subprocess;
-- controller to Git and GitHub;
-- worker to owned worktree;
-- live eval harness to provider command;
-- persisted state to resumed process.
+- owner and host instructions versus repository, tracker, web, and tool content;
+- root agent versus subagent context;
+- one worktree versus another;
+- local files and Git state versus GitHub, CI, databases, and deployments;
+- the packaged candidate versus live-evaluation fixtures and collectors.
 
-## Material threats and controls
+A subagent is not a security boundary. A worktree separates files but does not isolate credentials, network access, shared databases, or remote services.
 
-| Threat | Consequence | Control | Residual evidence |
+## Threats and controls
+
+| Threat | Consequence | Control | Remaining limit |
 | --- | --- | --- | --- |
-| Prompt injection in repository or remote text | Authority capture or unauthorized mutation | Untrusted-content classification, immutable request, permission profile, protected-action check | Deterministic injection and protected-action scenarios; covered by the multi-trial real-provider evidence gap |
-| Stale or duplicate worker | Repeated mutation or state rollback | Revision compare-and-swap, expiring lease, attempt ID, idempotency key, terminal-state guards | Concurrent claim and stale-worker tests |
-| Crash around external mutation | Duplicate Issue, PR, merge, or deletion | Reconcile before mutation, operation IDs, expected digests, exact head, keyed provenance, force-with-lease | Adapter replay and durable delivery crash-window tests; covered by the multi-trial real-service evidence gap |
-| Path or symlink escape | Read or write outside project | Resolved read/write allowlists, broken-symlink checks, separate worktrees | Filesystem policy tests |
-| Unsafe cleanup | Lost branch, commit, or dirty worktree | Ownership registry, exact remote identity and head, clean-worktree test, merged/no-unique-commit proof | Cleanup refusal and replay tests |
-| Credential disclosure | Token theft through state, log, or receipt | Credentials stay in provider stores, common secret redaction, receipt field allowlist, no prompt logging | Redaction tests; unknown secret formats remain a user review concern |
-| Supply-chain substitution | Malicious dependency or provider executable | Pinned development dependencies, source hashes and licenses, provider executable discovery, no bundled third-party runtime | Local manifest tests; external binary provenance follows host installation |
-| Unauthorized merge or protected action | Production, financial, privacy, or release harm | Conservative merge default, exact protected-action grant, repository protection and approval checks | Policy and adapter tests; production systems are out of test scope |
-| Budget exhaustion or retry loop | Unbounded spend or unattended churn | Saved budget, bounded parallelism, lease, failure signature, circuit breaker, live eval preflight budget | Deterministic routing and circuit tests; covered by the multi-trial real-provider evidence gap |
-| Forged evidence or corrupted state | False completion | Append-only material events, hash-linked security audit, state-derived reconciliation, exact-head evidence | Journal, audit, snapshot, and reconciliation tests |
+| Prompt injection in project or remote content | Unauthorized action or changed scope | Treat content as data, preserve the user request, obey host and repository authority | Policy text cannot replace the host sandbox |
+| Unauthorized mutation or protected action | Production, privacy, financial, or repository harm | Host approvals, least privilege, exact grants, protected-action stop | Host and connector behavior varies by version |
+| Concurrent writers | Conflicts or overwritten work | One root integrator, disjoint worktrees, one writer per owned item | Worktrees do not isolate shared external systems |
+| Stale or duplicate GitHub mutation | Duplicate records or merge of an unchecked head | Stable operation markers, serialized remote writes, reconcile before retry, exact-head checks | GitHub create APIs do not promise exactly-once behavior |
+| Unsafe cleanup | Lost branch, commit, or local work | Confirmed merge, operation ownership, clean worktree, no other pull request, no unique work | Uncertain resources stay in place for review |
+| Credential disclosure | Secret exposure through prompts, files, or remote records | Keep credentials in host stores, limit access, do not persist secrets | A model with granted access may still see in-scope secrets |
+| Forged completion evidence | False success or unsafe merge | Inspect final state independently, bind checks to the exact head, distrust self-reports | Some outcomes need live or human checks |
+| Retry or delegation loop | Unbounded cost and stalled work | Host budget, bounded retries, changed premise before retry, explicit blocker | Provider cost reports and hard limits differ |
+| Bad resume after compaction or restart | Repeated work or action under stale authority | Re-read request, Git, GitHub, checks, and host task before mutation | Cross-process recovery is not proven on every host |
+| Compromised live fixture or collector | False release claim or access to real data | Fresh isolated fixtures, collectors outside writable roots, pre-provisioned GitHub sandbox | Live behavior remains `UNVERIFIED` without a receipt |
 
 ## Protected actions
 
-Production deployment, production database migration, payments and refunds, credential changes, privacy export or deletion, irreversible remote deletion, public release, and protected-branch merge require an explicit grant for the exact action. Missing authority stops that action without expanding another grant.
+Production deployment or migration, payments or refunds, credential changes, privacy export, deletion, or disclosure, public release, repository setting or protection changes, and irreversible remote deletion need an exact user grant.
 
-## Data retention and response
+Tracked end-to-end delivery may include merge and cleanup only for its named scope. It still requires the exact checked head, accepted required checks and reviews, and repository protections. SkipHow never uses an admin or bypass option.
 
-Run state stays project-local until an authorized user deletes the specific run directory. Provider transcripts follow provider retention. Remote records remain in GitHub. Uninstall does not delete any of them.
+## Data and incident response
 
-If a run may have crossed a trust boundary, pause or cancel it, revoke affected credentials, preserve the run export and Git/GitHub references, inspect the audit chain, and reconcile every external mutation before resuming. Do not publish raw diagnostics until secrets and private paths have been reviewed.
+SkipHow sends no telemetry and has no private state store. Data may remain in host sessions, provider transcripts, Git, GitHub, `.skiphow/inbox.md`, and `.skiphow/handoff.md` according to the system that owns it.
+
+If work may have crossed a boundary, stop new actions, revoke affected credentials, preserve Git and GitHub references, inspect every external mutation, and resume only after authority and current state are clear. Do not publish diagnostics until private paths, customer data, and secrets have been removed.
+
+The [trust guide](trust.md) explains these rules for users. The dated [security audit](research/2026-08-25/security-and-evals.md) records why the previous custom runtime was removed.

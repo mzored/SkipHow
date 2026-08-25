@@ -1,63 +1,50 @@
 # Model routing
 
-SkipHow routes by semantic profile, required capability, risk, and verified outcomes. Core policy never names a provider model. The provider-neutral implementation is `src/skiphow/model_routing.py`; adapters or local runtime configuration supply versioned catalog entries.
+SkipHow chooses a model by the work it must do. Shared policy never names a provider model or keeps a model catalog. The host resolves the current model, availability, and account limits.
 
-## Profiles and preferences
+This policy separates four decisions:
 
-Core understands three profiles. Their serialized values are lowercase:
+- the work role, such as researcher, implementer, integrator, or reviewer;
+- the execution shape, such as the current session or an independent subagent;
+- the capability tier;
+- the reasoning effort.
 
-- `ECONOMY` selects the least expensive eligible capability for bounded work with strong verification.
-- `BALANCED` is the normal implementation profile.
-- `FRONTIER` is reserved for high-judgment work, weak verification, high error cost, and integration boundaries.
+A long task does not require the strongest model for every step. A short security decision may.
 
-The user-facing preference is `auto`, `economy`, `balanced`, or `quality`. This preference changes the cost and quality policy. It does not bypass capability checks, mutation authority, or the configured safety floor. Concrete model identifiers, availability, context limits, pricing, and provider flags belong in adapter or advanced local configuration.
+## Capability tiers
 
-## Route inputs
-
-The controller derives task features. It does not ask the Owner to fill out an engineering form. `schemas/route.schema.json` defines the persisted feature record, including task kind, mutation level, uncertainty, error cost, reversibility, blast radius, verification strength, context volume, parallelizability, required capabilities, latency priority, and remaining budget.
-
-The current heuristic API uses a compact `TaskFeatures` projection. It records taxonomy, repository, read-only status, strong or weak verification, high-impact flags, expected token volume, required capabilities, and latency sensitivity. Provider integration must derive this projection from controller state rather than ask the Owner for it.
-
-Required capabilities may include code editing, long context, vision, browsing, structured output, delegation, tool use, computer use, or local execution. The router first excludes models that lack a hard capability, required authority, enough context, acceptable availability, or the configured safety level.
-
-For the remaining catalog entries, the heuristic weighs recent verified success for the same task taxonomy and model version, estimated token cost, latency, and context overhead. It chooses the lowest-scoring entry that clears the quality floor. `RouteDecision` records the candidate, profile, short reason, estimated cost, and calibrated success rate.
-
-## Cold start
-
-Before enough verified outcomes exist, routing stays conservative:
-
-| Situation | Default profile |
+| Tier | Use |
 | --- | --- |
-| Read-only extraction with a strong verifier | `ECONOMY` |
-| Ordinary implementation, tests, or bounded debugging | `BALANCED` |
-| Architecture, security, protected actions, weak verification, public contracts, campaign decomposition, or final integration | `FRONTIER` |
+| `FAST` | Bounded read-only search, inventory, extraction, and fact checks with direct verification |
+| `STANDARD` | Implementation, debugging, tests, and documentation |
+| `DEEP` | Product shaping, architecture, security, unknown causes, build-versus-reuse decisions, integration across contracts or systems, and risk-based independent review |
 
-A simple task should run on the current eligible host model when a separate routing call would cost more than it saves. SkipHow does not create a router agent merely to choose a model.
+The root agent and final integrator inherit the model selected by the owner or host. SkipHow may request a tier for an independent subagent. If the host cannot select one, the subagent uses `inherit`. This is normal fallback behavior, not a failure.
 
-## Lanes and escalation
+`FAST` does not receive normal code mutation by default. A cheap but plausible code change can cost more after repair, review, and context transfer than starting with `STANDARD`.
 
-A mutable lane stays on its selected profile until it reaches a checkpoint or has a reason to escalate. This avoids repeated context transfer and route oscillation.
+## Route and escalation
 
-Escalation is bounded. A failed verifier, repeated no-progress signature, unexpected scope growth, material ambiguity, high-impact finding, insufficient capability or context, systemic review finding, or high-cost external side effect can promote the lane. The runner must not retry forever on the same profile. Switching models requires a checkpoint that preserves the requested outcome, constraints, current state, evidence, and unresolved findings.
+SkipHow derives the route from the task and repository. It does not ask the owner to choose a model, fill out a risk form, or pay for a separate router call.
 
-Downgrade is allowed before substantive mutation, on a new independent lane, or for a mechanical follow-up with strong verification. It is not allowed halfway through an unfinished reasoning chain.
+Use these rules:
 
-## Outcome feedback
+- retry a transient provider error on the same route;
+- fall back to a compatible host choice, then `inherit`, when a requested capability is unavailable;
+- allow one corrective attempt after a meaningful verification failure;
+- raise reasoning effort or move up one tier after repeated reasoning failure or new material risk;
+- keep a mutable lane on one tier while it owns a branch or worktree;
+- downgrade only for new independent work or a bounded follow-up;
+- use independent `DEEP` review for security, public contracts, large integrations, weak verification, or a repeated failure.
 
-Every routed task records the provider, model, exposed version, profile, route reason, reliable usage and cost, latency, verifier result, review findings, retries, promotions, and terminal outcome. Calibration is version-aware and gives less weight to old results. A provider or evaluator update does not inherit permanent confidence from an earlier version.
+Treat authentication, data boundaries, and public-contract changes as material integration. An escalation checkpoint preserves the owner outcome, constraints, current state, evidence, and unresolved findings. After a same-tier correction and one promoted or independently reviewed attempt fail without a changed premise, record `BLOCKED` instead of looping.
 
-Start with simple statistics by task taxonomy and repository. Online learning or a contextual bandit needs enough execution-verified data first. Logs and calibration records must not contain credentials, raw prompts, or unredacted repository content.
+## Cost and evidence
 
-## Durable execution
+Measure the cost of the checked result. Include the root session, subagents, copied context, retries, review, and failed attempts. Price per model call is not the outcome cost.
 
-The supervisor discovers the provider catalog, chooses an initial route from task features and persisted outcomes, and stores one sticky route per mutable lane. Route records use revision compare-and-swap and bind the provider, model, exposed version, profile, checkpoint, promotion count, and failure signatures. A route can change only at a checkpoint. A verifier failure can promote it once through the discovered stronger routes without oscillating.
+Repository tests can verify that the skill contains no stale model IDs and that routing rules load. They cannot prove that a host chose the intended model or that the route saved money.
 
-Each attempt persists usage, estimated and reported cost, latency, verifier result, retries, promotions, terminal outcome, and the exact route identity. A later run rebuilds version-aware calibration from those durable outcomes. Low-weight or stale history does not become current evidence. This makes routing and recovery deterministic at the runner boundary; it does not prove that adaptive routing improves real-provider cost or quality.
+Claims about quality or savings need paired live runs on the same tasks. Compare adaptive routing with an all-`DEEP` baseline, keep reasoning-effort rules equal, run several trials, and grade the final state independently. Until that evidence exists for the exact host and model versions, routing savings remain `UNVERIFIED`.
 
-## Evaluation and acceptance
-
-Routing evidence comes from the opt-in live suite described in [Evaluation and release evidence](evals.md). Run the same real tasks across all-`FRONTIER`, all-`BALANCED`, and adaptive routing. Use several trials and exact version receipts.
-
-Adaptive routing passes its release gate only when it lowers cost against all-`FRONTIER` without a statistically detectable loss in terminal success and without new unauthorized mutations. The `model-routing` scenario checks that cheaper profiles preserve success. The `escalation` scenario checks that a weaker profile failure promotes once, carries a valid checkpoint, and does not oscillate.
-
-Until that evidence exists for the current versions, adaptive-routing savings remain `UNVERIFIED`. Repository tests validate route contracts, durable calibration, catalog neutrality, safety floors, bounded promotion, receipt shape, and deterministic graders. They cannot prove live model quality.
+The [model-routing research](research/2026-08-25/model-routing.md) records the evidence behind this policy. [ADR 0003](decisions/0003-semantic-model-routing.md) records the decision.

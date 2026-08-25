@@ -1,75 +1,63 @@
 # GitHub lifecycle
 
-GitHub delivery is optional. It applies only when tracked lifecycle work is needed by the request, an existing Issue, or repository policy. An Issue is the canonical work identity. A GitHub Project is an optional view, never lifecycle authority.
+GitHub delivery is optional. Use it when the request names tracked work, the work already has an Issue, or repository policy requires it. Small local changes do not gain an Issue and pull request solely because they modify code.
 
-## Contract
+For tracked work, Issues hold scope and relationships. Pull requests hold delivery and review state. Git records the exact code state. SkipHow does not maintain another task database.
 
-The controller decides scope, priority, readiness, review depth, and whether delivery needs a campaign. The GitHub adapter reconciles remote state and performs authorized operations. Repeating a run must not create a duplicate Issue, branch, pull request, delivery comment, merge, or deletion.
+A GitHub Project may display this work. It does not control readiness, dependencies, or completion.
 
-The ready queue derives from Issue state, native dependencies and sub-issues, repository policy, active leases, branch and pull request state, required checks, and owner priority. SkipHow does not scan Projects to infer readiness.
+## Lifecycle
 
-Independent mutable lanes use separate system-owned branches and worktrees, with one writer per owned scope. Metadata links each branch to its run, task, and Issue. A sequential task does not require a worktree. User branches, dirty worktrees, and unrelated changes remain untouched.
+For each tracked item, the agent:
 
-A pull request covers one coherent deliverable. It links its Issue and uses `Closes #N` only when the merge completes that item. Its description states the outcome, verification, and material limits. Completion evidence must match the exact head commit.
+1. finds or creates the Issue after searching open and closed work for duplicates;
+2. reads parent, sub-issue, and dependency state;
+3. records a stable operation marker for any object it may need to reconcile;
+4. creates an owned branch and an isolated worktree when the host supports it;
+5. implements the accepted scope and checks the final local state;
+6. finds or creates one pull request for the coherent deliverable;
+7. links the Issue with a closing keyword only when that pull request completes it;
+8. records and rechecks the exact pull request head before protected actions;
+9. waits for repository-required checks and reviews, then makes bounded repairs for failures caused by the change;
+10. merges only with authority and satisfied repository rules;
+11. confirms the merged state before closing the Issue or updating dependencies;
+12. removes only the owned merged branch and clean worktree.
 
-The controller waits for required checks and reviews, classifies failures, fixes failures caused by its change, and reruns only invalidated checks. Independent work may continue during an external wait.
+Remote mutations are serialized. Before a create, the agent records the intended stable marker and identity. It then calls GitHub and reads the observed result. A retry reconciles remote state before it creates or changes anything. External APIs do not promise exactly-once creation, so SkipHow promises reconciliation, not exactly-once delivery.
 
-Merge policy is `never`, `when_green`, `when_green_and_approved`, or `auto_merge_or_queue`. The default is `never` unless repository policy says otherwise. A merge requires explicit authority, satisfied protections, green required checks, required approval, no unresolved blocking finding, and evidence for the exact head.
+Independent write tasks use separate worktrees and branches. The root agent owns integration. If safe isolation is unavailable, serialize repository writes.
 
-After a confirmed merge, cleanup may remove a clean system-owned worktree and a merged system-owned branch with no unique commits. It may stop owned processes, close leases, prune stale metadata, update the Issue and configured Project view, and retain final references. It never deletes an unmerged branch, unique commits, user state, or a resource whose ownership is uncertain.
+## Merge authority
 
-## Current implementation status
+"Fix", "implement", and "deliver" permit work through a ready pull request when the repository uses one. They do not grant merge by implication.
 
-The GitHub helper implements bounded Issue candidates, operation-ID Issue reconciliation, updates, keyed provenance, native relationships with a feature-detected fallback, owned worktrees, pull request reconciliation, exact-head checks and reviews, merge-policy gates, and guarded remote and local cleanup. The adapter does not own product or engineering decisions.
+"Finish end to end", "run unattended", "complete these Issues", or equivalent wording grants guarded merge and cleanup for the named scope. "Do not merge" removes that authority immediately.
 
-`skiphow github-deliver` is the durable campaign delivery path. It accepts one operation ID, task, repository, Issue, branch, expected 40-character head, owner, title, body, required checks, base, and an explicit green merge policy. Before remote access it requires an active run, a completed task, and exact matching authority for repository, Issue, branch, owner, base, head, checks, merge, cleanup, and protected-branch action. A process lock serializes the operation for that runner database.
+A merge requires all of these facts:
 
-Each invocation reconciles an owned pull request by its operation marker, refuses duplicates or identity drift, and persists the delivery phase. It returns `WAITING_EXTERNAL` while CI, mergeability, approval, merge, or Issue closure is pending. Completion requires the exact head in the default branch, closure of the Issue by that pull request, absence of the owned remote branch, and a durable receipt. Replaying a completed operation revalidates those remote facts. Cleanup uses exact origin and ownership metadata with force-with-lease.
+- the Issue belongs to the authorized scope;
+- the pull request head still matches the checked commit;
+- required checks and reviews have an accepted result;
+- no blocking finding remains unresolved;
+- branch protection, rulesets, and the merge queue allow the action;
+- the chosen merge method follows repository policy.
 
-Deterministic tests exercise idempotent commands and refusal paths without a network. `scripts/check_github_e2e.py` adds the real remote gate. It uses one explicitly configured private sandbox, creates signal and delivery Issues with a native blocking dependency, opens a pull request from a run-unique branch, waits for CI on the exact head, merges, verifies Issue closure and the default branch, and removes the merged delivery branch. The receipt grades against `evals/scenarios/github-lifecycle.json`.
+SkipHow never uses an admin or protection-bypass option. It does not change repository settings to make a merge pass. After the request, it re-reads the pull request and requires GitHub to report the merge before it treats delivery as complete.
 
-The harness never creates or deletes a repository. A human or separately governed provisioning workflow must supply the sandbox. The sandbox must:
+Production deployment, payments, credentials, privacy operations, public release, repository settings, and irreversible remote deletion need their own exact grant. End-to-end code delivery does not include them.
 
-- differ from the candidate repository;
-- be private, unarchived, use `main` as its default branch, and have Issues enabled;
-- have the exact description `skiphow-github-e2e-sandbox`;
-- contain `.skiphow-e2e-sandbox.json` with `{"schema_version": 1, "purpose": "skiphow-github-e2e-sandbox"}`;
-- contain `.github/workflows/e2e.yml` with a noninteractive `pull_request` check.
+## Cleanup
 
-The workflow fixture is exact so the gate cannot execute arbitrary sandbox code:
+Cleanup runs only after GitHub confirms `mergedAt` for the recorded pull-request head. The branch must belong to this operation, have no other open pull request, and contain no work omitted from the confirmed merge. For squash or rebase, compare the recorded head and merged result instead of requiring commit ancestry. The worktree must be clean.
 
-```yaml
-name: SkipHow E2E
-on:
-  pull_request:
-permissions:
-  contents: read
-jobs:
-  verify:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Verify event
-        run: test -n "$GITHUB_SHA"
-```
+If any fact is missing, leave the branch or worktree in place and report it. Never delete a user branch, dirty worktree, unmerged branch, unincorporated commit, or uncertain file.
 
-Give the gate credentials access only to this sandbox. The required repository permissions are Contents, Issues, and Pull requests write access plus Checks read access. Do not grant repository creation, repository deletion, or organization-wide access. The harness binds state to GitHub's stable numeric repository ID, refuses the candidate repository, verifies the exact inert workflow fixture, and refuses a new run while another `skiphow/e2e-` branch exists. Closed Issues and merged pull requests remain as the sandbox's audit history.
+## Resume and missing features
 
-The first invocation must inject an exit after `issues`, `pull_request`, or `ci_success`. The second invocation uses the persisted state and `--resume`. For example:
+After compaction, pause, or restart, re-read the Issue, pull request, exact head, checks, reviews, Git state, and current authority before acting. Do not trust a transcript summary as current remote state.
 
-```sh
-E2E_DIR="$(mktemp -d)"
-SKIPHOW_GITHUB_E2E=1 python scripts/check_github_e2e.py \
-  --state "$E2E_DIR/state.json" \
-  --repo GITHUB_OWNER/GITHUB_E2E_SANDBOX \
-  --crash-after ci_success \
-  --live
+Some repositories lack native dependency relationships, merge queues, or automatic branch deletion. Use the available GitHub state and report missing behavior as `UNVERIFIED`. Do not recreate those features in a local queue.
 
-SKIPHOW_GITHUB_E2E=1 python scripts/check_github_e2e.py \
-  --state "$E2E_DIR/state.json" \
-  --resume \
-  --live
-```
+If GitHub is unavailable, an authorized record request may use `.skiphow/inbox.md`. That fallback does not provide a GitHub delivery lifecycle.
 
-The first command exits with code 75 after persisting the selected phase. The resumed command writes a receipt outside the candidate repository. A successful run removes its merged delivery branch. It closes its two Issues through the tested lifecycle and leaves their immutable history for inspection.
-
-This gate requires a clean committed candidate, authenticated `gh`, sandbox-scoped remote mutation authority, and native Issue relationship support. It is separate from `scripts/check.py`. It supplies one real-service collector for the broader multi-trial provider and service evidence that remains `UNVERIFIED` for the release candidate. Project synchronization is outside the canonical Issue operation and is not a completion requirement.
+The full authority decision is in [ADR 0004](decisions/0004-github-lifecycle-and-authority.md). Live GitHub evidence must follow the [evaluation policy](evals.md).

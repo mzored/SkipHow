@@ -1,0 +1,19 @@
+{
+  "name": "skiphow",
+  "version": "0.9.0",
+  "description": "Handle product and software work from one ordinary-language request.",
+  "author": {
+    "name": "mzored",
+    "url": "https://github.com/mzored"
+  },
+  "homepage": "https://github.com/mzored/SkipHow#readme",
+  "repository": "https://github.com/mzored/SkipHow",
+  "license": "MIT",
+  "keywords": [
+    "agent-skills",
+    "claude-code",
+    "codex",
+    "orchestration"
+  ],
+  "skills": "./skills/"
+}

@@ -4,11 +4,11 @@ Describe the user-visible change and its scope.
 
 ## Verification
 
-- [ ] I added or updated tests before claiming the behavior works.
-- [ ] I ran the relevant test commands.
+- [ ] I added or updated tests when behavior changed.
+- [ ] I ran `python scripts/check.py` and the relevant focused checks.
 - [ ] I ran `git diff --check`.
-- [ ] I recorded Codex and Claude Code support evidence when this changes packaging or `cto-run`.
+- [ ] I ran `python scripts/check_hosts.py` and recorded unavailable hosts as `UNVERIFIED` when this changes packaging.
 
 ## Notes
 
-List changes to the canonical workflow, adapter, manifest, durable state contract, or documentation.
+List changes to the canonical skill, references, manifests, research, decisions, or documentation.

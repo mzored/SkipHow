@@ -1,6 +1,6 @@
 interface:
   display_name: "SkipHow"
-  short_description: "Deliver product and software work"
-  default_prompt: "Use $skiphow to carry this project request through to a verified result."
+  short_description: "Handle product and software work"
+  default_prompt: "Use $skiphow to handle this project request and verify the result."
 policy:
   allow_implicit_invocation: true

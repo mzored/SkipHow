@@ -20,6 +20,27 @@ Agent Skills already provide the discovery mechanism SkipHow needs.
 
 These facts support one entry point. They do not prove that either host will classify every SkipHow request correctly. Exact invocation and outcome behavior still need package and live tests.
 
+## Verification record
+
+The following non-mutating checks ran on 2026-08-25 in a worktree at repository commit `b679bbb923bce1865fa9b130d74d811e55187ba9`:
+
+```bash
+python -m json.tool plugins/skiphow/.codex-plugin/plugin.json
+python -m json.tool plugins/skiphow/.claude-plugin/plugin.json
+claude plugin validate plugins/skiphow
+find plugins/skiphow -name SKILL.md -type f -print
+rg -n '^name: skiphow$|^description:' plugins/skiphow/skills/skiphow/SKILL.md
+```
+
+Observed results:
+
+- Both manifests parsed as JSON. Each used the plugin name `skiphow`, version `0.9.0`, and `skills` path `./skills/`.
+- `claude plugin validate plugins/skiphow` reported `Validation passed`.
+- The file search returned one `SKILL.md`, at `plugins/skiphow/skills/skiphow/SKILL.md`.
+- The skill name was `skiphow`. Its description named product and project work, answers, research, ideas, intake, decisions, fixes, features, tracked delivery, and control.
+
+No Codex candidate installation or host session ran during these checks. Codex plugin loading, Claude plugin loading, implicit selection, explicit invocation, route choice, batch intake, authority handling, and natural-language controls remain `UNVERIFIED` by this record. Those behaviors need package installation checks and opt-in live runs against the exact candidate.
+
 ## Product decision
 
 SkipHow has one public capability named `skiphow`. The owner describes the result in ordinary language. SkipHow decides how much process the work needs.

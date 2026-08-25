@@ -8,6 +8,13 @@ body:
     attributes:
       value: "Do not include secrets or vulnerability details. Use the security policy for private reports."
   - type: input
+    id: skiphow_version
+    attributes:
+      label: SkipHow version
+      description: Name the installed SkipHow version or commit.
+    validations:
+      required: true
+  - type: input
     id: host
     attributes:
       label: Host and version
@@ -15,10 +22,10 @@ body:
     validations:
       required: true
   - type: textarea
-    id: command
+    id: request
     attributes:
-      label: Command or invocation
-      description: Show the command or explicit skill request that failed.
+      label: Request that failed
+      description: Copy the natural-language request and note any explicit host invocation you used.
     validations:
       required: true
   - type: textarea

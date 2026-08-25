@@ -1,32 +1,46 @@
 ---
 name: skiphow
-description: Autopilot for project work. Use for project answers, inspection, research, review, intake, decisions, changes, repairs, control, or continuation. Do not use for unrelated conversation.
+description: Handle product and project work from one owner request. Use for project answers, research, ideas, issue intake, decisions, fixes, features, tracked delivery, or control of ongoing work. Do not use for unrelated conversation.
 ---
 
 # SkipHow
 
-Treat the user as Owner. Keep the verbatim request as the contract, inspect the project, choose the smallest sufficient path, and complete the outcome without asking the user to manage the workflow.
+Treat the user as the product owner. Keep their request as the contract, inspect the project, choose the smallest sufficient path, and finish every authorized part of the work. Do not ask the owner to manage engineering details.
 
-## Protect the mutation boundary
+## Respect authority
 
-Analysis, research, review, diagnosis-only, and planning requests are read-only unless the user asks to persist or change state. Read-only permits no file, tracker, branch, campaign, setup, or remote mutation. Project mutation alone does not authorize tracking or durable execution.
+Discussion, research, review, diagnosis-only, and planning are read-only. Do not change files, trackers, branches, or remote state unless the owner asks to persist or change something.
 
-## Route the request
+"Save this" or "create issues" grants persistence without another confirmation. "Fix", "implement", or "complete end to end" grants the usual project changes and verification needed for that outcome. Intake does not grant implementation.
 
-- `ANSWER`: answer, inspect, research, review, diagnose, or plan without mutation.
-- `INTAKE`: turn one or more product signals into useful records. Read `references/product/intake/SKILL.md`. Persist only when requested or required by repository policy.
-- `CAPTURE`: use the `INTAKE` single-item fast path without research, shaping, or implementation.
-- `DECIDE`: investigate and make or recommend a product decision. Read `references/product/shape/SKILL.md`. Do not implement without change authority.
-- `CHANGE`: implement a clear outcome. For software behavior or repository mechanics, form a lightweight delivery brief and read `references/engineering/cto/SKILL.md`. For other artifacts, follow repository instructions and verify the requested output directly.
-- `REPAIR`: fix broken behavior. Read `references/engineering/fix/SKILL.md`.
-- `CONTROL`: show status or request pause, resume, or cancellation of an existing durable run. Use the installed `durable_execution` capability. Do not claim background control when it is unavailable.
-- `CONTINUE`: continue the agreed outcome with existing authority. Use durable state when the work already has it; otherwise continue in-session.
+The owner decides product direction, audience, priority, material scope, commercial commitments, production changes, privacy choices, credential changes, public publication, and irreversible external actions. Resolve routine product details from evidence. Own libraries, architecture, schemas, tests, models, delegation, branches, and other engineering choices. Ask only when an unresolved choice changes the product, scope, cost, risk, or requires a human-only action.
 
-Read tracker setup or doctor skills only for an explicit setup or readiness request. Read `references/project-context.md` only for explicit context setup, refresh, record, or audit. Read `references/extension-contract.md` only when changing a domain or integration capability.
+## Choose an internal route
 
-`CAMPAIGN` is an internal execution shape, not a user command. Use durable execution only when work must survive a session or process interruption, coordinate independent tracked items, or wait and reconcile unattended external state. Otherwise execute directly in the current host. If the installed runner is unavailable, bounded work may continue in-session, but durability claims are `UNVERIFIED`.
+Choose a primary route. Split a compound request into ordered parts only when its authorized outcomes need different routes. These names are internal and are not user commands.
 
-For an ordinary clear change, keep only this brief in working context:
+- `RESPOND` answers, inspects, researches, reviews, diagnoses, or recommends without mutation.
+- `RECORD` saves one or more ideas, bugs, questions, or findings. Read [intake](references/intake.md).
+- `DELIVER` changes the project and proves the requested outcome. Read [delivery](references/delivery.md).
+- `CONTROL` reports, pauses, resumes, or cancels ongoing host-native work. Read [long work](references/long-work.md).
+
+Load other references only when the task needs them:
+
+- Read [product decisions](references/decision.md) for a material product choice or uncertain scope.
+- Read [diagnosis and repair](references/diagnosis.md) for broken behavior or an unknown cause.
+- Read [GitHub delivery](references/github.md) when GitHub owns the work item or delivery record.
+- Read [long work](references/long-work.md) for multiple tracked items, external waiting, unattended work, or work that must survive interruption.
+- Read [model routing](references/model-routing.md) before assigning model roles or delegating substantial work.
+
+Do not load every reference by default.
+
+## Match the process to the work
+
+Handle a clear bounded request in the current session. Do not create an issue, plan, campaign, branch, or subagent merely because code changes.
+
+Use host-native goals, background tasks, subagents, resume, and worktrees for long work when the host provides them. GitHub and Git remain the source of truth for tracked delivery. Do not create a SkipHow runner, daemon, task database, provider bridge, or model catalog. If a host lacks a needed capability, complete the safe bounded work, leave a useful handoff, and label the missing guarantee `UNVERIFIED`.
+
+For a clear change, keep a short working brief:
 
 ```text
 Outcome
@@ -35,10 +49,10 @@ Constraints
 Acceptance evidence
 ```
 
-Resolve routine reversible details from project evidence. Do not require shaping, tracking, approval, a campaign, or a receipt. Use product decision work only when requested or when material ambiguity changes product behavior or scope.
+Before adding a substantial subsystem, check whether the project, its framework, or a maintained dependency already solves the problem. Do not turn a local fix into broad research.
 
-## Apply authority and close
+## Account for findings and evidence
 
-Owner controls vision, audience, priority, material scope, commercial or risk commitments, protected actions, and irreversible external actions. Product resolves routine reversible behavior. Technical owns engineering mechanisms. Reviewers provide evidence.
+Do not hide a material problem found during delivery. Fix it when it blocks the requested outcome, creates an immediate safety risk, or cannot be separated. Otherwise record it once in the canonical tracker after checking for duplicates. In read-only work, report a ready-to-save finding but do not persist it.
 
-Report the outcome and fresh evidence. Include only material `BLOCKED` or `UNVERIFIED` limits, persisted follow-ups, and exact human-only actions. If the request names an unavailable optional verifier, report that check as `UNVERIFIED` without weakening independent evidence. Before completion, compare the delivered result with the verbatim request and account for every requested outcome and constraint.
+Before completion, compare the final state with the original request. Run fresh checks that cover the changed behavior. Report the outcome, evidence, saved follow-ups, material `BLOCKED` or `UNVERIFIED` limits, and any exact human action still required.
