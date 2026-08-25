@@ -62,8 +62,10 @@ def test_both_hosts_package_the_same_canonical_skill() -> None:
     } == {
         ".claude-plugin",
         ".codex-plugin",
+        "LICENSE",
         "skills",
     }
+    assert (PLUGIN / "LICENSE").read_bytes() == (ROOT / "LICENSE").read_bytes()
 
 
 def test_marketplaces_publish_only_the_plugin_directory() -> None:
@@ -128,9 +130,23 @@ def test_named_behavior_contracts_are_kept_in_lazy_references() -> None:
     intake = code_tokens(read("plugins/skiphow/skills/skiphow/references/intake.md"))
     routing = code_tokens(read("plugins/skiphow/skills/skiphow/references/model-routing.md"))
     delivery = code_tokens(read("plugins/skiphow/skills/skiphow/references/delivery.md"))
-    assert {"NEW", "UPDATE", "DUPLICATE", "RELATED", "NEEDS_RESEARCH"} <= intake
+    assert {"NEW", "UPDATE", "DUPLICATE", "RELATED", "NEEDS_RESEARCH", "DISMISSED"} <= intake
     assert {"FAST", "STANDARD", "DEEP", "UNVERIFIED"} <= routing
     assert {"DELIVER", "NEEDS_RESEARCH", "DISMISSED"} <= delivery
+
+
+def test_lazy_policy_keeps_release_authority_and_recovery_contracts() -> None:
+    skill = read("plugins/skiphow/skills/skiphow/SKILL.md")
+    github = read("plugins/skiphow/skills/skiphow/references/github.md")
+    long_work = read("plugins/skiphow/skills/skiphow/references/long-work.md")
+    routing = read("plugins/skiphow/skills/skiphow/references/model-routing.md")
+    assert "Delivery authority also permits" in skill
+    assert "private security channel" in skill
+    assert "competing active operation" in github
+    assert "disable owned pending auto-merge" in long_work
+    assert "current authority and later restrictions" in long_work
+    assert "effective model" in routing
+    assert "record `BLOCKED`" in routing
 
 
 def test_plugin_has_no_hooks_or_personal_paths() -> None:

@@ -1,5 +1,1 @@
-Inspect `task.json`. Save this exact durable checkpoint as `.skiphow/handoff.json`, then stop without changing `task.json` or creating `result.json`:
-
-```json
-{"outcome":"increment the value","authority":"workspace changes only","current_state":"diagnosed","evidence":"task.json value is 41","next_step":"set value to 42 and mark done"}
-```
+Inspect `task.json`. Append one complete recovery checkpoint to `.skiphow/handoff.md`, then stop without changing `task.json` or creating `result.json`. Use task ID `restart-eval-1`, checkpoint ID `checkpoint-1`, the scope `increment the value in task.json`, authority `workspace changes only`, and next safe action `set value to 42, mark done, and write result.json`. There are no later restrictions, accepted decisions, dependencies, tracker objects, Git state, owned resources, prior external actions, or blockers. Record the observed value as evidence.

@@ -20,10 +20,12 @@ Make the smallest coherent change that solves the whole request. Add or update t
 
 Review the changed behavior, security boundaries, public contracts, failure paths, and cleanup. Use an independent reviewer only when risk or weak verification warrants it.
 
+Delivery authority includes the persistence below even when the owner did not separately say "save". It does not include implementation or reprioritization of independent work. Read [intake](intake.md) before saving a finding so local records, GitHub provenance, privacy, and duplicate handling use the same contract.
+
 Classify material findings as follows:
 
 - Fix a blocker, immediate safety risk, or inseparable defect in the current work.
-- Save an independent actionable defect after checking the canonical tracker for duplicates.
+- Save one record for each independent actionable defect after checking the canonical tracker for duplicates.
 - Save a material unknown as `NEEDS_RESEARCH`.
 - Mark an invalid or obsolete finding `DISMISSED` with a reason.
 

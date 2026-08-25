@@ -170,7 +170,7 @@ def load_suite(path: Path) -> dict[str, Any]:
                         _relative_file(relative, "expected text path", errors, identifier)
                 if collector == "structured_file":
                     _relative_file(assertion.get("path"), "assertion path", errors, identifier)
-                    if assertion.get("kind") not in {"json", "append_only_inbox"}:
+                    if assertion.get("kind") not in {"json", "append_only_inbox", "append_only_handoff"}:
                         errors.append(f"{identifier}: unsupported structured file grammar")
                     if "expected_added_records" in assertion and not all(
                         isinstance(item, dict) for item in assertion["expected_added_records"]

@@ -19,7 +19,7 @@ A long task does not require the strongest model for every step. A short securit
 | `STANDARD` | Implementation, debugging, tests, and documentation |
 | `DEEP` | Product shaping, architecture, security, unknown causes, build-versus-reuse decisions, integration across contracts or systems, and risk-based independent review |
 
-The root agent and final integrator inherit the model selected by the owner or host. SkipHow may request a tier for an independent subagent. If the host cannot select one, the subagent uses `inherit`. This is normal fallback behavior, not a failure.
+The root agent and final integrator inherit the model selected by the owner or host. For an independent subagent, the root maps a tier only from current capability, cost, or latency metadata exposed by the host, then selects the concrete route at spawn. It does not infer capability or price from a model name. If the host exposes no trustworthy mapping or no per-agent choice, the subagent uses `inherit` and model selection remains `UNVERIFIED`.
 
 `FAST` does not receive normal code mutation by default. A cheap but plausible code change can cost more after repair, review, and context transfer than starting with `STANDARD`.
 
@@ -32,7 +32,7 @@ Use these rules:
 - retry a transient provider error on the same route;
 - fall back to a compatible host choice, then `inherit`, when a requested capability is unavailable;
 - allow one corrective attempt after a meaningful verification failure;
-- raise reasoning effort or move up one tier after repeated reasoning failure or new material risk;
+- raise reasoning effort or move up one tier after repeated reasoning failure or new material risk, counting promotion only when the effective route changes;
 - keep a mutable lane on one tier while it owns a branch or worktree;
 - downgrade only for new independent work or a bounded follow-up;
 - use independent `DEEP` review for security, public contracts, large integrations, weak verification, or a repeated failure.
@@ -45,6 +45,6 @@ Measure the cost of the checked result. Include the root session, subagents, cop
 
 Repository tests can verify that the skill contains no stale model IDs and that routing rules load. They cannot prove that a host chose the intended model or that the route saved money.
 
-Claims about quality or savings need paired live runs on the same tasks. Compare adaptive routing with an all-`DEEP` baseline, keep reasoning-effort rules equal, run several trials, and grade the final state independently. Until that evidence exists for the exact host and model versions, routing savings remain `UNVERIFIED`.
+Claims about quality or savings need paired live runs on the same tasks. Compare an operator-controlled adaptive map with an all-`DEEP` baseline, keep reasoning-effort rules equal, run several trials, and grade the final state independently. That comparison can measure the recorded routes; it cannot prove that installed SkipHow chose them autonomously. Both claims remain separate and `UNVERIFIED` until exact host telemetry supports them.
 
 The [model-routing research](research/2026-08-25/model-routing.md) records the evidence behind this policy. [ADR 0003](decisions/0003-semantic-model-routing.md) records the decision.

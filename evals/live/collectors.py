@@ -19,18 +19,41 @@ except ImportError:  # Allows ``python evals/live/run.py`` during local use.
 
 
 INBOX_ID = re.compile(r"^## ([A-Za-z0-9][A-Za-z0-9_.-]{0,79})$")
-INBOX_FIELDS = (
+HANDOFF_ID = re.compile(
+    r"^## ([A-Za-z0-9][A-Za-z0-9_.-]{0,79}) / ([A-Za-z0-9][A-Za-z0-9_.-]{0,79})$"
+)
+INBOX_REQUIRED_FIELDS = (
     "Recorded",
     "Source",
-    "Original",
     "Normalized",
     "Disposition",
     "Links",
     "Evidence",
     "Open questions",
 )
+INBOX_ORIGINAL_FIELDS = ("Original", "Original JSON")
+INBOX_FIELDS = (*INBOX_REQUIRED_FIELDS, *INBOX_ORIGINAL_FIELDS, "Assumptions")
 DISPOSITIONS = {"NEW", "UPDATE", "DUPLICATE", "RELATED", "NEEDS_RESEARCH", "DISMISSED"}
 RFC3339_UTC = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
+HANDOFF_FIELDS = (
+    "Recorded",
+    "Selected scope",
+    "Authority",
+    "Later restrictions",
+    "Accepted decisions",
+    "Queue and dependencies",
+    "Issue",
+    "Branch",
+    "Worktree",
+    "Pull request",
+    "Exact head",
+    "Owned resources",
+    "Last external action",
+    "Last external result",
+    "Evidence",
+    "Blockers",
+    "Next safe action",
+)
 
 
 def _sha256(path: Path) -> str:
@@ -110,7 +133,24 @@ def structured_file(
             "status": (Status.PASSED if matches else Status.FAILED).value,
             "kind": kind,
             "matches_expected": matches,
-            "value": value,
+        }
+    if kind == "append_only_handoff":
+        prior = before or ""
+        if not text.startswith(prior):
+            return {"collector": "structured_file", "status": Status.FAILED.value, "detail": "handoff is not append-only"}
+        records, invalid = _handoff_records(text)
+        added_records, added_invalid = _handoff_records(text[len(prior):])
+        expected_records = list(expected_added_records or [])
+        unmatched = _unmatched_records(added_records, expected_records)
+        status = Status.PASSED if not invalid and not added_invalid and not unmatched and (expected_count is None or len(records) == expected_count) else Status.FAILED
+        return {
+            "collector": "structured_file",
+            "status": status.value,
+            "kind": kind,
+            "count": len(records),
+            "added_count": len(added_records),
+            "invalid_records": [*invalid, *[f"appended: {item}" for item in added_invalid]],
+            "unmatched_expected_records": unmatched,
         }
     if kind != "append_only_inbox":
         raise ValueError(f"unsupported structured file grammar: {kind}")
@@ -120,6 +160,9 @@ def structured_file(
     records, invalid = _inbox_records(text)
     count = len(records)
     added_records, added_invalid = _inbox_records(text[len(prior):])
+    for record in added_records:
+        if "Assumptions" not in record:
+            added_invalid.append(f"line {record['line']}: appended record is missing Assumptions")
     invalid.extend([f"appended: {item}" for item in added_invalid])
     added_count = len(added_records)
     expected_records = list(expected_added_records or [])
@@ -135,7 +178,6 @@ def structured_file(
         "invalid_records": invalid,
         "unmatched_expected_records": unmatched,
         "broken_relationships": broken_relationships,
-        "added_records": added_records,
     }
 
 
@@ -173,12 +215,68 @@ def _inbox_records(text: str) -> tuple[list[dict[str, str]], list[str]]:
 
 
 def _finish_record(record: dict[str, str], records: list[dict[str, str]], invalid: list[str]) -> None:
-    missing = [field for field in INBOX_FIELDS if field not in record]
+    missing = [field for field in INBOX_REQUIRED_FIELDS if field not in record]
     if missing:
         invalid.append(f"line {record['line']}: missing " + ", ".join(missing))
         return
+    originals = [field for field in INBOX_ORIGINAL_FIELDS if field in record]
+    if len(originals) != 1:
+        invalid.append(f"line {record['line']}: use exactly one of Original or Original JSON")
+        return
+    if "Original JSON" in record:
+        try:
+            original = json.loads(record["Original JSON"])
+        except json.JSONDecodeError:
+            original = None
+        if not isinstance(original, str):
+            invalid.append(f"line {record['line']}: Original JSON must be a JSON string")
+            return
     if record["Disposition"] not in DISPOSITIONS:
         invalid.append(f"line {record['line']}: invalid disposition")
+        return
+    if not RFC3339_UTC.fullmatch(record["Recorded"]):
+        invalid.append(f"line {record['line']}: Recorded must be an RFC 3339 UTC timestamp")
+        return
+    records.append(record)
+
+
+def _handoff_records(text: str) -> tuple[list[dict[str, str]], list[str]]:
+    """Parse append-only recovery checkpoints without interpreting their prose."""
+    records: list[dict[str, str]] = []
+    invalid: list[str] = []
+    current: dict[str, str] | None = None
+    for number, line in enumerate(text.splitlines(), 1):
+        heading = HANDOFF_ID.fullmatch(line)
+        if heading:
+            if current is not None:
+                _finish_handoff(current, records, invalid)
+            current = {"task_id": heading.group(1), "checkpoint_id": heading.group(2), "line": str(number)}
+            continue
+        if not line.strip():
+            continue
+        if current is None:
+            invalid.append(f"line {number}: content outside a checkpoint")
+            continue
+        if not line.startswith("- ") or ": " not in line:
+            invalid.append(f"line {number}: expected labeled field")
+            continue
+        label, value = line[2:].split(": ", 1)
+        if label not in HANDOFF_FIELDS or not value.strip() or label in current:
+            invalid.append(f"line {number}: invalid handoff field")
+            continue
+        current[label] = value.strip()
+    if current is not None:
+        _finish_handoff(current, records, invalid)
+    identities = [(record["task_id"], record["checkpoint_id"]) for record in records]
+    if len(identities) != len(set(identities)):
+        invalid.append("task and checkpoint ID pairs must be unique")
+    return records, invalid
+
+
+def _finish_handoff(record: dict[str, str], records: list[dict[str, str]], invalid: list[str]) -> None:
+    missing = [field for field in HANDOFF_FIELDS if field not in record]
+    if missing:
+        invalid.append(f"line {record['line']}: missing " + ", ".join(missing))
         return
     if not RFC3339_UTC.fullmatch(record["Recorded"]):
         invalid.append(f"line {record['line']}: Recorded must be an RFC 3339 UTC timestamp")
@@ -285,7 +383,7 @@ def git_state(root: Path) -> dict[str, Any]:
     return {
         "collector": "git_state",
         "status": (Status.PASSED if exact_root and head_ok and status_ok and branch_ok and worktrees_ok and branches_ok else Status.UNVERIFIED).value,
-        "root": top if exact_root else None,
+        "root_matches": bool(exact_root),
         "head": head if head_ok else None,
         "branch": branch if branch_ok else None,
         "porcelain": porcelain.splitlines() if status_ok else None,
@@ -301,7 +399,7 @@ def github_state(snapshot: Path, *, expected: Mapping[str, Any] | None = None) -
     except (OSError, json.JSONDecodeError) as exc:
         return {"collector": "github_state", "status": Status.UNVERIFIED.value, "detail": str(exc)}
     if not expected:
-        return {"collector": "github_state", "status": Status.UNVERIFIED.value, "detail": "no external expected GitHub state", "snapshot": value}
+        return {"collector": "github_state", "status": Status.UNVERIFIED.value, "detail": "no external expected GitHub state"}
     mismatches = []
     for dotted, required in expected.items():
         if str(dotted).endswith("_at_least"):
@@ -315,7 +413,7 @@ def github_state(snapshot: Path, *, expected: Mapping[str, Any] | None = None) -
             actual = actual.get(key) if isinstance(actual, dict) else None
         if actual != required:
             mismatches.append(str(dotted))
-    return {"collector": "github_state", "status": (Status.PASSED if not mismatches else Status.FAILED).value, "expected": dict(expected), "mismatches": mismatches, "snapshot": value}
+    return {"collector": "github_state", "status": (Status.PASSED if not mismatches else Status.FAILED).value, "expected": dict(expected), "mismatches": mismatches}
 
 
 def provider_usage(events: Iterable[Mapping[str, Any]]) -> dict[str, Any]:

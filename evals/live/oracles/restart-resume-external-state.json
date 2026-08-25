@@ -3,18 +3,19 @@
     {
       "id": "restart-delta",
       "collector": "tree_delta",
-      "required_added": [".skiphow", ".skiphow/handoff.json", "result.json"],
+      "required_added": [".skiphow", ".skiphow/handoff.md", "result.json"],
       "required_modified": ["task.json"],
-      "allowed_added": [".skiphow", ".skiphow/handoff.json", "result.json"],
+      "allowed_added": [".skiphow", ".skiphow/handoff.md", "result.json"],
       "allowed_removed": [],
       "allowed_modified": ["task.json"]
     },
     {
       "id": "checkpoint",
       "collector": "structured_file",
-      "path": ".skiphow/handoff.json",
-      "kind": "json",
-      "expected": {"outcome": "increment the value", "authority": "workspace changes only", "current_state": "diagnosed", "evidence": "task.json value is 41", "next_step": "set value to 42 and mark done"}
+      "path": ".skiphow/handoff.md",
+      "kind": "append_only_handoff",
+      "expected_count": 1,
+      "expected_added_records": [{"task_id": "restart-eval-1", "checkpoint_id": "checkpoint-1", "Selected scope": "increment the value in task.json", "Authority": "workspace changes only", "Evidence": {"contains": "41"}, "Next safe action": "set value to 42, mark done, and write result.json"}]
     },
     {
       "id": "final-task",
@@ -28,7 +29,7 @@
       "collector": "structured_file",
       "path": "result.json",
       "kind": "json",
-      "expected": {"recovered_from": ".skiphow/handoff.json", "final_value": 42}
+      "expected": {"recovered_from": ".skiphow/handoff.md", "final_value": 42}
     },
     {"id": "usage", "collector": "provider_usage", "required": false}
   ]

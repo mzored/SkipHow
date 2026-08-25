@@ -6,6 +6,8 @@
 - Claude Code: `2.1.240`
 - Status: implementation input; no model trial was run
 
+This file records the evaluator at the revision above. The later [release-readiness audit](release-readiness-audit.md) found that remote Codex installation can materialize a Git repository, installed inventory did not prove candidate bytes, nested receipt evidence was not fully redacted, and the mutable GitHub gate lacked repository-deletion enforcement. [ADR 0005](../../decisions/0005-fail-closed-release-evaluation.md) supersedes those parts of the implemented contract. Keep the commands below as historical evidence, not current release instructions.
+
 ## Scope
 
 This check defines the replacement for the removed live evaluator. It covers exact plugin loading, noninteractive host execution, budget controls, event collection, and the boundary between deterministic checks and paid outcome trials.

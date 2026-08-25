@@ -34,7 +34,7 @@ Run package validation after packaging changes:
 python scripts/check_hosts.py
 ```
 
-The check validates structure and isolated installation in each available supported host. Report an unavailable host as `UNVERIFIED`. Installation success is package evidence, not behavioral evidence.
+The check validates structure and isolated installation in each available supported host. It builds a repository-free local marketplace snapshot, rejects links and special files, and compares the installed payload with the candidate bytes. A host or managed policy that prevents this check is `UNVERIFIED` unless the release explicitly requires it. Installation success is package evidence, not behavioral evidence.
 
 ## Live outcome evaluation
 
@@ -42,14 +42,14 @@ Live evaluation is an opt-in release activity. It never runs from `scripts/check
 
 A valid run must:
 
-- install and activate the exact candidate in a fresh host environment;
+- load the exact candidate in a fresh host environment and compare the loaded package bytes when the host exposes an installed path;
 - keep grading rules, expected results, and collectors outside the agent's writable files;
 - collect final files, Git state, GitHub state, and host events independently of the model's report;
-- publish failed trials and mark unsupported assertions `UNVERIFIED`;
-- write a machine-readable receipt outside the candidate checkout;
+- preserve failed trials and mark unsupported assertions `UNVERIFIED`;
+- write a recursively redacted machine-readable receipt outside the candidate checkout without raw structured fixture values or private local paths;
 - keep fixtures synthetic and avoid customer or production data.
 
-A live GitHub test may mutate only an explicitly named pre-provisioned sandbox repository. The sandbox must differ from the candidate repository. Its credentials must not have repository creation or deletion authority.
+A live GitHub test may mutate only an explicitly named pre-provisioned sandbox repository. The sandbox must differ from the candidate repository. Its credentials must not have repository creation or deletion authority. The current harness does not execute this mutable scenario because it cannot both allow Git metadata writes and technically prevent repository deletion. That outcome remains `UNVERIFIED`.
 
 The release-only evaluator is under `evals/live`. Local manifest operations do not start a host:
 
@@ -60,9 +60,9 @@ python evals/live/run.py plan
 
 `run` must execute from the clean committed candidate that it grades. Work and receipt directories must already exist outside that checkout. The command also needs the host credential, an explicit root model and effort, a positive total budget, a per-invocation budget, and `--confirm-live`.
 
-A Codex run needs an exact remote marketplace source and ref plus `--accept-advisory-codex-budget`. The installed CLI does not expose a hard dollar cap. Claude receives the per-invocation limit through `--max-budget-usd`.
+A Codex run needs `--codex-marketplace-source` pointing to a pre-provisioned plain local snapshot outside the candidate. It must contain the exact `.agents` marketplace manifest and `plugins/skiphow` payload, with no `.git`, links, or special files. Remote Git sources are rejected because host installation may clone them. Codex also needs `--accept-advisory-codex-budget`; the installed CLI does not expose a hard dollar cap. Claude validates and loads the exact candidate through `--plugin-dir` and receives the per-invocation limit through `--max-budget-usd`.
 
-For example, after pushing the exact candidate ref:
+For example:
 
 ```sh
 python evals/live/run.py run \
@@ -76,19 +76,18 @@ python evals/live/run.py run \
   --receipt-root <existing-plain-directory> \
   --total-budget-usd <total> \
   --per-invocation-budget-usd <limit> \
-  --codex-marketplace-source <git-source> \
-  --codex-marketplace-ref <exact-ref> \
+  --codex-marketplace-source <existing-plain-marketplace-directory> \
   --accept-advisory-codex-budget \
   --confirm-live
 ```
 
-The evaluator gives the host runtime basics, the selected provider credential, and an isolated host config. The GitHub scenario also receives the scoped GitHub App token. The evaluator never executes code written into a trial workspace.
+The evaluator gives the host runtime basics, the selected provider credential, and an isolated host config. Claude runs in bare mode, requires sandbox startup, and disables unsandboxed command fallback. The evaluator never executes code written into a trial workspace.
 
-Collectors read bounded file deltas, JSON, the versioned Markdown inbox, fixed Git state, read-only GitHub API state, and host telemetry. The evaluator preserves raw events, failed workspaces, and receipts. It does not remove them automatically.
+Collectors read bounded file deltas, JSON, the versioned Markdown inbox and handoff, fixed Git state, read-only GitHub API state, and host telemetry. The evaluator preserves redacted host events, failed workspaces, and receipts. It does not remove them automatically.
 
-The restart scenario uses two fresh host processes and reconstructs work from an external checkpoint. This can verify restart reconstruction, not host session resume or compaction.
+The restart scenario uses two fresh host processes and reconstructs work from the product's append-only `.skiphow/handoff.md` checkpoint. This can verify restart reconstruction, not host session resume or compaction.
 
-The routing scenario creates adaptive and all-`DEEP` arms from equivalent fixtures. It needs an operator-owned `--route-map` outside the candidate. A savings claim remains `UNVERIFIED` unless at least three paired trials preserve the same checked outcome. Host telemetry must also identify root and delegated model routes, effort, and complete cost.
+The routing scenario creates adaptive and all-`DEEP` arms from equivalent fixtures. It needs an operator-owned `--route-map` outside the candidate. A cost-ablation claim remains `UNVERIFIED` unless at least three paired trials preserve the same checked outcome. Host telemetry must also identify root and delegated model routes, effort, and complete cost. Autonomous route selection stays separately `UNVERIFIED` because the evaluator supplies this map.
 
 ```json
 {
@@ -98,11 +97,11 @@ The routing scenario creates adaptive and all-`DEEP` arms from equivalent fixtur
 }
 ```
 
-GitHub evaluation requires one existing clean sandbox clone. Its GitHub App installation token must be restricted to that repository. The only permitted write permissions are `contents`, `issues`, and `pull_requests`.
+The versioned GitHub fixture and collectors describe the intended outcome, but `run` currently rejects the mutable scenario before credentials or host execution. A future boundary must protect repository existence while still permitting the narrow Git writes needed for commits. A confirmation flag alone is not evidence of that protection.
 
-The marker file supplied through `--github-expected-state` names at least two existing open Issues and required checks. It also gives a unique operation marker already present in those Issue bodies and an unused owned branch prefix. Preflight rejects an existing pull request with that marker or any existing branch with that prefix. The receipt preserves this initial state.
+The reserved marker format names at least two existing open Issues and required checks. It also gives a unique operation marker already present in those Issue bodies and an unused owned branch prefix.
 
-The evaluator does not create, clone, reset, repair, merge, or delete a repository. It observes the final Issue, pull-request, exact-head check, merge, branch, and local cleanup state.
+The evaluator does not create, clone, reset, repair, merge, or delete a repository. The inactive GitHub collectors can grade a normalized final snapshot after an external safe boundary exists; they are not current delivery evidence.
 
 ```json
 {
@@ -115,9 +114,7 @@ The evaluator does not create, clone, reset, repair, merge, or delete a reposito
 }
 ```
 
-The GitHub run also requires `--github-sandbox-path`, `--github-sandbox-repo`, `--github-token-env`, `--confirm-github-sandbox`, and `--confirm-github-mutation`.
-
-The candidate repository must be publicly readable. This lets the evaluator compare repository IDs without granting the sandbox token access to the candidate.
+The GitHub arguments remain reserved for a future enforced boundary. They do not enable the scenario in this release.
 
 Receipts separate `outcome_status`, `process_status`, `metrics_status`, and `claim_status`. `status` covers the checked final state and host process. `claim_status` also covers workflow properties that the collectors cannot prove. `limitations` names each missing proof. A run exits successfully only when both statuses pass.
 

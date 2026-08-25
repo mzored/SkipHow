@@ -29,7 +29,13 @@ hosts = load("skiphow_check_hosts", "scripts/check_hosts.py")
 def test_local_dependencies_are_pinned_and_kept_outside_the_repo() -> None:
     assert check.pinned_requirements() == {
         "PyYAML": "6.0.3",
+        "Pygments": "2.21.0",
+        "colorama": "0.4.6",
+        "iniconfig": "2.3.0",
         "markdown-it-py": "4.2.0",
+        "mdurl": "0.1.2",
+        "packaging": "26.3",
+        "pluggy": "1.6.0",
         "pytest": "9.1.1",
     }
     assert not check.MANAGED_ENV.is_relative_to(ROOT)
@@ -130,65 +136,34 @@ def test_codex_validator_can_use_the_managed_python(tmp_path: Path) -> None:
         assert hosts.validator_python() == (str(managed), "repository-managed Python")
 
 
-def test_codex_git_marketplace_rejects_a_ref_for_another_commit() -> None:
-    with patch.object(
-        hosts,
-        "checked",
-        side_effect=[
-            (True, "candidate123"),
-            (True, "other456\trefs/heads/release"),
-        ],
-    ):
-        passed, output = hosts.verify_codex_marketplace_source(
-            "https://example.invalid/project.git", "refs/heads/release"
-        )
+def test_plain_marketplace_matches_exact_candidate_and_rejects_repositories(tmp_path: Path) -> None:
+    source = hosts._plain_marketplace(tmp_path / "plain", "codex")
+    assert hosts.verify_plain_marketplace_source(str(source), "codex")[0]
+    (source / ".git").mkdir()
+    passed, output = hosts.verify_plain_marketplace_source(str(source), "codex")
     assert not passed
-    assert "not candidate candidate123" in output
+    assert "repository" in output
 
 
-def test_codex_git_marketplace_accepts_the_exact_ref() -> None:
-    with patch.object(
-        hosts,
-        "checked",
-        side_effect=[
-            (True, "candidate123"),
-            (True, "candidate123\trefs/heads/release"),
-        ],
-    ):
-        assert hosts.verify_codex_marketplace_source(
-            "https://example.invalid/project.git", "refs/heads/release"
-        ) == (True, "Git marketplace ref 'refs/heads/release' at candidate123")
-
-
-def test_codex_local_marketplace_must_be_the_candidate_checkout(tmp_path: Path) -> None:
-    assert hosts.verify_codex_marketplace_source(str(ROOT))[0]
-    passed, output = hosts.verify_codex_marketplace_source(str(tmp_path))
-    assert not passed
-    assert "candidate checkout" in output
-
-
-def test_codex_install_passes_the_verified_ref_to_the_host() -> None:
+def test_codex_install_uses_plain_source_without_a_git_ref(tmp_path: Path) -> None:
     calls: list[list[str]] = []
+    source = hosts._plain_marketplace(tmp_path / "plain", "codex")
 
     def checked(command, **kwargs):
         calls.append(list(command))
         return True, "skiphow"
 
     with (
-        patch.object(
-            hosts,
-            "verify_codex_marketplace_source",
-            return_value=(True, "exact candidate"),
-        ),
         patch.object(hosts, "checked", side_effect=checked),
+        patch.object(hosts, "_installed_path", return_value=hosts.PLUGIN_ROOT),
     ):
         assert hosts.isolated_install(
             "codex",
             "/bin/codex",
-            codex_marketplace_source="https://example.invalid/project.git",
-            codex_marketplace_ref="refs/heads/release",
+            codex_marketplace_source=str(source),
         )[0]
-    assert calls[0][-3:] == ["--ref", "refs/heads/release", "--json"]
+    assert calls[0][-2:] == [str(source), "--json"]
+    assert "--ref" not in calls[0]
 
 
 def test_claude_validation_targets_the_plugin_directory() -> None:
@@ -217,9 +192,12 @@ def test_isolated_install_uses_local_marketplace_and_empty_host_home(
         calls.append((list(command), kwargs["env"]))
         return True, "skiphow"
 
-    with patch.object(hosts, "checked", side_effect=checked):
+    with (
+        patch.object(hosts, "checked", side_effect=checked),
+        patch.object(hosts, "_installed_path", return_value=hosts.PLUGIN_ROOT),
+    ):
         assert hosts.isolated_install(host, f"/bin/{host}")[0]
-    assert str(ROOT) in calls[0][0]
+    assert "marketplace" in " ".join(calls[0][0])
     assert calls[0][1][home_variable]
     assert len({call[1][home_variable] for call in calls}) == 1
 
@@ -231,6 +209,17 @@ def test_available_host_install_failure_blocks_release() -> None:
         patch.object(hosts, "isolated_install", return_value=(False, "install failed")),
     ):
         assert hosts.main([]) == 1
+
+
+def test_managed_codex_policy_is_unverified_unless_install_is_required(capsys) -> None:
+    with (
+        patch.object(hosts, "codex_validator", return_value=None),
+        patch.object(hosts.shutil, "which", side_effect=["/bin/codex", None, "/bin/codex", None]),
+        patch.object(hosts, "isolated_install", return_value=(False, "blocked by /etc/codex/requirements.toml allowed source policy")),
+    ):
+        assert hosts.main([]) == 0
+        assert hosts.main(["--require-codex-install"]) == 1
+    assert "Codex isolated install: UNVERIFIED" in capsys.readouterr().out
 
 
 def test_required_install_fails_when_host_is_missing() -> None:

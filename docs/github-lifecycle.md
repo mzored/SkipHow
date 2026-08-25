@@ -10,20 +10,22 @@ A GitHub Project may display this work. It does not control readiness, dependenc
 
 For each tracked item, the agent:
 
-1. finds or creates the Issue after searching open and closed work for duplicates;
-2. reads parent, sub-issue, and dependency state;
-3. records a stable operation marker for any object it may need to reconcile;
-4. creates an owned branch and an isolated worktree when the host supports it;
-5. implements the accepted scope and checks the final local state;
-6. finds or creates one pull request for the coherent deliverable;
-7. links the Issue with a closing keyword only when that pull request completes it;
-8. records and rechecks the exact pull request head before protected actions;
-9. waits for repository-required checks and reviews, then makes bounded repairs for failures caused by the change;
-10. merges only with authority and satisfied repository rules;
-11. confirms the merged state before closing the Issue or updating dependencies;
-12. removes only the owned merged branch and clean worktree.
+1. finds the Issue, or confirms after searching open and closed work that it must be created;
+2. confirms that the item is in scope, sufficiently defined, free of open blockers or missing owner decisions, and not owned by a competing active operation;
+3. reads parent, sub-issue, and dependency state;
+4. creates a stable operation marker before a create call and includes it in the initial object payload;
+5. creates the Issue if absent, or appends the operation claim to the existing Issue without rewriting owner text;
+6. creates an owned branch and an isolated worktree when the host supports it;
+7. implements the accepted scope and checks the final local state;
+8. finds or creates one pull request for the coherent deliverable;
+9. links the Issue with a closing keyword only when that pull request completes it;
+10. records and rechecks the exact pull request head before protected actions;
+11. waits for repository-required checks and reviews, then makes bounded repairs for failures caused by the change;
+12. merges only with authority and satisfied repository rules;
+13. confirms the merged state before closing the Issue or updating dependencies;
+14. removes only the owned merged branch and clean worktree.
 
-Remote mutations are serialized. Before a create, the agent records the intended stable marker and identity. It then calls GitHub and reads the observed result. A retry reconciles remote state before it creates or changes anything. External APIs do not promise exactly-once creation, so SkipHow promises reconciliation, not exactly-once delivery.
+Remote mutations are serialized within a run. Before claiming work or taking a protected action, and immediately after recording a claim, the root checks the Issue, linked pull requests, branches, and markers for another active operation. It continues that operation only when authority and ownership transfer are verified. Simultaneous claims or ambiguous ownership stop `BLOCKED` before a branch or pull request is created. A retry searches open and closed objects by marker before it creates or changes anything. External APIs do not promise an atomic claim or exactly-once creation, so SkipHow promises reconciliation, not exactly-once delivery.
 
 Independent write tasks use separate worktrees and branches. The root agent owns integration. If safe isolation is unavailable, serialize repository writes.
 
@@ -31,9 +33,9 @@ Independent write tasks use separate worktrees and branches. The root agent owns
 
 "Fix", "implement", and "deliver" permit work through a ready pull request when the repository uses one. They do not grant merge by implication.
 
-"Finish end to end", "run unattended", "complete these Issues", or equivalent wording grants guarded merge and cleanup for the named scope. "Do not merge" removes that authority immediately.
+"Finish end to end", "run unattended", "complete these Issues", or equivalent wording grants guarded merge and cleanup for the named scope. "Do not merge", pause, cancellation, or a narrower instruction removes that authority immediately. The agent disables owned auto-merge and leaves its merge-queue entry when GitHub permits it, then confirms the remote state. An unconfirmed cancellation is `BLOCKED`.
 
-A merge requires all of these facts:
+Immediately before merge, the agent re-reads trusted authority, the Issue, blockers and dependencies, active operation, pull request, exact head, checks, reviews, and repository rules. A merge requires all of these facts:
 
 - the Issue belongs to the authorized scope;
 - the pull request head still matches the checked commit;

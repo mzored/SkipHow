@@ -6,4 +6,5 @@
 - Disposition: NEW
 - Links: None
 - Evidence: task prompt
+- Assumptions: None
 - Open questions: None

@@ -196,6 +196,22 @@ def _redact(value: str, secrets: Iterable[str]) -> str:
     return result
 
 
+def _redact_value(value: Any, secrets: Iterable[str]) -> Any:
+    if isinstance(value, str):
+        return _redact(value, secrets)
+    if isinstance(value, list):
+        return [_redact_value(item, secrets) for item in value]
+    if isinstance(value, tuple):
+        return [_redact_value(item, secrets) for item in value]
+    if isinstance(value, dict):
+        return {_redact(str(key), secrets): _redact_value(item, secrets) for key, item in value.items()}
+    return value
+
+
+def _write_receipt(path: Path, value: Any, secrets: Iterable[str]) -> None:
+    _write_json(path, _redact_value(value, secrets))
+
+
 def _events(stdout: str) -> list[dict[str, Any]]:
     result: list[dict[str, Any]] = []
     for line in stdout.splitlines():
@@ -417,6 +433,7 @@ def _github_preflight(args: argparse.Namespace, candidate: Path, secrets: list[s
         "all_pull_requests_merged": True,
         "all_closing_links_present": True,
         "all_required_checks_passed": True,
+        "all_head_repositories_match": True,
         "all_owned_branches_deleted": True,
         "operation_marker_present": True,
     }
@@ -455,9 +472,25 @@ def _fetch_github_snapshot(sandbox: Path, repository: str, token: str, marker: d
         number = item.get("number")
         detail = _gh_json(f"/repos/{repository}/pulls/{number}", cwd=sandbox, environment=environment)
         head = detail.get("head", {}).get("sha")
-        checks = _gh_json(f"/repos/{repository}/commits/{head}/check-runs", cwd=sandbox, environment=environment)
+        checks = _gh_json(f"/repos/{repository}/commits/{head}/check-runs?per_page=100", cwd=sandbox, environment=environment)
         check_runs = checks.get("check_runs", []) if isinstance(checks, dict) else []
-        conclusions = {entry.get("name"): entry.get("conclusion") for entry in check_runs if isinstance(entry, dict) and entry.get("head_sha") == head}
+        if (
+            not isinstance(checks, dict)
+            or not isinstance(check_runs, list)
+            or checks.get("total_count") != len(check_runs)
+            or len(check_runs) >= 100
+        ):
+            raise GateError("GitHub collector cannot prove a complete check-run inventory")
+        accepted_conclusions = {"success", "skipped", "neutral"}
+        required_checks_passed = all(
+            bool(matching := [
+                entry
+                for entry in check_runs
+                if isinstance(entry, dict) and entry.get("head_sha") == head and entry.get("name") == name
+            ])
+            and all(entry.get("conclusion") in accepted_conclusions for entry in matching)
+            for name in marker["required_checks"]
+        )
         branch_name = quote(str(detail.get("head", {}).get("ref", "")), safe="")
         branch = _gh_json(f"/repos/{repository}/branches/{branch_name}", cwd=sandbox, environment=environment, allow_missing=True)
         body = str(detail.get("body") or "")
@@ -467,9 +500,10 @@ def _fetch_github_snapshot(sandbox: Path, repository: str, token: str, marker: d
                 "number": number,
                 "merged_at": detail.get("merged_at"),
                 "head_sha": head,
+                "head_repository_matches": detail.get("head", {}).get("repo", {}).get("full_name") == repository,
                 "operation_marker_present": marker["operation"] in body,
                 "closing_issues": linked,
-                "required_checks_passed": all(conclusions.get(name) == "success" for name in marker["required_checks"]),
+                "required_checks_passed": required_checks_passed,
                 "branch_exists": branch is not None,
             }
         )
@@ -491,6 +525,7 @@ def _fetch_github_snapshot(sandbox: Path, repository: str, token: str, marker: d
         "all_pull_requests_merged": bool(normalized_prs) and all(item["merged_at"] for item in normalized_prs),
         "all_closing_links_present": set(marker["issues"]) <= linked_issues,
         "all_required_checks_passed": bool(normalized_prs) and all(item["required_checks_passed"] for item in normalized_prs),
+        "all_head_repositories_match": bool(normalized_prs) and all(item["head_repository_matches"] for item in normalized_prs),
         "all_owned_branches_deleted": bool(normalized_prs) and not owned_remote_branches and all(not item["branch_exists"] for item in normalized_prs),
         "operation_marker_present": (
             bool(normalized_prs)
@@ -676,6 +711,14 @@ def _host_call(
 ) -> dict[str, Any]:
     _private_directory(call_root, exclusive=True)
     _private_directory(receipt_root, exclusive=True)
+    receipt_secrets = [
+        *secrets,
+        str(candidate),
+        str(workspace),
+        str(call_root),
+        str(receipt_root),
+        str(args.codex_marketplace_source or ""),
+    ]
     credential = os.environ[args.credential_env or hosts.CREDENTIAL_ENV[args.host]]
     if budget["observed_spend"] >= budget["total"]:
         result = {
@@ -684,7 +727,7 @@ def _host_call(
             "events": [],
             "usage": {"status": Status.UNVERIFIED.value, "cost_status": Status.UNVERIFIED.value},
         }
-        _write_json(receipt_root / "call.json", {key: value for key, value in result.items() if key != "events"})
+        _write_receipt(receipt_root / "call.json", {key: value for key, value in result.items() if key != "events"}, receipt_secrets)
         return result
     try:
         _, environment = hosts.fresh_config(
@@ -699,20 +742,19 @@ def _host_call(
             environment,
             version=proof["version"],
             codex_source=args.codex_marketplace_source,
-            codex_ref=args.codex_marketplace_ref,
         )
         if candidate_proof(candidate) != proof:
             raise hosts.HostError("candidate payload changed during installation")
     except (hosts.HostError, GateError) as exc:
         result = {
             "status": Status.BLOCKED.value,
-            "detail": str(exc),
+            "detail": _redact(str(exc), receipt_secrets),
             "events": [],
             "usage": {"status": Status.UNVERIFIED.value, "cost_status": Status.UNVERIFIED.value},
         }
-        _write_json(receipt_root / "call.json", {key: value for key, value in result.items() if key != "events"})
+        _write_receipt(receipt_root / "call.json", {key: value for key, value in result.items() if key != "events"}, receipt_secrets)
         return result
-    _write_json(receipt_root / "install.json", install)
+    _write_receipt(receipt_root / "install.json", install, receipt_secrets)
     try:
         command, exit_code, stdout, stderr = hosts.invoke(
             args.host,
@@ -738,8 +780,8 @@ def _host_call(
     except GateError as exc:
         process_status = Status.FAILED
         detail = str(exc)
-    redacted_stdout = _redact(stdout, secrets)
-    redacted_stderr = _redact(stderr, secrets)
+    redacted_stdout = _redact(stdout, receipt_secrets)
+    redacted_stderr = _redact(stderr, receipt_secrets)
     _write_text(receipt_root / "events.ndjson", redacted_stdout)
     _write_text(receipt_root / "stderr.txt", redacted_stderr)
     events = _events(stdout)
@@ -752,7 +794,7 @@ def _host_call(
             detail = "host-reported spend exceeded the total budget"
     result = {
         "status": process_status.value,
-        "detail": detail,
+        "detail": _redact(detail, receipt_secrets) if detail is not None else None,
         "exit_code": exit_code,
         "requested_model": args.model,
         "requested_effort": args.effort,
@@ -761,13 +803,10 @@ def _host_call(
         "events": events,
         "command": command,
     }
-    _write_json(
+    _write_receipt(
         receipt_root / "call.json",
-        {
-            key: (_redact(json.dumps(value), secrets) if key == "command" else value)
-            for key, value in result.items()
-            if key != "events"
-        },
+        {key: value for key, value in result.items() if key not in {"events", "command"}},
+        receipt_secrets,
     )
     return result
 
@@ -784,6 +823,7 @@ def _finish_trial(
     structured_before: dict[str, str],
     calls: list[dict[str, Any]],
     started: float,
+    secrets: list[str],
     github_expected: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     process_status = aggregate_status([call["status"] for call in calls])
@@ -812,9 +852,8 @@ def _finish_trial(
         "assertions": evidence,
         "usage": usage,
         "calls": [{key: value for key, value in call.items() if key not in {"events", "command"}} for call in calls],
-        "workspace": str(workspace),
     }
-    _write_json(receipt_root / "receipt.json", result)
+    _write_receipt(receipt_root / "receipt.json", result, [*secrets, str(workspace), str(receipt_root)])
     return result
 
 
@@ -899,7 +938,11 @@ def _plain_trial(
                 checkpoint,
                 f"checkpoint collector failed safely: {exc}",
             )
-        _write_json(receipt_root / "checkpoint.json", {"status": checkpoint_status.value, "assertions": checkpoint_evidence})
+        _write_receipt(
+            receipt_root / "checkpoint.json",
+            {"status": checkpoint_status.value, "assertions": checkpoint_evidence},
+            [*secrets, str(workspace), str(receipt_root)],
+        )
         if checkpoint_status == Status.PASSED:
             resume_prompt = _contained(HERE, scenario["resume_prompt"], "resume prompt").read_text(encoding="utf-8")
             calls.append(
@@ -931,6 +974,7 @@ def _plain_trial(
         structured_before=structured_before,
         calls=calls,
         started=started,
+        secrets=secrets,
     )
     if scenario["execution"] == "restart":
         result["restart_reconstruction_status"] = (
@@ -940,17 +984,17 @@ def _plain_trial(
         )
         result["host_session_resume_status"] = Status.UNVERIFIED.value
         result["compaction_status"] = Status.UNVERIFIED.value
-        _write_json(receipt_root / "receipt.json", result)
+        _write_receipt(receipt_root / "receipt.json", result, [*secrets, str(workspace), str(receipt_root)])
     if not scenario["explicit_skill"]:
         result["implicit_skill_loading_status"] = Status.UNVERIFIED.value
-        _write_json(receipt_root / "receipt.json", result)
+        _write_receipt(receipt_root / "receipt.json", result, [*secrets, str(workspace), str(receipt_root)])
     if scenario["id"] == "nontechnical-owner":
         result["technical_question_semantics_status"] = Status.UNVERIFIED.value
-        _write_json(receipt_root / "receipt.json", result)
+        _write_receipt(receipt_root / "receipt.json", result, [*secrets, str(workspace), str(receipt_root)])
     if scenario["id"] == "reuse-feature":
         result["research_quality_status"] = Status.UNVERIFIED.value
     _finalize_trial_claims(result)
-    _write_json(receipt_root / "receipt.json", result)
+    _write_receipt(receipt_root / "receipt.json", result, [*secrets, str(workspace), str(receipt_root)])
     return result
 
 
@@ -1028,13 +1072,14 @@ def _github_trial(
         structured_before={},
         calls=[call],
         started=started,
+        secrets=secrets,
         github_expected=github_expected,
     )
     result["out_of_scope_remote_mutations_status"] = Status.UNVERIFIED.value
     result["premerge_exact_head_sequence_status"] = Status.UNVERIFIED.value
     result["required_review_observation_status"] = Status.UNVERIFIED.value
     _finalize_trial_claims(result)
-    _write_json(receipt_root / "receipt.json", result)
+    _write_receipt(receipt_root / "receipt.json", result, [*secrets, str(workspace), str(receipt_root)])
     return result
 
 
@@ -1112,7 +1157,8 @@ def _routing_comparison(trials: list[dict[str, Any]], route_map: dict[str, Any] 
         "all_deep_cost_usd": str(baseline_cost) if cost_complete else None,
         "descriptive_delta_usd": str(adaptive_cost - baseline_cost) if cost_complete else None,
         "claim_status": (Status.PASSED if claimable and adaptive_cost < baseline_cost else Status.UNVERIFIED).value,
-        "claim_scope": "the recorded paired trials only",
+        "claim_scope": "cost ablation under the operator-controlled route map",
+        "autonomous_selection_status": Status.UNVERIFIED.value,
     }
 
 
@@ -1123,6 +1169,10 @@ def run_live(args: argparse.Namespace) -> int:
         raise GateError("the live evaluator must run from the candidate checkout it grades")
     suite = load_suite(DEFAULT_SUITE)
     selected = _selected(suite, args.scenario)
+    if any(item["execution"] == "github" for item in selected):
+        raise GateError(
+            "mutable GitHub evaluation is UNVERIFIED: this harness cannot both permit Git metadata writes and technically prevent repository deletion"
+        )
     if args.trials < 1:
         raise GateError("--trials must be a positive integer")
     if any(item["host"] not in {"either", args.host} for item in selected):
@@ -1210,6 +1260,7 @@ def run_live(args: argparse.Namespace) -> int:
     claim_inputs = [item.get("claim_status", item["status"]) for item in trials]
     if routing is not None:
         claim_inputs.append(routing["claim_status"])
+        claim_inputs.append(routing["autonomous_selection_status"])
     limitations = [
         {
             "scenario": item["scenario"],
@@ -1222,6 +1273,8 @@ def run_live(args: argparse.Namespace) -> int:
     ]
     if routing is not None and routing["claim_status"] != Status.PASSED.value:
         limitations.append({"scenario": "adaptive-vs-all-deep", "claim": "paired routing savings", "status": routing["claim_status"]})
+    if routing is not None:
+        limitations.append({"scenario": "adaptive-vs-all-deep", "claim": "autonomous route selection", "status": routing["autonomous_selection_status"]})
     run_receipt: dict[str, Any] = {
         "schema_version": 1,
         "run_id": run_id,
@@ -1249,7 +1302,11 @@ def run_live(args: argparse.Namespace) -> int:
         "claim_status": aggregate_status(claim_inputs).value,
         "limitations": limitations,
     }
-    _write_json(receipt_run / "receipt.json", run_receipt)
+    _write_receipt(
+        receipt_run / "receipt.json",
+        run_receipt,
+        [*secrets, str(candidate), str(work_run), str(receipt_run), str(args.work_root), str(args.receipt_root)],
+    )
     print(
         json.dumps(
             {"status": run_receipt["status"], "claim_status": run_receipt["claim_status"], "receipt": str(receipt_run / "receipt.json")},
@@ -1281,7 +1338,6 @@ def parser() -> argparse.ArgumentParser:
     run.add_argument("--confirm-live", action="store_true")
     run.add_argument("--accept-advisory-codex-budget", action="store_true")
     run.add_argument("--codex-marketplace-source")
-    run.add_argument("--codex-marketplace-ref")
     run.add_argument("--route-map", help="operator-owned FAST/STANDARD/DEEP JSON used only by paired routing trials")
     run.add_argument("--github-sandbox-path")
     run.add_argument("--github-sandbox-repo")

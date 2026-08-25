@@ -31,7 +31,7 @@ Git is authoritative for code and history. GitHub Issues are authoritative for t
 
 Without GitHub, authorized intake appends to `.skiphow/inbox.md`. A stopped long task may use `.skiphow/handoff.md`. These files are fallbacks, not a second task system.
 
-At a work-item boundary, the agent records completed evidence, open findings, and the next action. After compaction or resume, it re-reads the owner request, repository instructions, Git state, GitHub state, and host task before changing anything.
+At a work-item boundary or before handoff, the agent appends a checkpoint with scope, current authority and later restrictions, accepted decisions, remaining queue and dependencies, tracker and exact Git state, owned resources, last external action and result, evidence, blockers, and the next safe action. After compaction or resume, it re-reads the trusted owner request and host task, repository instructions, checkpoint, Git, and GitHub before changing anything. Missing authority or ownership blocks merge and cleanup.
 
 ## Policy loading
 
@@ -41,13 +41,13 @@ Each rule has one owner. Host manifests do not copy it. This keeps routine reque
 
 ## Model selection
 
-Shared policy uses `FAST`, `STANDARD`, and `DEEP` capability tiers. It contains no provider model IDs. The host resolves an available model or inherits the current one. Model capability and reasoning effort are separate decisions.
+Shared policy uses `FAST`, `STANDARD`, and `DEEP` capability tiers. It contains no provider model IDs. The root chooses a concrete subagent route only from current host metadata; otherwise it inherits the current model and marks selection `UNVERIFIED`. Model capability and reasoning effort are separate decisions.
 
 The root agent and integrator inherit the owner's main model. `FAST` is limited to bounded read-only work with direct checks. Normal code mutation starts at `STANDARD`. `DEEP` handles high-judgment work and independent review when the cost of an error warrants it. See [model routing](model-routing.md).
 
 ## Authority and completion
 
-The owner's words and repository policy set the mutation boundary. Read-only work cannot create files, Issues, branches, or remote state. A request to save information permits the named record. A request to fix or implement permits project changes and checks. An explicit end-to-end or unattended request also permits guarded merge and cleanup for that scope.
+The owner's words and repository policy set the mutation boundary. Read-only work cannot create files, Issues, branches, or remote state. A request to save information permits the named record. A request to fix or implement permits project changes, checks, and one deduplicated record for each material independent finding. It does not permit implementing or reprioritizing that finding. An explicit end-to-end or unattended request also permits guarded merge and cleanup for that scope.
 
 Goals and subagents do not widen permissions. SkipHow never bypasses branch protection. It removes only clean owned worktrees and branches whose exact changes GitHub confirms as merged.
 

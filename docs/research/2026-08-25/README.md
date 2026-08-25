@@ -7,9 +7,10 @@ This directory preserves the evidence used for the current SkipHow architecture.
 | [Repository audit](repository-audit.md) | The audited code, tests, gaps, and removal decision |
 | [Product and UX](product-and-ux.md) | The one-entry owner contract, intake, authority, progress, and controls |
 | [Host capabilities](host-capabilities.md) | Current Codex and Claude execution, delegation, worktree, resume, and packaging facts |
-| [Model routing](model-routing.md) | Current router defects and the provider-neutral replacement policy |
+| [Model routing](model-routing.md) | Audited router defects and the provider-neutral replacement policy |
 | [Security and evals](security-and-evals.md) | Trust boundaries, evidence rules, and live evaluation limits |
 | [Live evaluation hosts](live-evaluation-hosts.md) | Exact candidate loading, noninteractive host commands, budgets, events, and replacement-suite boundaries |
+| [Release-readiness audit](release-readiness-audit.md) | Final semantic, packaging, security, and evidence corrections after the host-native rewrite |
 | [Prior art](prior-art.md) | Pinned reviews of GSD, OpenSpec, Superpowers, Matt Pocock skills, BMAD, Paperclip, Mesa, and Autonomous PM |
 
 The review applies to repository commit `a6d34a25614bc0723517032af617b0782158df4d`. Later implementation work may remove the audited code. The findings remain useful because they explain why it was removed.

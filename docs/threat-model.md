@@ -24,14 +24,14 @@ A subagent is not a security boundary. A worktree separates files but does not i
 | --- | --- | --- | --- |
 | Prompt injection in project or remote content | Unauthorized action or changed scope | Treat content as data, preserve the user request, obey host and repository authority | Policy text cannot replace the host sandbox |
 | Unauthorized mutation or protected action | Production, privacy, financial, or repository harm | Host approvals, least privilege, exact grants, protected-action stop | Host and connector behavior varies by version |
-| Concurrent writers | Conflicts or overwritten work | One root integrator, disjoint worktrees, one writer per owned item | Worktrees do not isolate shared external systems |
+| Concurrent writers | Conflicts, duplicate pull requests, or overwritten work | One root integrator, disjoint worktrees, active-operation checks across Issues, pull requests, branches, and markers | Worktrees do not isolate shared external systems |
 | Stale or duplicate GitHub mutation | Duplicate records or merge of an unchecked head | Stable operation markers, serialized remote writes, reconcile before retry, exact-head checks | GitHub create APIs do not promise exactly-once behavior |
 | Unsafe cleanup | Lost branch, commit, or local work | Confirmed merge, operation ownership, clean worktree, no other pull request, no unique work | Uncertain resources stay in place for review |
 | Credential disclosure | Secret exposure through prompts, files, or remote records | Keep credentials in host stores, limit access, do not persist secrets | A model with granted access may still see in-scope secrets |
 | Forged completion evidence | False success or unsafe merge | Inspect final state independently, bind checks to the exact head, distrust self-reports | Some outcomes need live or human checks |
 | Retry or delegation loop | Unbounded cost and stalled work | Host budget, bounded retries, changed premise before retry, explicit blocker | Provider cost reports and hard limits differ |
-| Bad resume after compaction or restart | Repeated work or action under stale authority | Re-read request, Git, GitHub, checks, and host task before mutation | Cross-process recovery is not proven on every host |
-| Compromised live fixture or collector | False release claim or access to real data | Fresh isolated fixtures, collectors outside writable roots, pre-provisioned GitHub sandbox | Live behavior remains `UNVERIFIED` without a receipt |
+| Bad resume after compaction or restart | Repeated work or action under stale authority | Append scope, authority restrictions, ownership, exact state, evidence, and next action; re-read trusted and external state before mutation | Cross-process recovery is not proven on every host |
+| Compromised live fixture or collector | False release claim or access to real data | Synthetic fixtures, collectors outside writable roots, recursive receipt redaction, repository-free package sources | Mutable GitHub behavior remains `UNVERIFIED` without an enforced repository-preservation boundary |
 
 ## Protected actions
 

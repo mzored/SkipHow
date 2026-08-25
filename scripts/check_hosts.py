@@ -4,9 +4,12 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
 import os
 from pathlib import Path
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
@@ -77,35 +80,83 @@ def validator_python() -> tuple[str | None, str]:
     return None, output or "could not prepare repository-managed Python"
 
 
-def verify_codex_marketplace_source(
-    source: str, ref: str | None = None
-) -> tuple[bool, str]:
-    """Require a Git marketplace ref to match the current committed candidate."""
-    local_source = Path(source).expanduser()
-    if local_source.is_dir():
-        if ref is not None:
-            return False, "a Codex marketplace ref cannot be used with a local source"
-        if local_source.resolve() != ROOT.resolve():
-            return False, f"local marketplace source must be the candidate checkout: {ROOT}"
-        return True, "candidate checkout as local marketplace source"
+def _payload(root: Path) -> dict[str, str]:
+    if not root.is_dir() or root.is_symlink():
+        raise ValueError(f"package directory is unavailable: {root}")
+    result: dict[str, str] = {}
+    for path in root.rglob("*"):
+        mode = path.lstat().st_mode
+        if path.name == ".git":
+            raise ValueError("marketplace source must not contain a repository")
+        if stat.S_ISLNK(mode) or not (stat.S_ISDIR(mode) or stat.S_ISREG(mode)):
+            raise ValueError("marketplace source must contain ordinary files and directories only")
+        if stat.S_ISREG(mode):
+            result[path.relative_to(root).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
+    if not result:
+        raise ValueError("package payload is empty")
+    return result
 
-    head_ok, local_head = checked(["git", "rev-parse", "HEAD"], timeout=30)
-    if not head_ok or not local_head:
-        return False, "cannot identify the current candidate commit"
 
-    requested_ref = ref or "HEAD"
-    command = ["git", "ls-remote", source]
-    if requested_ref != local_head:
-        command.extend([requested_ref, f"{requested_ref}^{{}}"])
-    remote_ok, output = checked(command)
-    commits = {line.split()[0] for line in output.splitlines() if line.split()}
-    if not remote_ok or local_head not in commits:
-        resolved = ", ".join(sorted(commits)) or "unavailable"
-        return False, (
-            f"Codex marketplace ref {requested_ref!r} resolves to {resolved}, "
-            f"not candidate {local_head}"
-        )
-    return True, f"Git marketplace ref {requested_ref!r} at {local_head}"
+def _plain_marketplace(destination: Path, host: str) -> Path:
+    destination.mkdir(parents=True, exist_ok=False)
+    metadata = ".agents" if host == "codex" else ".claude-plugin"
+    shutil.copytree(ROOT / metadata, destination / metadata)
+    shutil.copytree(PLUGIN_ROOT, destination / "plugins/skiphow")
+    _payload(destination)
+    return destination
+
+
+def verify_plain_marketplace_source(source: str, host: str) -> tuple[bool, str]:
+    """Require a repository-free local marketplace with the exact package bytes."""
+    marketplace = Path(source).expanduser().resolve()
+    try:
+        marketplace_payload = _payload(marketplace)
+        manifest = ".agents/plugins/marketplace.json" if host == "codex" else ".claude-plugin/marketplace.json"
+        if (marketplace / manifest).read_bytes() != (ROOT / manifest).read_bytes():
+            return False, "marketplace manifest does not match the candidate"
+        plugin_payload = _payload(PLUGIN_ROOT)
+        if _payload(marketplace / "plugins/skiphow") != plugin_payload:
+            return False, "marketplace plugin payload does not match the candidate"
+        expected = {
+            manifest: hashlib.sha256((ROOT / manifest).read_bytes()).hexdigest(),
+            **{f"plugins/skiphow/{name}": digest for name, digest in plugin_payload.items()},
+        }
+        if marketplace_payload != expected:
+            return False, "marketplace contains files outside the exact candidate package"
+    except (OSError, ValueError) as exc:
+        return False, str(exc)
+    return True, "plain marketplace contains the exact candidate package"
+
+
+def _installed_path(host: str, raw: str) -> Path:
+    value = json.loads(raw)
+    entries = value.get("installed") if host == "codex" and isinstance(value, dict) else value
+    if not isinstance(entries, list):
+        raise ValueError("plugin inventory is not a list")
+    matches = []
+    for item in entries:
+        if not isinstance(item, dict):
+            continue
+        identifier = item.get("pluginId") if host == "codex" else item.get("id")
+        if identifier == "skiphow@skiphow" and item.get("enabled") is True and item.get("installed", True) is True:
+            matches.append(item)
+    if len(matches) != 1:
+        raise ValueError("expected one enabled skiphow@skiphow installation")
+    item = matches[0]
+    source = item.get("source") if host == "codex" else None
+    path = source.get("path") if isinstance(source, dict) else item.get("installPath")
+    if not isinstance(path, str) or not path:
+        raise ValueError("host inventory omitted the installed package path")
+    return Path(path).resolve()
+
+
+def _created_repository(root: Path) -> bool:
+    return any(path.name == ".git" for path in root.rglob("*"))
+
+
+def _codex_policy_block(output: str) -> bool:
+    lowered = output.lower()
+    return "requirements.toml" in lowered or "allowed source" in lowered or "source is not allowed" in lowered
 
 
 def isolated_install(
@@ -113,38 +164,40 @@ def isolated_install(
     executable: str,
     *,
     codex_marketplace_source: str | None = None,
-    codex_marketplace_ref: str | None = None,
 ) -> tuple[bool, str]:
     """Install the exact candidate with a temporary, empty host configuration."""
     with tempfile.TemporaryDirectory(prefix=f"skiphow-{host}-install-") as temporary:
         environment = os.environ.copy()
+        temporary_root = Path(temporary)
+        source = (
+            Path(codex_marketplace_source).expanduser().resolve()
+            if host == "codex" and codex_marketplace_source
+            else _plain_marketplace(temporary_root / "marketplace", host)
+        )
+        verified, detail = verify_plain_marketplace_source(str(source), host)
+        if not verified:
+            return False, detail
+        host_home = temporary_root / "host-home"
+        host_home.mkdir()
         if host == "codex":
-            source = codex_marketplace_source or str(ROOT)
-            verified, detail = verify_codex_marketplace_source(
-                source, codex_marketplace_ref
-            )
-            if not verified:
-                return False, detail
-            environment["CODEX_HOME"] = temporary
+            environment["CODEX_HOME"] = str(host_home)
             marketplace_command = [
                 executable,
                 "plugin",
                 "marketplace",
                 "add",
-                source,
+                str(source),
+                "--json",
             ]
-            if codex_marketplace_ref is not None:
-                marketplace_command.extend(["--ref", codex_marketplace_ref])
-            marketplace_command.append("--json")
             commands = (
                 marketplace_command,
                 [executable, "plugin", "add", "skiphow@skiphow", "--json"],
                 [executable, "plugin", "list", "--json"],
             )
         elif host == "claude":
-            environment["CLAUDE_CONFIG_DIR"] = temporary
+            environment["CLAUDE_CONFIG_DIR"] = str(host_home)
             commands = (
-                [executable, "plugin", "marketplace", "add", str(ROOT), "--scope", "user"],
+                [executable, "plugin", "marketplace", "add", str(source), "--scope", "user"],
                 [
                     executable,
                     "plugin",
@@ -154,7 +207,7 @@ def isolated_install(
                     "user",
                     "--yes",
                 ],
-                [executable, "plugin", "list"],
+                [executable, "plugin", "list", "--json"],
             )
         else:
             raise ValueError(f"unsupported host: {host}")
@@ -162,11 +215,17 @@ def isolated_install(
         output = ""
         for command in commands:
             passed, output = checked(command, env=environment)
+            if _created_repository(temporary_root):
+                return False, "host package check created a repository"
             if not passed:
                 return False, output or f"failed {' '.join(command)}"
-        if "skiphow" not in output.lower():
-            return False, "installed plugin was absent from the host listing"
-        return True, output
+        try:
+            installed = _installed_path(host, output)
+            if _payload(installed) != _payload(PLUGIN_ROOT):
+                return False, "installed plugin payload does not match the candidate"
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            return False, str(exc)
+        return True, "exact candidate installed from a plain marketplace"
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -178,11 +237,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--require-claude-install", action="store_true")
     parser.add_argument(
         "--codex-marketplace-source",
-        help="local or Git marketplace source; defaults to this checkout",
-    )
-    parser.add_argument(
-        "--codex-marketplace-ref",
-        help="Git ref that must resolve to the current candidate commit",
+        help="pre-provisioned plain local marketplace; defaults to a temporary snapshot",
     )
     args = parser.parse_args(argv)
 
@@ -234,13 +289,13 @@ def main(argv: Sequence[str] | None = None) -> int:
                 codex_marketplace_source=(
                     args.codex_marketplace_source if host == "codex" else None
                 ),
-                codex_marketplace_ref=(
-                    args.codex_marketplace_ref if host == "codex" else None
-                ),
             )
-            print(f"{host.capitalize()} isolated install: {'PASS' if passed else 'FAIL'}")
+            policy_blocked = host == "codex" and not passed and _codex_policy_block(output)
+            status = "PASS" if passed else "UNVERIFIED" if policy_blocked and not required else "FAIL"
+            print(f"{host.capitalize()} isolated install: {status}")
             if not passed:
-                errors.append(output or f"{host} isolated installation failed without output")
+                if not policy_blocked or required:
+                    errors.append(output or f"{host} isolated installation failed without output")
 
     if errors:
         for error in errors:

@@ -2,7 +2,7 @@
 
 All notable changes to this project appear in this file.
 
-## 0.9.0 (unreleased)
+## 0.9.0 (2026-08-25, preview)
 
 Version 0.9.0 removes the Python runner introduced in 0.8. SkipHow is now one portable, owner-facing skill. Codex and Claude use the host's own sessions, goals, subagents, worktrees, resume support, and permission controls.
 
@@ -13,13 +13,16 @@ This is a breaking release. The `skiphow` executable, its SQLite state, runtime 
 - Kept one public `skiphow` entry point for discussion, capture, delivery, and task control. Requests use ordinary language instead of separate fix, CTO, idea, or automode commands.
 - Made short tasks run in the current host session. Long work uses host-native goals and background tasks when the host provides them.
 - Made GitHub Issues, pull requests, and Git the durable record for tracked work. Projects without GitHub can keep explicit capture requests in `.skiphow/inbox.md`.
-- Replaced model names with the semantic `FAST`, `STANDARD`, and `DEEP` tiers. The host resolves the available model or inherits the current model when it cannot select a tier.
+- Replaced model names with the semantic `FAST`, `STANDARD`, and `DEEP` tiers. The root maps them only from current host metadata and otherwise inherits the current model with an `UNVERIFIED` selection result.
 - Limited automatic merge to explicit unattended or end-to-end work. Required checks, reviews, repository rules, and exact-head checks still apply.
+- Made pause, cancellation, and narrower authority cancel owned pending merge actions, and made recovery fail closed without trusted scope, authority, ownership, and exact state.
+- Defined one deduplicated intake record as part of delivery authority for a material independent finding, without implementing or reprioritizing it.
 - Rewrote the plugin policy, architecture, research notes, decisions, and README around the host-native design.
 
 ### Added
 
-- Added an opt-in live evaluator for ten owner workflows. It loads an exact candidate and grades synthetic workspaces against external oracles. Restart, routing, and GitHub delivery have separate guarded scenarios.
+- Added an opt-in live evaluator for ten owner workflows. It loads an exact candidate and grades synthetic workspaces against external oracles. Mutable GitHub execution fails closed until an external boundary can prevent repository deletion while allowing required Git writes.
+- Added recursive receipt redaction, exact installed-payload comparison, repository-free marketplace snapshots, and the package's MIT license text.
 
 ### Removed
 
@@ -31,36 +34,11 @@ This is a breaking release. The `skiphow` executable, its SQLite state, runtime 
 ### Verification status
 
 - Deterministic repository and package checks remain in CI.
-- Live Codex and Claude outcome checks remain opt-in. Host-native continuation, unattended GitHub delivery, and model-tier savings stay `UNVERIFIED` until an exact 0.9 candidate passes those checks.
+- Live Codex and Claude outcome checks remain opt-in. Implicit selection, owner-intent interpretation, host-native continuation, unattended GitHub delivery, autonomous model selection, and model-tier savings stay `UNVERIFIED` until exact 0.9 evidence covers them.
 
-## 0.8.0 (unreleased release candidate)
+## 0.8.0 (unreleased development candidate)
 
-This candidate is not SkipHow 1.0. Authenticated Claude execution, multi-trial real provider and service outcomes, adaptive-routing ablation, and cross-platform operation remain `UNVERIFIED`.
-
-### Changed
-
-- Made live-eval config generation deterministic in source archives without weakening the clean-Git requirement for release-mode evidence.
-- Added bounded backoff for concurrent security-audit appends so ordinary writer contention does not exhaust CAS retries.
-- Fixed owned Git branch metadata parsing so guarded post-merge cleanup recognizes lanes created by the lifecycle helper.
-- Split the product into a lean semantic plugin kernel and an optional durable runner.
-- Reduced the common software instruction route to 1,290 words and removed generic method skills from its default closure.
-- Replaced single-item capture routing with batch Intake, raw-record and atom provenance, evidence status, bounded candidate decisions, grouping, work-item shaping, Epic dependency validation, and persistence authority.
-- Expanded GitHub integration around candidate search, provenance, relationships, pull requests, checks, merge policy, and ownership-safe cleanup.
-- Added project configuration schema v2 while retaining v1 reads and reversible explicit migration.
-- Made the Intake CLI run grouping, work-item shaping, bounded candidate disposition, provenance merge, and optional Epic validation before idempotent persistence.
-
-### Added
-
-- Added the local Python runner with transactional SQLite state, an append-only journal, leases, checkpoints, recovery capsules, cancellation, circuit breaking, and state-derived reconciliation.
-- Added foreground `execute` and single-frontier `worker` supervision, provider-session resume, lease renewal, persisted process-exit checkpoints, external-wait polling, and invocation time and reported-cost ceilings.
-- Added redaction at the runner store boundary so run, task, event, finding, attempt, checkpoint, snapshot, and export payloads do not persist recognized secret forms.
-- Added provider-neutral Codex and Claude adapters, Claude Agent SDK-first transport selection, subprocess fallbacks, context compaction, durable semantic routing and outcome calibration, permission profiles, protected-action checks, redaction, and a compare-and-swap audit chain.
-- Added schema 2 runner migration with a consistent backup, hash-linked journal validation, exact-head snapshot recovery, and startup integrity checks.
-- Added trusted environment verification for write-capable provider tasks and durable, replay-safe `github-deliver` reconciliation.
-- Added versioned JSON schemas, durable CLI controls, twenty outcome scenarios, deterministic graders, and live eval harness v2 with exact-candidate release mode, isolated synthetic fixtures, trusted final-state collectors, grader-bound receipts, and failed-outcome aggregation.
-- Added an executable substrate spike for child-process SQLite recovery and no-model Codex App Server terminate/resume continuity.
-- Added an opt-in GitHub lifecycle gate for an owned disposable private repository. It requires a forced interruption and resume before it writes a gradeable receipt.
-- Added architecture, trust, operations, intake, model-routing, GitHub lifecycle, eval, prior-art, and durable-runtime decision documents.
+This unpublished candidate explored a durable Python runner, SQLite state, provider adapters, and a larger evaluation harness. Version 0.9.0 removed that architecture. Git history preserves the implementation and migration details.
 
 ## 0.7.0
 

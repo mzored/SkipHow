@@ -35,7 +35,7 @@ The root agent and final integrator inherit the model selected for the user's se
 
 The root agent classifies a task from its work packet. The packet includes the role, mutation authority, uncertainty, risk, and available verification. SkipHow does not call a separate router model.
 
-The portable skill contains no model IDs, versioned aliases, prices, or provider names. A host may map `FAST`, `STANDARD`, and `DEEP` to models in its current catalog. If the host cannot resolve a tier or cannot choose a subagent model, the agent uses `inherit`. The final report marks any claimed routing benefit `UNVERIFIED` in that case.
+The portable skill contains no model IDs, versioned aliases, prices, or provider names. The root maps `FAST`, `STANDARD`, and `DEEP` only from current capability, cost, or latency metadata exposed by the host, then selects the concrete route at subagent spawn. It does not infer capability or price from a name. If the host exposes no trustworthy map, cannot choose a subagent model, or substitutes the request without reporting the effective route, the agent uses `inherit` and marks model selection and any claimed benefit `UNVERIFIED`.
 
 Capability and reasoning effort remain separate settings. A host may run a capable model at low effort for a small task or increase effort without changing models. The core policy does not treat a tier as an effort alias.
 
@@ -46,7 +46,7 @@ Routing failures follow these rules:
 - A transient provider error retries the same route within the host's normal limits.
 - A missing model or unsupported setting falls back to a compatible host choice, then to `inherit`.
 - One meaningful verification failure may receive a corrective attempt at the same tier.
-- A repeated reasoning failure raises effort or capability by one step. It does not start an open-ended escalation loop.
+- A repeated reasoning failure raises effort or capability by one step. Promotion counts only when the effective model or effort changes. After one correction and one effective promoted or independent review attempt fail on the same premise, the work is `BLOCKED`.
 - Independent `DEEP` review is reserved for security, public contracts, large integration changes, weak verification, or a repeated failure.
 
 SkipHow measures the cost of the verified outcome. That includes the root session, subagents, transferred context, retries, and review. Documentation and README copy must not claim token or cost savings until paired multi-trial evaluations show no material loss in outcome quality against an all-`DEEP` baseline with the same reasoning-effort rules.
@@ -55,7 +55,7 @@ SkipHow measures the cost of the verified outcome. That includes the root sessio
 
 The policy survives model renames and transfers between hosts. It also keeps routine work from acquiring a second routing call before useful work starts.
 
-Host integrations may make different concrete choices for the same semantic tier. Results can therefore differ by host and installed model catalog. SkipHow reports that limitation instead of presenting tier names as proof of equivalent execution.
+Host integrations may make different concrete choices for the same semantic tier. Some expose no trustworthy capability or cost catalog at all. Results can therefore differ by host and installed model catalog. SkipHow reports that limitation instead of presenting tier names as proof of equivalent or autonomous routing.
 
 The conservative mutation rule may miss some savings on mechanical code changes. That is intentional until SkipHow has outcome data for those tasks.
 

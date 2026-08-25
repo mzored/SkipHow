@@ -7,6 +7,7 @@ import inspect
 import json
 import os
 from pathlib import Path
+import shutil
 import sys
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -167,8 +168,10 @@ def test_collectors_read_plain_data_and_mark_model_text_unverified(tmp_path: Pat
     assert delta["modified"] == ["old.txt"]
     inbox = workspace / "inbox.md"
     original = "## seed-1\n- Recorded: 2026-08-25T12:00:00Z\n- Source: owner\n- Original: old request\n- Normalized: old request\n- Disposition: NEW\n- Links: None\n- Evidence: note\n- Open questions: none\n"
-    inbox.write_text(original + "## finding-2\n- Recorded: 2026-08-25T12:01:00Z\n- Source: test\n- Original: new finding\n- Normalized: save it\n- Disposition: NEEDS_RESEARCH\n- Links: None\n- Evidence: log\n- Open questions: owner\n", encoding="utf-8")
+    inbox.write_text(original + "## finding-2\n- Recorded: 2026-08-25T12:01:00Z\n- Source: test\n- Original JSON: \"new finding\\nwith context\"\n- Normalized: save it\n- Disposition: NEEDS_RESEARCH\n- Links: None\n- Evidence: log\n- Assumptions: None\n- Open questions: owner\n", encoding="utf-8")
     assert collectors.structured_file(inbox, kind="append_only_inbox", before=original, expected_count=2)["status"] == "PASSED"
+    evidence = collectors.structured_file(inbox, kind="append_only_inbox", before=original, expected_count=2)
+    assert "added_records" not in evidence
     linked = collectors.structured_file(
         inbox,
         kind="append_only_inbox",
@@ -183,6 +186,9 @@ def test_collectors_read_plain_data_and_mark_model_text_unverified(tmp_path: Pat
     snapshot.write_text('{"name":"sandbox"}', encoding="utf-8")
     assert collectors.github_state(snapshot)["status"] == "UNVERIFIED"
     assert collectors.github_state(snapshot, expected={"name": "sandbox"})["status"] == "PASSED"
+    value_file = workspace / "value.json"
+    value_file.write_text('{"credential":"fixture-secret"}', encoding="utf-8")
+    assert "value" not in collectors.structured_file(value_file, kind="json", expected={"credential": "fixture-secret"})
 
 
 def test_file_inventory_observes_modes_directories_and_rejects_special_entries(tmp_path: Path) -> None:
@@ -207,8 +213,58 @@ def test_status_precedence_and_secrets_never_reach_receipts(tmp_path: Path) -> N
     assert schema.aggregate_status(["PASSED", "UNVERIFIED", "BLOCKED", "FAILED"]) is schema.Status.FAILED
     target = tmp_path / "receipt.json"
     secret = "do-not-persist"
-    run._write_json(target, {"output": run._redact(secret, [secret])})
+    run._write_receipt(target, {"assertions": [{"nested": secret}]}, [secret])
     assert secret not in target.read_text(encoding="utf-8")
+
+
+def test_host_call_detail_stays_redacted_in_trial_receipt(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    credential = "provider-secret"
+    monkeypatch.setenv("ANTHROPIC_API_KEY", credential)
+    workspace = tmp_path / "workspace"
+    workspace.mkdir()
+    call_root = tmp_path / "private-host-1"
+    candidate = call_root / "private-candidate"
+    receipt_root = tmp_path / "receipts"
+    call = run._host_call(
+        SimpleNamespace(
+            host="claude",
+            credential_env=None,
+            codex_marketplace_source=None,
+            model="model",
+            effort="high",
+        ),
+        candidate=candidate,
+        proof={"version": "0.9.0"},
+        workspace=workspace,
+        prompt="test",
+        call_root=call_root,
+        receipt_root=receipt_root / "calls/1",
+        explicit_skill=True,
+        network=False,
+        per_call_budget=run.Decimal("1"),
+        budget={"total": run.Decimal("1"), "observed_spend": run.Decimal("0")},
+        secrets=[credential],
+    )
+    assert call["status"] == "BLOCKED"
+    assert str(candidate) not in call["detail"]
+    run._finish_trial(
+        scenario={"id": "redaction-regression"},
+        trial_index=1,
+        arm="test",
+        workspace=workspace,
+        receipt_root=receipt_root,
+        oracle={"assertions": [{"id": "blocked", "collector": "tree_delta"}]},
+        before={},
+        structured_before={},
+        calls=[call],
+        started=run.time.time(),
+        secrets=[credential],
+    )
+    persisted = (receipt_root / "receipt.json").read_text(encoding="utf-8")
+    assert str(call_root) not in persisted
+    assert str(candidate) not in persisted
+    assert credential not in persisted
+    assert "[REDACTED]" in persisted
 
 
 def test_tree_constraints_and_fixture_inbox_baseline_are_exact(tmp_path: Path) -> None:
@@ -249,6 +305,37 @@ def test_collectors_and_runner_have_no_command_escape_or_repository_lifecycle() 
     assert "--skip-git-repo-check" in inspect.getsource(hosts.invoke)
     assert '"--sandbox", "workspace-write"' in inspect.getsource(hosts.invoke)
     assert '"--max-budget-usd"' in inspect.getsource(hosts.invoke)
+    assert '"--bare"' in inspect.getsource(hosts.invoke)
+    assert '"allowUnsandboxedCommands": False' in inspect.getsource(hosts.invoke)
+    assert '"failIfUnavailable": True' in inspect.getsource(hosts.invoke)
+
+
+def test_claude_live_settings_require_the_sandbox(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    config = tmp_path / "config"
+    workspace = tmp_path / "workspace"
+    config.mkdir()
+    workspace.mkdir()
+    monkeypatch.setattr(hosts, "executable", lambda host: "claude")
+    monkeypatch.setattr(hosts, "_run", lambda command, **kwargs: (0, "", ""))
+    hosts.invoke(
+        "claude",
+        workspace,
+        "test",
+        "model",
+        "high",
+        "1",
+        {"CLAUDE_CONFIG_DIR": str(config)},
+        candidate=tmp_path / "candidate",
+        explicit_skill=True,
+        network=False,
+    )
+    settings = json.loads((config / "live-settings.json").read_text(encoding="utf-8"))
+    assert settings["sandbox"] == {
+        "allowUnsandboxedCommands": False,
+        "enabled": True,
+        "failIfUnavailable": True,
+        "network": {"allowedDomains": []},
+    }
 
 
 def test_host_environment_is_minimal_and_inventory_is_exact(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -259,12 +346,30 @@ def test_host_environment_is_minimal_and_inventory_is_exact(tmp_path: Path, monk
     assert environment["OPENAI_API_KEY"] == "selected-provider"
     assert environment["GH_TOKEN"] == "selected-github"
     assert "AWS_SECRET_ACCESS_KEY" not in environment
-    codex = {"installed": [{"pluginId": "skiphow@skiphow", "version": "0.9.0", "enabled": True, "installed": True}]}
-    claude = [{"id": "skiphow@skiphow", "version": "0.9.0", "enabled": True}]
+    codex = {"installed": [{"pluginId": "skiphow@skiphow", "version": "0.9.0", "enabled": True, "installed": True, "source": {"path": "/plain/plugin"}}]}
+    claude = [{"id": "skiphow@skiphow", "version": "0.9.0", "enabled": True, "installPath": "/plain/plugin"}]
     assert hosts._installed_skiphow("codex", json.dumps(codex))["version"] == "0.9.0"
     assert hosts._installed_skiphow("claude", json.dumps(claude))["enabled"] is True
     with pytest.raises(ValueError, match="expected one"):
         hosts._installed_skiphow("claude", json.dumps(claude * 2))
+
+
+def test_codex_live_source_is_plain_external_and_byte_exact(tmp_path: Path) -> None:
+    candidate = tmp_path / "candidate"
+    source = tmp_path / "source"
+    (candidate / ".agents/plugins").mkdir(parents=True)
+    (source / ".agents/plugins").mkdir(parents=True)
+    shutil.copytree(ROOT / "plugins/skiphow", candidate / "plugins/skiphow")
+    shutil.copytree(ROOT / "plugins/skiphow", source / "plugins/skiphow")
+    manifest = (ROOT / ".agents/plugins/marketplace.json").read_bytes()
+    (candidate / ".agents/plugins/marketplace.json").write_bytes(manifest)
+    (source / ".agents/plugins/marketplace.json").write_bytes(manifest)
+    assert hosts.verify_codex_plain_source(candidate, str(source))[0] == source.resolve()
+    (source / "plugins/skiphow/LICENSE").write_text("changed", encoding="utf-8")
+    with pytest.raises(hosts.HostError, match="does not match"):
+        hosts.verify_codex_plain_source(candidate, str(source))
+    with pytest.raises(hosts.HostError, match="plain local snapshot"):
+        hosts.verify_codex_plain_source(candidate, "https://example.invalid/repository.git")
 
 
 def test_traversal_symlinks_and_invalid_usage_fail_closed(tmp_path: Path) -> None:
@@ -313,9 +418,9 @@ def test_github_snapshot_grades_exact_head_merge_checks_and_cleanup(tmp_path: Pa
         if "pulls?" in endpoint:
             return [{"number": 9, "body": "skiphow-eval:one", "head": {"ref": "skiphow-eval-work"}}]
         if endpoint.endswith("/pulls/9"):
-            return {"number": 9, "body": "skiphow-eval:one\nCloses #1\nCloses #2", "merged_at": "2026-08-25T12:00:00Z", "head": {"ref": "skiphow-eval-work", "sha": "abc"}}
-        if endpoint.endswith("/commits/abc/check-runs"):
-            return {"check_runs": [{"name": "test", "conclusion": "success", "head_sha": "abc"}]}
+            return {"number": 9, "body": "skiphow-eval:one\nCloses #1\nCloses #2", "merged_at": "2026-08-25T12:00:00Z", "head": {"ref": "skiphow-eval-work", "sha": "abc", "repo": {"full_name": "owner/sandbox"}}}
+        if endpoint.endswith("/commits/abc/check-runs?per_page=100"):
+            return {"total_count": 1, "check_runs": [{"name": "test", "conclusion": "success", "head_sha": "abc"}]}
         if endpoint.endswith("/branches?per_page=100"):
             return [{"name": "main"}]
         if "/branches/" in endpoint:
@@ -334,6 +439,7 @@ def test_github_snapshot_grades_exact_head_merge_checks_and_cleanup(tmp_path: Pa
         "all_pull_requests_merged": True,
         "all_closing_links_present": True,
         "all_required_checks_passed": True,
+        "all_head_repositories_match": True,
         "all_owned_branches_deleted": True,
         "operation_marker_present": True,
     }
@@ -346,6 +452,19 @@ def test_github_snapshot_grades_exact_head_merge_checks_and_cleanup(tmp_path: Pa
         return value
 
     monkeypatch.setattr(run, "_gh_json", orphaned_branch)
+    run._fetch_github_snapshot(tmp_path, "owner/sandbox", "token", marker, destination)
+    assert collectors.github_state(destination, expected=expected)["status"] == "FAILED"
+
+    def duplicate_failed_check(endpoint, **kwargs):
+        value = fake_read(endpoint, **kwargs)
+        if endpoint.endswith("/commits/abc/check-runs?per_page=100"):
+            return {"total_count": 2, "check_runs": [
+                {"name": "test", "conclusion": "success", "head_sha": "abc"},
+                {"name": "test", "conclusion": "failure", "head_sha": "abc"},
+            ]}
+        return value
+
+    monkeypatch.setattr(run, "_gh_json", duplicate_failed_check)
     run._fetch_github_snapshot(tmp_path, "owner/sandbox", "token", marker, destination)
     assert collectors.github_state(destination, expected=expected)["status"] == "FAILED"
 
@@ -372,10 +491,23 @@ def test_restart_uses_two_fresh_calls_and_external_state(tmp_path: Path, monkeyp
         workspace = kwargs["workspace"]
         if len(call_roots) == 1:
             (workspace / ".skiphow").mkdir()
-            (workspace / ".skiphow/handoff.json").write_text('{"outcome":"increment the value","authority":"workspace changes only","current_state":"diagnosed","evidence":"task.json value is 41","next_step":"set value to 42 and mark done"}\n', encoding="utf-8")
+            (workspace / ".skiphow/handoff.md").write_text(
+                "## restart-eval-1 / checkpoint-1\n"
+                "- Recorded: 2026-08-25T12:00:00Z\n"
+                "- Selected scope: increment the value in task.json\n"
+                "- Authority: workspace changes only\n"
+                "- Later restrictions: None\n"
+                "- Accepted decisions: None\n"
+                "- Queue and dependencies: None\n"
+                "- Issue: None\n- Branch: None\n- Worktree: None\n- Pull request: None\n- Exact head: None\n"
+                "- Owned resources: None\n- Last external action: None\n- Last external result: None\n"
+                "- Evidence: task.json value is 41\n- Blockers: None\n"
+                "- Next safe action: set value to 42, mark done, and write result.json\n",
+                encoding="utf-8",
+            )
         else:
             (workspace / "task.json").write_text('{"status":"done","value":42}\n', encoding="utf-8")
-            (workspace / "result.json").write_text('{"recovered_from":".skiphow/handoff.json","final_value":42}\n', encoding="utf-8")
+            (workspace / "result.json").write_text('{"recovered_from":".skiphow/handoff.md","final_value":42}\n', encoding="utf-8")
         return {"status": "PASSED", "events": [], "usage": {"status": "UNVERIFIED", "cost_status": "UNVERIFIED"}}
 
     monkeypatch.setattr(run, "_host_call", fake_call)
@@ -423,7 +555,9 @@ def test_paired_routing_claim_requires_repeated_complete_host_evidence() -> None
                 {"scenario": "adaptive-vs-all-deep", "trial_index": index, "arm": "all-deep", "status": "PASSED", "outcome_status": "PASSED", "calls": [{"requested_model": "root", "requested_effort": "high"}], "usage": {"cost_status": "PASSED", "cost_usd": "2", "root_route": {"model": "root", "effort": "high"}, "delegated_routes": baseline_routes, "includes_subagents": True}},
             ]
         )
-    assert run._routing_comparison(trials, route_map, 3)["claim_status"] == "PASSED"
+    comparison = run._routing_comparison(trials, route_map, 3)
+    assert comparison["claim_status"] == "PASSED"
+    assert comparison["autonomous_selection_status"] == "UNVERIFIED"
     trials[0]["usage"]["includes_subagents"] = False
     assert run._routing_comparison(trials, route_map, 3)["claim_status"] == "UNVERIFIED"
     trials[0]["usage"]["includes_subagents"] = True
@@ -440,3 +574,15 @@ def test_auxiliary_claims_are_not_hidden_by_a_passing_outcome() -> None:
     assert result["status"] == "PASSED"
     assert result["claim_status"] == "UNVERIFIED"
     assert result["limitations"] == ["implicit_skill_loading_status"]
+
+
+def test_mutable_github_live_scenario_fails_closed_before_execution() -> None:
+    args = SimpleNamespace(
+        suite=str(run.DEFAULT_SUITE),
+        candidate=str(ROOT),
+        scenario=["multi-issue-github-delivery"],
+        trials=1,
+        host="claude",
+    )
+    with pytest.raises(run.GateError, match="cannot both permit Git metadata writes"):
+        run.run_live(args)

@@ -26,9 +26,9 @@ The policy has three provider-neutral capability tiers named `FAST`, `STANDARD`,
 
 Use `inherit` whenever the host cannot resolve a requested tier or does not support per-agent model selection. An inherited route is normal operation, not an error. Any claim that this policy saves money stays `UNVERIFIED` until paired real-provider evaluations support it.
 
-## Verified facts about the current implementation
+## Verified facts about the implementation at the audited commit
 
-The current implementation lives in `src/skiphow/model_routing.py`, `src/skiphow/supervisor.py`, `src/skiphow/routing_runtime.py`, and the provider adapters.
+The implementation at that commit lived in `src/skiphow/model_routing.py`, `src/skiphow/supervisor.py`, `src/skiphow/routing_runtime.py`, and the provider adapters. Those runtime files were later removed.
 
 It gets some design choices right:
 

@@ -18,9 +18,9 @@ Finish the ready Issues end to end. Merge green pull requests and clean up your 
 
 You describe the outcome in ordinary language. A clear local change stays in the current session. An uncertain bug gets diagnosis before repair. Several tracked items can use the host's goals, subagents, and isolated worktrees. SkipHow adds that coordination only when the work needs it.
 
-SkipHow is an Agent Skill for Codex and Claude Code. It has no runner, daemon, task database, hosted service, or model catalog.
+SkipHow is an Agent Skill for Codex and Claude Code. Explicit invocation follows each host's syntax. It has no runner, daemon, task database, hosted service, or model catalog.
 
-## Install with Codex
+## Install in Codex CLI
 
 ```sh
 codex plugin marketplace add mzored/SkipHow
@@ -50,15 +50,17 @@ Your words set the authority boundary:
 - `finish end to end` and `run unattended` also allow guarded merge and cleanup for the named work;
 - `do not merge`, `pause`, and `cancel` narrow that authority immediately.
 
-SkipHow never bypasses repository protections. It does not delete dirty worktrees, unmerged branches, unique commits, or another person's work.
+A bare idea or question stays read-only. Say `save` to create a record, or `implement` to change the product. During delivery, SkipHow may save one deduplicated record for a material finding outside the task, but it does not implement or reprioritize that finding.
+
+SkipHow's policy forbids bypassing repository protections or deleting dirty, unmerged, unique, or unowned work. Host approvals and repository rules remain the enforcement boundary.
 
 ## Current limits
 
-Version 0.9.0 is an unreleased candidate, not SkipHow 1.0.
+Version 0.9.0 is a preview release, not SkipHow 1.0.
 
 Direct plugin work needs no Python package or separate setup. GitHub delivery still needs host access to the repository. Background work, restart recovery, and per-agent model selection depend on the installed host and account.
 
-Package checks prove that a host can install the plugin. They do not prove that a model will interpret every request correctly. Multi-Issue unattended delivery, recovery across a full restart, and model-routing savings remain `UNVERIFIED` until an opt-in live run produces evidence for the exact packaged version.
+Package checks prove that a host can validate or install the plugin. They do not prove that a model will interpret every request correctly. Implicit skill selection, the distinction between saving and implementing, multi-Issue unattended delivery, recovery across a full restart, autonomous per-agent model selection, and routing savings remain `UNVERIFIED` until opt-in evidence covers the exact packaged version.
 
 ## Why this shape
 
@@ -66,4 +68,4 @@ The project's owner started SkipHow after trying GSD, OpenSpec, Superpowers, Mat
 
 The current design keeps one owner-facing entry, proportional planning, research before a lasting new subsystem, evidence after changes, tracked findings, and host-native support for long work. The detailed comparison, reviewed commits, and limits are in [prior art](docs/prior-art.md) and the dated [research record](docs/research/2026-08-25/README.md).
 
-Product behavior is documented in [intake](docs/intake.md), [model routing](docs/model-routing.md), and the [GitHub lifecycle](docs/github-lifecycle.md). Design and evidence live in [architecture](docs/architecture.md), [architecture decisions](docs/decisions/README.md), [trust](docs/trust.md), the [threat model](docs/threat-model.md), and [evaluation policy](docs/evals.md).
+Start with [architecture](docs/architecture.md) or [prior art](docs/prior-art.md). See [contributing](CONTRIBUTING.md), [security](SECURITY.md), and the [MIT license](LICENSE).

@@ -10,3 +10,4 @@ An accepted decision stays in place until a later ADR replaces it. Correct factu
 | [0002](0002-host-native-execution.md) | Use host-native execution | Accepted |
 | [0003](0003-semantic-model-routing.md) | Route models by semantic capability | Accepted |
 | [0004](0004-github-lifecycle-and-authority.md) | Define GitHub lifecycle and authority | Accepted |
+| [0005](0005-fail-closed-release-evaluation.md) | Keep release evaluation repository-free and fail closed | Accepted |

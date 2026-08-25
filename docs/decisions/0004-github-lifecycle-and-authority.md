@@ -26,30 +26,32 @@ Authority comes from the user's request and repository policy.
 
 - Read-only requests permit inspection and reporting, not remote writes.
 - "Save this" or "create Issues" permits the requested Issue creation or update after duplicate checks.
-- "Fix" or "implement" permits local changes, verification, and ordinary tracked delivery to a ready pull request when repository policy uses one. It does not grant merge or another protected action by implication.
+- "Fix" or "implement" permits local changes, verification, ordinary tracked delivery to a ready pull request when repository policy uses one, and one deduplicated record for each material finding discovered during that work. It does not grant implementation or reprioritization of the independent finding, merge, or another protected action by implication.
 - "Finish these Issues end-to-end", "run unattended", or an equivalent explicit instruction grants guarded merge and cleanup for the named tracked scope.
-- An instruction such as "do not merge" removes merge authority even inside unattended work.
+- An instruction such as "do not merge", pause, cancellation, or narrower scope removes merge authority even inside unattended work.
 
 Production deployment, payment changes, credential handling, privacy-sensitive disclosure, public release, and repository-setting changes need an exact grant. A broad request to finish code does not grant them. Protection bypass is not part of this lifecycle. Guarded merge never uses an admin or bypass option.
 
 Tracked work follows one lifecycle:
 
-1. Find or create the Issue with a stable operation marker. Search open and closed Issues before creating a new one.
-2. Read parent, sub-issue, and dependency state. Do not use labels as a second workflow engine.
-3. Create a system-owned branch and an isolated worktree when the host supports one.
-4. Implement the accepted scope and run repository checks on the final code state.
-5. Find or create a pull request with a stable operation marker. Use a closing keyword only when the pull request completes the Issue.
-6. Record the pull request head commit. Re-read the pull request before every merge attempt.
-7. Require the recorded head to match the current head. If it changed, stop the merge path and verify the new state.
-8. Require all repository-mandated checks and reviews to reach an accepted GitHub result. Do not hard-code `SUCCESS` as the only acceptable required-check result when GitHub or repository policy accepts another terminal result.
-9. Use the repository's permitted merge method or merge queue. Never pass an admin or protection-bypass option.
-10. Re-read the pull request and require GitHub to report a merged timestamp before closing work.
-11. Close the Issue with the correct reason, update dependency state, and reconcile any recorded external operation.
-12. Remove only the branch and worktree owned by this operation after the cleanup checks below pass.
+1. Find the Issue, or confirm after searching open and closed work that one must be created. Check scope, definition, blockers, missing owner decisions, and competing active operations across Issues, pull requests, branches, and markers.
+2. Create the stable operation marker before a create call, include it in the initial create payload, and search open and closed objects by marker after an uncertain result.
+3. Create the Issue if absent, or append the operation claim to the existing Issue without rewriting owner text.
+4. Read parent, sub-issue, and dependency state. Do not use labels as a second workflow engine.
+5. Create a system-owned branch and an isolated worktree when the host supports one.
+6. Implement the accepted scope and run repository checks on the final code state.
+7. Find or create a pull request with a stable operation marker. Use a closing keyword only when the pull request completes the Issue.
+8. Immediately before merge, re-read trusted authority, Issue scope, blockers, dependencies, active operation, pull request head, checks, reviews, and repository rules.
+9. Require the recorded head to match the current head. If it changed, stop the merge path and verify the new state.
+10. Require all repository-mandated checks and reviews to reach an accepted GitHub result. Do not hard-code `SUCCESS` as the only acceptable required-check result when GitHub or repository policy accepts another terminal result.
+11. Use the repository's permitted merge method or merge queue. Never pass an admin or protection-bypass option.
+12. Re-read the pull request and require GitHub to report a merged timestamp before closing work.
+13. Close the Issue with the correct reason, update dependency state, and reconcile any recorded external operation.
+14. Remove only the branch and worktree owned by this operation after the cleanup checks below pass.
 
-An unattended run enables auto-merge by default only for its explicit scope. Auto-merge must wait for branch protection, required checks, required reviews, and merge-queue rules. SkipHow does not weaken those rules or change repository settings to make the merge pass.
+An unattended run enables auto-merge by default only for its explicit scope and only when the operation can later disable it or leave the merge queue. Auto-merge must wait for branch protection, required checks, required reviews, and merge-queue rules. Pause, cancellation, or narrower authority stops new mutations and cancels the owned pending merge action. An unconfirmed cancellation is `BLOCKED`. SkipHow does not weaken repository rules or change settings to make the merge pass.
 
-Repository mutations are serialized. Each remote action records intent before the call, then reads GitHub after the call and stores the observed result. A retry searches by the stable marker before creating another Issue or pull request. SkipHow promises reconciliation, not exactly-once delivery from an API that lacks idempotency keys for these creates.
+Repository mutations are serialized within a run. Cross-run collisions are checked through Issues, linked pull requests, branches, and markers before a claim or protected action and immediately after a claim. A competing active operation is continued only after authority and ownership transfer are verified. Simultaneous claims or ambiguity stop `BLOCKED` before a branch or pull request is created. Each remote action records intent before the call, then reads GitHub after the call and stores the observed result. A retry searches by the stable marker before creating another Issue or pull request. GitHub does not provide an atomic SkipHow claim or idempotency key for these creates, so a simultaneous first create can still produce duplicate records. SkipHow detects and reconciles that collision; it does not promise exactly-once delivery.
 
 Cleanup requires all of the following facts:
 
@@ -65,7 +67,7 @@ When GitHub is unavailable, explicit record requests append to `.skiphow/inbox.m
 
 ## Consequences
 
-Owners can inspect progress and resume work through GitHub without learning a SkipHow state format. Compaction and session restart can reconstruct tracked state from Issues, pull requests, checks, and Git.
+Owners can inspect progress and resume work through GitHub without learning a SkipHow state format. Before handoff, the operation appends its scope, current authority and restrictions, accepted decisions, queue, exact GitHub and Git state, owned resources, last external result, evidence, blockers, and next safe action. Protected actions fail closed when trusted authority or ownership cannot be reconstructed.
 
 Unattended work can finish without a second merge confirmation, but only when the initial request grants that outcome and GitHub protections pass. Ordinary implementation stops at a ready pull request unless the repository policy or user grants merge.
 

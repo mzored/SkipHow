@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 from pathlib import Path
 import shutil
 import signal
+import stat
 import subprocess
 import tempfile
 from typing import Any
@@ -76,7 +78,7 @@ def identity(host: str) -> dict[str, str]:
     code, stdout, stderr = _run([binary, "--version"], cwd=Path.cwd(), env=os.environ.copy(), timeout=30)
     if code:
         raise HostError(f"cannot identify {host} host")
-    return {"name": host, "executable": binary, "version": (stdout or stderr).strip()}
+    return {"name": host, "version": (stdout or stderr).strip()}
 
 
 def fresh_config(
@@ -100,39 +102,55 @@ def fresh_config(
     return config, environment
 
 
-def candidate_head(candidate: Path) -> str:
-    code, output, _ = _git(candidate, "rev-parse", "HEAD")
-    if code or not output.strip():
-        raise HostError("cannot resolve candidate HEAD")
-    return output.strip()
+def _payload(root: Path) -> dict[str, str]:
+    """Hash a plain package and reject repositories, links, and special files."""
+    if not root.is_dir() or root.is_symlink():
+        raise HostError(f"package directory is unavailable: {root}")
+    result: dict[str, str] = {}
+    for path in root.rglob("*"):
+        mode = path.lstat().st_mode
+        if path.name == ".git":
+            raise HostError("marketplace source must not contain a repository")
+        if stat.S_ISLNK(mode) or not (stat.S_ISDIR(mode) or stat.S_ISREG(mode)):
+            raise HostError("marketplace source must contain ordinary files and directories only")
+        if stat.S_ISREG(mode):
+            result[path.relative_to(root).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
+    if not result:
+        raise HostError("package payload is empty")
+    return result
 
 
-def verify_codex_remote_source(candidate: Path, source: str | None, ref: str | None) -> str:
-    """Codex must install a remote ref that resolves to the committed candidate."""
-    if not source or not ref:
-        raise HostError("Codex requires --codex-marketplace-source and --codex-marketplace-ref")
-    if Path(source).expanduser().is_dir():
-        raise HostError("Codex live runs require a remote marketplace source, not a local checkout")
-    head = candidate_head(candidate)
-    code, output, _ = _git(candidate, "ls-remote", source, ref, f"{ref}^{{}}", timeout=45)
-    commits = {line.split()[0] for line in output.splitlines() if line.split()}
-    if code or head not in commits:
-        raise HostError("Codex marketplace ref does not resolve to the candidate HEAD")
-    return head
+def _payload_id(payload: dict[str, str]) -> str:
+    serialized = "".join(f"{name}\0{digest}\n" for name, digest in sorted(payload.items()))
+    return hashlib.sha256(serialized.encode("utf-8")).hexdigest()
 
 
-def _git(candidate: Path, *arguments: str, timeout: int = 30) -> tuple[int, str, str]:
-    environment = {
-        "PATH": os.environ.get("PATH", ""),
-        "GIT_CONFIG_NOSYSTEM": "1",
-        "GIT_OPTIONAL_LOCKS": "0",
+def verify_codex_plain_source(candidate: Path, source: str | None) -> tuple[Path, str]:
+    """Require an external plain marketplace snapshot of the exact candidate."""
+    if not source:
+        raise HostError("Codex requires --codex-marketplace-source with a plain local snapshot")
+    if "://" in source:
+        raise HostError("Codex marketplace source must be a plain local snapshot, not a remote URL")
+    marketplace = Path(source).expanduser().resolve()
+    candidate = candidate.resolve()
+    if marketplace == candidate or marketplace.is_relative_to(candidate) or candidate.is_relative_to(marketplace):
+        raise HostError("Codex marketplace snapshot must stay outside the candidate checkout")
+    marketplace_payload = _payload(marketplace)
+    manifest = marketplace / ".agents/plugins/marketplace.json"
+    candidate_manifest = candidate / ".agents/plugins/marketplace.json"
+    if not manifest.is_file() or manifest.read_bytes() != candidate_manifest.read_bytes():
+        raise HostError("Codex marketplace manifest does not match the candidate")
+    source_plugin = marketplace / "plugins/skiphow"
+    candidate_payload = _payload(candidate / "plugins/skiphow")
+    if _payload(source_plugin) != candidate_payload:
+        raise HostError("Codex marketplace plugin payload does not match the candidate")
+    expected_marketplace = {
+        ".agents/plugins/marketplace.json": hashlib.sha256(candidate_manifest.read_bytes()).hexdigest(),
+        **{f"plugins/skiphow/{name}": digest for name, digest in candidate_payload.items()},
     }
-    return _run(
-        ["git", "-c", "core.hooksPath=", "-c", "core.fsmonitor=false", *arguments],
-        cwd=candidate,
-        env=environment,
-        timeout=timeout,
-    )
+    if marketplace_payload != expected_marketplace:
+        raise HostError("Codex marketplace snapshot contains files outside the exact candidate package")
+    return marketplace, _payload_id(candidate_payload)
 
 
 def install_candidate(
@@ -142,22 +160,22 @@ def install_candidate(
     *,
     version: str,
     codex_source: str | None = None,
-    codex_ref: str | None = None,
 ) -> dict[str, Any]:
     binary = executable(host)
     if host == "codex":
-        verify_codex_remote_source(candidate, codex_source, codex_ref)
+        marketplace, payload_id = verify_codex_plain_source(candidate, codex_source)
         commands = [
-            [binary, "plugin", "marketplace", "add", str(codex_source), "--ref", str(codex_ref), "--json"],
+            [binary, "plugin", "marketplace", "add", str(marketplace), "--json"],
             [binary, "plugin", "add", "skiphow@skiphow", "--json"],
             [binary, "plugin", "list", "--json"],
         ]
     elif host == "claude":
-        commands = [
-            [binary, "plugin", "marketplace", "add", str(candidate), "--scope", "user"],
-            [binary, "plugin", "install", "skiphow@skiphow", "--scope", "user", "--yes"],
-            [binary, "plugin", "list", "--json"],
-        ]
+        plugin = candidate / "plugins/skiphow"
+        payload_id = _payload_id(_payload(plugin))
+        code, _, _ = _run([binary, "plugin", "validate", "--strict", str(plugin)], cwd=candidate, env=config_env)
+        if code:
+            raise HostError("Claude package validation failed before direct loading")
+        return {"load_mode": "plugin-dir", "payload_sha256": payload_id, "version": version}
     else:
         raise HostError(f"unsupported host: {host}")
     transcript: list[dict[str, Any]] = []
@@ -172,7 +190,10 @@ def install_candidate(
         raise HostError(f"host inventory cannot prove the SkipHow installation: {exc}") from exc
     if inventory.get("version") != version or inventory.get("enabled") is not True or inventory.get("installed") is not True:
         raise HostError("host inventory does not show the exact enabled SkipHow candidate")
-    return {"inventory": inventory}
+    installed_path = Path(str(inventory.pop("path"))).resolve()
+    if _payload(installed_path) != _payload(candidate / "plugins/skiphow"):
+        raise HostError("installed SkipHow payload does not match the candidate")
+    return {"inventory": inventory, "payload_sha256": payload_id}
 
 
 def _installed_skiphow(host: str, raw: str) -> dict[str, Any]:
@@ -190,11 +211,16 @@ def _installed_skiphow(host: str, raw: str) -> dict[str, Any]:
     if len(matches) != 1:
         raise ValueError("expected one skiphow@skiphow inventory item")
     item = matches[0]
+    source = item.get("source") if host == "codex" else None
+    path = source.get("path") if isinstance(source, dict) else item.get("installPath")
+    if not isinstance(path, str) or not path:
+        raise ValueError("installed package path is missing")
     return {
         "id": "skiphow@skiphow",
         "version": item.get("version"),
         "enabled": item.get("enabled") is True,
         "installed": item.get("installed", True) is True,
+        "path": path,
     }
 
 
@@ -219,7 +245,22 @@ def invoke(
             command.extend(["-c", "sandbox_workspace_write.network_access=true"])
         command.extend(["-C", str(workspace), request])
     elif host == "claude":
-        command = [binary, "--print", "--verbose", "--output-format", "stream-json", "--plugin-dir", str(candidate / "plugins/skiphow"), "--model", model, "--effort", effort, "--max-budget-usd", budget, "--permission-mode", "acceptEdits"]
+        settings_path = Path(config_env["CLAUDE_CONFIG_DIR"]) / "live-settings.json"
+        settings_path.write_text(
+            json.dumps(
+                {
+                    "sandbox": {
+                        "enabled": True,
+                        "allowUnsandboxedCommands": False,
+                        "failIfUnavailable": True,
+                        "network": {"allowedDomains": ["api.github.com", "github.com"] if network else []},
+                    }
+                },
+                sort_keys=True,
+            ),
+            encoding="utf-8",
+        )
+        command = [binary, "--bare", "--settings", str(settings_path), "--print", "--verbose", "--output-format", "stream-json", "--no-session-persistence", "--plugin-dir", str(candidate / "plugins/skiphow"), "--model", model, "--effort", effort, "--max-budget-usd", budget, "--permission-mode", "acceptEdits"]
         if not network:
             command.extend(["--disallowed-tools", "WebFetch,WebSearch"])
         command.append(request)

@@ -391,9 +391,12 @@ def validate_plugin_static() -> list[str]:
         for path in PLUGIN_ROOT.iterdir()
         if path.is_file() or any(child.is_file() for child in path.rglob("*"))
     }
-    unexpected = sorted(top_level - {".claude-plugin", ".codex-plugin", "skills"})
+    unexpected = sorted(top_level - {".claude-plugin", ".codex-plugin", "skills", "LICENSE"})
     if unexpected:
         errors.append(f"plugin has unexpected top-level entries: {', '.join(unexpected)}")
+    package_license = PLUGIN_ROOT / "LICENSE"
+    if not package_license.is_file() or package_license.read_bytes() != (ROOT / "LICENSE").read_bytes():
+        errors.append("plugin must include the repository MIT license")
 
     references = SKILL_ROOT / "references"
     actual_references = {

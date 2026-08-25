@@ -1,1 +1,1 @@
-This is a fresh host session with no earlier transcript. Reconstruct the authorized work from `.skiphow/handoff.json` and current files. Complete `task.json`, then write `result.json` as `{"recovered_from":".skiphow/handoff.json","final_value":42}`. Preserve the checkpoint.
+This is a fresh host session with no earlier transcript. Reconstruct the authorized work from `.skiphow/handoff.md` and current files. Complete `task.json`, then write `result.json` as `{"recovered_from":".skiphow/handoff.md","final_value":42}`. Preserve the checkpoint.
