@@ -116,6 +116,10 @@ def test_release_metadata_uses_one_version() -> None:
     assert "version" not in marketplace["plugins"][0]
 
 
+def test_readme_does_not_duplicate_the_current_version() -> None:
+    assert read("VERSION").strip() not in read("README.md")
+
+
 def test_ci_actions_are_sha_pinned_and_permissions_are_read_only() -> None:
     workflow = read(".github/workflows/ci.yml")
     uses = re.findall(r"^\s*- uses: ([^\s]+)", workflow, re.MULTILINE)
