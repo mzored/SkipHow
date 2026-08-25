@@ -267,7 +267,10 @@ def remote_ref(repo: str, branch: str) -> str | None:
         allowed=frozenset({0, 1}),
     )
     if completed.returncode:
-        if "HTTP 404" in completed.stderr:
+        if "HTTP 404" in completed.stderr or (
+            "HTTP 409" in completed.stderr
+            and "repository is empty" in completed.stderr.casefold()
+        ):
             return None
         raise GateError(f"cannot read remote ref {branch}: {completed.stderr.strip()}")
     try:

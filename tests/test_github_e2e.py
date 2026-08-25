@@ -92,6 +92,15 @@ def test_repository_creation_is_private_and_reconciles_after_crash() -> None:
     assert "--public" not in creation
 
 
+def test_remote_ref_treats_an_empty_repository_as_missing() -> None:
+    empty = completed(
+        returncode=1,
+        stderr="gh: Git Repository is empty. (HTTP 409)",
+    )
+    with patch.object(e2e, "run", return_value=empty):
+        assert e2e.remote_ref("example/skiphow-e2e", "main") is None
+
+
 def test_repository_ownership_refuses_public_or_mismatched_remote() -> None:
     value = state()
     payload = {
