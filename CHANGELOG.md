@@ -4,7 +4,10 @@ All notable changes to this project appear in this file.
 
 ## Unreleased
 
-No changes yet.
+### Changed
+
+- Rewrote the README around the owner's daily flow and the reasons SkipHow exists.
+- Added the 2026-08-26 system review, host routing and continuity research, prior-art mechanics, the 1.1 brief, and proposed ADR 0007. Documentation only; the packaged skill is unchanged.
 
 ## 1.0.1 (2026-08-26)
 

@@ -12,3 +12,4 @@ An accepted decision stays in place until a later ADR replaces it. Correct factu
 | [0004](0004-github-lifecycle-and-authority.md) | Define GitHub lifecycle and authority | Accepted |
 | [0005](0005-fail-closed-release-evaluation.md) | Keep release evaluation repository-free and fail closed | Accepted |
 | [0006](0006-host-native-campaign-and-engineering-policy.md) | Keep campaign and engineering policy host-native | Accepted |
+| [0007](0007-host-adapters-for-routing-and-continuity.md) | Resolve model tiers and session continuity in host adapters | Proposed |
