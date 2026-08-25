@@ -353,7 +353,9 @@ def ensure_initial_commit(state: dict[str, Any]) -> str:
         ensure_workspace(state)
         return existing
     workspace = ensure_local_repository(state, fetch_main=False)
-    run(["git", "switch", "main"], cwd=workspace)
+    unborn_branch = run(["git", "symbolic-ref", "--short", "HEAD"], cwd=workspace).stdout.strip()
+    if unborn_branch != "main":
+        run(["git", "symbolic-ref", "HEAD", "refs/heads/main"], cwd=workspace)
     (workspace / ".github/workflows").mkdir(parents=True, exist_ok=True)
     (workspace / "README.md").write_text("# SkipHow GitHub E2E sandbox\n", encoding="utf-8")
     (workspace / ".skiphow-e2e-owner.json").write_text(
