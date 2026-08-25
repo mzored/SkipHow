@@ -1,0 +1,33 @@
+{
+  "assertions": [
+    {
+      "id": "bounded-scope",
+      "collector": "tree_delta",
+      "required_modified": [".skiphow/inbox.md"],
+      "allowed_added": [],
+      "allowed_removed": [],
+      "allowed_modified": [".skiphow/inbox.md"]
+    },
+    {
+      "id": "inbox",
+      "collector": "structured_file",
+      "path": ".skiphow/inbox.md",
+      "kind": "append_only_inbox",
+      "expected_count": 6,
+      "expected_added_records": [
+        {"Source": "owner batch 2026-08-25", "Original": "The Friday CSV export failure also produced log code EXP-17.", "Normalized": "Investigate Friday CSV export failure with log code EXP-17", "Disposition": "UPDATE", "Links": "seed-1", "Evidence": {"contains": "EXP-17"}},
+        {"Source": "owner batch 2026-08-25", "Original": "Add PDF export for customer reports.", "Normalized": "Add PDF export for customer reports", "Disposition": "NEW"},
+        {"Source": "owner batch 2026-08-25", "Original": "Add PDF export for customer reports.", "Normalized": "Add PDF export for customer reports", "Disposition": "DUPLICATE"},
+        {"Source": "owner batch 2026-08-25", "Original": "We do not know whether the current export provider supports PDF.", "Normalized": "Research whether the current export provider supports PDF", "Disposition": "NEEDS_RESEARCH"},
+        {"Source": "owner batch 2026-08-25", "Original": "Show the export job ID in error logs.", "Normalized": "Show the export job ID in error logs", "Disposition": "RELATED", "Links": "seed-1"}
+      ],
+      "relationships": [
+        {"source": {"Disposition": "UPDATE"}, "target": {"id": "seed-1"}},
+        {"source": {"Disposition": "DUPLICATE"}, "target": {"Normalized": "Add PDF export for customer reports", "Disposition": "NEW"}},
+        {"source": {"Disposition": "NEEDS_RESEARCH"}, "target": {"Normalized": "Add PDF export for customer reports", "Disposition": "NEW"}},
+        {"source": {"Disposition": "RELATED"}, "target": {"id": "seed-1"}}
+      ]
+    },
+    {"id": "usage", "collector": "provider_usage", "required": false}
+  ]
+}

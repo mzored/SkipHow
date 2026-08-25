@@ -28,4 +28,20 @@ Use GitHub Issues when the project connects GitHub and the owner authorized pers
 
 Without GitHub, append records to `.skiphow/inbox.md`. Use stable identifiers and include source, normalized work item, disposition, links, evidence, and open questions. Do not create a second JSON ledger or task database.
 
+Use one append-only Markdown block per signal so another session can reconstruct it without a private schema:
+
+```text
+## <stable-id>
+- Recorded: <RFC 3339 UTC timestamp>
+- Source: <person, request, file, or URL>
+- Original: <source wording>
+- Normalized: <actionable work item>
+- Disposition: <NEW | UPDATE | DUPLICATE | RELATED | NEEDS_RESEARCH | DISMISSED>
+- Links: <canonical IDs or None>
+- Evidence: <known evidence or None>
+- Open questions: <material unknowns or None>
+```
+
+Do not rewrite earlier blocks. Use `DISMISSED` only when evidence shows that a captured finding is false or no longer relevant, and preserve the reason in `Evidence`.
+
 Return a compact count of signals, work items, duplicates, related items, and items needing research. Mention only decisions or missing information that changes what should be saved.

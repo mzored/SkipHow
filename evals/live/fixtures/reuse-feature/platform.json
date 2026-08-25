@@ -1,0 +1,7 @@
+{
+  "capabilities": {
+    "customer_greeting": {
+      "template": "Hello, {name}!"
+    }
+  }
+}

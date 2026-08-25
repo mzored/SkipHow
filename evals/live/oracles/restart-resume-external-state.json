@@ -1,0 +1,35 @@
+{
+  "assertions": [
+    {
+      "id": "restart-delta",
+      "collector": "tree_delta",
+      "required_added": [".skiphow", ".skiphow/handoff.json", "result.json"],
+      "required_modified": ["task.json"],
+      "allowed_added": [".skiphow", ".skiphow/handoff.json", "result.json"],
+      "allowed_removed": [],
+      "allowed_modified": ["task.json"]
+    },
+    {
+      "id": "checkpoint",
+      "collector": "structured_file",
+      "path": ".skiphow/handoff.json",
+      "kind": "json",
+      "expected": {"outcome": "increment the value", "authority": "workspace changes only", "current_state": "diagnosed", "evidence": "task.json value is 41", "next_step": "set value to 42 and mark done"}
+    },
+    {
+      "id": "final-task",
+      "collector": "structured_file",
+      "path": "task.json",
+      "kind": "json",
+      "expected": {"status": "done", "value": 42}
+    },
+    {
+      "id": "reconstructed-result",
+      "collector": "structured_file",
+      "path": "result.json",
+      "kind": "json",
+      "expected": {"recovered_from": ".skiphow/handoff.json", "final_value": 42}
+    },
+    {"id": "usage", "collector": "provider_usage", "required": false}
+  ]
+}

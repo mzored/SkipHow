@@ -1,0 +1,20 @@
+{
+  "assertions": [
+    {
+      "id": "bounded-scope",
+      "collector": "tree_delta",
+      "required_added": ["feature.json"],
+      "allowed_added": ["feature.json"],
+      "allowed_removed": [],
+      "allowed_modified": []
+    },
+    {
+      "id": "reuse-choice",
+      "collector": "structured_file",
+      "path": "feature.json",
+      "kind": "json",
+      "expected": {"feature": "welcome_preview", "reuse": "customer_greeting", "new_subsystem": false}
+    },
+    {"id": "usage", "collector": "provider_usage", "required": false}
+  ]
+}

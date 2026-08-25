@@ -1,0 +1,28 @@
+{
+  "assertions": [
+    {
+      "id": "bounded-scope",
+      "collector": "tree_delta",
+      "required_added": ["reproducer.json"],
+      "required_modified": ["behavior.json"],
+      "allowed_added": ["reproducer.json"],
+      "allowed_removed": [],
+      "allowed_modified": ["behavior.json"]
+    },
+    {
+      "id": "reproducer",
+      "collector": "structured_file",
+      "path": "reproducer.json",
+      "kind": "json",
+      "expected": {"input": 0, "observed_before": 1, "expected": 0}
+    },
+    {
+      "id": "repair",
+      "collector": "structured_file",
+      "path": "behavior.json",
+      "kind": "json",
+      "expected": {"cases": [{"input": 0, "output": 0}, {"input": 2, "output": 2}]}
+    },
+    {"id": "usage", "collector": "provider_usage", "required": false}
+  ]
+}

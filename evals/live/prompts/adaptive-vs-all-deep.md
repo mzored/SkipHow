@@ -1,0 +1,1 @@
+Complete two bounded parts: inventory the three names in `work.json`, then change its setting from `old` to `new`. Use delegated work when the host supports it. Write `result.json` as `{"inventory_count":3,"setting":"new"}`. Do not write model names or routing claims into product files.
