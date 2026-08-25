@@ -8,6 +8,7 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import time
 from typing import Any, Mapping, Sequence
 
 from .adapters.base import PermissionMode
@@ -23,6 +24,10 @@ from .security import (
     check_protected_action,
 )
 from .store import ConflictError, RunnerStore
+
+
+AUDIT_APPEND_MAX_ATTEMPTS = 100
+AUDIT_APPEND_MAX_BACKOFF_SECONDS = 0.02
 
 
 @dataclass(frozen=True, slots=True)
@@ -179,7 +184,7 @@ class DurableSecurityAudit:
             "outcome": self.redactor.redact_text(outcome),
             "details": self.redactor.redact(dict(details or {})),
         }
-        for _ in range(20):
+        for attempt in range(AUDIT_APPEND_MAX_ATTEMPTS):
             prior = self.events(run_id)
             previous = prior[-1]["digest"] if prior else None
             payload = {
@@ -197,7 +202,13 @@ class DurableSecurityAudit:
                     task_id=task_id,
                 )
             except ConflictError:
-                continue
+                if attempt + 1 < AUDIT_APPEND_MAX_ATTEMPTS:
+                    time.sleep(
+                        min(
+                            0.001 * (attempt + 1),
+                            AUDIT_APPEND_MAX_BACKOFF_SECONDS,
+                        )
+                    )
         raise ConflictError("security audit head kept changing during append")
 
     def events(self, run_id: str) -> list[dict[str, Any]]:

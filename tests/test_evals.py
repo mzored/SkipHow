@@ -12,7 +12,7 @@ import pytest
 
 from evals.graders.outcome import SUPPORTED_OPERATORS, grade_scenario
 from evals.live import fixtures as live_fixtures
-from evals.live import provider_adapter, run as live_runner
+from evals.live import generate_config, provider_adapter, run as live_runner
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -331,6 +331,160 @@ def test_provider_bridge_extracts_only_a_complete_structured_result() -> None:
         ]
     )
     assert result["observations"] == {"rule": "value"}
+
+
+def test_archive_candidate_identity_is_stable_without_git(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    archive = tmp_path / "archive"
+    archive.mkdir()
+    monkeypatch.setattr(generate_config, "ROOT", archive)
+    monkeypatch.setattr(
+        generate_config.subprocess,
+        "run",
+        lambda *args, **kwargs: subprocess.CompletedProcess(args[0], 1, "", "no git"),
+    )
+    candidate = archive / "candidate.txt"
+    candidate.write_text("candidate\n", encoding="utf-8")
+    output = tmp_path / "generated.json"
+    first = generate_config._head()
+    output.write_text("generated content must not change identity\n", encoding="utf-8")
+    (archive / ".skiphow").mkdir()
+    (archive / ".skiphow" / "state.json").write_text("runtime state\n", encoding="utf-8")
+    second = generate_config._head()
+    assert first == second
+    assert first.startswith("archive-sha256:")
+    candidate.write_text("changed\n", encoding="utf-8")
+    assert generate_config._head() != second
+
+
+def test_repository_candidate_identity_uses_the_exact_head(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    head = "a" * 40
+    monkeypatch.setattr(generate_config, "ROOT", tmp_path)
+    monkeypatch.setattr(
+        generate_config.subprocess,
+        "run",
+        lambda *args, **kwargs: subprocess.CompletedProcess(
+            args[0], 0, f"{tmp_path}\n{head}\n", ""
+        ),
+    )
+    assert generate_config._head() == head
+
+
+def test_live_config_paths_must_be_outside_the_candidate(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    candidate = tmp_path / "candidate"
+    candidate.mkdir()
+    monkeypatch.setattr(generate_config, "ROOT", candidate)
+    assert generate_config._inside_candidate(candidate / "nested")
+    assert not generate_config._inside_candidate(tmp_path / "outside")
+
+
+def test_archive_candidate_does_not_use_an_enclosing_repository_head(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    archive = tmp_path / "archive"
+    archive.mkdir()
+    (archive / "candidate.txt").write_text("candidate\n", encoding="utf-8")
+    monkeypatch.setattr(generate_config, "ROOT", archive)
+    monkeypatch.setattr(
+        generate_config.subprocess,
+        "run",
+        lambda *args, **kwargs: subprocess.CompletedProcess(
+            args[0], 0, f"{tmp_path}\n{'a' * 40}\n", ""
+        ),
+    )
+    assert generate_config._head().startswith("archive-sha256:")
+
+
+def test_archive_candidate_exclusions_are_relative_to_the_archive(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    archive = tmp_path / "build" / "archive"
+    archive.mkdir(parents=True)
+    (archive / "candidate.txt").write_text("candidate\n", encoding="utf-8")
+    monkeypatch.setattr(generate_config, "ROOT", archive)
+    monkeypatch.setattr(
+        generate_config.subprocess,
+        "run",
+        lambda *args, **kwargs: subprocess.CompletedProcess(args[0], 1, "", "no git"),
+    )
+    assert generate_config._head().startswith("archive-sha256:")
+
+
+def test_archive_candidate_includes_nested_build_directories(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    source = tmp_path / "src" / "build"
+    source.mkdir(parents=True)
+    candidate = source / "candidate.py"
+    candidate.write_text("first\n", encoding="utf-8")
+    monkeypatch.setattr(generate_config, "ROOT", tmp_path)
+    monkeypatch.setattr(
+        generate_config.subprocess,
+        "run",
+        lambda *args, **kwargs: subprocess.CompletedProcess(args[0], 1, "", "no git"),
+    )
+    first = generate_config._head()
+    candidate.write_text("second\n", encoding="utf-8")
+    assert generate_config._head() != first
+
+
+def test_archive_candidate_falls_back_when_git_is_unavailable(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def missing_git(*args, **kwargs):
+        raise FileNotFoundError("git")
+
+    (tmp_path / "candidate.txt").write_text("candidate\n", encoding="utf-8")
+    monkeypatch.setattr(generate_config, "ROOT", tmp_path)
+    monkeypatch.setattr(generate_config.subprocess, "run", missing_git)
+    assert generate_config._head().startswith("archive-sha256:")
+
+
+def test_archive_candidate_hashes_a_symlink_without_reading_its_target(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    archive = tmp_path / "archive"
+    archive.mkdir()
+    outside = tmp_path / "outside.txt"
+    outside.write_text("first\n", encoding="utf-8")
+    link = archive / "link.txt"
+    try:
+        link.symlink_to(outside)
+    except OSError as exc:
+        pytest.skip(f"symlinks unavailable: {exc}")
+    monkeypatch.setattr(generate_config, "ROOT", archive)
+    monkeypatch.setattr(
+        generate_config.subprocess,
+        "run",
+        lambda *args, **kwargs: subprocess.CompletedProcess(args[0], 1, "", "no git"),
+    )
+    first = generate_config._head()
+    outside.write_text("second\n", encoding="utf-8")
+    assert generate_config._head() == first
+
+
+def test_archive_candidate_identity_includes_the_executable_bit(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    script = tmp_path / "tool.sh"
+    script.write_text("#!/bin/sh\n", encoding="utf-8")
+    script.chmod(0o644)
+    monkeypatch.setattr(generate_config, "ROOT", tmp_path)
+    monkeypatch.setattr(
+        generate_config.subprocess,
+        "run",
+        lambda *args, **kwargs: subprocess.CompletedProcess(args[0], 1, "", "no git"),
+    )
+    first = generate_config._head()
+    script.chmod(0o755)
+    if script.stat().st_mode & 0o111 == 0:
+        pytest.skip("executable bits unavailable")
+    assert generate_config._head() != first
 
 
 def test_full_config_generator_uses_all_registered_scenarios(tmp_path: Path) -> None:

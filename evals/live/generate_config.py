@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -22,7 +24,12 @@ LOW_RISK = {"simple-anti-ceremony", "trivial-local-logic", "verification-ceiling
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument(
+        "--output",
+        required=True,
+        type=Path,
+        help="generated config path outside the candidate checkout",
+    )
     parser.add_argument("--provider", required=True, choices=("codex", "claude"))
     parser.add_argument("--trials", type=int, default=3)
     parser.add_argument(
@@ -41,12 +48,65 @@ def _parser() -> argparse.ArgumentParser:
 
 
 def _head() -> str:
-    completed = subprocess.run(
-        ["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True, check=False
+    git_identity: list[str] = []
+    try:
+        completed = subprocess.run(
+            ["git", "rev-parse", "--show-toplevel", "HEAD"],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if completed.returncode == 0:
+            git_identity = completed.stdout.splitlines()
+    except OSError:
+        pass
+    if (
+        len(git_identity) == 2
+        and Path(git_identity[0]).resolve() == ROOT.resolve()
+        and git_identity[1].strip()
+    ):
+        return git_identity[1].strip()
+
+    # Source archives deliberately omit .git. They still need a stable identity for
+    # non-release config generation and deterministic tests. Release mode remains
+    # stricter: evals/live/run.py requires a clean Git checkout and exact HEAD.
+    digest = hashlib.sha256()
+    root_excluded = {
+        ".mypy_cache", ".pytest_cache", ".ruff_cache", ".skiphow", ".venv",
+        "build", "dist", "venv",
+    }
+
+    def included(path: Path) -> bool:
+        relative = path.relative_to(ROOT)
+        return (
+            (path.is_file() or path.is_symlink())
+            and relative.parts[0] not in root_excluded
+            and not any(
+                part in {".git", "__pycache__"} or part.endswith(".egg-info")
+                for part in relative.parts
+            )
+        )
+
+    files = sorted(
+        (path for path in ROOT.rglob("*") if included(path)),
+        key=lambda path: os.fsencode(path.relative_to(ROOT).as_posix()),
     )
-    if completed.returncode != 0 or not completed.stdout.strip():
-        raise ValueError("cannot identify repository HEAD")
-    return completed.stdout.strip()
+    if not files:
+        raise ValueError("cannot identify repository or archive contents")
+    for path in files:
+        relative = os.fsencode(path.relative_to(ROOT).as_posix())
+        digest.update(len(relative).to_bytes(8, "big"))
+        digest.update(relative)
+        if path.is_symlink():
+            digest.update(b"L")
+            data = os.fsencode(os.readlink(path))
+        else:
+            digest.update(b"X" if path.stat().st_mode & 0o111 else b"F")
+            data = path.read_bytes()
+        digest.update(len(data).to_bytes(8, "big"))
+        digest.update(data)
+    return f"archive-sha256:{digest.hexdigest()}"
 
 
 def _features(scenario_id: str) -> dict[str, str]:
@@ -67,6 +127,14 @@ def _features(scenario_id: str) -> dict[str, str]:
         "error_cost": "medium", "reversibility": "easy",
         "blast_radius": "local", "verification_strength": "partial",
     }
+
+
+def _inside_candidate(path: Path) -> bool:
+    try:
+        path.resolve().relative_to(ROOT.resolve())
+    except ValueError:
+        return False
+    return True
 
 
 def _manifests() -> list[dict[str, Any]]:
@@ -103,8 +171,11 @@ def main(argv: list[str] | None = None) -> int:
     if any(getattr(args, f"{profile}_max_cost_usd") <= 0 for profile in PROFILES):
         print("profile cost caps must be positive", file=sys.stderr)
         return 2
-    if not args.cwd.is_dir() or args.cwd.resolve() == ROOT:
+    if not args.cwd.is_dir() or _inside_candidate(args.cwd):
         print("--cwd must be an existing isolated workspace outside the candidate checkout", file=sys.stderr)
+        return 2
+    if _inside_candidate(args.output):
+        print("--output must be outside the candidate checkout", file=sys.stderr)
         return 2
     if args.provider == "codex" and (
         args.input_cost_per_million is None or args.output_cost_per_million is None

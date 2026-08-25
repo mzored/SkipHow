@@ -8,6 +8,8 @@ This candidate is not SkipHow 1.0. Authenticated Claude execution, multi-trial r
 
 ### Changed
 
+- Made live-eval config generation deterministic in source archives without weakening the clean-Git requirement for release-mode evidence.
+- Added bounded backoff for concurrent security-audit appends so ordinary writer contention does not exhaust CAS retries.
 - Split the product into a lean semantic plugin kernel and an optional durable runner.
 - Reduced the common software instruction route to 1,290 words and removed generic method skills from its default closure.
 - Replaced single-item capture routing with batch Intake, raw-record and atom provenance, evidence status, bounded candidate decisions, grouping, work-item shaping, Epic dependency validation, and persistence authority.
