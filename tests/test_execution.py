@@ -107,12 +107,20 @@ def test_executor_renews_leases_and_starts_claimed_tasks_concurrently(tmp_path: 
     candidate = ModelCandidate("fake", "local", "v1", SemanticProfile.BALANCED, 10000)
     route = RouteDecision(candidate, SemanticProfile.BALANCED, "balanced: test", 0.0, None)
     provider = BlockingProvider()
+    renewals: list[str] = []
+    renew_lease = runner.store.renew_lease
+
+    def recording_renewal(attempt_id: str, worker_id: str, **kwargs):
+        renewals.append(attempt_id)
+        return renew_lease(attempt_id, worker_id, **kwargs)
+
+    runner.store.renew_lease = recording_renewal  # type: ignore[method-assign]
 
     async def exercise() -> list[dict[str, object]]:
         execution = asyncio.create_task(
             CampaignExecutor(runner, provider, cwd=tmp_path).execute_frontier(
                 run.run_id, "worker", route, lambda events: True,
-                lease_seconds=0.2,
+                lease_seconds=10,
             )
         )
         for _ in range(100):
@@ -120,7 +128,11 @@ def test_executor_renews_leases_and_starts_claimed_tasks_concurrently(tmp_path: 
                 break
             await asyncio.sleep(0.001)
         assert len(provider.started_sessions) == 2
-        await asyncio.sleep(0.3)
+        for _ in range(1000):
+            if len(set(renewals)) == 2:
+                break
+            await asyncio.sleep(0.001)
+        assert len(set(renewals)) == 2
         assert DurableRunner(tmp_path / "run.sqlite3", parallelism=2).frontier(
             run.run_id, "duplicate", lease_seconds=1
         ) == []
