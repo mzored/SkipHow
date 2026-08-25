@@ -30,11 +30,9 @@ ROUTE_ROOTS: dict[str, tuple[str, ...]] = {
 }
 
 REFERENCE_ACTIVATIONS: dict[tuple[str, str], tuple[str, ...]] = {
-    ("SKILL.md", "references/product/idea/SKILL.md"): (),
+    ("SKILL.md", "references/product/intake/SKILL.md"): (),
     ("SKILL.md", "references/product/shape/SKILL.md"): (),
     ("SKILL.md", "references/engineering/fix/SKILL.md"): ("repair", "diagnosis"),
-    ("SKILL.md", "references/trackers/setup/SKILL.md"): (),
-    ("SKILL.md", "references/trackers/doctor/SKILL.md"): (),
     ("SKILL.md", "references/project-context.md"): (),
     ("SKILL.md", "references/extension-contract.md"): (),
     ("SKILL.md", "references/engineering/cto/SKILL.md"): (
@@ -59,39 +57,11 @@ REFERENCE_ACTIVATIONS: dict[tuple[str, str], tuple[str, ...]] = {
     ("references/engineering/cto/SKILL.md", "references/host-capabilities.md"): (),
     (
         "references/engineering/cto/SKILL.md",
-        "references/capabilities/prototype/SKILL.md",
-    ): (),
-    (
-        "references/engineering/cto/SKILL.md",
         "references/engineering/diagnose/SKILL.md",
     ): ("diagnosis",),
     (
         "references/engineering/cto/SKILL.md",
-        "references/campaign/cto-run/SKILL.md",
-    ): (),
-    (
-        "references/engineering/cto/SKILL.md",
-        "references/capabilities/testing/SKILL.md",
-    ): ("testing",),
-    (
-        "references/engineering/cto/SKILL.md",
-        "references/capabilities/codebase-design/SKILL.md",
-    ): ("codebase_design",),
-    (
-        "references/engineering/cto/SKILL.md",
-        "references/capabilities/technical-review/SKILL.md",
-    ): ("technical_review",),
-    (
-        "references/engineering/cto/SKILL.md",
-        "references/capabilities/resolving-merge-conflicts/SKILL.md",
-    ): (),
-    (
-        "references/engineering/cto/SKILL.md",
         "references/trackers/github-task/SKILL.md",
-    ): (),
-    (
-        "references/engineering/cto/SKILL.md",
-        "references/product/shape/references/product-acceptance.md",
     ): (),
     (
         "references/engineering/fix/SKILL.md",

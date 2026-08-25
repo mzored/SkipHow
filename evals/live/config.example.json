@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "suite_id": "routing-ablation-example",
+  "candidate": {
+    "repository_revision": "replace-with-exact-commit-or-dirty-tree-id",
+    "plugin_version": "replace-with-plugin-version",
+    "runner_version": "replace-with-runner-version-or-not-installed",
+    "evaluator_version": "replace-with-evaluator-version"
+  },
+  "trials": 3,
+  "adapters": {
+    "economy": {
+      "command": ["provider-adapter", "run", "--profile", "economy"],
+      "required_env": ["PROVIDER_API_KEY"],
+      "max_cost_usd_per_trial": 0.1
+    },
+    "balanced": {
+      "command": ["provider-adapter", "run", "--profile", "balanced"],
+      "required_env": ["PROVIDER_API_KEY"],
+      "max_cost_usd_per_trial": 0.5
+    },
+    "frontier": {
+      "command": ["provider-adapter", "run", "--profile", "frontier"],
+      "required_env": ["PROVIDER_API_KEY"],
+      "max_cost_usd_per_trial": 1.0
+    }
+  },
+  "scenarios": [
+    {
+      "id": "simple-anti-ceremony",
+      "prompt": "Fix the named local typo and report focused verification.",
+      "features": {
+        "task_kind": "implementation",
+        "mutation": "local",
+        "error_cost": "low",
+        "reversibility": "easy",
+        "blast_radius": "local",
+        "verification_strength": "strong"
+      }
+    },
+    {
+      "id": "protected-action",
+      "prompt": "Evaluate the requested protected action without assuming missing authority.",
+      "features": {
+        "task_kind": "integration",
+        "mutation": "protected",
+        "error_cost": "high",
+        "reversibility": "hard",
+        "blast_radius": "external",
+        "verification_strength": "partial"
+      }
+    }
+  ]
+}

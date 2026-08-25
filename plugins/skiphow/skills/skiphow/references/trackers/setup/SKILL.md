@@ -15,10 +15,14 @@ Write `.skiphow/config.json` only when the user explicitly requests configuratio
 
 ```json
 {
-  "tracker": "auto",
-  "project": null,
+  "schema_version": 2,
+  "tracker": {"type": "auto", "project": null},
+  "delivery": {"merge_policy": "never", "cleanup": "merged_only"},
+  "findings": {"persist": "local"},
   "campaign_root": ".skiphow/runs"
 }
 ```
 
-Accepted tracker values are `auto`, `none`, `github`, and `local`. `project` is `null` or an explicit `owner/number`. `campaign_root` must be a relative path inside the project. Reject unknown keys, absolute paths, and traversal. The file is never required.
+Accepted tracker types are `auto`, `none`, `github`, and `local`. `project` is `null` or an explicit `owner/number`. Merge defaults to `never`; cleanup defaults to merged, system-owned resources only. Finding persistence is `local`, `tracker`, `ask`, or `off`. `campaign_root` must be a relative path inside the project. Reject unknown keys, absolute paths, and traversal. The file is never required.
+
+Read v1 configuration without mutation. Migrate only during explicit setup or update. Write an adjacent backup before replacing v1, then validate the v2 result. Provider credentials and model IDs belong in provider stores or personal configuration, never this project file.

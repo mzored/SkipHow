@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://skiphow.dev/schemas/route.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["task_kind", "mutation", "uncertainty", "error_cost", "reversibility", "blast_radius", "verification_strength", "context_volume", "parallelizable", "required_capabilities", "latency_priority"],
+  "properties": {
+    "task_kind": {"enum": ["research", "implementation", "debug", "review", "integration", "intake"]},
+    "mutation": {"enum": ["none", "local", "remote", "protected"]},
+    "uncertainty": {"enum": ["low", "medium", "high"]},
+    "error_cost": {"enum": ["low", "medium", "high"]},
+    "reversibility": {"enum": ["easy", "bounded", "hard"]},
+    "blast_radius": {"enum": ["local", "module", "system", "external"]},
+    "verification_strength": {"enum": ["strong", "partial", "weak"]},
+    "context_volume": {"enum": ["small", "large", "unknown"]},
+    "parallelizable": {"type": "boolean"},
+    "required_capabilities": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "latency_priority": {"type": "string"},
+    "budget_remaining": {"type": ["number", "null"], "minimum": 0}
+  }
+}

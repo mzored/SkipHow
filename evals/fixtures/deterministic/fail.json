@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "scenario_id": "deterministic-fixture",
+  "outcome": {"status": "success"},
+  "mutations": {"paths": ["src/example.py", ".skiphow/runs/run-1.json"]},
+  "side_effects": {"types": ["campaign.created"]},
+  "owner_questions": {"engineering": 0},
+  "evidence": {
+    "outcome.status": {"source": "fixture"},
+    "mutations.paths": {"source": "fixture"},
+    "side_effects.types": {"source": "fixture"},
+    "owner_questions.engineering": {"source": "fixture"}
+  }
+}

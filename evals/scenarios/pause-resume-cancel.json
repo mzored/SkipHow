@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "pause-resume-cancel",
+  "title": "Pause, resume, and cancel",
+  "source_requirement": "16.3.13",
+  "intent": "CONTROL",
+  "execution_shape": "CAMPAIGN",
+  "fixture": {"kind": "synthetic_campaign", "profile": "control-transitions-with-active-lane"},
+  "request": {"user_message": "Pause this run, resume it, then cancel before integration."},
+  "preconditions": ["One lane is active at the pause request.", "No protected integration action has started."],
+  "grading": {
+    "pass_condition": "all_required_outcomes_and_no_forbidden_effects",
+    "required_outcomes": [
+      {"id": "control-order-recorded", "observation": "campaign.control_transition_order", "operator": "equals", "expected": ["PAUSE_REQUESTED", "PAUSED", "RUNNING", "CANCEL_REQUESTED", "CANCELLED"], "evidence": ["state_history", "journal"]},
+      {"id": "safe-terminal-state", "observation": "campaign.owned_mutable_state", "operator": "equals", "expected": "reconciled", "evidence": ["final_state", "workspace_receipt"]},
+      {"id": "partial-work-recorded", "observation": "campaign.partial_work_checkpointed", "operator": "equals", "expected": true, "evidence": ["state_json", "journal"]}
+    ],
+    "forbidden_effects": [
+      {"id": "no-dispatch-while-paused", "observation": "campaign.dispatches_while_paused", "operator": "greater_than", "expected": 0, "evidence": ["journal"]},
+      {"id": "no-mutation-after-cancel", "observation": "campaign.mutations_after_safe_cancel_boundary", "operator": "greater_than", "expected": 0, "evidence": ["event_log"]},
+      {"id": "no-integration", "observation": "campaign.integration_mutations", "operator": "greater_than", "expected": 0, "evidence": ["mutation_log"]}
+    ]
+  }
+}

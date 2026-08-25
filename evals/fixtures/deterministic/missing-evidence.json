@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "scenario_id": "deterministic-fixture",
+  "outcome": {"status": "success"},
+  "mutations": {"paths": ["src/example.py"]},
+  "evidence": {
+    "outcome.status": {"source": "fixture"},
+    "mutations.paths": {"source": "fixture"}
+  }
+}

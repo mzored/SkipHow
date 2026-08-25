@@ -1,30 +1,30 @@
 # SkipHow
 
-Give SkipHow one ordinary-language request. It makes routine product and technical decisions, does the authorized work, and returns evidence for the result.
+Give SkipHow an ordinary-language outcome. The plugin makes routine product and technical decisions, performs authorized work, and reports evidence.
 
 ```text
-Add a way to pause a subscription. Make the routine product and technical decisions and implement it.
+Add a way to pause a subscription.
 
-Payments are sometimes charged twice. Find the cause, fix it, and verify the result.
+Payments are sometimes charged twice. Find the cause, fix it, and verify it.
 
-Save this idea for later without expanding it: a monthly customer report.
+Here are twenty customer notes. Group duplicates and save actionable work.
 ```
 
-No tracker, Project, Python, `gh`, setup command, or hook is required. SkipHow has no telemetry, hosted service, or background process. It uses the files, commands, and connected services already available in the host, subject to host and repository permissions.
+No tracker, Project, Python, `gh`, setup command, or hook is required for direct plugin work. Small and bounded requests stay inside the current host session.
+
+The 0.8.0 worktree is an unreleased release candidate, not SkipHow 1.0. It includes an optional local runner for durable campaigns. Deterministic tests cover its store, supervisor, recovery, routing, security boundary, provider contracts, GitHub delivery, and refusal paths. Authenticated Claude execution, multi-trial real provider and service outcomes, adaptive-routing ablation, and cross-platform operation remain `UNVERIFIED` for the exact release candidate.
 
 ## Install with Codex
 
-Add this repository as a personal marketplace, then use the plugin browser:
+Add this repository as a personal marketplace, then open the plugin browser:
 
 ```sh
 codex plugin marketplace add mzored/SkipHow
 codex
-# Enter /plugins, select SkipHow, and install it.
+# Open /plugins, select SkipHow, and install it.
 ```
 
-Start a new session after installation. `/plugins` is the canonical install, update, enable, and removal interface. See the [OpenAI plugin guide](https://learn.chatgpt.com/docs/plugins).
-
-Package validation can check the manifest and isolated CLI installation. It does not prove how a model will interpret the installed instructions. The Codex IDE extension is not claimed. The current marketplace policy limits the package to Codex, so ChatGPT Chat and Work are not claimed.
+Start a new session after installation. See the [official plugin guide](https://learn.chatgpt.com/docs/plugins).
 
 ## Install with Claude Code
 
@@ -33,77 +33,96 @@ Package validation can check the manifest and isolated CLI installation. It does
 /plugin install skiphow@skiphow
 ```
 
-Start a new session after installation. If Claude Code says that plugins changed on disk, run `/reload-plugins`. See the [Claude Code plugin guide](https://code.claude.com/docs/en/discover-plugins). Package validation can check the manifest and isolated CLI installation, but not model behavior.
+Start a new session after installation. If Claude Code reports an on-disk change, run `/reload-plugins`. See the [official Claude Code plugin guide](https://code.claude.com/docs/en/discover-plugins).
 
-## What SkipHow decides
+## Optional durable runner
 
-SkipHow resolves routine reversible product details, architecture, dependencies, implementation, testing, review, sequencing, and integration. It asks a focused question only when the choice belongs to the Owner.
+Install the runner from a checkout with Python 3.11 or newer:
 
-The Owner keeps authority over vision, audience, portfolio priority, material scope, commercial constraints, cost or risk commitments, protected actions, and irreversible external actions.
+```sh
+python -m pip install .
+skiphow start "Finish the ready backlog" --task "Implement the first deliverable"
+# Copy the run_id from the JSON output, then run:
+skiphow execute RUN_ID --provider codex --max-duration 1800 --max-cost 10 \
+  --verification-plan .skiphow/verification.json
+```
 
-Analysis, research, review, diagnosis-only, and planning requests stay read-only unless you ask to save or change something.
+The CLI stores state in `.skiphow/runs/runner.sqlite3` by default. `execute` supervises a run in the foreground until it settles or reaches a configured limit. `worker` processes one ready frontier. The CLI also supports `setup`, `intake`, `start`, `add-task`, `github-deliver`, `status`, `pause`, `resume`, `cancel`, `reconcile`, and `export`. Direct plugin use does not start the runner.
 
-## How work is handled
+The runner has:
 
-A clear software change goes straight to implementation and relevant evidence. A document, report, or other non-software project artifact uses artifact-appropriate checks without loading the engineering workflow.
+- revision-checked run and task transitions;
+- SQLite transactions, a hash-linked event journal, integrity-bound snapshots, schema migration backups, leases, and recovery capsules;
+- foreground supervision, lease heartbeats, external-wait polling, bounded retry, circuit breaking, invocation time and reported-cost ceilings, and state-derived final reconciliation;
+- durable model lanes and outcome calibration with bounded checkpoint promotion;
+- provider-session resume, context compaction, and recovery-capsule fallback when the old session is unavailable;
+- Codex App Server and Claude session adapters, using the Claude Agent SDK first and its structured CLI as a fallback;
+- write-capable completion gated by a trusted environment verification plan;
+- permission and protected-action enforcement with a compare-and-swap audit chain; and
+- secret redaction before runner state is written.
 
-A hard bug gets focused diagnosis before repair. Work gets durable campaign state only when coordination or recovery must survive a session, interruption, external wait, or dependency handoff. You do not select a mode or command.
+The supervisor discovers provider models, selects a semantic profile, persists the exact route and outcome, and rebuilds calibration from prior durable outcomes. It resolves filesystem and protected-action authority before dispatch. A provider terminal event is not proof of a write-capable result: the trusted verifier checks declared filesystem state, forbidden mutations, evidence files, and bounded commands.
 
-## Optional configuration
+The supervisor is a foreground process. It does not install a daemon or require a SkipHow cloud account. Provider credentials stay in their host or provider stores. Restart after a machine reboot requires the user or another process to invoke `skiphow execute` again.
 
-`.skiphow/config.json` is optional. SkipHow writes it only when you explicitly request setup.
+## Product intake
+
+`INTAKE` accepts one signal, an explicit list, or a batch of bugs, ideas, questions, risks, technical debt, and feedback. The CLI and Python API preserve raw-record and atom provenance, group related signals, shape actionable work items, return at most twenty duplicate candidates, apply explicit dispositions, merge provenance into existing work, and validate Epic dependency graphs. Ambiguous duplicate decisions fail closed; similarity alone never merges records.
+
+GitHub Issues are canonical when tracked delivery is required and GitHub is configured. Direct plugin capture can use `.skiphow/inbox.md`. The Python Intake ledger uses `.skiphow/intake/signals.jsonl` and `.skiphow/intake/work-items.json`. Both write only when authorized. A GitHub Project is an optional view.
+
+## Configuration
+
+Project-safe settings use `.skiphow/config.json`:
 
 ```json
 {
-  "tracker": "auto",
-  "project": null,
+  "schema_version": 2,
+  "tracker": {"type": "auto", "project": null},
+  "delivery": {"merge_policy": "never", "cleanup": "merged_only"},
+  "findings": {"persist": "local"},
   "campaign_root": ".skiphow/runs"
 }
 ```
 
-`tracker` accepts `auto`, `none`, `github`, or `local`. `project` is `null` or an explicit `owner/number`. `campaign_root` must be a relative path inside the project. Unknown keys, absolute paths, and path traversal are errors.
+The parser still reads v1 configuration. Explicit migration writes a backup before replacing it. Personal cost preferences, limits, provider catalogs, and model IDs belong in the user's SkipHow configuration directory. Credentials do not belong in either file.
 
-When you explicitly ask to save an idea or finding, SkipHow uses the configured tracker. With a GitHub origin and authenticated `gh`, `auto` can use a GitHub Issue. With no available tracker, it can use `.skiphow/inbox.md`. A GitHub Project is an optional view, never lifecycle authority.
+`skiphow setup` writes product-level choices without asking for a schema, library, provider model, or Git strategy. Provider details remain optional advanced personal configuration.
 
 ## Support matrix
 
-Host evidence covers package format and isolated installation only. This repository does not run live model evaluations, so activation and model behavior are not claimed by these checks.
+Package, adapter, and live behavior evidence are separate.
 
-| Product | Package format | Isolated install | Runtime behavior |
+| Product | Package format | Adapter conformance | Live outcomes |
 | --- | --- | --- | --- |
-| Codex CLI | `UNVERIFIED` | `UNVERIFIED` | not live-evaluated |
-| Codex desktop | same Codex package | not separately tested | not live-evaluated |
-| Claude Code | `UNVERIFIED` | `UNVERIFIED` | not live-evaluated |
+| Codex CLI and desktop | Codex plugin | deterministic contract tests | multi-trial release outcomes `UNVERIFIED` |
+| Claude Code | Claude plugin | deterministic contract tests | auth and live outcomes `UNVERIFIED` |
+| Optional Python runner | source package | deterministic local tests | multi-trial real provider and service outcomes `UNVERIFIED` |
 | Codex IDE | not claimed | not claimed | not claimed |
-| ChatGPT Chat/Work | policy excluded | policy excluded | not claimed |
+| ChatGPT Chat and Work | policy excluded | not claimed | not claimed |
 
-Core work needs project inspection. Change requests also need file mutation, and repository checks need command execution. Missing subagents do not block bounded work. Optional GitHub persistence needs authenticated `gh`; optional helper scripts support Python 3.10 through 3.13.
+An unavailable host is `UNVERIFIED`. Package validation does not prove that a model interprets instructions correctly.
 
-## Trust and removal
-
-SkipHow may read or change local project files and run local commands only when the request authorizes that work. GitHub writes require explicit persistence, existing tracked work, repository-required lifecycle work, or requested setup. The default package installs no hooks.
-
-See [trust and operations](docs/trust.md) for remote mutations, diagnostics, package proof, updates, rollback, and uninstall.
-
-## Maintainer checks
+## Checks and evals
 
 ```sh
 python scripts/check.py
+python scripts/check.py --offline
 python scripts/check_hosts.py --output path/to/host-proof.json
 ```
 
-The first command is deterministic and local. On its first run, it creates the ignored `.venv`, installs the exact versions from `requirements-dev.txt`, and then reuses that environment. The second command validates package structure and isolated installation in available hosts. It writes package proof as `VERIFIED`, `UNVERIFIED`, or `FAILED`; pass that receipt to doctor with `--package-proof-receipt`. Neither command launches a model or proves runtime behavior.
+The first command creates and reuses a pinned dependency cache outside the repository. `--offline` never accesses the network. The host check records package evidence as `VERIFIED`, `UNVERIFIED`, or `FAILED`.
 
-Run a focused pytest selection through the same environment:
+The deterministic check also runs from a source archive without `.git`; file validation falls back to the archive tree and Git diff evidence is unavailable. Release identity and exact-host installation still require a Git checkout.
 
-```sh
-python scripts/check.py --pytest tests/test_config.py -q
-```
+The opt-in GitHub gate uses a clean committed candidate and an owned disposable private repository. It proves Issue, native dependency, pull request, CI, merge, branch cleanup, forced interruption, and resume. It is separate from `scripts/check.py` because it mutates remote state. See [GitHub lifecycle](docs/github-lifecycle.md).
 
-## Research and prior art
+Live eval harness v2 binds release mode to the exact twenty-scenario registry, provisions an isolated synthetic fixture for every trial, supports Codex and Claude adapters, and grades content-addressed observations collected from final state by trusted code. Provider self-reports cannot satisfy the gate. Multi-trial real provider and service outcomes have not yet been established. See [evaluation and release evidence](docs/evals.md).
 
-SkipHow adapts selected engineering practices from [mattpocock/skills](https://github.com/mattpocock/skills). Source-only copies retain their pinned commits and licenses; runtime policy does not load them. Exact vendored sources and pins live in the [source manifest](plugins/skiphow/skills/skiphow/references/third_party/sources.json).
+The durable-runtime spike verifies child-process SQLite replay and a no-model Codex App Server terminate/resume cycle. It does not establish cross-platform operation or live model quality. See [durable runtime spike](docs/durable-runtime-spike.md).
 
-Campaign and decision mechanics draw narrowly from [Paperclip](https://github.com/PaperclipAI/paperclip), [Mesa](https://github.com/msoedov/mesa), [OpenSpec](https://github.com/Fission-AI/OpenSpec), [BMAD](https://docs.bmad-method.org/), and [Autonomous PM](https://github.com/mlobo2012/autonomous-pm-plugin). They are research inputs, not runtime dependencies or claims of superiority.
+## Design and trust
 
-Project documents: [architecture](docs/architecture.md), [trust](docs/trust.md), [changelog](CHANGELOG.md), [contributing](CONTRIBUTING.md), [security](SECURITY.md), [license](LICENSE).
+The [architecture](docs/architecture.md) describes the thin semantic kernel, direct path, optional durable runner, provider adapters, and integrations. [Trust and operations](docs/trust.md) and the [threat model](docs/threat-model.md) cover processes, state, credentials, protected actions, cancellation, cleanup, and abuse cases.
+
+More detail is in [intake](docs/intake.md), [operations](docs/operations.md), [model routing](docs/model-routing.md), [GitHub lifecycle](docs/github-lifecycle.md), and [prior art](docs/prior-art.md).

@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "long-campaign",
+  "title": "Long campaign",
+  "source_requirement": "16.3.10",
+  "intent": "CONTINUE",
+  "execution_shape": "CAMPAIGN",
+  "fixture": {"kind": "synthetic_campaign", "profile": "interrupted-multi-lane-run"},
+  "request": {"user_message": "Complete the migration even if the session restarts."},
+  "preconditions": ["The campaign has two independent lanes and one external wait.", "The controller is terminated after a checkpoint and resumed with fresh context."],
+  "grading": {
+    "pass_condition": "all_required_outcomes_and_no_forbidden_effects",
+    "required_outcomes": [
+      {"id": "resume-from-durable-state", "observation": "recovery.source", "operator": "equals", "expected": "durable_state_reconciled_with_primary_sources", "evidence": ["state_json", "journal", "recovery_receipt"]},
+      {"id": "campaign-completes", "observation": "campaign.terminal_status", "operator": "equals", "expected": "COMPLETED", "evidence": ["final_state", "final_report"]},
+      {"id": "accepted-work-preserved", "observation": "recovery.accepted_lane_results_preserved", "operator": "equals", "expected": true, "evidence": ["state_json", "repository_state"]}
+    ],
+    "forbidden_effects": [
+      {"id": "no-restart-from-scratch", "observation": "recovery.completed_lanes_redispatched", "operator": "greater_than", "expected": 0, "evidence": ["journal"]},
+      {"id": "no-lost-outcome", "observation": "campaign.original_outcome_changed", "operator": "equals", "expected": true, "evidence": ["state_history"]}
+    ]
+  }
+}

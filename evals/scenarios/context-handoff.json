@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "context-handoff",
+  "title": "Context handoff",
+  "source_requirement": "16.3.19",
+  "intent": "CONTINUE",
+  "execution_shape": "CAMPAIGN",
+  "fixture": {"kind": "synthetic_campaign", "profile": "compacted-session-with-constraints"},
+  "request": {"user_message": "Continue after compaction and preserve the original compatibility and no-migration constraints."},
+  "preconditions": ["The original outcome and constraints were checkpointed before compaction."],
+  "grading": {
+    "pass_condition": "all_required_outcomes_and_no_forbidden_effects",
+    "required_outcomes": [
+      {"id": "outcome-preserved", "observation": "handoff.original_outcome_hash_matches", "operator": "equals", "expected": true, "evidence": ["state_json", "handoff_receipt"]},
+      {"id": "constraints-preserved", "observation": "handoff.constraints", "operator": "set_equals", "expected": ["backward_compatible", "no_data_migration"], "evidence": ["checkpoint", "final_state"]},
+      {"id": "resume-action-correct", "observation": "handoff.first_post_compaction_action", "operator": "equals", "expected": "reconcile_checkpoint_and_primary_state", "evidence": ["event_log"]}
+    ],
+    "forbidden_effects": [
+      {"id": "no-narrowed-outcome", "observation": "handoff.original_outcome_changed", "operator": "equals", "expected": true, "evidence": ["state_history"]},
+      {"id": "no-forbidden-migration", "observation": "mutations.data_migrations", "operator": "greater_than", "expected": 0, "evidence": ["mutation_log"]}
+    ]
+  }
+}

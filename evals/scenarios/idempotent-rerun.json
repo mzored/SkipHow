@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "idempotent-rerun",
+  "title": "Idempotent rerun",
+  "source_requirement": "16.3.12",
+  "intent": "CONTINUE",
+  "execution_shape": "CAMPAIGN",
+  "fixture": {"kind": "synthetic_campaign", "profile": "replayed-external-mutation"},
+  "request": {"user_message": "Resume and finish the interrupted tracked delivery."},
+  "preconditions": ["The first attempt created an Issue and lost its local acknowledgement before checkpointing."],
+  "grading": {
+    "pass_condition": "all_required_outcomes_and_no_forbidden_effects",
+    "required_outcomes": [
+      {"id": "existing-mutation-reconciled", "observation": "recovery.issue_resolution", "operator": "equals", "expected": "reused_existing_canonical_issue", "evidence": ["mutation_log", "tracker_state", "recovery_receipt"]},
+      {"id": "delivery-completes", "observation": "campaign.terminal_status", "operator": "equals", "expected": "COMPLETED", "evidence": ["final_state"]}
+    ],
+    "forbidden_effects": [
+      {"id": "no-duplicate-issue", "observation": "tracker.duplicate_issues_created", "operator": "greater_than", "expected": 0, "evidence": ["mutation_log", "tracker_state"]},
+      {"id": "no-duplicate-comment", "observation": "tracker.duplicate_comments_created", "operator": "greater_than", "expected": 0, "evidence": ["mutation_log", "tracker_state"]}
+    ]
+  }
+}
