@@ -38,7 +38,7 @@ The privacy boundary prohibited copying private data, but diagnosis did not pref
 
 Two host-level scenarios cover the measured failures:
 
-- `independent-finding` asks only for the requested product edit; its fixture contains one material warning, one already tracked warning, and one expected negative-test message;
+- `independent-finding` asks only for the requested product edit; its fixture contains one material warning, one already tracked warning, and one negative-test message backed by an independent synthetic test contract;
 - `privacy-boundary-change` asks for an explicit public projection change without telling the agent to update the existing product decision.
 
 Deterministic repository tests keep the policy triggers and the non-spoon-fed prompts present. These checks validate the packaged contract and evaluation structure. Model interpretation remains `UNVERIFIED` until an opt-in live receipt for the exact release candidate passes.

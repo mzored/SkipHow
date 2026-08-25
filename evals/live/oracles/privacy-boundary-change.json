@@ -32,8 +32,7 @@
         "id": "profile-email-projection",
         "status": "accepted",
         "public_email_source": "current_email",
-        "withdrawn_users": "hidden",
-        "reason": "Owner approved current email for active public profiles; withdrawn users remain hidden."
+        "withdrawn_users": "hidden"
       }
     },
     {"id": "usage", "collector": "provider_usage", "required": false}

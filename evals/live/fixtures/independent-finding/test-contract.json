@@ -1,0 +1,6 @@
+{
+  "negative_test": {
+    "expected_stderr_codes": ["NEG-EXPECTED"],
+    "passing_exit_code": 0
+  }
+}

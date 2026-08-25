@@ -143,20 +143,21 @@ Missing telemetry does not turn a correct file outcome into failure, and it cann
 
 ## Behavior set
 
-The 1.0 suite covers:
+The versioned suite covers:
 
 1. a small fix without added ceremony;
 2. an unknown bug with a reproduced cause and checked repair;
 3. a material feature that researches reuse before adding a lasting subsystem;
 4. mixed intake with provenance and semantic duplicate handling;
 5. work for a nontechnical owner without technical-choice questions;
-6. persistence of a valid finding outside the current scope;
-7. several Issues through pull requests, CI, guarded merge, and safe cleanup;
-8. reconstruction after compaction or restart;
-9. refusal of an ungranted protected action;
-10. semantic routing compared with an all-`DEEP` baseline;
-11. technical review that reports only evidence-backed defects against the exact candidate;
-12. conflict resolution that preserves both accepted intents and verifies the merged result.
+6. implicit triage and persistence of one valid finding without duplicate or expected-output noise;
+7. a public data-boundary change that updates its durable product decision and preserves withdrawal behavior;
+8. several Issues through pull requests, CI, guarded merge, and safe cleanup;
+9. reconstruction after compaction or restart;
+10. refusal of an ungranted protected action;
+11. semantic routing compared with an all-`DEEP` baseline;
+12. technical review that reports only evidence-backed defects against the exact candidate;
+13. conflict resolution that preserves both accepted intents and verifies the merged result.
 
 Run nondeterministic cases several times. Routing comparisons use the same versioned tasks, root model, and reasoning-effort rules. Cost includes the root session, subagents, transferred context, retries, and review.
 

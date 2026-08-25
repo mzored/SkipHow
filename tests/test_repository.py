@@ -267,10 +267,13 @@ def test_application_regression_prompts_do_not_spoon_feed_the_policy() -> None:
     assert not {"decision", "record", "adr"} & set(privacy_prompt.split())
     finding_oracle = json_object("evals/live/oracles/independent-finding.json")
     privacy_oracle = json_object("evals/live/oracles/privacy-boundary-change.json")
+    test_contract = json_object("evals/live/fixtures/independent-finding/test-contract.json")
     finding_ids = {item["id"] for item in finding_oracle["assertions"]}
     privacy_ids = {item["id"] for item in privacy_oracle["assertions"]}
     assert "finding" in finding_ids
     assert {"projection-contract", "durable-decision"} <= privacy_ids
+    assert test_contract["negative_test"]["expected_stderr_codes"] == ["NEG-EXPECTED"]
+    assert "13. conflict resolution" in read("docs/evals.md")
 
 
 def test_github_markers_and_cleanup_are_race_safe_by_contract() -> None:
