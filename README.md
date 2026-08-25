@@ -38,26 +38,20 @@ The [getting started guide](docs/getting-started.md) covers prerequisites, updat
 
 ## How it works
 
-SkipHow is one instruction package, not a catalog of independent skills. Codex or Claude Code loads a compact core policy and follows this path. Only the owner request and host policy can authorize actions. Project rules and current state may narrow the work or add gates, but they cannot expand it.
+You describe the result in ordinary language. You do not need to choose a methodology or tell the agent how to organize the work.
 
 ```mermaid
 flowchart TD
-    A["Owner request"] -->|"grants scope"| K["Codex or Claude loads<br/>the compact core policy"]
-    H["Host policy and permissions"] -->|"grant or limit actions"| K
-    P["Project rules and current state"] -->|"constrain and supply facts"| K
-    K --> R["Determine authority boundary<br/>and choose an internal route"]
-    R --> L["Load only the references needed<br/>diagnosis, GitHub, testing, long work"]
-    L --> E{"Choose execution shape"}
-    E -->|"Clear bounded task"| S["Current session"]
-    E -->|"Several selected items, external wait,<br/>or unattended request"| C["Host-managed coordination<br/>tasks, subagents, worktrees"]
-    S --> T["Use relevant state<br/>host, Git, GitHub"]
-    C --> T
-    T --> V["Coordinating agent rechecks state<br/>and reports fresh evidence"]
+    A["You describe the result"] --> B["SkipHow understands<br/>what you want and what it may change"]
+    B --> C["It picks the simplest approach<br/>work directly, investigate first,<br/>or coordinate several parts"]
+    C --> D["Codex or Claude Code<br/>does the work"]
+    D --> E["The agent checks<br/>the actual result"]
+    E --> F["You get the result,<br/>how it was checked,<br/>and anything unresolved"]
 ```
 
-The core policy contains the owner contract, authority boundary, routing rules, and completion rule. After routing, the host loads only the references the request needs. A clear bounded task can stay in the current session. Several selected items, an external wait, or an explicit unattended request can add host tasks, subagents, worktrees, and checkpoints.
+Under the hood, SkipHow is one compact set of instructions, not a collection of separate skills you have to combine. It treats your request as the boundary, loads extra guidance only when the task needs it, and uses the project and tools already available in Codex or Claude Code. There is no separate app or task database to manage.
 
-This keeps unrelated instructions out of routine tasks. State stays in the systems that own it instead of a second task database. The coordinating agent re-reads those systems and checks the final state, so a worker's `done` message is never enough.
+The final check matters. SkipHow does not report success just because one part says it is done. It compares the final state with your request before reporting completion.
 
 ## What your request authorizes
 
