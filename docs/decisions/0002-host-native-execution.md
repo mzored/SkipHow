@@ -88,6 +88,7 @@ The hosts expose different controls and durability. Hiding those differences wou
 - [Repository audit](../research/2026-08-25/repository-audit.md)
 - [Host capability research](../research/2026-08-25/host-capabilities.md)
 - [Security and evaluation research](../research/2026-08-25/security-and-evals.md)
+- [Live evaluation host contract](../research/2026-08-25/live-evaluation-hosts.md)
 - [Prior-art research](../research/2026-08-25/prior-art.md)
 
 ## Revalidation triggers

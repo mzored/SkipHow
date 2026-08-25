@@ -17,6 +17,10 @@ This is a breaking release. The `skiphow` executable, its SQLite state, runtime 
 - Limited automatic merge to explicit unattended or end-to-end work. Required checks, reviews, repository rules, and exact-head checks still apply.
 - Rewrote the plugin policy, architecture, research notes, decisions, and README around the host-native design.
 
+### Added
+
+- Added an opt-in live evaluator for ten owner workflows. It loads an exact candidate and grades synthetic workspaces against external oracles. Restart, routing, and GitHub delivery have separate guarded scenarios.
+
 ### Removed
 
 - Removed the `skiphow` Python package and the `setup`, `intake`, `start`, `add-task`, `github-deliver`, `execute`, `worker`, `status`, `pause`, `resume`, `cancel`, `reconcile`, and `export` CLI commands.

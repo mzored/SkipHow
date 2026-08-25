@@ -164,6 +164,8 @@ Host contracts were checked against current primary documentation on 2026-08-25:
 
 ## Revalidation triggers
 
+The replacement-suite host contract was revalidated at commit `edb069900799e59e24752b684d065cce06f08c52`. See [Live evaluation host contract](live-evaluation-hosts.md). The replacement keeps the safety requirements above: exact candidate loading, external collectors and receipts, no privileged execution of agent-written code, explicit credentials and budget, a pre-provisioned GitHub sandbox, and honest `UNVERIFIED` results. This adds release tooling only; it does not restore a product runner or a second security boundary.
+
 Review this decision again only when one of these facts changes:
 
 - a supported host removes or materially changes its sandbox, approvals, Goal, subagent, resume, or worktree contract;

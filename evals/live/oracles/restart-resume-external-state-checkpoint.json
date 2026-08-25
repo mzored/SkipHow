@@ -1,0 +1,19 @@
+{
+  "assertions": [
+    {
+      "id": "checkpoint-only",
+      "collector": "tree_delta",
+      "required_added": [".skiphow", ".skiphow/handoff.json"],
+      "allowed_added": [".skiphow", ".skiphow/handoff.json"],
+      "allowed_removed": [],
+      "allowed_modified": []
+    },
+    {
+      "id": "checkpoint",
+      "collector": "structured_file",
+      "path": ".skiphow/handoff.json",
+      "kind": "json",
+      "expected": {"outcome": "increment the value", "authority": "workspace changes only", "current_state": "diagnosed", "evidence": "task.json value is 41", "next_step": "set value to 42 and mark done"}
+    }
+  ]
+}

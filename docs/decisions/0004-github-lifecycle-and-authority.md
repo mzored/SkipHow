@@ -103,6 +103,7 @@ A branch can contain unique work or belong to another person. Cleanup needs prov
 - [Host-capability research](../research/2026-08-25/host-capabilities.md)
 - [Repository audit](../research/2026-08-25/repository-audit.md)
 - [Security and evaluation research](../research/2026-08-25/security-and-evals.md)
+- [Live evaluation host contract](../research/2026-08-25/live-evaluation-hosts.md)
 
 ## Revalidation triggers
 
