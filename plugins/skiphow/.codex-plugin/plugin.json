@@ -1,7 +1,7 @@
 {
   "name": "skiphow",
-  "version": "0.9.0",
-  "description": "Handle product and software work from one ordinary-language request.",
+  "version": "1.0.0",
+  "description": "Handle product and project work from one owner request.",
   "author": {
     "name": "mzored",
     "url": "https://github.com/mzored"
@@ -18,15 +18,15 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "SkipHow",
-    "shortDescription": "Product work from one request",
-    "longDescription": "Understand the request, make routine technical decisions, do the work the user authorized, and verify the result. Use tracking and long-running coordination only when the task needs them.",
+    "shortDescription": "Project work from one owner request",
+    "longDescription": "Inspect the project, make routine product and engineering decisions, complete the authorized work, and verify the result. Add tracking or campaign coordination only when the work needs it.",
     "developerName": "mzored",
     "category": "Developer Tools",
     "capabilities": [],
     "defaultPrompt": [
       "Add this feature and make the routine product and technical decisions.",
       "Fix this bug, prove the cause when needed, and verify the result.",
-      "Save this product idea for later without expanding it."
+      "Turn these research notes into a checked decision record without changing the product."
     ]
   }
 }

@@ -1,7 +1,7 @@
 {
   "name": "skiphow",
-  "version": "0.9.0",
-  "description": "Handle product and software work from one ordinary-language request.",
+  "version": "1.0.0",
+  "description": "Handle product and project work from one owner request.",
   "author": {
     "name": "mzored",
     "url": "https://github.com/mzored"

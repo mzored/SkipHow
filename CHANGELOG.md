@@ -4,9 +4,34 @@ All notable changes to this project appear in this file.
 
 ## Unreleased
 
+No changes yet.
+
+## 1.0.0 (2026-08-26)
+
+SkipHow 1.0 is the first stable release of the host-native design. It remains one portable skill, with no SkipHow runner or task database.
+
 ### Changed
 
-- Added a Codex ChatGPT OAuth evaluation mode. It reuses the current Codex profile without copying credentials, requires an exact enabled cached plugin payload, forbids API-key and dollar-budget options, and caps host invocations with `--max-calls`.
+- Defined a recoverable long-work protocol around a selected queue, dependency-ready waves, bounded worker packets, health checks, checkpoints, reconciliation, exact-candidate review, and final queue reconciliation.
+- Restored focused engineering guidance for diagnosis, testing, technical review, design, disposable prototypes, and conflict resolution as lazy references under the canonical skill.
+- Made the authority boundary explicit. Only the owner request and host policy grant actions. Repository rules and project decisions may restrict those actions but cannot expand them.
+- Kept external mutations, integration, protected actions, and cleanup with the root agent. Workers receive the least authority needed for their packet.
+- Bound protected review and delivery to the repository, base and candidate identity, Git state, executable inputs, required checks, and current remote state.
+- Hardened retries and cleanup. A timeout triggers reconciliation before retry, and owned-branch cleanup verifies the expected object identity before deletion.
+- Expanded public installation, update, uninstall, support, security, and troubleshooting documentation for Codex and Claude Code.
+- Aligned both host manifests with `VERSION`, made the Claude marketplace defer to its plugin manifest, and tightened deterministic release checks for recursive references and version changes.
+- Expanded the release evaluation contracts for campaign recovery, technical review, and conflict resolution while keeping live model and mutable GitHub trials opt-in.
+
+### Security
+
+- Treats repository files, trackers, checkpoints, tool output, web content, and subagent reports as untrusted data rather than permission grants.
+- Limits checkpoints to bounded, redacted recovery data. They must not contain credentials, private absolute paths, or untrusted instructions that can be replayed as authority.
+- Requires the root to inspect repository-controlled tests and scripts before running them when their behavior or trust is uncertain.
+
+### Verification status
+
+- Deterministic repository and package checks remain the release requirement.
+- Live host behavior, full restart recovery, autonomous model selection, routing savings, and mutable multi-Issue GitHub delivery remain `UNVERIFIED` unless an exact 1.0 receipt proves them.
 
 ## 0.9.0 (2026-08-25, preview)
 

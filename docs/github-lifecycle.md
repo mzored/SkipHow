@@ -25,7 +25,7 @@ For each tracked item, the agent:
 13. confirms the merged state before closing the Issue or updating dependencies;
 14. removes only the owned merged branch and clean worktree.
 
-Remote mutations are serialized within a run. Before claiming work or taking a protected action, and immediately after recording a claim, the root checks the Issue, linked pull requests, branches, and markers for another active operation. It continues that operation only when authority and ownership transfer are verified. Simultaneous claims or ambiguous ownership stop `BLOCKED` before a branch or pull request is created. A retry searches open and closed objects by marker before it creates or changes anything. External APIs do not promise an atomic claim or exactly-once creation, so SkipHow promises reconciliation, not exactly-once delivery.
+Remote mutations are serialized within a run and performed by the root. Before claiming work or taking a protected action, and immediately after recording a claim, the root checks the repository, Issue, linked pull requests, branches, heads, and markers for another active operation. A marker correlates objects but does not prove ownership. The root continues an existing operation only when authority and ownership transfer are verified. Simultaneous claims or ambiguous ownership stop `BLOCKED` before a branch or pull request is created. A timeout or uncertain result triggers reconciliation before retry. The retry searches open and closed objects by marker before it creates or changes anything. External APIs do not promise an atomic claim or exactly-once creation, so SkipHow promises reconciliation, not exactly-once delivery.
 
 Independent write tasks use separate worktrees and branches. The root agent owns integration. If safe isolation is unavailable, serialize repository writes.
 
@@ -35,7 +35,7 @@ Independent write tasks use separate worktrees and branches. The root agent owns
 
 "Finish end to end", "run unattended", "complete these Issues", or equivalent wording grants guarded merge and cleanup for the named scope. "Do not merge", pause, cancellation, or a narrower instruction removes that authority immediately. The agent disables owned auto-merge and leaves its merge-queue entry when GitHub permits it, then confirms the remote state. An unconfirmed cancellation is `BLOCKED`.
 
-Immediately before merge, the agent re-reads trusted authority, the Issue, blockers and dependencies, active operation, pull request, exact head, checks, reviews, and repository rules. A merge requires all of these facts:
+Immediately before merge, the agent re-reads trusted authority, the Issue, blockers and dependencies, active operation, pull request, exact candidate identity, checks, reviews, and repository rules. A merge requires all of these facts:
 
 - the Issue belongs to the authorized scope;
 - the pull request head still matches the checked commit;
@@ -50,13 +50,13 @@ Production deployment, payments, credentials, privacy operations, public release
 
 ## Cleanup
 
-Cleanup runs only after GitHub confirms `mergedAt` for the recorded pull-request head. The branch must belong to this operation, have no other open pull request, and contain no work omitted from the confirmed merge. For squash or rebase, compare the recorded head and merged result instead of requiring commit ancestry. The worktree must be clean.
+Cleanup runs only after GitHub confirms `mergedAt` for the recorded pull-request head. The branch must belong to this operation, have no other open pull request, and contain no work omitted from the confirmed merge. For squash or rebase, compare the recorded head and merged result instead of requiring commit ancestry. The worktree must be clean. Immediately before deletion, compare the current branch object with the recorded expected object and delete only on an exact match.
 
 If any fact is missing, leave the branch or worktree in place and report it. Never delete a user branch, dirty worktree, unmerged branch, unincorporated commit, or uncertain file.
 
 ## Resume and missing features
 
-After compaction, pause, or restart, re-read the Issue, pull request, exact head, checks, reviews, Git state, and current authority before acting. Do not trust a transcript summary as current remote state.
+After compaction, pause, or restart, re-read the Issue, pull request, exact candidate identity, checks, reviews, Git state, and current authority before acting. Do not trust a transcript summary as current remote state.
 
 Some repositories lack native dependency relationships, merge queues, or automatic branch deletion. Use the available GitHub state and report missing behavior as `UNVERIFIED`. Do not recreate those features in a local queue.
 

@@ -49,6 +49,8 @@ A valid run must:
 - write a recursively redacted machine-readable receipt outside the candidate checkout without raw structured fixture values or private local paths;
 - keep fixtures synthetic and avoid customer or production data.
 
+Exact candidate identity includes the repository, base and candidate trees, clean state, untracked executable inputs, submodules, and configuration that can change the result. A commit hash by itself is not enough when another input remains mutable.
+
 A live GitHub test may mutate only an explicitly named pre-provisioned sandbox repository. The sandbox must differ from the candidate repository. Its credentials must not have repository creation or deletion authority. The current harness does not execute this mutable scenario because it cannot both allow Git metadata writes and technically prevent repository deletion. That outcome remains `UNVERIFIED`.
 
 The release-only evaluator is under `evals/live`. Local manifest operations do not start a host:
@@ -141,7 +143,7 @@ Missing telemetry does not turn a correct file outcome into failure, and it cann
 
 ## Behavior set
 
-The first release-quality suite should cover:
+The 1.0 suite covers:
 
 1. a small fix without added ceremony;
 2. an unknown bug with a reproduced cause and checked repair;
@@ -152,7 +154,9 @@ The first release-quality suite should cover:
 7. several Issues through pull requests, CI, guarded merge, and safe cleanup;
 8. reconstruction after compaction or restart;
 9. refusal of an ungranted protected action;
-10. semantic routing compared with an all-`DEEP` baseline.
+10. semantic routing compared with an all-`DEEP` baseline;
+11. technical review that reports only evidence-backed defects against the exact candidate;
+12. conflict resolution that preserves both accepted intents and verifies the merged result.
 
 Run nondeterministic cases several times. Routing comparisons use the same versioned tasks, root model, and reasoning-effort rules. Cost includes the root session, subagents, transferred context, retries, and review.
 

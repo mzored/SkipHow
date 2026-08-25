@@ -1,0 +1,24 @@
+{
+  "assertions": [
+    {
+      "id": "resolution-only",
+      "collector": "tree_delta",
+      "required_added": ["merged.json"],
+      "allowed_added": ["merged.json"],
+      "allowed_removed": [],
+      "allowed_modified": []
+    },
+    {
+      "id": "exact-resolution",
+      "collector": "structured_file",
+      "path": "merged.json",
+      "kind": "json",
+      "expected": {
+        "message": "Welcome back",
+        "log_level": "debug",
+        "features": ["core", "audit"]
+      }
+    },
+    {"id": "usage", "collector": "provider_usage", "required": false}
+  ]
+}

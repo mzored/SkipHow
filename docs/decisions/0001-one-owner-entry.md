@@ -31,7 +31,7 @@ Bug repair is a form of `DELIVER`. Long-running work is an execution choice with
 
 SkipHow does not add public `/fix`, `/cto`, `/idea`, or `/automode` commands. It does not ask the owner to chain an intake command, a planning command, and an execution command.
 
-Mutation authority comes from the owner's words and repository policy. Requests such as "discuss" and "research" stay read-only. Requests such as "save" permit persistence. Requests such as "fix", "implement", and "complete these issues end-to-end" permit the corresponding delivery work. The agent owns technical choices unless a decision changes product behavior, scope, cost, risk, rollout, privacy, or requires a protected action.
+Mutation authority comes from the owner's words and host policy. Repository policy may narrow that authority but cannot expand it. Requests such as "discuss" and "research" stay read-only. Requests such as "save" permit persistence. Requests such as "fix", "implement", and "complete these issues end-to-end" permit the corresponding delivery work. The agent owns technical choices unless a decision changes product behavior, scope, cost, risk, rollout, privacy, or requires a protected action.
 
 ## Consequences
 

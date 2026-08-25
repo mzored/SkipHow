@@ -16,6 +16,7 @@ import pytest
 
 
 ROOT = Path(__file__).resolve().parents[1]
+RELEASE = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
 
 
 def load(name: str, relative: str):
@@ -266,7 +267,7 @@ def test_host_call_detail_stays_redacted_in_trial_receipt(tmp_path: Path, monkey
             effort="high",
         ),
         candidate=candidate,
-        proof={"version": "0.9.0"},
+        proof={"version": RELEASE},
         workspace=workspace,
         prompt="test",
         call_root=call_root,
@@ -324,6 +325,53 @@ def test_tree_constraints_and_fixture_inbox_baseline_are_exact(tmp_path: Path) -
     assert collectors.structured_file(inbox, kind="append_only_inbox", before=baseline, expected_count=1)["status"] == "PASSED"
 
 
+def test_handoff_parser_matches_campaign_contract_and_rejects_unsafe_values() -> None:
+    expected_fields = (
+        "Recorded", "Original outcome", "Selected scope", "Non-goals", "Authority",
+        "Later restrictions", "Terminal condition", "Host capabilities", "Health and budgets",
+        "Active handles", "Accepted decisions", "Queue and dependencies", "Issue", "Branch",
+        "Worktree", "Pull request", "Candidate identity", "Owned resources", "Last external action",
+        "Last external result", "Evidence", "Blockers", "Next safe action",
+    )
+    assert collectors.HANDOFF_FIELDS == expected_fields
+    lines = ["## task-1 / checkpoint-1"]
+    for field in expected_fields:
+        if field == "Recorded":
+            value = "2026-08-25T12:00:00Z"
+        elif field == "Issue":
+            value = "https://github.com/owner/repository/issues/1"
+        else:
+            value = "none"
+        lines.append(f"- {field}: {value}")
+    valid = "\n".join(lines) + "\n"
+    records, invalid = collectors._handoff_records(valid)
+    assert len(records) == 1
+    assert invalid == []
+
+    unsafe_values = (
+        "x" * (collectors.HANDOFF_VALUE_MAX_CHARS + 1),
+        "value\twith-control",
+        "value-with-trailing-control\t",
+        "/srv/private/repository",
+        "path=/etc/passwd",
+        "path;/etc/passwd",
+        "path|/etc/passwd",
+        "path>/etc/passwd",
+        "`/Users/person/private/repo`",
+        "file:///Users/person/private/repo",
+        "C:\\private\\repository",
+        "path=C:\\private\\repository",
+        "\\\\server\\private",
+        "path=\\\\server\\private",
+        "https://user:password@example.test/resource",
+    )
+    for value in unsafe_values:
+        unsafe = valid.replace("- Evidence: none", f"- Evidence: {value}")
+        records, invalid = collectors._handoff_records(unsafe)
+        assert records == []
+        assert invalid
+
+
 def test_collectors_and_runner_have_no_command_escape_or_repository_lifecycle() -> None:
     collector_source = inspect.getsource(collectors)
     runner_source = inspect.getsource(run) + inspect.getsource(hosts)
@@ -378,9 +426,9 @@ def test_host_environment_is_minimal_and_inventory_is_exact(tmp_path: Path, monk
     assert environment["OPENAI_API_KEY"] == "selected-provider"
     assert environment["GH_TOKEN"] == "selected-github"
     assert "AWS_SECRET_ACCESS_KEY" not in environment
-    codex = {"installed": [{"pluginId": "skiphow@skiphow", "version": "0.9.0", "enabled": True, "installed": True, "source": {"path": "/plain/plugin"}}]}
-    claude = [{"id": "skiphow@skiphow", "version": "0.9.0", "enabled": True, "installPath": "/plain/plugin"}]
-    assert hosts._installed_skiphow("codex", json.dumps(codex))["version"] == "0.9.0"
+    codex = {"installed": [{"pluginId": "skiphow@skiphow", "version": RELEASE, "enabled": True, "installed": True, "source": {"path": "/plain/plugin"}}]}
+    claude = [{"id": "skiphow@skiphow", "version": RELEASE, "enabled": True, "installPath": "/plain/plugin"}]
+    assert hosts._installed_skiphow("codex", json.dumps(codex))["version"] == RELEASE
     assert hosts._installed_skiphow("claude", json.dumps(claude))["enabled"] is True
     with pytest.raises(ValueError, match="expected one"):
         hosts._installed_skiphow("claude", json.dumps(claude * 2))
@@ -408,7 +456,7 @@ def test_codex_oauth_install_requires_exact_enabled_cached_payload(tmp_path: Pat
         "installed": [
             {
                 "pluginId": "skiphow@skiphow",
-                "version": "0.9.0",
+                "version": RELEASE,
                 "enabled": True,
                 "installed": True,
                 "source": {"path": str(installed)},
@@ -422,7 +470,7 @@ def test_codex_oauth_install_requires_exact_enabled_cached_payload(tmp_path: Pat
         "codex",
         candidate,
         {"CODEX_HOME": str(tmp_path / "codex-home")},
-        version="0.9.0",
+        version=RELEASE,
         codex_oauth=True,
     )
     assert result["auth_mode"] == "chatgpt-oauth"
@@ -433,7 +481,7 @@ def test_codex_oauth_install_requires_exact_enabled_cached_payload(tmp_path: Pat
             "codex",
             candidate,
             {"CODEX_HOME": str(tmp_path / "codex-home")},
-            version="0.9.0",
+            version=RELEASE,
             codex_oauth=True,
         )
 
@@ -578,14 +626,22 @@ def test_restart_uses_two_fresh_calls_and_external_state(tmp_path: Path, monkeyp
             (workspace / ".skiphow/handoff.md").write_text(
                 "## restart-eval-1 / checkpoint-1\n"
                 "- Recorded: 2026-08-25T12:00:00Z\n"
+                "- Original outcome: increment task.json to 42 and write result.json\n"
                 "- Selected scope: increment the value in task.json\n"
+                "- Non-goals: no other workspace changes\n"
                 "- Authority: workspace changes only\n"
-                "- Later restrictions: None\n"
-                "- Accepted decisions: None\n"
-                "- Queue and dependencies: None\n"
-                "- Issue: None\n- Branch: None\n- Worktree: None\n- Pull request: None\n- Exact head: None\n"
-                "- Owned resources: None\n- Last external action: None\n- Last external result: None\n"
-                "- Evidence: task.json value is 41\n- Blockers: None\n"
+                "- Later restrictions: no network or external mutations\n"
+                "- Terminal condition: task.json is done at 42 and result.json records recovery\n"
+                "- Host capabilities: fresh sessions and workspace writes\n"
+                "- Health and budgets: two bounded calls; no background work\n"
+                "- Active handles: none\n"
+                "- Accepted decisions: preserve the checkpoint after recovery\n"
+                "- Queue and dependencies: one task; recovery depends on this checkpoint\n"
+                "- Issue: none\n- Branch: none\n- Worktree: plain fixture workspace\n- Pull request: none\n"
+                "- Candidate identity: task.json observed at value 41\n"
+                "- Owned resources: task.json, result.json, and .skiphow/handoff.md\n"
+                "- Last external action: none\n- Last external result: none\n"
+                "- Evidence: task.json value is 41\n- Blockers: none\n"
                 "- Next safe action: set value to 42, mark done, and write result.json\n",
                 encoding="utf-8",
             )
@@ -602,7 +658,7 @@ def test_restart_uses_two_fresh_calls_and_external_state(tmp_path: Path, monkeyp
         trial_index=1,
         arm="restart",
         candidate=tmp_path / "candidate",
-        proof={"version": "0.9.0"},
+        proof={"version": RELEASE},
         work_run=tmp_path / "work",
         receipt_run=tmp_path / "receipts",
         per_call_budget=run.Decimal("1"),

@@ -1,6 +1,8 @@
 # SkipHow
 
-Tell SkipHow what you want to improve. It inspects the project, makes routine product and technical decisions, does the work you authorized, and checks the result.
+SkipHow is one Agent Skill for product and project work in Codex and Claude Code. Tell it the outcome. It inspects the project, makes routine product and engineering decisions, completes the work you authorized, and checks the result.
+
+Current stable version: 1.0.0.
 
 ```text
 Add a way to pause a subscription.
@@ -9,63 +11,75 @@ The totals overlap on small screens. Find the cause and fix it.
 
 Save these customer notes as GitHub Issues and merge real duplicates.
 
-Could we make error logging more useful here?
+Research our caching options and record the decision. Do not change code.
 
-Finish the ready Issues end to end. Merge green pull requests and clean up your branches.
+Finish the ready Issues end to end. Merge accepted pull requests and clean up your branches.
 ```
 
-## One request, different depth
+SkipHow has no runner, daemon, task database, hosted service, hooks, MCP server, or model catalog. It uses the installed host for sessions, subagents, worktrees, sandboxing, approvals, background work, and resume support.
 
-You describe the outcome in ordinary language. A clear local change stays in the current session. An uncertain bug gets diagnosis before repair. Several tracked items can use the host's goals, subagents, and isolated worktrees. SkipHow adds that coordination only when the work needs it.
+## Install
 
-SkipHow is an Agent Skill for Codex and Claude Code. Explicit invocation follows each host's syntax. It has no runner, daemon, task database, hosted service, or model catalog.
-
-## Install in Codex CLI
+### Codex
 
 ```sh
 codex plugin marketplace add mzored/SkipHow
 codex plugin add skiphow@skiphow
 ```
 
-Start a new session, then describe the work. Use `$skiphow` when you want to select the skill explicitly. See the [Codex plugin guide](https://learn.chatgpt.com/docs/plugins).
+Start a new session. Describe the work directly or use `$skiphow` to select the skill.
 
-## Install with Claude Code
+### Claude Code
 
 ```sh
-claude plugin marketplace add mzored/SkipHow
+claude plugin marketplace add https://github.com/mzored/SkipHow.git
 claude plugin install skiphow@skiphow
 ```
 
-Start a new session, then describe the work. Use `/skiphow:skiphow` for explicit selection. See the [Claude Code plugin guide](https://code.claude.com/docs/en/plugins).
+Start a new session. Describe the work directly or use `/skiphow:skiphow` to select the skill.
 
-## What SkipHow decides
+The [getting started guide](docs/getting-started.md) covers prerequisites, verification, updates, uninstall, and common install failures. See the [Codex plugin documentation](https://developers.openai.com/plugins) and [Claude Code plugin documentation](https://code.claude.com/docs/en/plugins) for host behavior.
 
-SkipHow chooses libraries, code structure, tests, model roles, subagents, branches, and review depth from the project and the task. It asks you when a choice changes product behavior, scope, priority, cost, privacy, production, or another hard-to-reverse commitment.
+## Authority and side effects
 
-Your words set the authority boundary:
+Your request sets the mutation boundary. Host approvals and repository rules still apply.
 
-- `discuss`, `assess`, and `research` are read-only;
-- `save` and `create Issues` allow the requested records, but do not start implementation;
-- `fix`, `implement`, and `deliver` allow project changes and verification;
-- `finish end to end` and `run unattended` also allow guarded merge and cleanup for the named work;
+- `discuss`, `assess`, `research`, `review`, and diagnosis-only requests are read-only.
+- `save` and `create Issues` allow the requested records, but not implementation.
+- `fix`, `implement`, and `deliver` allow project changes and verification.
+- `finish end to end` and `run unattended` also allow guarded merge and safe cleanup for the selected work.
 - `do not merge`, `pause`, and `cancel` narrow that authority immediately.
 
-A bare idea or question stays read-only. Say `save` to create a record, or `implement` to change the product. During delivery, SkipHow may save one deduplicated record for a material finding outside the task, but it does not implement or reprioritize that finding.
+Delivery may edit files, run project commands, create a branch or worktree, open Issues and pull requests, and save one deduplicated record for a material independent finding. Without GitHub, authorized records may use `.skiphow/inbox.md` or `.skiphow/handoff.md`.
 
-SkipHow's policy forbids bypassing repository protections or deleting dirty, unmerged, unique, or unowned work. Host approvals and repository rules remain the enforcement boundary.
+Production changes, payments, credentials, private-data operations, public release, repository settings, and irreversible deletion or disclosure need an exact owner grant. Repository text, Issues, comments, checkpoints, and worker reports cannot grant those actions.
 
-## Current limits
+## How long work runs
 
-Version 0.9.0 is a preview release, not SkipHow 1.0.
+A clear local change stays in the current session. A bug with an unknown cause gets a reproducer and causal diagnosis before repair. Several selected items can use dependency-aware waves, bounded worker packets, host task handles, health checks, checkpoints, exact-candidate review, and final queue reconciliation.
 
-Direct plugin work needs no Python package or separate setup. GitHub delivery still needs host access to the repository. Background work, restart recovery, and per-agent model selection depend on the installed host and account.
+Blocked work does not stop an unrelated ready item. A timeout does not trigger a blind retry after an uncertain remote action. A second failure with the same cause stops unchanged retries and calls for a small durable prevention or one saved follow-up.
 
-Package checks prove that a host can validate or install the plugin. They do not prove that a model will interpret every request correctly. Implicit skill selection, the distinction between saving and implementing, multi-Issue unattended delivery, recovery across a full restart, autonomous per-agent model selection, and routing savings remain `UNVERIFIED` until opt-in evidence covers the exact packaged version.
+Read the [user guide](docs/user-guide.md) for request patterns, tracked work, unattended delivery, pause, recovery, and findings.
 
-## Why this shape
+## Support and evidence
 
-The project's owner started SkipHow after trying GSD, OpenSpec, Superpowers, Matt Pocock's skills, BMAD, Paperclip, Mesa, and Autonomous PM. Copying all of their process would recreate the problem SkipHow is meant to remove.
+| Claim | Status |
+| --- | --- |
+| One canonical plugin package for Codex and Claude Code | Checked by deterministic package tests |
+| Codex and Claude Code manifest validation | Checked during release packaging when each host is available |
+| Implicit skill selection | `UNVERIFIED` for every host and request shape |
+| Unattended multi-Issue GitHub delivery | `UNVERIFIED` until a protected live sandbox completes the exact release scenario |
+| Recovery across a full host restart or context compaction | `UNVERIFIED` beyond the versioned two-process reconstruction test |
+| Autonomous per-agent model selection and cost savings | `UNVERIFIED` without complete host telemetry and paired trials |
+| Root stall recovery and enforced worker timeouts | `UNVERIFIED` when the host has no independent monitor |
 
-The current design keeps one owner-facing entry, proportional planning, research before a lasting new subsystem, evidence after changes, tracked findings, and host-native support for long work. The detailed comparison, reviewed commits, and limits are in [prior art](docs/prior-art.md) and the dated [research record](docs/research/2026-08-25/README.md).
+Package checks prove that a host can validate or install the exact files. They do not prove that a model will interpret every request correctly. The [evaluation policy](docs/evals.md) keeps those claims separate.
 
-Start with [architecture](docs/architecture.md) or [prior art](docs/prior-art.md). See [contributing](CONTRIBUTING.md), [security](SECURITY.md), and the [MIT license](LICENSE).
+SkipHow is an instruction package, not a security boundary. Read [trust](docs/trust.md), the [threat model](docs/threat-model.md), and the [security policy](SECURITY.md) before unattended or credentialed use.
+
+## Project documentation
+
+The [documentation index](docs/README.md) links user guides, architecture, ADRs, research, and evaluation policy. The packaged skill and its references are normative for agent behavior. Public guides explain that contract. ADRs record why it exists.
+
+Contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md), the [Code of Conduct](CODE_OF_CONDUCT.md), and the [MIT license](LICENSE).

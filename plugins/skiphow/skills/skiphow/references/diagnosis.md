@@ -1,15 +1,25 @@
 # Diagnosis and repair
 
-Use this reference for broken behavior or an unknown cause. A diagnosis-only request remains read-only. A request to fix grants the changes and checks needed for the repair.
+Use this reference when behavior is broken and the cause is unknown. A diagnosis-only request stays read-only. A repair request grants the changes and checks needed for the fix.
 
-## Prove the failure
+## Build the signal first
 
-Capture expected behavior, observed behavior, environment, scope, and a reproducible case. Inspect logs and state before editing code. Reduce the failure to the smallest useful reproducer when practical.
+Create one repeatable check that reaches the reported behavior and distinguishes failure from success. Prefer an existing or focused test, a CLI or HTTP call, a headless UI check, a redacted trace replay, a small harness, a differential check, or a structured human reproduction in that order when practical.
 
-Trace the data and control path that could produce the symptom. Form competing explanations and use evidence to eliminate them. Do not stack speculative patches.
+Run the check before forming a theory. It must exercise the exact symptom, not a nearby failure. For intermittent behavior, measure repeated runs and raise the reproduction rate. For performance, record a baseline with a timing harness, profiler, or query plan.
+
+If no usable signal is possible, record what was tried and the missing evidence. Exhaust safe project evidence and available tools before asking for protected access or a redacted artifact.
+
+## Reduce and test explanations
+
+Minimize the case one input, caller, configuration value, data item, or step at a time. Re-run the signal after each removal.
+
+When evidence permits, rank several falsifiable explanations. For each one, name the observation or controlled change that would support or reject it. Test one prediction and vary one condition at a time. Prefer debugger or REPL inspection, then narrow tagged logging. Broad logging creates noise and often leaks data.
+
+Stop when one probe separates the verified cause from credible alternatives and the original signal supports the result. Record the minimal case, confirmed cause, rejected alternatives, and any `UNVERIFIED` limit.
 
 ## Repair the cause
 
-Write a test or other check that fails for the original defect. Fix the cause at the narrowest stable boundary. Keep compatibility unless the owner authorized a change to the contract.
+Read [testing](methods/testing.md) when the correct regression seam is unclear. Add a check that fails for the original defect before the fix when a stable seam exists. Repair the cause at the narrowest stable boundary and preserve compatibility unless the owner authorized a contract change.
 
-Rerun the reproducer, focused tests, and final project checks. Check nearby failure cases when the cause could affect them. If the evidence proves only a mitigation, say so and record the unresolved cause.
+Rerun the minimal case, the original unminimized reproduction, focused tests, and nearby failure cases affected by the cause. Remove tagged instrumentation and disposable harnesses unless the repository deliberately keeps one as regression evidence. If the evidence proves only a mitigation, say so and record the unresolved cause.

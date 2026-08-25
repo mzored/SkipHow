@@ -4,12 +4,20 @@
 
 | Version | Supported |
 | --- | --- |
-| 0.9.x | Yes |
-| 0.8.x | No |
+| 1.0.x | Yes |
+| 0.9.x | No |
 | Earlier versions | No |
+
+Security support covers the packaged SkipHow skill, its host manifests, marketplace metadata, release checks, and documented GitHub delivery policy. Codex, Claude Code, GitHub, Git, operating systems, and third-party services keep their own security policies.
 
 ## Report a vulnerability
 
-Do not open a public issue for a suspected vulnerability. Submit a private report through [GitHub Security Advisories](https://github.com/mzored/SkipHow/security/advisories/new). Include the affected version, reproduction steps, impact, and any proposed mitigation.
+Do not open a public Issue for a suspected vulnerability. Submit a [private GitHub security advisory](https://github.com/mzored/SkipHow/security/advisories/new). Include the affected SkipHow version, host and version, smallest safe reproduction, impact, and any proposed mitigation.
 
-The maintainer will acknowledge a valid report, investigate it, and coordinate a fix before public disclosure when possible.
+Use synthetic data. Remove credentials, tokens, private repository names, customer data, personal paths, and production payloads. Do not test against a system you do not own or lack permission to assess.
+
+If private reporting is unavailable, contact the maintainer through the [GitHub profile](https://github.com/mzored) without sending vulnerability details over a public channel. Wait for a private route.
+
+The maintainer will acknowledge a valid report, investigate it, and coordinate a fix before disclosure when practical.
+
+Read the [trust guide](docs/trust.md) and [threat model](docs/threat-model.md) for the boundary between SkipHow policy and host enforcement.

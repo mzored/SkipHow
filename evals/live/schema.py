@@ -38,6 +38,8 @@ APPROVED_SCENARIOS = frozenset(
         "restart-resume-external-state",
         "protected-action",
         "adaptive-vs-all-deep",
+        "technical-review",
+        "merge-conflict",
     }
 )
 
@@ -101,8 +103,6 @@ def validate_suite(data: Mapping[str, Any]) -> list[str]:
         errors.append("missing approved scenarios: " + ", ".join(sorted(missing)))
     if extra:
         errors.append("unapproved scenarios: " + ", ".join(sorted(extra)))
-    if len(scenarios) != len(APPROVED_SCENARIOS):
-        errors.append("suite must contain exactly the ten approved scenarios")
     return errors
 
 
