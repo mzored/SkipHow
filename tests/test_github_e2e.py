@@ -220,6 +220,20 @@ def test_native_dependency_must_be_observed_before_signal_closes() -> None:
             e2e.ensure_issues(value)
 
 
+def test_native_dependency_accepts_graphql_connection_shape() -> None:
+    value = state()
+    signal = {"number": 1, "state": "CLOSED"}
+    delivery = {
+        "number": 2,
+        "state": "OPEN",
+        "blockedBy": {"nodes": [{"number": 1}], "totalCount": 1},
+    }
+    with patch.object(e2e, "ensure_issue", side_effect=[signal, delivery]):
+        observed_signal, observed_delivery = e2e.ensure_issues(value)
+    assert observed_signal["number"] == 1
+    assert observed_delivery["number"] == 2
+
+
 def test_checks_bind_success_to_exact_head() -> None:
     head = "a" * 40
     assert e2e.checks_green(

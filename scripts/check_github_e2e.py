@@ -483,7 +483,14 @@ def ensure_issues(state: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]
         body="This delivery is blocked by the synthetic signal until intake completes.",
         blocked_by=int(signal["number"]),
     )
-    blocked = delivery.get("blockedBy") or []
+    blocked_value = delivery.get("blockedBy") or []
+    blocked = (
+        blocked_value.get("nodes", [])
+        if isinstance(blocked_value, dict)
+        else blocked_value
+    )
+    if not isinstance(blocked, list):
+        raise GateError("GitHub returned an invalid blocking dependency shape")
     if not any(int(item.get("number", -1)) == int(signal["number"]) for item in blocked if isinstance(item, dict)):
         raise GateError("GitHub did not record the native blocking dependency")
     if str(signal.get("state", "")).upper() != "CLOSED":
