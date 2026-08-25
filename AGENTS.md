@@ -10,6 +10,8 @@ Run focused tests through `python scripts/check.py --pytest <pytest-arguments>` 
 
 Live outcome evaluations are a separate, opt-in release activity. They require explicit credentials and a run budget, write machine-readable receipts, and never run from `scripts/check.py` or CI. A missing live receipt stays `UNVERIFIED`.
 
+Tests, checks, and live gates must never create or delete a repository. Keep deterministic coverage local. A live GitHub gate may mutate only an explicitly named, pre-provisioned sandbox that is distinct from the candidate repository, and its credentials must not have repository creation or deletion authority.
+
 For packaging changes, run `python scripts/check_hosts.py` to validate package structure and isolated installation in each available host. Report an unavailable host as `UNVERIFIED`. Host package checks do not prove that a model will interpret runtime instructions correctly.
 
 ## Portable packaging

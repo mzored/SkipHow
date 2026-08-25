@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Run the opt-in GitHub lifecycle gate in an owned disposable repository.
+"""Run the opt-in GitHub lifecycle gate in a pre-provisioned sandbox.
 
-This script is deliberately separate from ``scripts/check.py``. It creates remote
-GitHub state and therefore requires an explicit live opt-in. Progress is written
-after every reconciled phase so an interrupted run can be resumed without creating
-duplicate Issues, branches, or pull requests.
+This script is deliberately separate from ``scripts/check.py``. It mutates an
+explicitly configured GitHub sandbox and therefore requires an explicit live opt-in.
+It never creates or deletes a repository. Progress is written after every reconciled
+phase so an interrupted run can be resumed without creating duplicate Issues,
+branches, or pull requests.
 """
 
 from __future__ import annotations
@@ -24,15 +25,27 @@ from typing import Any, Sequence
 import uuid
 
 
-SCHEMA_VERSION = 1
-HARNESS_VERSION = "1"
+SCHEMA_VERSION = 2
+HARNESS_VERSION = "2"
 ROOT = Path(__file__).resolve().parents[1]
 ENV_OPT_IN = "SKIPHOW_GITHUB_E2E"
-REPO_PREFIX = "skiphow-e2e-"
-BRANCH = "skiphow/e2e-delivery"
+SANDBOX_DESCRIPTION = "skiphow-github-e2e-sandbox"
+SANDBOX_MARKER = {"schema_version": 1, "purpose": SANDBOX_DESCRIPTION}
+SANDBOX_WORKFLOW = """name: SkipHow E2E
+on:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify event
+        run: test -n "$GITHUB_SHA"
+"""
+BRANCH_PREFIX = "skiphow/e2e-"
 PHASES = (
-    "repository",
-    "initial_commit",
+    "sandbox",
     "issues",
     "branch",
     "pull_request",
@@ -44,6 +57,7 @@ PHASES = (
 )
 OID = re.compile(r"^[0-9a-f]{40}$")
 OWNER = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$")
+REPOSITORY = re.compile(r"^[A-Za-z0-9_.-]{1,100}$")
 
 
 class GateError(RuntimeError):
@@ -89,6 +103,43 @@ def json_output(command: Sequence[str], *, cwd: Path | None = None) -> Any:
         raise GateError(f"command returned invalid JSON: {' '.join(command[:3])}") from exc
 
 
+def issue_state_map(repo: str) -> dict[int, str]:
+    value = json_output(
+        [
+            "gh",
+            "api",
+            "--paginate",
+            "--slurp",
+            f"repos/{repo}/issues?state=all&per_page=100",
+        ]
+    )
+    if not isinstance(value, list) or any(not isinstance(page, list) for page in value):
+        raise GateError("gh returned unexpected paginated Issue JSON")
+    states: dict[int, str] = {}
+    for page in value:
+        for row in page:
+            if not isinstance(row, dict) or "pull_request" in row:
+                continue
+            number = row.get("number")
+            issue_state = str(row.get("state", "")).upper()
+            if not isinstance(number, int) or issue_state not in {"OPEN", "CLOSED"}:
+                raise GateError("gh returned an invalid Issue state")
+            states[number] = issue_state
+    return states
+
+
+def active_sandbox_branches(repo: str) -> list[str]:
+    value = json_output(
+        ["gh", "api", f"repos/{repo}/git/matching-refs/heads/{BRANCH_PREFIX}"]
+    )
+    if not isinstance(value, list) or any(not isinstance(row, dict) for row in value):
+        raise GateError("gh returned unexpected sandbox branch JSON")
+    refs = [str(row.get("ref", "")) for row in value]
+    if any(not ref.startswith(f"refs/heads/{BRANCH_PREFIX}") for ref in refs):
+        raise GateError("gh returned a branch outside the sandbox prefix")
+    return refs
+
+
 def atomic_json(path: Path, value: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
@@ -132,11 +183,31 @@ def load_state(path: Path) -> dict[str, Any]:
     return value
 
 
-def new_state(path: Path, owner: str) -> dict[str, Any]:
-    if not OWNER.fullmatch(owner):
-        raise GateError("--owner must be one GitHub user or organization login")
+def parse_repo(repo: str) -> tuple[str, str]:
+    parts = repo.split("/")
+    if (
+        len(parts) != 2
+        or not OWNER.fullmatch(parts[0])
+        or not REPOSITORY.fullmatch(parts[1])
+        or parts[1] in {".", ".."}
+    ):
+        raise GateError("--repo must be one GitHub OWNER/REPOSITORY name")
+    return parts[0], parts[1]
+
+
+def new_state(path: Path, repo: str) -> dict[str, Any]:
+    owner, name = parse_repo(repo)
+    canonical_repo = f"{owner}/{name}"
+    origin = run(["git", "remote", "get-url", "origin"], cwd=ROOT).stdout.strip()
+    if canonical_remote(origin) == canonical_repo.casefold():
+        raise GateError("refusing to use the candidate repository as the GitHub E2E sandbox")
+    sandbox = inspect_sandbox(canonical_repo)
+    active_branches = active_sandbox_branches(canonical_repo)
+    if active_branches:
+        raise GateError(
+            "sandbox already has an active E2E branch; resume or clean up that run first"
+        )
     run_id = f"{datetime.now(timezone.utc):%Y%m%dT%H%M%SZ}-{uuid.uuid4().hex[:10]}"
-    name = f"{REPO_PREFIX}{run_id.lower()}"
     workspace = path.with_suffix(path.suffix + ".workspace").resolve()
     if workspace.exists():
         raise GateError(f"refusing pre-existing sandbox workspace: {workspace}")
@@ -145,11 +216,13 @@ def new_state(path: Path, owner: str) -> dict[str, Any]:
         "harness_version": HARNESS_VERSION,
         "run_id": run_id,
         "owner": owner,
-        "repo": f"{owner}/{name}",
-        "ownership_marker": f"skiphow-github-e2e:{run_id}",
+        "repo": canonical_repo,
+        "repo_id": sandbox["id"],
+        "branch": f"{BRANCH_PREFIX}{run_id.lower()}",
         "workspace": str(workspace),
         "started_at": utc_now(),
         "candidate": candidate_identity(),
+        "baseline_issue_states": issue_state_map(canonical_repo),
         "completed_phases": [],
         "events": [],
     }
@@ -184,81 +257,67 @@ def force_crash_after(
     os._exit(75)
 
 
-def repo_name_is_owned(state: dict[str, Any]) -> bool:
+def state_sandbox_identity(state: dict[str, Any]) -> tuple[str, int]:
     repo = state.get("repo")
-    owner = state.get("owner")
+    repo_id = state.get("repo_id")
+    if not isinstance(repo, str) or not isinstance(repo_id, int) or repo_id <= 0:
+        raise GateError("state lacks the bound sandbox repository identity")
+    parse_repo(repo)
     run_id = state.get("run_id")
-    if not all(isinstance(value, str) and value for value in (repo, owner, run_id)):
-        return False
-    return repo == f"{owner}/{REPO_PREFIX}{run_id.lower()}"
-
-
-def remote_repo(state: dict[str, Any], *, missing_ok: bool = False) -> dict[str, Any] | None:
-    if not repo_name_is_owned(state):
-        raise GateError("state does not identify an owned disposable repository")
-    completed = run(
-        ["gh", "api", f"repos/{state['repo']}"],
-        allowed=frozenset({0, 1}),
-    )
-    if completed.returncode:
-        if missing_ok and "HTTP 404" in completed.stderr:
-            return None
-        detail = completed.stderr.strip() or "unknown gh error"
-        raise GateError(f"owned repository is unavailable: {state['repo']}: {detail}")
-    try:
-        value = json.loads(completed.stdout)
-    except json.JSONDecodeError as exc:
-        raise GateError("gh returned invalid repository JSON") from exc
-    if not isinstance(value, dict):
-        raise GateError("gh returned unexpected repository JSON")
     if (
-        value.get("full_name", "").casefold() != str(state["repo"]).casefold()
+        not isinstance(run_id, str)
+        or state.get("branch") != f"{BRANCH_PREFIX}{run_id.lower()}"
+    ):
+        raise GateError("state lacks the run-owned sandbox branch")
+    return repo, repo_id
+
+
+def repository_file(repo: str, path: str) -> str:
+    value = json_output(["gh", "api", f"repos/{repo}/contents/{path}"])
+    if not isinstance(value, dict) or value.get("encoding") != "base64":
+        raise GateError(f"sandbox file is unavailable: {path}")
+    try:
+        encoded = "".join(str(value["content"]).split())
+        return base64.b64decode(encoded, validate=True).decode("utf-8")
+    except (KeyError, ValueError, UnicodeDecodeError) as exc:
+        raise GateError(f"sandbox file is invalid: {path}") from exc
+
+
+def sandbox_marker(repo: str) -> dict[str, Any]:
+    try:
+        marker = json.loads(repository_file(repo, ".skiphow-e2e-sandbox.json"))
+    except json.JSONDecodeError as exc:
+        raise GateError("sandbox marker file is invalid") from exc
+    if marker != SANDBOX_MARKER:
+        raise GateError("sandbox marker file does not declare the GitHub E2E purpose")
+    return marker
+
+
+def inspect_sandbox(repo: str, expected_id: int | None = None) -> dict[str, Any]:
+    parse_repo(repo)
+    value = json_output(["gh", "api", f"repos/{repo}"])
+    if (
+        value.get("full_name", "").casefold() != repo.casefold()
+        or not isinstance(value.get("id"), int)
         or value.get("private") is not True
-        or value.get("description") != state.get("ownership_marker")
+        or value.get("description") != SANDBOX_DESCRIPTION
+        or value.get("default_branch") != "main"
+        or value.get("has_issues") is not True
         or value.get("archived") is True
     ):
-        raise GateError("repository ownership marker, visibility, or identity does not match")
+        raise GateError("repository is not the required private GitHub E2E sandbox")
+    if expected_id is not None and value["id"] != expected_id:
+        raise GateError("sandbox repository ID changed")
+    sandbox_marker(repo)
+    workflow = repository_file(repo, ".github/workflows/e2e.yml")
+    if workflow != SANDBOX_WORKFLOW:
+        raise GateError("sandbox pull request workflow does not match the safe fixture")
     return value
 
 
-def verify_repository_marker_file(state: dict[str, Any]) -> None:
-    value = json_output(
-        ["gh", "api", f"repos/{state['repo']}/contents/.skiphow-e2e-owner.json"]
-    )
-    if not isinstance(value, dict) or value.get("encoding") != "base64":
-        raise GateError("owned repository marker file is unavailable")
-    try:
-        encoded = "".join(str(value["content"]).split())
-        decoded = base64.b64decode(encoded, validate=True).decode("utf-8")
-        marker = json.loads(decoded)
-    except (KeyError, ValueError, UnicodeDecodeError, json.JSONDecodeError) as exc:
-        raise GateError("owned repository marker file is invalid") from exc
-    if not isinstance(marker, dict) or marker != {
-        "run_id": state.get("run_id"),
-        "ownership_marker": state.get("ownership_marker"),
-    }:
-        raise GateError("owned repository marker file does not match persisted state")
-
-
-def ensure_repository(state: dict[str, Any]) -> dict[str, Any]:
-    existing = remote_repo(state, missing_ok=True)
-    if existing is not None:
-        return existing
-    run(
-        [
-            "gh",
-            "repo",
-            "create",
-            str(state["repo"]),
-            "--private",
-            "--description",
-            str(state["ownership_marker"]),
-            "--disable-wiki",
-        ]
-    )
-    created = remote_repo(state)
-    assert created is not None
-    return created
+def remote_repo(state: dict[str, Any]) -> dict[str, Any]:
+    repo, repo_id = state_sandbox_identity(state)
+    return inspect_sandbox(repo, repo_id)
 
 
 def remote_ref(repo: str, branch: str) -> str | None:
@@ -292,7 +351,8 @@ def workspace_marker(state: dict[str, Any]) -> dict[str, Any]:
     return {
         "run_id": state["run_id"],
         "repo": state["repo"],
-        "ownership_marker": state["ownership_marker"],
+        "repo_id": state["repo_id"],
+        "branch": state["branch"],
     }
 
 
@@ -323,7 +383,7 @@ def canonical_remote(url: str) -> str | None:
     return match.group(1).casefold() if match else None
 
 
-def ensure_local_repository(state: dict[str, Any], *, fetch_main: bool) -> Path:
+def ensure_local_repository(state: dict[str, Any]) -> Path:
     workspace = claim_workspace(state)
     if not (workspace / ".git").is_dir():
         run(["git", "init", "--initial-branch=main"], cwd=workspace)
@@ -337,74 +397,12 @@ def ensure_local_repository(state: dict[str, Any], *, fetch_main: bool) -> Path:
     if canonical_remote(origin) != str(state["repo"]).casefold():
         raise GateError("workspace origin does not match the owned sandbox repository")
     configure_git(workspace)
-    if fetch_main:
-        run(["git", "fetch", "origin", "main"], cwd=workspace)
+    run(["git", "fetch", "origin", "main"], cwd=workspace)
     return workspace
 
 
 def ensure_workspace(state: dict[str, Any]) -> Path:
-    return ensure_local_repository(state, fetch_main=True)
-
-
-def ensure_initial_commit(state: dict[str, Any]) -> str:
-    repo = str(state["repo"])
-    existing = remote_ref(repo, "main")
-    if existing:
-        ensure_workspace(state)
-        return existing
-    workspace = ensure_local_repository(state, fetch_main=False)
-    unborn_branch = run(["git", "symbolic-ref", "--short", "HEAD"], cwd=workspace).stdout.strip()
-    if unborn_branch != "main":
-        run(["git", "symbolic-ref", "HEAD", "refs/heads/main"], cwd=workspace)
-    (workspace / ".github/workflows").mkdir(parents=True, exist_ok=True)
-    (workspace / "README.md").write_text("# SkipHow GitHub E2E sandbox\n", encoding="utf-8")
-    (workspace / ".skiphow-e2e-owner.json").write_text(
-        json.dumps(
-            {"run_id": state["run_id"], "ownership_marker": state["ownership_marker"]},
-            indent=2,
-            sort_keys=True,
-        )
-        + "\n",
-        encoding="utf-8",
-    )
-    (workspace / ".github/workflows/e2e.yml").write_text(
-        """name: SkipHow E2E
-on:
-  pull_request:
-permissions:
-  contents: read
-jobs:
-  verify:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Verify event
-        run: test -n "$GITHUB_SHA"
-""",
-        encoding="utf-8",
-    )
-    run(
-        [
-            "git",
-            "add",
-            "README.md",
-            ".skiphow-e2e-owner.json",
-            ".skiphow-e2e-workspace.json",
-            ".github/workflows/e2e.yml",
-        ],
-        cwd=workspace,
-    )
-    staged = run(
-        ["git", "diff", "--cached", "--quiet"],
-        cwd=workspace,
-        allowed=frozenset({0, 1}),
-    )
-    if staged.returncode == 1:
-        run(["git", "commit", "-m", "Initialize owned SkipHow E2E sandbox"], cwd=workspace)
-    oid = run(["git", "rev-parse", "HEAD"], cwd=workspace).stdout.strip()
-    if not OID.fullmatch(oid):
-        raise GateError("local Git returned an invalid commit identity")
-    run(["git", "push", "--set-upstream", "origin", "main"], cwd=workspace)
-    return oid
+    return ensure_local_repository(state)
 
 
 def issue_rows(repo: str) -> list[dict[str, Any]]:
@@ -500,20 +498,21 @@ def ensure_issues(state: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]
 
 def ensure_branch(state: dict[str, Any]) -> str:
     repo = str(state["repo"])
-    existing = remote_ref(repo, BRANCH)
+    branch = str(state["branch"])
+    existing = remote_ref(repo, branch)
     if existing:
         return existing
     workspace = ensure_workspace(state)
     run(["git", "fetch", "origin", "main"], cwd=workspace)
     branch_exists = run(
-        ["git", "show-ref", "--verify", "--quiet", f"refs/heads/{BRANCH}"],
+        ["git", "show-ref", "--verify", "--quiet", f"refs/heads/{branch}"],
         cwd=workspace,
         allowed=frozenset({0, 1}),
     ).returncode == 0
     if branch_exists:
-        run(["git", "switch", BRANCH], cwd=workspace)
+        run(["git", "switch", branch], cwd=workspace)
     else:
-        run(["git", "switch", "--create", BRANCH, "origin/main"], cwd=workspace)
+        run(["git", "switch", "--create", branch, "origin/main"], cwd=workspace)
     (workspace / "delivered.txt").write_text(
         f"verified delivery for {state['run_id']}\n", encoding="utf-8"
     )
@@ -539,14 +538,14 @@ def ensure_branch(state: dict[str, Any]) -> str:
             "push",
             "--set-upstream",
             "origin",
-            BRANCH,
+            branch,
         ],
         cwd=workspace,
     )
     return oid
 
 
-def pr_rows(repo: str) -> list[dict[str, Any]]:
+def pr_rows(repo: str, branch: str) -> list[dict[str, Any]]:
     value = json_output(
         [
             "gh",
@@ -557,7 +556,7 @@ def pr_rows(repo: str) -> list[dict[str, Any]]:
             "--state",
             "all",
             "--head",
-            BRANCH,
+            branch,
             "--limit",
             "10",
             "--json",
@@ -571,7 +570,8 @@ def pr_rows(repo: str) -> list[dict[str, Any]]:
 
 def ensure_pr(state: dict[str, Any], issue: int, expected_head: str) -> dict[str, Any]:
     repo = str(state["repo"])
-    matches = pr_rows(repo)
+    branch = str(state["branch"])
+    matches = pr_rows(repo, branch)
     if len(matches) > 1:
         raise GateError("multiple pull requests use the owned delivery branch")
     if not matches:
@@ -583,7 +583,7 @@ def ensure_pr(state: dict[str, Any], issue: int, expected_head: str) -> dict[str
                 "--repo",
                 repo,
                 "--head",
-                BRANCH,
+                branch,
                 "--base",
                 "main",
                 "--title",
@@ -592,7 +592,7 @@ def ensure_pr(state: dict[str, Any], issue: int, expected_head: str) -> dict[str
                 f"Owned lifecycle proof for {state['run_id']}.\n\nCloses #{issue}",
             ]
         )
-        matches = pr_rows(repo)
+        matches = pr_rows(repo, branch)
     if len(matches) != 1 or matches[0].get("headRefOid") != expected_head:
         raise GateError("pull request does not match the expected delivery head")
     return matches[0]
@@ -700,13 +700,14 @@ def verify_default_contains(repo: str, delivery_head: str) -> dict[str, Any]:
 
 def cleanup_branch(state: dict[str, Any], pr_number: int, expected_head: str) -> None:
     repo = str(state["repo"])
+    branch = str(state["branch"])
     current = pr_state(repo, pr_number)
     if (
         str(current.get("state", "")).upper() != "MERGED"
         or current.get("headRefOid") != expected_head
     ):
         raise GateError("refusing branch cleanup without exact merged PR evidence")
-    remote = remote_ref(repo, BRANCH)
+    remote = remote_ref(repo, branch)
     if remote is None:
         return
     if remote != expected_head:
@@ -716,13 +717,13 @@ def cleanup_branch(state: dict[str, Any], pr_number: int, expected_head: str) ->
         [
             "git",
             "push",
-            f"--force-with-lease=refs/heads/{BRANCH}:{expected_head}",
+            f"--force-with-lease=refs/heads/{branch}:{expected_head}",
             "origin",
-            f":refs/heads/{BRANCH}",
+            f":refs/heads/{branch}",
         ],
         cwd=workspace,
     )
-    if remote_ref(repo, BRANCH) is not None:
+    if remote_ref(repo, branch) is not None:
         raise GateError("owned remote branch still exists after cleanup")
 
 
@@ -797,6 +798,7 @@ def execute(
     crash_after: str | None,
 ) -> None:
     repo = str(state["repo"])
+    branch = str(state["branch"])
     completed = set(state.get("completed_phases", []))
     if "complete" in completed:
         remote_repo(state)
@@ -812,14 +814,17 @@ def execute(
         ):
             raise GateError("completed state no longer matches the merged pull request")
         verify_issue_closed(repo, delivery_issue)
-        if remote_ref(repo, BRANCH) is not None:
+        if remote_ref(repo, branch) is not None:
             raise GateError("completed state has an unexpected owned remote branch")
         write_receipt(receipt_path, state)
         return
-    repository = ensure_repository(state)
-    mark(state_path, state, "repository", {"url": repository.get("html_url"), "private": True})
-    main_head = ensure_initial_commit(state)
-    mark(state_path, state, "initial_commit", {"head": main_head})
+    sandbox = remote_repo(state)
+    mark(
+        state_path,
+        state,
+        "sandbox",
+        {"id": sandbox["id"], "url": sandbox.get("html_url"), "private": True},
+    )
     signal, delivery = ensure_issues(state)
     state["signal_issue"] = int(signal["number"])
     state["delivery_issue"] = int(delivery["number"])
@@ -845,7 +850,7 @@ def execute(
     else:
         delivery_head = ensure_branch(state)
         state["delivery_head"] = delivery_head
-        mark(state_path, state, "branch", {"branch": BRANCH, "head": delivery_head})
+        mark(state_path, state, "branch", {"branch": branch, "head": delivery_head})
         pull_request = ensure_pr(state, int(delivery["number"]), delivery_head)
         state["pull_request"] = int(pull_request["number"])
         mark(
@@ -893,21 +898,26 @@ def execute(
     )
     if "branch_cleanup" not in set(state.get("completed_phases", [])):
         cleanup_branch(state, state["pull_request"], delivery_head)
-        mark(state_path, state, "branch_cleanup", {"branch": BRANCH, "removed": True})
-    elif remote_ref(repo, BRANCH) is not None:
+        mark(state_path, state, "branch_cleanup", {"branch": branch, "removed": True})
+    elif remote_ref(repo, branch) is not None:
         raise GateError("persisted cleanup does not match current GitHub state")
     comparison = verify_default_contains(repo, delivery_head)
-    rows = issue_rows(repo)
+    current_issue_states = issue_state_map(repo)
+    baseline_issue_states = state.get("baseline_issue_states")
+    if not isinstance(baseline_issue_states, dict):
+        raise GateError("state lacks the sandbox Issue baseline")
     related = {int(state["signal_issue"]), int(state["delivery_issue"])}
     unrelated_closed = sum(
-        int(row.get("number", -1)) not in related
-        and str(row.get("state", "")).upper() == "CLOSED"
-        for row in rows
+        number not in related
+        and str(baseline_issue_states.get(str(number), baseline_issue_states.get(number, ""))).upper()
+        == "OPEN"
+        and issue_state == "CLOSED"
+        for number, issue_state in current_issue_states.items()
     )
     state["final_reconciliation"] = {
         "default_contains_delivery": True,
         "comparison": comparison,
-        "owned_branch_exists": remote_ref(repo, BRANCH) is not None,
+        "owned_branch_exists": remote_ref(repo, branch) is not None,
         "unrelated_issues_closed": unrelated_closed,
         "pull_request_state": "MERGED",
         "delivery_issue_state": "CLOSED",
@@ -921,34 +931,16 @@ def execute(
     write_receipt(receipt_path, state)
 
 
-def cleanup_repository(state_path: Path, state: dict[str, Any], confirmation: str) -> None:
-    if confirmation != state.get("repo"):
-        raise GateError("--confirm-delete must exactly match the owned sandbox repository")
-    if "complete" not in state.get("completed_phases", []):
-        raise GateError("refusing repository deletion before a completed lifecycle receipt")
-    existing = remote_repo(state, missing_ok=True)
-    if existing is not None:
-        verify_repository_marker_file(state)
-        run(["gh", "repo", "delete", str(state["repo"]), "--yes"])
-    if remote_repo(state, missing_ok=True) is not None:
-        raise GateError("owned sandbox still exists after deletion")
-    state["repository_deleted_at"] = utc_now()
-    state["updated_at"] = utc_now()
-    atomic_json(state_path, state)
-
-
 def parser() -> argparse.ArgumentParser:
     result = argparse.ArgumentParser(description=__doc__)
     result.add_argument("--state", required=True, type=Path)
-    result.add_argument("--owner", help="GitHub user or organization for a new sandbox")
+    result.add_argument("--repo", help="pre-provisioned private GitHub E2E sandbox")
     result.add_argument("--receipt", type=Path)
     result.add_argument("--resume", action="store_true")
     result.add_argument("--live", action="store_true")
     result.add_argument("--timeout-seconds", type=float, default=900.0)
     result.add_argument("--poll-seconds", type=float, default=10.0)
     result.add_argument("--crash-after", choices=("issues", "pull_request", "ci_success"))
-    result.add_argument("--cleanup", action="store_true")
-    result.add_argument("--confirm-delete")
     return result
 
 
@@ -963,7 +955,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         if state_path.is_relative_to(ROOT):
             raise GateError("--state must be outside the candidate repository")
         if state_path.exists():
-            if not args.resume and not args.cleanup:
+            if not args.resume:
                 raise GateError("state already exists; use --resume")
             state = load_state(state_path)
             if args.resume:
@@ -972,23 +964,19 @@ def main(argv: Sequence[str] | None = None) -> int:
                 atomic_json(state_path, state)
             if args.crash_after:
                 raise GateError("--crash-after is only valid for the initial run")
-            if args.owner and args.owner.casefold() != str(state.get("owner", "")).casefold():
-                raise GateError("--owner does not match persisted state")
+            if args.repo and args.repo.casefold() != str(state.get("repo", "")).casefold():
+                raise GateError("--repo does not match persisted state")
         else:
-            if args.resume or args.cleanup:
-                raise GateError("cannot resume or clean up without persisted state")
-            if not args.owner:
-                raise GateError("--owner is required for a new sandbox")
+            if args.resume:
+                raise GateError("cannot resume without persisted state")
+            if not args.repo:
+                raise GateError("--repo is required for a new gate run")
             if not args.crash_after:
                 raise GateError("a new gate run requires --crash-after to prove recovery")
             candidate = candidate_identity()
             if candidate["repository_dirty"]:
                 raise GateError("the GitHub release gate requires a clean committed candidate")
-            state = new_state(state_path, args.owner)
-        if args.cleanup:
-            cleanup_repository(state_path, state, args.confirm_delete or "")
-            print(json.dumps({"status": "CLEANED", "repository": state["repo"]}))
-            return 0
+            state = new_state(state_path, args.repo)
         receipt = (args.receipt or state_path.with_suffix(".receipt.json")).resolve()
         if receipt.is_relative_to(ROOT):
             raise GateError("--receipt must be outside the candidate repository")

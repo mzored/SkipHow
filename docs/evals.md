@@ -96,9 +96,9 @@ Compare the prompt-only baseline, the thin kernel, and the kernel with durable r
 
 ## GitHub lifecycle gate
 
-The live GitHub gate is separate from the model harness. `scripts/check_github_e2e.py` creates an owned disposable private repository, records two Issues and a native blocking dependency, pushes a delivery branch, opens a pull request, waits for exact-head CI, merges, verifies the default branch and closed Issue, and removes the merged branch. A valid receipt requires an injected process exit and a resumed run. The script reconciles every completed phase from persisted state before continuing.
+The live GitHub gate is separate from the model harness. `scripts/check_github_e2e.py` uses one explicitly configured, pre-provisioned private sandbox. It never creates or deletes a repository. In that sandbox it records two Issues and a native blocking dependency, pushes a run-unique delivery branch, opens a pull request, waits for exact-head CI, merges, verifies the default branch and closed Issue, and removes the merged branch. A valid receipt requires an injected process exit and a resumed run. The script reconciles every completed phase from persisted state before continuing.
 
-The gate requires `--live`, `SKIPHOW_GITHUB_E2E=1`, an authenticated `gh`, a clean committed candidate, and state and receipt paths outside the candidate repository. It is never called by `scripts/check.py`. See [GitHub lifecycle](github-lifecycle.md) for the command sequence and cleanup rules.
+The gate requires `--live`, `SKIPHOW_GITHUB_E2E=1`, an authenticated `gh`, a clean committed candidate, an explicit sandbox repository, and state and receipt paths outside the candidate repository. It is never called by `scripts/check.py`. See [GitHub lifecycle](github-lifecycle.md) for sandbox requirements, the command sequence, and cleanup rules.
 
 ## Metrics
 

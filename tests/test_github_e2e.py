@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-import importlib.util
+import ast
 import base64
+import importlib.util
 import json
 from pathlib import Path
 import sys
@@ -36,12 +37,14 @@ def completed(stdout: str = "", returncode: int = 0, stderr: str = ""):
 def state() -> dict[str, object]:
     run_id = "20260825T000000Z-0123456789"
     return {
-        "schema_version": 1,
-        "harness_version": "1",
+        "schema_version": 2,
+        "harness_version": "2",
         "run_id": run_id,
         "owner": "example",
-        "repo": f"example/{e2e.REPO_PREFIX}{run_id.lower()}",
-        "ownership_marker": f"skiphow-github-e2e:{run_id}",
+        "repo": "example/skiphow-e2e-sandbox",
+        "repo_id": 42,
+        "branch": f"{e2e.BRANCH_PREFIX}{run_id.lower()}",
+        "baseline_issue_states": {},
         "workspace": "/tmp/skiphow-test.workspace",
         "completed_phases": [],
         "events": [],
@@ -50,46 +53,72 @@ def state() -> dict[str, object]:
 
 def test_live_gate_requires_two_independent_opt_ins(tmp_path: Path, monkeypatch, capsys) -> None:
     monkeypatch.delenv(e2e.ENV_OPT_IN, raising=False)
-    assert e2e.main(["--state", str(tmp_path / "state.json"), "--owner", "example"]) == 2
+    assert e2e.main(
+        ["--state", str(tmp_path / "state.json"), "--repo", "example/sandbox"]
+    ) == 2
     assert e2e.ENV_OPT_IN in capsys.readouterr().err
     assert not (tmp_path / "state.json").exists()
 
 
-def test_new_state_uses_private_disposable_identity(tmp_path: Path) -> None:
+def test_new_state_binds_preprovisioned_sandbox_id_and_unique_branch(tmp_path: Path) -> None:
     path = tmp_path / "state.json"
-    with patch.object(
-        e2e,
-        "candidate_identity",
-        return_value={"repository_revision": "a" * 40, "repository_dirty": False},
+    candidate = {"repository_revision": "a" * 40, "repository_dirty": False}
+    with (
+        patch.object(e2e, "candidate_identity", return_value=candidate),
+        patch.object(e2e, "inspect_sandbox", return_value={"id": 42}),
+        patch.object(e2e, "active_sandbox_branches", return_value=[]),
+        patch.object(e2e, "issue_state_map", return_value={1: "CLOSED"}),
+        patch.object(
+            e2e,
+            "run",
+            return_value=completed("https://github.com/example/source.git\n"),
+        ),
     ):
-        value = e2e.new_state(path, "example")
-    assert value["repo"].startswith(f"example/{e2e.REPO_PREFIX}")
-    assert value["ownership_marker"].endswith(value["run_id"])
-    assert e2e.repo_name_is_owned(value)
+        value = e2e.new_state(path, "example/skiphow-e2e-sandbox")
+    assert value["repo"] == "example/skiphow-e2e-sandbox"
+    assert value["repo_id"] == 42
+    assert value["branch"] == f"{e2e.BRANCH_PREFIX}{value['run_id'].lower()}"
     assert json.loads(path.read_text())["repo"] == value["repo"]
 
 
-def test_repository_creation_is_private_and_reconciles_after_crash() -> None:
-    value = state()
-    absent = completed(returncode=1, stderr="gh: Not Found (HTTP 404)")
-    present = completed(
-        json.dumps(
-            {
-                "full_name": value["repo"],
-                "private": True,
-                "description": value["ownership_marker"],
-                "archived": False,
-                "html_url": "https://github.com/example/sandbox",
-            }
-        )
-    )
-    with patch.object(e2e, "run", side_effect=[absent, completed(), present]) as run:
-        result = e2e.ensure_repository(value)
-    assert result["private"] is True
-    creation = run.call_args_list[1].args[0]
-    assert creation[:3] == ["gh", "repo", "create"]
-    assert "--private" in creation
-    assert "--public" not in creation
+def test_new_state_refuses_candidate_repository(tmp_path: Path) -> None:
+    with patch.object(
+        e2e,
+        "run",
+        return_value=completed("https://github.com/example/source.git\n"),
+    ):
+        with pytest.raises(e2e.GateError, match="candidate repository"):
+            e2e.new_state(tmp_path / "state.json", "example/source")
+
+
+def test_new_state_refuses_an_already_active_sandbox(tmp_path: Path) -> None:
+    with (
+        patch.object(
+            e2e,
+            "run",
+            return_value=completed("https://github.com/example/source.git\n"),
+        ),
+        patch.object(e2e, "inspect_sandbox", return_value={"id": 42}),
+        patch.object(
+            e2e,
+            "active_sandbox_branches",
+            return_value=["refs/heads/skiphow/e2e-active"],
+        ),
+    ):
+        with pytest.raises(e2e.GateError, match="already has an active E2E branch"):
+            e2e.new_state(tmp_path / "state.json", "example/sandbox")
+
+
+def test_harness_has_no_repository_create_or_delete_command() -> None:
+    tree = ast.parse((ROOT / "scripts/check_github_e2e.py").read_text())
+    repository_actions = []
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.List):
+            continue
+        values = [item.value for item in node.elts if isinstance(item, ast.Constant)]
+        if values[:2] == ["gh", "repo"]:
+            repository_actions.append(values[2] if len(values) > 2 else "")
+    assert not ({"create", "delete"} & set(repository_actions))
 
 
 def test_remote_ref_treats_an_empty_repository_as_missing() -> None:
@@ -101,48 +130,62 @@ def test_remote_ref_treats_an_empty_repository_as_missing() -> None:
         assert e2e.remote_ref("example/skiphow-e2e", "main") is None
 
 
-def test_repository_ownership_refuses_public_or_mismatched_remote() -> None:
-    value = state()
-    payload = {
-        "full_name": value["repo"],
-        "private": False,
-        "description": value["ownership_marker"],
+def test_inspect_sandbox_requires_private_marked_repo_and_workflow() -> None:
+    marker = base64.b64encode(json.dumps(e2e.SANDBOX_MARKER).encode()).decode()
+    repository = {
+        "id": 42,
+        "full_name": "example/skiphow-e2e-sandbox",
+        "private": True,
+        "description": e2e.SANDBOX_DESCRIPTION,
+        "default_branch": "main",
+        "has_issues": True,
         "archived": False,
     }
-    with patch.object(e2e, "run", return_value=completed(json.dumps(payload))):
-        with pytest.raises(e2e.GateError, match="ownership marker"):
-            e2e.remote_repo(value)
-    value["repo"] = "example/not-owned"
-    with pytest.raises(e2e.GateError, match="owned disposable"):
-        e2e.remote_repo(value)
+    with patch.object(
+        e2e,
+        "json_output",
+        side_effect=[
+            repository,
+            {"encoding": "base64", "content": marker},
+            {
+                "encoding": "base64",
+                "content": base64.b64encode(e2e.SANDBOX_WORKFLOW.encode()).decode(),
+            },
+        ],
+    ):
+        assert e2e.inspect_sandbox("example/skiphow-e2e-sandbox", 42) == repository
+
+    repository["private"] = False
+    with patch.object(e2e, "json_output", return_value=repository):
+        with pytest.raises(e2e.GateError, match="required private"):
+            e2e.inspect_sandbox("example/skiphow-e2e-sandbox")
+
+    repository["private"] = True
+    with patch.object(e2e, "json_output", return_value=repository):
+        with pytest.raises(e2e.GateError, match="ID changed"):
+            e2e.inspect_sandbox("example/skiphow-e2e-sandbox", 99)
 
 
 def test_transient_remote_error_is_not_treated_as_absence() -> None:
     value = state()
     with patch.object(
         e2e,
-        "run",
-        return_value=completed(returncode=1, stderr="network down"),
+        "inspect_sandbox",
+        side_effect=e2e.GateError("network down"),
     ):
         with pytest.raises(e2e.GateError, match="network down"):
-            e2e.remote_repo(value, missing_ok=True)
+            e2e.remote_repo(value)
 
 
-def test_repository_marker_file_binds_cleanup_to_run_identity() -> None:
-    value = state()
-    marker = json.dumps(
-        {
-            "run_id": value["run_id"],
-            "ownership_marker": value["ownership_marker"],
-        }
-    ).encode()
+def test_sandbox_marker_declares_fixed_purpose() -> None:
+    marker = json.dumps(e2e.SANDBOX_MARKER).encode()
     payload = {"encoding": "base64", "content": base64.b64encode(marker).decode()}
     with patch.object(e2e, "json_output", return_value=payload):
-        e2e.verify_repository_marker_file(value)
-    payload["content"] = base64.b64encode(b'{"run_id":"other"}').decode()
+        assert e2e.sandbox_marker("example/sandbox") == e2e.SANDBOX_MARKER
+    payload["content"] = base64.b64encode(b'{"purpose":"other"}').decode()
     with patch.object(e2e, "json_output", return_value=payload):
-        with pytest.raises(e2e.GateError, match="does not match"):
-            e2e.verify_repository_marker_file(value)
+        with pytest.raises(e2e.GateError, match="does not declare"):
+            e2e.sandbox_marker("example/sandbox")
 
 
 def test_issue_replay_uses_marker_before_create() -> None:
@@ -161,32 +204,6 @@ def test_issue_replay_uses_marker_before_create() -> None:
             "example/repo", marker="marker", title="Delivery", body="body"
         ) == existing
     run.assert_not_called()
-
-
-def test_initial_commit_writes_a_noninteractive_pull_request_workflow(tmp_path: Path) -> None:
-    value = state()
-    value["workspace"] = str(tmp_path / "workspace")
-
-    def fake_run(command, **kwargs):
-        if command[:4] == ["git", "remote", "get-url", "origin"]:
-            return completed(f"https://github.com/{value['repo']}.git\n")
-        if command == ["git", "remote"]:
-            return completed("origin\n")
-        if command[:3] == ["git", "diff", "--cached"]:
-            return completed(returncode=1)
-        if command[:3] == ["git", "rev-parse", "HEAD"]:
-            return completed("a" * 40 + "\n")
-        return completed()
-
-    with (
-        patch.object(e2e, "remote_ref", return_value=None),
-        patch.object(e2e, "run", side_effect=fake_run),
-    ):
-        assert e2e.ensure_initial_commit(value) == "a" * 40
-    workflow = (Path(str(value["workspace"])) / ".github/workflows/e2e.yml").read_text()
-    assert workflow.startswith("name: SkipHow E2E\non:\n  pull_request:\n")
-    assert 'run: test -n "$GITHUB_SHA"' in workflow
-    assert '\n"' not in workflow
 
 
 def test_existing_workspace_with_another_origin_is_refused(tmp_path: Path) -> None:
@@ -262,16 +279,6 @@ def test_branch_cleanup_requires_merged_exact_head() -> None:
             e2e.cleanup_branch(value, 3, head)
 
 
-def test_repository_cleanup_requires_completion_and_exact_confirmation(tmp_path: Path) -> None:
-    value = state()
-    path = tmp_path / "state.json"
-    e2e.atomic_json(path, value)
-    with pytest.raises(e2e.GateError, match="confirm-delete"):
-        e2e.cleanup_repository(path, value, "example/wrong")
-    with pytest.raises(e2e.GateError, match="completed lifecycle"):
-        e2e.cleanup_repository(path, value, str(value["repo"]))
-
-
 def test_completed_resume_only_reconciles_and_rewrites_receipt(tmp_path: Path) -> None:
     value = state()
     value.update(
@@ -292,7 +299,6 @@ def test_completed_resume_only_reconciles_and_rewrites_receipt(tmp_path: Path) -
         patch.object(e2e, "verify_issue_closed", return_value={"state": "CLOSED"}),
         patch.object(e2e, "remote_ref", return_value=None),
         patch.object(e2e, "write_receipt") as write_receipt,
-        patch.object(e2e, "ensure_repository") as ensure_repository,
         patch.object(e2e, "ensure_branch") as ensure_branch,
     ):
         e2e.execute(
@@ -304,7 +310,6 @@ def test_completed_resume_only_reconciles_and_rewrites_receipt(tmp_path: Path) -
             crash_after=None,
         )
     write_receipt.assert_called_once()
-    ensure_repository.assert_not_called()
     ensure_branch.assert_not_called()
 
 
