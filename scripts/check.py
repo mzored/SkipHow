@@ -12,6 +12,7 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+import tempfile
 from typing import Iterable
 from urllib.parse import unquote, urlsplit
 import venv
@@ -19,7 +20,22 @@ import venv
 
 ROOT = Path(__file__).resolve().parents[1]
 REQUIREMENTS = ROOT / "requirements-dev.txt"
-MANAGED_ENV = ROOT / ".venv"
+
+
+def managed_env_path() -> Path:
+    """Keep generated check dependencies outside the repository tree."""
+    cache_root = Path(
+        os.environ.get(
+            "SKIPHOW_CHECK_CACHE_DIR",
+            str(Path(tempfile.gettempdir()) / "skiphow-check"),
+        )
+    )
+    repository_key = hashlib.sha256(str(ROOT.resolve()).encode()).hexdigest()[:16]
+    python_key = f"python-{sys.version_info.major}.{sys.version_info.minor}"
+    return cache_root / repository_key / python_key
+
+
+MANAGED_ENV = managed_env_path()
 DEPENDENCY_STAMP = MANAGED_ENV / ".skiphow-requirements"
 PERSONAL_PATH = re.compile(
     r"(?:/(?:Users|home)/[^/\s]+/|"
@@ -66,7 +82,7 @@ def bootstrap_dependencies() -> int:
         return 2
     python = managed_python()
     if not python.is_file():
-        print("preparing .venv for repository checks", flush=True)
+        print("preparing cached environment for repository checks", flush=True)
         try:
             venv.EnvBuilder(with_pip=True).create(MANAGED_ENV)
         except OSError as exc:
@@ -116,11 +132,15 @@ def checked(
     env: dict[str, str] | None = None,
 ) -> tuple[bool, str]:
     """Run one bounded local command and retain concise failure output."""
+    command_environment = os.environ.copy()
+    command_environment["PYTHONDONTWRITEBYTECODE"] = "1"
+    if env:
+        command_environment.update(env)
     try:
         result = subprocess.run(
             command,
             cwd=cwd,
-            env=env,
+            env=command_environment,
             capture_output=True,
             text=True,
             timeout=timeout,
@@ -312,7 +332,7 @@ def offline_checks(base: str | None = None) -> list[str]:
         context_budget.extend(["--base", base])
     commands = [
         context_budget,
-        [sys.executable, "-m", "pytest", "-q"],
+        [sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider"],
     ]
     for command in commands:
         passed, output = checked(command)
@@ -336,11 +356,21 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
     if args.pytest is not None:
+        environment = os.environ.copy()
+        environment["PYTHONDONTWRITEBYTECODE"] = "1"
         try:
             completed = subprocess.run(
-                [sys.executable, "-m", "pytest", *args.pytest],
+                [
+                    sys.executable,
+                    "-m",
+                    "pytest",
+                    "-p",
+                    "no:cacheprovider",
+                    *args.pytest,
+                ],
                 cwd=ROOT,
                 timeout=120,
+                env=environment,
                 check=False,
             )
         except subprocess.TimeoutExpired:

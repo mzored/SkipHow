@@ -29,8 +29,18 @@ def test_local_check_dependencies_are_pinned_and_repo_managed() -> None:
         "markdown-it-py": "4.2.0",
         "pytest": "9.1.1",
     }
-    assert check.MANAGED_ENV == ROOT / ".venv"
+    assert not check.MANAGED_ENV.is_relative_to(ROOT)
+    assert check.MANAGED_ENV.name == f"python-{sys.version_info.major}.{sys.version_info.minor}"
     assert ".venv/" in (ROOT / ".gitignore").read_text(encoding="utf-8").splitlines()
+
+
+def test_check_subprocesses_do_not_write_python_caches() -> None:
+    with patch.object(check.subprocess, "run") as run:
+        run.return_value.returncode = 0
+        run.return_value.stdout = ""
+        run.return_value.stderr = ""
+        assert check.checked(["python", "example.py"])[0]
+    assert run.call_args.kwargs["env"]["PYTHONDONTWRITEBYTECODE"] == "1"
 
 
 def test_local_metadata_links_and_version_validate() -> None:

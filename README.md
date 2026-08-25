@@ -92,7 +92,7 @@ python scripts/check.py
 python scripts/check_hosts.py --output path/to/host-proof.json
 ```
 
-The first command is deterministic and local. On its first run, it creates the ignored `.venv`, installs the exact versions from `requirements-dev.txt`, and then reuses that environment. The second command validates package structure and isolated installation in available hosts. It writes package proof as `VERIFIED`, `UNVERIFIED`, or `FAILED`; pass that receipt to doctor with `--package-proof-receipt`. Neither command launches a model or proves runtime behavior.
+The first command is deterministic and local. On its first run, it creates an environment under the system temporary directory, installs the exact versions from `requirements-dev.txt`, and then reuses that environment. Set `SKIPHOW_CHECK_CACHE_DIR` to choose another cache location. Test runs disable Python bytecode and pytest's cache so checks do not grow the repository directory. The second command validates package structure and isolated installation in available hosts. It writes package proof as `VERIFIED`, `UNVERIFIED`, or `FAILED`; pass that receipt to doctor with `--package-proof-receipt`. Neither command launches a model or proves runtime behavior.
 
 Run a focused pytest selection through the same environment:
 

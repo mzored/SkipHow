@@ -9,7 +9,7 @@ Use one issue for one material change when the repository workflow calls for tra
 - Add a rule only when it prevents a distinct demonstrated failure. Remove duplicated policy.
 - Write direct English prose. Use concrete verbs, active voice, sentence-case headings, straight quotes, and short sentences. Remove promotional filler, vague claims, and unnecessary ceremony.
 - Run focused tests with `python scripts/check.py --pytest <pytest-arguments>`, then `python scripts/check.py --base <base-sha>` at integration.
-- Let `scripts/check.py` create and reuse the ignored `.venv` when the current Python lacks the pinned development dependencies.
+- Let `scripts/check.py` create and reuse its environment outside the repository when the current Python lacks the pinned development dependencies.
 - Run `python scripts/check_hosts.py` when packaging changed. Record exact host output for package support claims.
 - Do not launch Codex, Claude Code, or another model from tests or release checks. The repository has no live model eval gate.
 
