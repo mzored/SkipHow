@@ -116,14 +116,59 @@ def codex_validator() -> Path | None:
     return candidate if candidate.is_file() else None
 
 
-def isolated_install(host: str, executable: str) -> tuple[bool, str]:
-    """Install the current worktree through one host's local marketplace path."""
+def validator_python() -> tuple[str | None, str]:
+    """Select an interpreter that can run the official Codex validator."""
+    available, _ = checked([sys.executable, "-c", "import yaml"], timeout=30)
+    if available:
+        return sys.executable, "current Python"
+    prepared, output = checked(
+        [sys.executable, "scripts/check.py", "--prepare-only"],
+        timeout=300,
+    )
+    managed = Path(output.splitlines()[-1]) if output else Path()
+    if prepared and managed.is_file():
+        return str(managed), "repository-managed Python"
+    return None, output or "could not prepare repository-managed Python"
+
+
+def default_codex_marketplace_source() -> str:
+    """Use the repository origin for Codex, with a local fallback when no origin exists."""
+    passed, output = checked(["git", "remote", "get-url", "origin"], timeout=30)
+    return output.splitlines()[0] if passed and output else str(ROOT)
+
+
+def verify_codex_marketplace_source(source: str) -> tuple[bool, str]:
+    """Bind a Git marketplace source to the current committed candidate."""
+    if Path(source).expanduser().is_dir():
+        return True, "local marketplace source"
+    head_ok, local_head = checked(["git", "rev-parse", "HEAD"], timeout=30)
+    remote_ok, remote_output = checked(["git", "ls-remote", source, "HEAD"], timeout=180)
+    remote_parts = remote_output.split()
+    remote_head = remote_parts[0] if remote_ok and remote_parts else None
+    if not head_ok or not local_head:
+        return False, "cannot identify the local candidate commit"
+    if remote_head != local_head:
+        return False, f"Codex marketplace HEAD {remote_head or 'unavailable'} does not match {local_head}"
+    return True, f"Git marketplace source at {local_head}"
+
+
+def isolated_install(
+    host: str,
+    executable: str,
+    *,
+    codex_marketplace_source: str | None = None,
+) -> tuple[bool, str]:
+    """Install the candidate through one host's isolated marketplace."""
     with tempfile.TemporaryDirectory(prefix=f"skiphow-{host}-install-") as temporary:
         environment = os.environ.copy()
         if host == "codex":
+            source = codex_marketplace_source or default_codex_marketplace_source()
+            verified, detail = verify_codex_marketplace_source(source)
+            if not verified:
+                return False, detail
             environment["CODEX_HOME"] = temporary
             commands = (
-                [executable, "plugin", "marketplace", "add", str(ROOT), "--json"],
+                [executable, "plugin", "marketplace", "add", source, "--json"],
                 [executable, "plugin", "add", "skiphow@skiphow", "--json"],
                 [executable, "plugin", "list", "--json"],
             )
@@ -171,6 +216,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--skip-install", action="store_true")
     parser.add_argument("--require-codex-install", action="store_true")
     parser.add_argument("--require-claude-install", action="store_true")
+    parser.add_argument(
+        "--codex-marketplace-source",
+        help="Codex Git or local marketplace source; defaults to the repository origin",
+    )
     parser.add_argument("--output", type=Path)
     args = parser.parse_args(argv)
     errors: list[str] = []
@@ -192,12 +241,19 @@ def main(argv: Sequence[str] | None = None) -> int:
         if args.require_codex_validator:
             errors.append("configured Codex official validator is unavailable")
     else:
-        passed, output = checked(
-            [sys.executable, str(validator), str(ROOT / "plugins" / "skiphow")]
-        )
+        python, python_reference = validator_python()
+        if python is None:
+            passed, output = False, python_reference
+        else:
+            passed, output = checked(
+                [python, str(validator), str(ROOT / "plugins" / "skiphow")]
+            )
         status = "VERIFIED" if passed else "FAILED"
         print(f"Codex official validator: {'PASS' if passed else 'FAIL'}")
-        checks["codex_validator"] = proof(status, "Codex official plugin validator")
+        checks["codex_validator"] = proof(
+            status,
+            f"Codex official plugin validator via {python_reference}",
+        )
         if not passed:
             errors.append(output or "Codex validator failed without output")
 
@@ -234,10 +290,22 @@ def main(argv: Sequence[str] | None = None) -> int:
                 if required:
                     errors.append(f"{host} is unavailable for isolated installation")
                 continue
-            passed, output = isolated_install(host, executable)
+            source = (
+                args.codex_marketplace_source or default_codex_marketplace_source()
+                if host == "codex"
+                else None
+            )
+            passed, output = isolated_install(
+                host,
+                executable,
+                codex_marketplace_source=source,
+            )
             status = "VERIFIED" if passed else "FAILED"
             print(f"{host.capitalize()} isolated install: {'PASS' if passed else 'FAIL'}")
-            checks[f"{host}_install"] = proof(status, f"isolated {host} plugin install")
+            reference = f"isolated {host} plugin install"
+            if host == "codex":
+                reference += " from exact configured marketplace source"
+            checks[f"{host}_install"] = proof(status, reference)
             if not passed and required:
                 errors.append(output or f"{host} isolated installation failed")
 

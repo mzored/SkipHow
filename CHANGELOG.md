@@ -8,7 +8,9 @@ All notable changes to this project appear in this file.
 
 - Replaced live model evaluations with direct deterministic tests for the runtime policy contracts.
 - Limited host checks to package validation and isolated installation. Package evidence no longer implies skill activation or model behavior.
-- Made `scripts/check.py` prepare and reuse an ignored `.venv` when the current Python lacks the pinned check dependencies.
+- Made `scripts/check.py` prepare and reuse an environment outside the repository when the current Python lacks the pinned check dependencies.
+- Made Codex package checks install from the repository Git origin and reject a remote `HEAD` that differs from the local commit.
+- Made the official Codex package validator reuse the repository-managed Python when the system interpreter lacks its dependencies.
 
 ### Removed
 

@@ -80,12 +80,70 @@ def test_configured_codex_validator_failure_is_blocking(tmp_path: Path) -> None:
         assert hosts.main(["--skip-install"]) == 1
 
 
+def test_codex_validator_prepares_managed_python_when_yaml_is_missing(
+    tmp_path: Path,
+) -> None:
+    managed = tmp_path / "python"
+    managed.write_text("", encoding="utf-8")
+    with (
+        patch.object(
+            hosts,
+            "checked",
+            side_effect=[
+                (False, "missing yaml"),
+                (True, str(managed)),
+            ],
+        ),
+    ):
+        assert hosts.validator_python() == (str(managed), "repository-managed Python")
+
+
+def test_codex_marketplace_defaults_to_repository_origin() -> None:
+    with patch.object(
+        hosts,
+        "checked",
+        return_value=(True, "https://github.com/example/project.git"),
+    ):
+        assert hosts.default_codex_marketplace_source() == "https://github.com/example/project.git"
+
+
+def test_codex_git_marketplace_must_match_the_candidate_commit() -> None:
+    with patch.object(
+        hosts,
+        "checked",
+        side_effect=[
+            (True, "candidate123"),
+            (True, "other456\tHEAD"),
+        ],
+    ):
+        passed, output = hosts.verify_codex_marketplace_source(
+            "https://github.com/example/project.git"
+        )
+    assert not passed
+    assert "other456 does not match candidate123" in output
+
+
+def test_codex_git_marketplace_accepts_the_exact_candidate() -> None:
+    with patch.object(
+        hosts,
+        "checked",
+        side_effect=[
+            (True, "candidate123"),
+            (True, "candidate123\tHEAD"),
+        ],
+    ):
+        assert hosts.verify_codex_marketplace_source(
+            "https://github.com/example/project.git"
+        ) == (True, "Git marketplace source at candidate123")
+
+
 def test_isolated_install_failure_is_unverified_unless_required() -> None:
     with (
         patch.object(hosts, "codex_validator", return_value=None),
         patch.object(hosts.shutil, "which", return_value="/bin/tool"),
         patch.object(hosts, "checked", return_value=(True, "ok")),
         patch.object(hosts, "isolated_install", return_value=(False, "blocked by host policy")),
+        patch.object(hosts, "default_codex_marketplace_source", return_value="https://example.invalid/repo.git"),
     ):
         assert hosts.main([]) == 0
         assert hosts.main(["--require-codex-install"]) == 1
@@ -134,7 +192,14 @@ def test_host_check_receipt_is_verified_only_for_clean_fully_proven_candidate(
             return_value={"commit": "abc123", "tree": "tree123", "dirty": False},
         ),
     ):
-        assert hosts.main(["--output", str(output)]) == 0
+        assert hosts.main(
+            [
+                "--codex-marketplace-source",
+                "https://secret@example.invalid/repo.git",
+                "--output",
+                str(output),
+            ]
+        ) == 0
     receipt = json.loads(output.read_text(encoding="utf-8"))
     assert receipt["status"] == "VERIFIED"
     assert receipt["host_cli_versions"] == {
@@ -142,3 +207,4 @@ def test_host_check_receipt_is_verified_only_for_clean_fully_proven_candidate(
         "codex": "host 1.2.3",
     }
     assert all(check["status"] == "VERIFIED" for check in receipt["checks"].values())
+    assert "secret" not in json.dumps(receipt)

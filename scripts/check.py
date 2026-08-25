@@ -354,7 +354,15 @@ def main(argv: list[str] | None = None) -> int:
         nargs=argparse.REMAINDER,
         help="run pytest with the remaining arguments inside the managed environment",
     )
+    parser.add_argument(
+        "--prepare-only",
+        action="store_true",
+        help="prepare the managed environment without running repository checks",
+    )
     args = parser.parse_args(argv)
+    if args.prepare_only:
+        print(sys.executable)
+        return 0
     if args.pytest is not None:
         environment = os.environ.copy()
         environment["PYTHONDONTWRITEBYTECODE"] = "1"
@@ -369,8 +377,8 @@ def main(argv: list[str] | None = None) -> int:
                     *args.pytest,
                 ],
                 cwd=ROOT,
-                timeout=120,
                 env=environment,
+                timeout=120,
                 check=False,
             )
         except subprocess.TimeoutExpired:
