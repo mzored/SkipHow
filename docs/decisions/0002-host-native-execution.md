@@ -12,7 +12,7 @@ Accepted
 
 SkipHow built a Python runner with a CLI, SQLite state, provider adapters, scheduling, model routing, verification, recovery, and a separate GitHub delivery command. Its deterministic tests cover many internal contracts. They do not prove the owner outcome that matters: take several tracked issues, finish them through pull requests and CI, merge them, and clean up owned branches without manual handoffs.
 
-The runner also duplicates mechanisms now supplied by the main hosts. Codex and Claude manage sessions, subagents, isolated worktrees, context compaction, resume, and long-running work. Keeping a second implementation adds code and trust boundaries while still depending on each host for model execution and permissions.
+The runner also duplicates mechanisms available in the supported hosts. Codex and Claude expose different combinations of sessions, subagents, isolated worktrees, context compaction, resume, and long-running work. SkipHow uses a capability only after the installed host confirms it. Keeping a second implementation adds code and trust boundaries while still depending on each host for model execution and permissions.
 
 The audit found concrete gaps. The runner works in the foreground, does not create durable subagent or worktree lifecycles, and keeps GitHub delivery outside its supervisor loop. Its worker can write inside the project that contains controller authority state. Its verifier runs repository-controlled commands without a separate operating-system sandbox. The live harness does not install the candidate plugin it claims to evaluate.
 
@@ -90,6 +90,7 @@ The hosts expose different controls and durability. Hiding those differences wou
 - [Security and evaluation research](../research/2026-08-25/security-and-evals.md)
 - [Live evaluation host contract](../research/2026-08-25/live-evaluation-hosts.md)
 - [Prior-art research](../research/2026-08-25/prior-art.md)
+- [Host-native campaign policy](0006-host-native-campaign-and-engineering-policy.md)
 
 ## Revalidation triggers
 

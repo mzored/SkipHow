@@ -28,9 +28,15 @@ REQUIRED_REFERENCES = frozenset(
         "decision.md",
         "delivery.md",
         "diagnosis.md",
+        "engineering.md",
         "github.md",
         "intake.md",
         "long-work.md",
+        "methods/conflicts.md",
+        "methods/design.md",
+        "methods/prototype.md",
+        "methods/review.md",
+        "methods/testing.md",
         "model-routing.md",
     }
 )
@@ -304,10 +310,11 @@ def validate_version() -> list[str]:
     """Keep release metadata aligned with the single VERSION file."""
     release = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
     errors: list[str] = []
+    if not re.fullmatch(r"(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)", release):
+        errors.append(f"VERSION must be a stable semantic version: {release!r}")
     records = {
         "plugins/skiphow/.codex-plugin/plugin.json": ("version",),
         "plugins/skiphow/.claude-plugin/plugin.json": ("version",),
-        ".claude-plugin/marketplace.json": ("metadata", "version"),
     }
     for relative, keys in records.items():
         value: object = load_json(relative)
@@ -316,15 +323,50 @@ def validate_version() -> list[str]:
         if value != release:
             errors.append(f"version mismatch in {relative}: {value!r} != {release!r}")
     marketplace = load_json(".claude-plugin/marketplace.json")
-    if marketplace["plugins"][0]["version"] != release:  # type: ignore[index]
-        errors.append("version mismatch in Claude marketplace plugin entry")
-    if f"## {release}" not in (ROOT / "CHANGELOG.md").read_text(encoding="utf-8"):
+    plugins = marketplace.get("plugins")
+    plugin_entry = plugins[0] if isinstance(plugins, list) and plugins else {}
+    if isinstance(plugin_entry, dict) and "version" in plugin_entry:
+        errors.append("Claude marketplace must defer plugin version to plugin.json")
+    metadata = marketplace.get("metadata")
+    if isinstance(metadata, dict) and "version" in metadata:
+        errors.append("Claude marketplace must not keep a legacy duplicate version")
+    changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+    if not re.search(rf"^## {re.escape(release)} \(\d{{4}}-\d{{2}}-\d{{2}}\)$", changelog, re.MULTILINE):
         errors.append(f"CHANGELOG.md has no {release} release heading")
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    if f"Current stable version: {release}." not in readme:
+        errors.append(f"README.md does not name {release} as the current stable version")
     if f"| {release.rsplit('.', 1)[0]}.x | Yes |" not in (
         ROOT / "SECURITY.md"
     ).read_text(encoding="utf-8"):
         errors.append(f"SECURITY.md does not support {release.rsplit('.', 1)[0]}.x")
     return errors
+
+
+def validate_release_version_change(base: str | None) -> list[str]:
+    """Require a monotonic version bump whenever the packaged plugin changes."""
+    if not base or not (ROOT / ".git").exists():
+        return []
+    passed, changed = checked(["git", "diff", "--name-only", f"{base}...HEAD"])
+    if not passed:
+        return [f"cannot inspect release diff from {base}: {changed}"]
+    if not any(path == "plugins/skiphow" or path.startswith("plugins/skiphow/") for path in changed.splitlines()):
+        return []
+    passed, previous = checked(["git", "show", f"{base}:VERSION"])
+    if not passed:
+        return [f"cannot read VERSION at {base}: {previous}"]
+    current = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+    if previous.strip() == current:
+        return ["plugins/skiphow changed without a VERSION bump"]
+    previous_match = re.fullmatch(r"(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)", previous.strip())
+    current_match = re.fullmatch(r"(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)", current)
+    if previous_match is None or current_match is None:
+        return ["cannot compare invalid stable semantic versions"]
+    previous_parts = tuple(int(value) for value in previous_match.groups())
+    current_parts = tuple(int(value) for value in current_match.groups())
+    if current_parts <= previous_parts:
+        return [f"plugin version must increase from {previous.strip()} to a later stable version"]
+    return []
 
 
 def validate_runtime_removal() -> list[str]:
@@ -341,7 +383,7 @@ def model_id_scan(paths: Iterable[Path] | None = None) -> list[str]:
     """Keep provider model IDs out of portable skill policy."""
     candidates = list(paths) if paths is not None else [
         CANONICAL_SKILL,
-        *sorted((SKILL_ROOT / "references").glob("*.md")),
+        *sorted((SKILL_ROOT / "references").rglob("*.md")),
     ]
     errors: list[str] = []
     for path in candidates:
@@ -400,7 +442,9 @@ def validate_plugin_static() -> list[str]:
 
     references = SKILL_ROOT / "references"
     actual_references = {
-        path.name for path in references.iterdir() if path.is_file() and path.suffix == ".md"
+        path.relative_to(references).as_posix()
+        for path in references.rglob("*.md")
+        if path.is_file()
     } if references.is_dir() else set()
     if actual_references != REQUIRED_REFERENCES:
         missing = sorted(REQUIRED_REFERENCES - actual_references)
@@ -411,15 +455,36 @@ def validate_plugin_static() -> list[str]:
             errors.append(f"unexpected skill references: {', '.join(extra)}")
     errors.extend(model_id_scan())
 
-    linked = {
-        candidate
-        for target in markdown_targets(CANONICAL_SKILL)
-        if (candidate := local_link(CANONICAL_SKILL, target)) is not None
-    }
+    linked: set[Path] = set()
+    pending = [CANONICAL_SKILL]
+    seen: set[Path] = set()
+    while pending:
+        source = pending.pop()
+        if source in seen:
+            continue
+        seen.add(source)
+        for target in markdown_targets(source):
+            candidate = local_link(source, target)
+            if candidate is None or candidate.suffix != ".md":
+                continue
+            try:
+                candidate.relative_to(SKILL_ROOT)
+            except ValueError:
+                continue
+            if candidate != CANONICAL_SKILL:
+                linked.add(candidate)
+                pending.append(candidate)
     for reference in sorted(REQUIRED_REFERENCES):
         expected = (references / reference).resolve()
         if expected not in linked:
             errors.append(f"canonical skill does not link references/{reference}")
+    orphaned = sorted(
+        path.relative_to(references).as_posix()
+        for path in references.rglob("*.md")
+        if path.resolve() not in linked
+    )
+    if orphaned:
+        errors.append(f"orphaned skill references: {', '.join(orphaned)}")
 
     hook_paths = [path for path in PLUGIN_ROOT.rglob("*") if "hooks" in path.parts]
     if hook_paths:
@@ -464,6 +529,7 @@ def offline_checks(base: str | None = None) -> list[str]:
         + validate_version()
         + validate_runtime_removal()
         + validate_plugin_static()
+        + validate_release_version_change(base)
     )
     commands = [
         [sys.executable, "scripts/context_budget.py", "--check"],

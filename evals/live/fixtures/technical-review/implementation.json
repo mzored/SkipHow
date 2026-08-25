@@ -1,0 +1,6 @@
+{
+  "selected_items": ["item-a", "item-b"],
+  "completed_items": ["item-a"],
+  "verification": {"item-a": "passed", "item-b": null},
+  "reported_status": "complete"
+}

@@ -1,0 +1,5 @@
+{
+  "message": "Welcome",
+  "log_level": "info",
+  "features": ["core"]
+}

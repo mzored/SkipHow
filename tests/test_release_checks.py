@@ -72,6 +72,39 @@ def test_local_package_and_document_checks_pass() -> None:
     assert check.validate_plugin_static() == []
 
 
+def test_plugin_change_requires_a_version_bump() -> None:
+    with patch.object(
+        check,
+        "checked",
+        side_effect=[
+            (True, "plugins/skiphow/skills/skiphow/SKILL.md\n"),
+            (True, "1.0.0\n"),
+        ],
+    ):
+        assert check.validate_release_version_change("base") == [
+            "plugins/skiphow changed without a VERSION bump"
+        ]
+
+
+def test_non_plugin_change_does_not_require_a_version_bump() -> None:
+    with patch.object(check, "checked", return_value=(True, "docs/README.md\n")):
+        assert check.validate_release_version_change("base") == []
+
+
+def test_plugin_version_cannot_move_backward() -> None:
+    with patch.object(
+        check,
+        "checked",
+        side_effect=[
+            (True, "plugins/skiphow/skills/skiphow/SKILL.md\n"),
+            (True, "1.1.0\n"),
+        ],
+    ):
+        assert check.validate_release_version_change("base") == [
+            "plugin version must increase from 1.1.0 to a later stable version"
+        ]
+
+
 def test_portable_policy_rejects_provider_model_ids(tmp_path: Path) -> None:
     policy = tmp_path / "policy.md"
     policy.write_text("Use gpt-5.6-example for this lane.\n", encoding="utf-8")

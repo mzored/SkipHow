@@ -1,18 +1,45 @@
 # Contributing
 
-Use one issue for one material change when the repository workflow calls for tracking. Small coherent fixes do not need an issue solely because they modify code. Keep unrelated cleanup out of the same pull request.
+SkipHow ships one canonical skill for Codex and Claude Code. Keep changes small enough to review and large enough to solve one complete problem.
 
-## Before a pull request
+Read the [Code of Conduct](CODE_OF_CONDUCT.md) and use the [private security process](SECURITY.md) for vulnerabilities.
 
-- Keep intent and mutation routing in `plugins/skiphow/skills/skiphow/SKILL.md`.
-- Put detailed workflow rules in the skill's `references/` directory. Codex and Claude must package the same canonical skill.
-- Update the relevant research note and ADR when new evidence changes the architecture, product contract, security policy, or model routing. Do not save routine search notes.
-- Add a rule only when it prevents a distinct demonstrated failure. Remove duplicated policy.
-- Write direct English prose. Use concrete verbs, active voice, sentence-case headings, straight quotes, and short sentences. Remove promotional filler, vague claims, and unnecessary ceremony.
-- Run focused checks while you work. Before completion, run `python scripts/check.py` and `git diff --check`.
-- Let `scripts/check.py` create and reuse its environment outside the repository when the current Python lacks the pinned development dependencies.
-- Run `python scripts/check_hosts.py` when packaging changed. Record exact host output for package support claims.
-- Keep tests and CI local and deterministic. Do not launch Codex, Claude Code, or another model from them. Live outcome checks are separate, opt-in release work with an explicit budget.
-- Do not add a runner, daemon, task database, provider adapter, or model catalog without a new accepted ADR based on a demonstrated host gap.
+## Set up checks
 
-Explain the user-visible result, checks run, and any `UNVERIFIED` package evidence. A maintainer reviews the final integration diff before merge.
+The repository uses pinned Python dependencies in a cached environment outside the checkout. Prepare it and print its interpreter path:
+
+```sh
+python scripts/check.py --prepare-only
+```
+
+Run a focused test through that environment:
+
+```sh
+python scripts/check.py --pytest tests/test_repository.py -q
+```
+
+## Change the canonical package
+
+- Keep intent and route selection in `plugins/skiphow/skills/skiphow/SKILL.md`.
+- Put conditional detail in linked references. Do not add another public skill for an internal method.
+- Keep Codex and Claude manifests pointed at the same `skills/` directory.
+- Bump `VERSION` whenever `plugins/skiphow/` changes. Claude Code uses the manifest version as its update key.
+- Update research and an ADR when evidence changes architecture, the product contract, security policy, or model routing.
+- Do not add a runner, daemon, task database, provider adapter, model catalog, hooks, telemetry, or personal configuration without an accepted product decision.
+- Write direct English prose. Use active voice, sentence-case headings, straight quotes, and concrete claims.
+
+## Verify a pull request
+
+Run focused checks while editing. Before completion, run:
+
+```sh
+python scripts/check.py
+python scripts/check_hosts.py
+git diff --check
+```
+
+Run `python scripts/check_hosts.py` whenever packaging changes. Report an unavailable host as `UNVERIFIED`. Host validation proves package loading, not model behavior.
+
+Keep tests and CI local and deterministic. They must not start Codex, Claude Code, or another model. Live outcome evaluation is a separate opt-in release activity with an explicit invocation cap, an exact committed candidate, synthetic fixtures, and machine-readable receipts.
+
+The pull request should state the user-visible result, scope, tests run, package evidence, and every material `BLOCKED` or `UNVERIFIED` limit. Keep unrelated cleanup out of the same pull request.

@@ -54,7 +54,7 @@ The versioned fixture and collectors still define the missing evidence. Keeping 
 
 - [Release-readiness audit](../research/2026-08-25/release-readiness-audit.md)
 - [Evaluation policy](../evals.md)
-- [Codex plugin documentation](https://learn.chatgpt.com/docs/plugins)
+- [Codex plugin documentation](https://developers.openai.com/codex/plugins.md)
 - [Claude Code plugin documentation](https://code.claude.com/docs/en/plugins)
 - [Claude Code sandbox documentation](https://code.claude.com/docs/en/sandboxing)
 

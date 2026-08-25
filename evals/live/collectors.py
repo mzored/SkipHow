@@ -37,16 +37,22 @@ DISPOSITIONS = {"NEW", "UPDATE", "DUPLICATE", "RELATED", "NEEDS_RESEARCH", "DISM
 RFC3339_UTC = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
 HANDOFF_FIELDS = (
     "Recorded",
+    "Original outcome",
     "Selected scope",
+    "Non-goals",
     "Authority",
     "Later restrictions",
+    "Terminal condition",
+    "Host capabilities",
+    "Health and budgets",
+    "Active handles",
     "Accepted decisions",
     "Queue and dependencies",
     "Issue",
     "Branch",
     "Worktree",
     "Pull request",
-    "Exact head",
+    "Candidate identity",
     "Owned resources",
     "Last external action",
     "Last external result",
@@ -54,6 +60,13 @@ HANDOFF_FIELDS = (
     "Blockers",
     "Next safe action",
 )
+HANDOFF_VALUE_MAX_CHARS = 1024
+UNSAFE_HANDOFF_CONTROL = re.compile(r"[\x00-\x1f\x7f]")
+ABSOLUTE_POSIX_PATH = re.compile(r"(?<![A-Za-z0-9/])/(?!/)")
+ABSOLUTE_WINDOWS_PATH = re.compile(r"(?<![A-Za-z0-9])[A-Za-z]:[\\/]")
+ABSOLUTE_UNC_PATH = re.compile(r"(?<!\\)\\\\[^\\\s]")
+FILE_URL = re.compile(r"\bfile:(?://)?/", re.IGNORECASE)
+CREDENTIAL_URL = re.compile(r"[A-Za-z][A-Za-z0-9+.-]*://[^\s/:@]+:[^\s/@]+@")
 
 
 def _sha256(path: Path) -> str:
@@ -264,7 +277,25 @@ def _handoff_records(text: str) -> tuple[list[dict[str, str]], list[str]]:
         if label not in HANDOFF_FIELDS or not value.strip() or label in current:
             invalid.append(f"line {number}: invalid handoff field")
             continue
-        current[label] = value.strip()
+        if UNSAFE_HANDOFF_CONTROL.search(value):
+            invalid.append(f"line {number}: handoff value contains a control character")
+            continue
+        value = value.strip()
+        if len(value) > HANDOFF_VALUE_MAX_CHARS:
+            invalid.append(f"line {number}: handoff value exceeds {HANDOFF_VALUE_MAX_CHARS} characters")
+            continue
+        if (
+            ABSOLUTE_POSIX_PATH.search(value)
+            or ABSOLUTE_WINDOWS_PATH.search(value)
+            or ABSOLUTE_UNC_PATH.search(value)
+            or FILE_URL.search(value)
+        ):
+            invalid.append(f"line {number}: handoff value contains an absolute path")
+            continue
+        if CREDENTIAL_URL.search(value):
+            invalid.append(f"line {number}: handoff value contains a credential-bearing URL")
+            continue
+        current[label] = value
     if current is not None:
         _finish_handoff(current, records, invalid)
     identities = [(record["task_id"], record["checkpoint_id"]) for record in records]

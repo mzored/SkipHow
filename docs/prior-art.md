@@ -15,6 +15,6 @@ The dated [prior-art research](research/2026-08-25/prior-art.md) records the aud
 | [Mesa](https://github.com/msoedov/mesa) | Atomic work ownership and event-driven wake-up | An embedded tracker, fixed roles, and company simulation |
 | [Autonomous PM](https://github.com/mlobo2012/autonomous-pm-plugin) | Provenance, separation of facts and assumptions, selective dissent | Seventeen standing roles and mandatory scoring |
 
-The common lesson is restraint. Bounded work should stay bounded. Long work needs recoverable state and careful ownership, but current hosts and GitHub already provide much of it. Add a new process or artifact only when a measured failure shows why it is needed.
+The shared lesson is concrete. Bounded work stays in one session. Long work keeps a selected queue, dependency-ready waves, bounded ownership, checkpoints, and reconciliation in host and GitHub state. SkipHow adds a new process or artifact only when measured failures show that host-native state cannot support the required outcome.
 
 When future work copies or adapts source text, keep the license, copyright notice, upstream path, and exact commit. When it borrows an idea, describe that idea in SkipHow's own words.

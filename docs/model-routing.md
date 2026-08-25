@@ -19,7 +19,7 @@ A long task does not require the strongest model for every step. A short securit
 | `STANDARD` | Implementation, debugging, tests, and documentation |
 | `DEEP` | Product shaping, architecture, security, unknown causes, build-versus-reuse decisions, integration across contracts or systems, and risk-based independent review |
 
-The root agent and final integrator inherit the model selected by the owner or host. For an independent subagent, the root maps a tier only from current capability, cost, or latency metadata exposed by the host, then selects the concrete route at spawn. It does not infer capability or price from a model name. If the host exposes no trustworthy mapping or no per-agent choice, the subagent uses `inherit` and model selection remains `UNVERIFIED`.
+The root agent and final integrator inherit the model selected by the owner or host. For an independent subagent, the root maps a tier only from current capability, cost, or latency metadata exposed by the host, then selects the concrete route at spawn. It does not infer capability or price from a model name. If the host exposes no trustworthy mapping or no per-agent choice, the subagent uses `inherit` and model selection remains `UNVERIFIED`. Model choice never expands a worker's authority. The root retains external mutations and protected actions.
 
 `FAST` does not receive normal code mutation by default. A cheap but plausible code change can cost more after repair, review, and context transfer than starting with `STANDARD`.
 
