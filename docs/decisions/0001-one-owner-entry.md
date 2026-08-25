@@ -70,4 +70,3 @@ Revisit this decision if any of the following occurs:
 - a supported host cannot load one canonical skill without copied policy;
 - owners repeatedly need a distinct command because natural language cannot express a protected authority boundary;
 - a new portable Agent Skills standard defines one explicit invocation syntax across supported hosts.
-
