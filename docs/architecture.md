@@ -16,15 +16,15 @@ The kernel owns intent, authority, scope, evidence, finding disposition, and fin
 
 ## Direct path
 
-`ANSWER`, bounded `CHANGE`, `REPAIR`, and simple `INTAKE` requests run directly. They do not need runner state, a tracker, a branch, a review, or a persistent artifact unless the outcome itself needs one. Risk changes evidence and authority checks, not the execution shape.
+`ANSWER`, bounded `CHANGE`, `REPAIR`, and `INTAKE` requests run directly unless they need durable coordination. Intake can atomize and group a batch, shape work items, apply explicit candidate dispositions, merge provenance, and validate an Epic graph without starting the campaign runner. Direct work does not need runner state, a tracker, a branch, a review, or a persistent artifact unless the outcome itself needs one. Risk changes evidence and authority checks, not the execution shape.
 
 ## Durable runner
 
-The runner is an optional Python package and CLI. It uses SQLite transactions as controller authority, an append-only material event journal, snapshots for inspection, revision checks, attempt IDs, idempotency keys, and expiring leases. Provider transcripts are supporting records, never the only state.
+The runner is an optional Python package and CLI. It uses SQLite transactions as controller authority, a hash-linked material event journal, integrity-bound snapshots, revision checks, attempt IDs, idempotency keys, and expiring leases. Provider transcripts are supporting records, never the only state. Startup validates SQLite, foreign keys, the event chain, and materialized records. Schema 1 databases receive a consistent sibling backup before the atomic schema 2 migration. Exact-head snapshots can repair corrupt materialized state, but never a damaged journal.
 
 `skiphow execute` starts one foreground supervisor and runs until the campaign settles, pauses, or reaches a configured duration or reported-cost ceiling. `skiphow worker` processes one ready frontier. The supervisor renews leases while waiting for provider events, polls persisted external waits, and checkpoints process exit. Pause and duration stops return unfinished claimed work to the frontier. A cost stop blocks the task for inspection. The runner has no mandatory server, dashboard, or daemon. A machine reboot does not restart it automatically.
 
-The provider contract supports capability discovery, configured model catalogs, session start and resume, forking, turns, event streams, interruption, compaction, usage, and cleanup. Model IDs and provider flags come from adapters or personal configuration. Core routing sees only `ECONOMY`, `BALANCED`, and `FRONTIER` profiles plus required capabilities.
+The provider contract supports capability discovery, configured model catalogs, session start and resume, forking, turns, event streams, interruption, compaction, usage, and cleanup. Model IDs and provider flags come from adapters or personal configuration. Core routing sees only `ECONOMY`, `BALANCED`, and `FRONTIER` profiles plus required capabilities. The runner persists sticky route lanes and exact attempt outcomes, then rebuilds version-aware calibration from that history. Promotion is bounded and happens only at a checkpoint.
 
 ## Policy ownership
 
@@ -62,13 +62,13 @@ Missing delegation does not block bounded sequential work. Missing `durable_exec
 
 Run and task transitions are monotonic and revision-checked. A stale worker cannot move a terminal task back into execution. Each mutable attempt records its worker, lease, idempotency key, optional owned resources and state identities, last progress, failure signature, provider session, and next action. The current code checkpoints provider dispatch, external waits, control requests, provider errors, verification, cost-limit stops, and process exit. Integration adapters must add their own checkpoint and reconciliation evidence.
 
-Recovery first tries to resume the last recorded provider session. If resume is unavailable, it starts a new session with a capsule containing the immutable outcome, current task, constraints, saved decisions, Git state supplied by prior checkpoints, completed evidence, open findings, session identifiers, and one next action. Open-finding text is labelled untrusted. The capsule does not replay the full transcript.
+Recovery first tries to resume the last recorded provider session. If resume is unavailable, it starts a new session with a capsule containing the immutable outcome, current task, constraints, saved decisions, Git state supplied by prior checkpoints, completed evidence, open findings, session identifiers, and one next action. Open-finding text is labelled untrusted. The capsule does not replay the full transcript. When context approaches the provider limit, the supervisor checkpoints completed evidence and requests compaction. An unsupported or failed compaction creates a recovery boundary and continues in a new session from that capsule.
 
-Git, GitHub, and CI remain authoritative for their own records. The standalone GitHub lifecycle adapter and E2E gate reconcile exact remote identities before mutation. They are not yet dispatched by the generic campaign supervisor. Cleanup requires verified ownership and preserves unmerged branches, unique commits, dirty worktrees, and unrelated user state.
+Git, GitHub, and CI remain authoritative for their own records. `skiphow github-deliver` binds one completed runner task to saved GitHub authority, serializes the operation with a process lock, and durably reconciles the pull request, exact-head checks, merge, Issue closure, and remote branch cleanup. It returns explicit external waits and revalidates remote state on replay. The standalone E2E gate exercises the real service path. Cleanup requires verified ownership and preserves unmerged branches, unique commits, dirty worktrees, and unrelated user state.
 
 ## Persistence boundary
 
-The SQLite store redacts recognized tokens, credential assignments, authorization fields, and private-key blocks before serializing controller records. This applies to run and task payloads, journal events, attempts, findings, checkpoints, snapshots, and exports. Redaction is defense in depth, not proof that every possible secret format is covered.
+The SQLite store redacts recognized tokens, credential assignments, authorization fields, and private-key blocks before serializing controller records. This applies to run and task payloads, journal events, attempts, findings, checkpoints, snapshots, route outcomes, security audit records, and exports. Runtime security resolves saved authority, project paths, provider permission mode, and protected-action grants before dispatch. Each decision and provider-session boundary enters a hash-linked compare-and-swap audit chain. Redaction is defense in depth, not proof that every possible secret format is covered.
 
 ## Configuration and persistence
 
@@ -78,4 +78,6 @@ The runner reads v1 project configuration. Explicit setup can migrate it after w
 
 ## Verification
 
-`scripts/check.py` runs deterministic local checks and never starts a model. The GitHub E2E gate and live model harness are separate opt-in commands. Harness v2 binds release runs to a clean exact candidate and the twenty registered scenarios, but it does not provision their fixtures or independently observe final state. Package checks, adapter conformance, GitHub receipts, live behavior receipts, and release claims remain separate evidence.
+Write-capable provider execution requires a trusted project-local verification plan. The supervisor snapshots forbidden paths before dispatch and verifies declared filesystem state, evidence files, and bounded commands afterward. A provider terminal event cannot mark a mutation task complete by itself.
+
+`scripts/check.py` runs deterministic local checks and never starts a model. The GitHub E2E gate and live model harness are separate opt-in commands. Harness v2 binds release runs to a clean exact candidate, provisions isolated synthetic fixtures for all twenty registered scenarios, and grades trusted final-state observations rather than provider self-reports. Package checks, adapter conformance, service receipts, live behavior receipts, and release claims remain separate evidence.

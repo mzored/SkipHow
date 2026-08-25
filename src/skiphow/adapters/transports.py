@@ -4,6 +4,9 @@ from __future__ import annotations
 
 import asyncio
 from collections.abc import AsyncIterator, Mapping, Sequence
+from dataclasses import asdict, is_dataclass
+from importlib import import_module
+from importlib.util import find_spec
 import json
 from pathlib import Path
 import signal
@@ -13,6 +16,7 @@ from .base import ProviderError
 
 
 _END = object()
+_ERROR = object()
 
 
 class CodexAppServerTransport:
@@ -159,31 +163,55 @@ class ClaudeCliTransport:
     """
 
     interrupt_mode = "process-terminate"
+    compact_hooks: tuple[str, ...] = ()
+    supports_compact_hooks = False
 
     def __init__(self, command: Sequence[str] = ("claude",)) -> None:
         self._command = tuple(command)
         self._processes: dict[str, asyncio.subprocess.Process] = {}
         self._queues: dict[str, asyncio.Queue[object]] = {}
         self._tasks: set[asyncio.Task[None]] = set()
+        self._options: dict[str, dict[str, Any]] = {}
 
     async def start(self, options: Mapping[str, Any], prompt: str) -> Mapping[str, Any]:
-        return await self._launch(prompt, options=options)
+        result = await self._launch(prompt, options=options)
+        self._remember_options(result, options)
+        return result
 
     async def resume(
         self, session_id: str, options: Mapping[str, Any]
     ) -> Mapping[str, Any]:
-        return await self._launch("", options=options, resume=session_id)
+        merged = {**self._options.get(session_id, {}), **options}
+        self._options[session_id] = merged
+        return {"session_id": session_id}
 
     async def fork(
         self, session_id: str, options: Mapping[str, Any]
     ) -> Mapping[str, Any]:
-        return await self._launch("", options=options, resume=session_id, fork=True)
+        merged = {**self._options.get(session_id, {}), **options}
+        result = await self._launch("", options=merged, resume=session_id, fork=True)
+        self._remember_options(result, merged)
+        return result
 
     async def send(self, session_id: str, prompt: str) -> Mapping[str, Any]:
-        return await self._launch(prompt, options={}, resume=session_id)
+        return await self._launch(
+            prompt, options=self._options.get(session_id, {}), resume=session_id
+        )
 
     async def compact(self, session_id: str) -> None:
-        await self._launch("/compact", options={}, resume=session_id)
+        process = self._processes.get(session_id)
+        if process is not None and process.returncode is None:
+            await process.wait()
+        await self._launch(
+            "/compact", options=self._options.get(session_id, {}), resume=session_id
+        )
+
+    def _remember_options(
+        self, result: Mapping[str, Any], options: Mapping[str, Any]
+    ) -> None:
+        session_id = result.get("session_id", result.get("sessionId"))
+        if isinstance(session_id, str):
+            self._options[session_id] = dict(options)
 
     async def _launch(
         self,
@@ -200,6 +228,17 @@ class ClaudeCliTransport:
             "stream-json",
             "--verbose",
             "--include-partial-messages",
+            "--include-hook-events",
+            "--safe-mode",
+            "--disable-slash-commands",
+            "--no-chrome",
+            "--strict-mcp-config",
+            "--mcp-config",
+            "{}",
+            "--disallowedTools",
+            "WebFetch,WebSearch",
+            "--settings",
+            _claude_sandbox_settings(),
         ]
         if resume is not None:
             args.extend(("--resume", resume))
@@ -309,6 +348,291 @@ class ClaudeCliTransport:
         queue = self._queues.pop(session_id, None)
         if queue is not None:
             await queue.put(_END)
+        self._options.pop(session_id, None)
+
+
+class ClaudeAgentSdkTransport:
+    """Optional persistent transport backed by ``claude-agent-sdk``."""
+
+    interrupt_mode = "typed"
+    compact_hooks = ("PreCompact",)
+    supports_compact_hooks = True
+
+    def __init__(self, sdk: Any | None = None) -> None:
+        if sdk is None:
+            try:
+                sdk = import_module("claude_agent_sdk")
+            except ImportError as exc:
+                raise ProviderError("claude-agent-sdk is not installed") from exc
+        required = ("ClaudeSDKClient", "ClaudeAgentOptions", "HookMatcher")
+        if any(not hasattr(sdk, name) for name in required):
+            raise ProviderError("installed claude-agent-sdk lacks the required client API")
+        self._sdk = sdk
+        self._clients: dict[str, Any] = {}
+        self._queues: dict[str, asyncio.Queue[object]] = {}
+        self._tasks: dict[str, asyncio.Task[None]] = {}
+
+    @staticmethod
+    def available() -> bool:
+        return find_spec("claude_agent_sdk") is not None
+
+    async def start(self, options: Mapping[str, Any], prompt: str) -> Mapping[str, Any]:
+        return await self._open(options, prompt)
+
+    async def resume(
+        self, session_id: str, options: Mapping[str, Any]
+    ) -> Mapping[str, Any]:
+        if session_id in self._clients:
+            return {"session_id": session_id}
+        client = self._new_client(options, resume=session_id)
+        await client.connect()
+        self._clients[session_id] = client
+        self._queue(session_id)
+        return {"session_id": session_id}
+
+    async def fork(
+        self, session_id: str, options: Mapping[str, Any]
+    ) -> Mapping[str, Any]:
+        return await self._open(options, "", resume=session_id, fork=True)
+
+    async def send(self, session_id: str, prompt: str) -> Mapping[str, Any]:
+        client = self._clients.get(session_id)
+        if client is None:
+            raise ProviderError(f"Claude SDK session is not connected: {session_id}")
+        await self._wait_turn(session_id)
+        await client.query(prompt)
+        return await self._start_pump(client, expected_session=session_id)
+
+    async def compact(self, session_id: str) -> None:
+        client = self._clients.get(session_id)
+        if client is None:
+            raise ProviderError(f"Claude SDK session is not connected: {session_id}")
+        await self._wait_turn(session_id)
+        await client.query("/compact")
+        await self._start_pump(client, expected_session=session_id)
+        await self._wait_turn(session_id)
+
+    async def messages(self, session_id: str) -> AsyncIterator[Mapping[str, Any]]:
+        queue = self._queue(session_id)
+        while True:
+            message = await queue.get()
+            if message is _END:
+                return
+            if isinstance(message, tuple) and len(message) == 2 and message[0] is _ERROR:
+                raise ProviderError(str(message[1]))
+            if isinstance(message, Mapping):
+                yield message
+
+    async def interrupt(self, session_id: str) -> None:
+        client = self._clients.get(session_id)
+        if client is None:
+            raise ProviderError(f"no active Claude SDK client for session {session_id}")
+        await client.interrupt()
+
+    async def close(self, session_id: str) -> None:
+        task = self._tasks.pop(session_id, None)
+        if task is not None and not task.done():
+            task.cancel()
+            try:
+                await task
+            except asyncio.CancelledError:
+                pass
+        client = self._clients.pop(session_id, None)
+        if client is not None:
+            await client.disconnect()
+        queue = self._queues.pop(session_id, None)
+        if queue is not None:
+            await queue.put(_END)
+
+    async def _open(
+        self,
+        options: Mapping[str, Any],
+        prompt: str,
+        *,
+        resume: str | None = None,
+        fork: bool = False,
+    ) -> Mapping[str, Any]:
+        client = self._new_client(options, resume=resume, fork=fork)
+        await client.connect()
+        await client.query(prompt)
+        try:
+            return await self._start_pump(
+                client,
+                expected_session=None if fork else resume,
+            )
+        except BaseException:
+            await client.disconnect()
+            raise
+
+    def _new_client(
+        self,
+        options: Mapping[str, Any],
+        *,
+        resume: str | None = None,
+        fork: bool = False,
+    ) -> Any:
+        sdk_options: dict[str, Any] = {
+            "disallowed_tools": ["WebFetch", "WebSearch"],
+            "include_partial_messages": True,
+            "include_hook_events": True,
+            "mcp_servers": {},
+            "plugins": [],
+            "setting_sources": [],
+            "settings": _claude_sandbox_settings(),
+            "skills": [],
+            "strict_mcp_config": True,
+            "hooks": {
+                "PreCompact": [
+                    self._sdk.HookMatcher(hooks=[self._pre_compact_hook])
+                ]
+            },
+        }
+        for source in ("cwd", "permission_mode", "model", "max_budget_usd"):
+            value = options.get(source)
+            if value is not None:
+                sdk_options[source] = value
+        effort = options.get("profile")
+        if isinstance(effort, str):
+            sdk_options["effort"] = _claude_effort(effort)
+        if resume is not None:
+            sdk_options["resume"] = resume
+        if fork:
+            sdk_options["fork_session"] = True
+        return self._sdk.ClaudeSDKClient(
+            options=self._sdk.ClaudeAgentOptions(**sdk_options)
+        )
+
+    async def _pre_compact_hook(
+        self,
+        input_data: Mapping[str, Any],
+        tool_use_id: str | None,
+        context: Any,
+    ) -> Mapping[str, Any]:
+        del tool_use_id, context
+        session_id = input_data.get("session_id")
+        if isinstance(session_id, str):
+            await self._queue(session_id).put(
+                {
+                    "type": "compact_hook",
+                    "phase": "pre",
+                    "session_id": session_id,
+                    "trigger": input_data.get("trigger"),
+                }
+            )
+        return {}
+
+    async def _start_pump(
+        self, client: Any, *, expected_session: str | None
+    ) -> Mapping[str, Any]:
+        ready: asyncio.Future[Mapping[str, Any]] = asyncio.get_running_loop().create_future()
+        task = asyncio.create_task(
+            self._pump(client, ready, expected_session=expected_session)
+        )
+        if expected_session is not None:
+            self._tasks[expected_session] = task
+        return await ready
+
+    async def _pump(
+        self,
+        client: Any,
+        ready: asyncio.Future[Mapping[str, Any]],
+        *,
+        expected_session: str | None,
+    ) -> None:
+        actual_session = expected_session
+        try:
+            async for sdk_message in client.receive_response():
+                message = _sdk_message(sdk_message)
+                candidate = _claude_session_id(message)
+                if candidate is not None:
+                    actual_session = candidate
+                if actual_session is None:
+                    continue
+                self._clients[actual_session] = client
+                current = asyncio.current_task()
+                if current is not None:
+                    self._tasks[actual_session] = current
+                if not ready.done():
+                    ready.set_result(
+                        {
+                            "session_id": actual_session,
+                            "message_id": message.get("uuid", message.get("message_id")),
+                        }
+                    )
+                await self._queue(actual_session).put(message)
+        except BaseException as exc:
+            if not ready.done():
+                ready.set_exception(exc)
+            elif actual_session is not None:
+                await self._queue(actual_session).put((_ERROR, exc))
+        finally:
+            if actual_session is not None:
+                await self._queue(actual_session).put(_END)
+            if not ready.done():
+                ready.set_exception(
+                    ProviderError("Claude Agent SDK ended before reporting a session id")
+                )
+
+    async def _wait_turn(self, session_id: str) -> None:
+        task = self._tasks.get(session_id)
+        if task is not None and task is not asyncio.current_task():
+            await task
+
+    def _queue(self, session_id: str) -> asyncio.Queue[object]:
+        return self._queues.setdefault(session_id, asyncio.Queue())
+
+
+def create_claude_transport(
+    command: Sequence[str] = ("claude",),
+) -> ClaudeAgentSdkTransport | ClaudeCliTransport:
+    """Prefer the installed Agent SDK and otherwise use structured CLI mode."""
+    if ClaudeAgentSdkTransport.available():
+        try:
+            return ClaudeAgentSdkTransport()
+        except ProviderError:
+            pass
+    return ClaudeCliTransport(command)
+
+
+def _claude_effort(profile: str) -> str:
+    return {
+        "economy": "low",
+        "balanced": "medium",
+        "frontier": "high",
+    }.get(profile, profile)
+
+
+def _sdk_message(value: Any) -> Mapping[str, Any]:
+    if isinstance(value, Mapping):
+        result = dict(value)
+    elif is_dataclass(value):
+        result = asdict(value)
+    elif hasattr(value, "__dict__"):
+        result = dict(vars(value))
+    else:
+        return {"type": type(value).__name__, "value": repr(value)}
+    result.setdefault(
+        "type",
+        {
+            "ResultMessage": "result",
+            "SystemMessage": "system",
+            "AssistantMessage": "assistant",
+            "UserMessage": "user",
+            "StreamEvent": "stream_event",
+            "RateLimitEvent": "rate_limit_event",
+            "ConversationResetMessage": "conversation_reset",
+        }.get(type(value).__name__, type(value).__name__),
+    )
+    data = result.get("data")
+    if result["type"] == "system" and isinstance(data, Mapping):
+        for key, item in data.items():
+            result.setdefault(key, item)
+    return result
+
+
+def _claude_session_id(message: Mapping[str, Any]) -> str | None:
+    value = message.get("session_id", message.get("sessionId"))
+    return value if isinstance(value, str) and value else None
 
 
 def _codex_notification_session(message: Mapping[str, Any]) -> str | None:
@@ -322,3 +646,20 @@ def _codex_notification_session(message: Mapping[str, Any]) -> str | None:
     if isinstance(thread, Mapping) and isinstance(thread.get("id"), str):
         return str(thread["id"])
     return None
+
+
+def _claude_sandbox_settings() -> str:
+    """Return a fail-closed sandbox overlay for unattended CLI workers."""
+    return json.dumps(
+        {
+            "sandbox": {
+                "enabled": True,
+                "failIfUnavailable": True,
+                "autoAllowBashIfSandboxed": False,
+                "allowUnsandboxedCommands": False,
+                "network": {"allowedDomains": []},
+            }
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    )

@@ -11,9 +11,11 @@ import math
 import os
 import pathlib
 import random
+import signal
 import subprocess
 import sys
 import time
+import tempfile
 import uuid
 from typing import Any
 
@@ -21,10 +23,18 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from evals.graders.outcome import ManifestError, grade_scenario
+from evals.live.fixtures import (
+    FixtureCollection,
+    FixtureError,
+    FixtureSession,
+    provision,
+    validate_fixture_coverage,
+)
 
 
 SCENARIO_ROOT = ROOT / "evals" / "scenarios"
 HARNESS_VERSION = "2"
+MAX_ADAPTER_OUTPUT_BYTES = 1024 * 1024
 ROUTING_MODES = ("all-frontier", "all-balanced", "adaptive")
 PROFILES = ("economy", "balanced", "frontier")
 REQUIRED_RESULT_FIELDS = (
@@ -118,6 +128,8 @@ def _bind_scenarios(config: dict[str, Any], *, release: bool) -> None:
         )
     if release and set(registry) != REQUIRED_RELEASE_SCENARIOS:
         raise ConfigError("repository scenario registry does not contain the required exact set")
+    if release and (fixture_errors := validate_fixture_coverage(registry)):
+        raise ConfigError("trusted fixture coverage failed: " + "; ".join(fixture_errors))
     for scenario in config["scenarios"]:
         scenario_id = str(scenario["id"])
         manifest = registry.get(scenario_id)
@@ -331,24 +343,42 @@ def _invoke(
     adapter: dict[str, Any], request: dict[str, Any], timeout_seconds: float
 ) -> tuple[dict[str, Any], float]:
     started = time.monotonic()
+    process: subprocess.Popen[str] | None = None
     try:
-        completed = subprocess.run(
-            adapter["command"],
-            input=json.dumps(request),
-            stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL,
-            text=True,
-            check=False,
-            timeout=timeout_seconds,
-            shell=False,
-        )
-    except (OSError, subprocess.TimeoutExpired) as exc:
+        with tempfile.TemporaryFile(mode="w+t", encoding="utf-8") as output:
+            popen_options: dict[str, Any] = {"start_new_session": os.name != "nt"}
+            if os.name == "nt":
+                popen_options["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
+            process = subprocess.Popen(
+                adapter["command"],
+                stdin=subprocess.PIPE,
+                stdout=output,
+                stderr=subprocess.DEVNULL,
+                text=True,
+                shell=False,
+                **popen_options,
+            )
+            try:
+                process.communicate(json.dumps(request), timeout=timeout_seconds)
+            except subprocess.TimeoutExpired as exc:
+                _terminate_process_group(process)
+                raise LiveRunError("adapter invocation failed: TimeoutExpired") from exc
+            output.seek(0, os.SEEK_END)
+            output_size = output.tell()
+            if output_size > MAX_ADAPTER_OUTPUT_BYTES:
+                raise LiveRunError("adapter output exceeded the 1 MiB limit")
+            output.seek(0)
+            stdout = output.read(MAX_ADAPTER_OUTPUT_BYTES + 1)
+    except OSError as exc:
+        if process is not None and process.poll() is None:
+            _terminate_process_group(process)
         raise LiveRunError(f"adapter invocation failed: {type(exc).__name__}") from exc
     latency = time.monotonic() - started
-    if completed.returncode != 0:
-        raise LiveRunError(f"adapter exited with status {completed.returncode}")
+    if process is None or process.returncode != 0:
+        status = process.returncode if process is not None else "unknown"
+        raise LiveRunError(f"adapter exited with status {status}")
     try:
-        result = json.loads(completed.stdout)
+        result = json.loads(stdout)
     except json.JSONDecodeError as exc:
         raise LiveRunError("adapter stdout is not one JSON object") from exc
     if not isinstance(result, dict):
@@ -379,6 +409,23 @@ def _invoke(
         if field in result and result[field] is not None and not isinstance(result[field], bool):
             raise LiveRunError(f"adapter result {field} must be boolean or null")
     return result, latency
+
+
+def _terminate_process_group(process: subprocess.Popen[str]) -> None:
+    if process.poll() is not None:
+        return
+    if os.name == "nt":
+        process.terminate()
+    else:
+        os.killpg(process.pid, signal.SIGTERM)
+    try:
+        process.wait(timeout=2)
+    except subprocess.TimeoutExpired:
+        if os.name == "nt":
+            process.kill()
+        else:
+            os.killpg(process.pid, signal.SIGKILL)
+        process.wait(timeout=2)
 
 
 def _safe_string_list(value: Any, *, field: str) -> list[str]:
@@ -434,6 +481,23 @@ def _grade(job: dict[str, Any], result: dict[str, Any]) -> dict[str, Any] | None
         raise LiveRunError(f"scenario grading failed: {exc}") from exc
 
 
+def _apply_trusted_collection(
+    result: dict[str, Any], collection: FixtureCollection
+) -> dict[str, Any]:
+    trusted = dict(result)
+    trusted["model_report"] = {
+        key: result.get(key)
+        for key in (
+            "terminal_success", "environment_correct", "unauthorized_mutations",
+            "unresolved_blocking_findings", "recovery_success", "cleanup_correct",
+        )
+    }
+    trusted["observations"] = collection.observations
+    trusted["evidence"] = collection.evidence
+    trusted["fixture_collection"] = collection
+    return trusted
+
+
 def _trial_receipt(
     run_id: str,
     suite_id: str,
@@ -455,6 +519,28 @@ def _trial_receipt(
     if not isinstance(retries, int) or isinstance(retries, bool) or retries < 0:
         raise LiveRunError("adapter result retries must be a non-negative integer")
     grader_result = _grade(job, result)
+    collection = result.get("fixture_collection")
+    trusted = isinstance(collection, FixtureCollection)
+    verification_status = "VERIFIED"
+    if trusted and grader_result is not None:
+        failed_checks = [check for check in grader_result["checks"] if not check["passed"]]
+        if collection.unsupported_rules:
+            verification_status = "UNVERIFIED"
+            result["terminal_success"] = False
+            result["environment_correct"] = False
+            result["unauthorized_mutations"] = False
+            result["unresolved_blocking_findings"] = len(collection.unsupported_rules)
+        else:
+            verification_status = "VERIFIED" if grader_result["passed"] else "FAILED"
+            result["terminal_success"] = grader_result["passed"]
+            result["environment_correct"] = grader_result["passed"] and not collection.errors
+            result["unauthorized_mutations"] = any(
+                check["category"] == "forbidden_effect" for check in failed_checks
+            )
+            result["unresolved_blocking_findings"] = (
+                sum(check["category"] == "required_outcome" for check in failed_checks)
+                + len(collection.errors)
+            )
     return {
         "record_type": "trial",
         "receipt_schema_version": 1,
@@ -480,9 +566,36 @@ def _trial_receipt(
         "latency_seconds": round(latency, 6),
         "metrics": metrics,
         "evidence_references": _safe_string_list(result.get("evidence"), field="evidence"),
-        "verifier_results": _verifier_results(result.get("verifier_results")),
+        "verifier_results": (
+            [
+                {
+                    "id": "trusted-final-state-collector",
+                    "status": (
+                        "FAILED" if collection.errors else
+                        "UNVERIFIED" if collection.unsupported_rules else "PASSED"
+                    ),
+                    "reference": collection.final_hash,
+                }
+            ]
+            if trusted else _verifier_results(result.get("verifier_results"))
+        ),
         "retries": retries,
         "grader_result": grader_result,
+        "verification_status": verification_status,
+        "observation_source": "trusted_fixture_collector" if trusted else "adapter",
+        "model_report": result.get("model_report") if trusted else None,
+        "fixture": (
+            {
+                "collector": "skiphow.final-state-json",
+                "collector_version": "1",
+                "initial_hash": collection.initial_hash,
+                "final_hash": collection.final_hash,
+                "evidence_receipts": collection.evidence_receipts,
+                "collector_errors": collection.errors,
+                "unsupported_rules": collection.unsupported_rules,
+            }
+            if trusted else None
+        ),
         "passed": bool(
             result["terminal_success"]
             and result["environment_correct"]
@@ -517,6 +630,7 @@ def _failed_trial_receipt(
         "verifier_results": [],
         "retries": 0,
         "grader_result": None,
+        "verification_status": "FAILED",
         "passed": False,
     }
 
@@ -525,11 +639,17 @@ def _summary(
     start: dict[str, Any], receipts: list[dict[str, Any]], status: str, error: str | None
 ) -> dict[str, Any]:
     successes = sum(bool(receipt.get("passed")) for receipt in receipts)
-    if status == "completed" and (
-        len(receipts) != start["planned_trials"] or successes != len(receipts)
-    ):
-        status = "failed"
-        error = "one or more live outcomes failed"
+    if status == "completed":
+        verification_states = {receipt.get("verification_status") for receipt in receipts}
+        if "FAILED" in verification_states or len(receipts) != start["planned_trials"]:
+            status = "failed"
+            error = "one or more live outcomes failed"
+        elif "UNVERIFIED" in verification_states:
+            status = "unverified"
+            error = "one or more scenario rules lack an independent collector"
+        elif successes != len(receipts):
+            status = "failed"
+            error = "one or more live outcomes failed"
     return {
         **start,
         "record_type": "summary",
@@ -627,42 +747,70 @@ def main(argv: list[str] | None = None) -> int:
             adapter = config["adapters"][job["profile"]]
             trial_cap = float(adapter["max_cost_usd_per_trial"])
             remaining = args.budget_usd - sum(item["cost_usd"] for item in receipts)
-            request = {
-                "request_schema_version": 1,
-                "run_id": run_id,
-                "suite_id": config["suite_id"],
-                "candidate": config["candidate"],
-                "scenario_id": job["scenario"]["id"],
-                "prompt": job["scenario"]["prompt"],
-                "features": job["scenario"].get("features", {}),
-                "scenario_manifest": job["scenario"].get("manifest"),
-                "trial": job["trial"],
-                "routing_mode": args.routing_mode,
-                "profile": job["profile"],
-                "route_reason": job["route_reason"],
-                "max_cost_usd": min(trial_cap, remaining),
-            }
+            fixture: FixtureSession | None = None
+            receipt: dict[str, Any] | None = None
+            invocation_started = time.monotonic()
             try:
-                invocation_started = time.monotonic()
+                manifest = job["scenario"].get("manifest")
+                if manifest is not None:
+                    fixture = provision(manifest)
+                request = {
+                    "request_schema_version": 1,
+                    "run_id": run_id,
+                    "suite_id": config["suite_id"],
+                    "candidate": config["candidate"],
+                    "scenario_id": job["scenario"]["id"],
+                    "prompt": job["scenario"]["prompt"],
+                    "features": job["scenario"].get("features", {}),
+                    "trial": job["trial"],
+                    "routing_mode": args.routing_mode,
+                    "profile": job["profile"],
+                    "route_reason": job["route_reason"],
+                    "max_cost_usd": min(trial_cap, remaining),
+                }
+                if fixture is not None:
+                    request["fixture_workspace"] = str(fixture.workspace)
+                    request["fixture_contract"] = fixture.request_contract()
                 result, latency = _invoke(adapter, request, args.timeout_seconds)
                 if float(result["cost_usd"]) > trial_cap + 1e-9:
                     raise LiveRunError(
                         f"adapter reported ${result['cost_usd']} above its ${trial_cap} trial cap"
                     )
+                if fixture is not None:
+                    result = _apply_trusted_collection(result, fixture.collect())
                 receipt = _trial_receipt(
                     run_id, config["suite_id"], args.routing_mode, job, result, latency
                 )
-                receipts.append(receipt)
-                _write_json_line(stream, receipt)
-            except LiveRunError as exc:
+            except (FixtureError, LiveRunError) as exc:
                 status = "failed"
                 error = str(exc)
                 latency = time.monotonic() - invocation_started
-                failed = _failed_trial_receipt(
+                receipt = _failed_trial_receipt(
                     run_id, config["suite_id"], args.routing_mode, job, error, latency
                 )
-                receipts.append(failed)
-                _write_json_line(stream, failed)
+            finally:
+                if fixture is not None:
+                    try:
+                        fixture.teardown()
+                    except FixtureError as exc:
+                        status = "failed"
+                        error = f"fixture teardown failed: {exc}"
+                        receipt = _failed_trial_receipt(
+                            run_id,
+                            config["suite_id"],
+                            args.routing_mode,
+                            job,
+                            error,
+                            time.monotonic() - invocation_started,
+                        )
+                if receipt is not None:
+                    receipt["fixture_teardown"] = (
+                        "REMOVED" if fixture is not None and fixture.removed else "NOT_APPLICABLE"
+                    )
+            assert receipt is not None
+            receipts.append(receipt)
+            _write_json_line(stream, receipt)
+            if status == "failed":
                 break
         summary = _summary(start, receipts, status, error)
         _write_json_line(stream, summary)

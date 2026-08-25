@@ -48,9 +48,11 @@ Every routed task records the provider, model, exposed version, profile, route r
 
 Start with simple statistics by task taxonomy and repository. Online learning or a contextual bandit needs enough execution-verified data first. Logs and calibration records must not contain credentials, raw prompts, or unredacted repository content.
 
-## Current implementation boundary
+## Durable execution
 
-`CampaignExecutor` passes a route decision to a provider session and records the reason and verification checkpoint. The catalog and calibration store remain in memory; durable outcome history is not wired into the runner database. Low-weight history is ignored, and exact model versions plus recency decay prevent stale results from acting as current evidence. Routing remains heuristic until durable telemetry and live release comparisons exist.
+The supervisor discovers the provider catalog, chooses an initial route from task features and persisted outcomes, and stores one sticky route per mutable lane. Route records use revision compare-and-swap and bind the provider, model, exposed version, profile, checkpoint, promotion count, and failure signatures. A route can change only at a checkpoint. A verifier failure can promote it once through the discovered stronger routes without oscillating.
+
+Each attempt persists usage, estimated and reported cost, latency, verifier result, retries, promotions, terminal outcome, and the exact route identity. A later run rebuilds version-aware calibration from those durable outcomes. Low-weight or stale history does not become current evidence. This makes routing and recovery deterministic at the runner boundary; it does not prove that adaptive routing improves real-provider cost or quality.
 
 ## Evaluation and acceptance
 
@@ -58,4 +60,4 @@ Routing evidence comes from the opt-in live suite described in [Evaluation and r
 
 Adaptive routing passes its release gate only when it lowers cost against all-`FRONTIER` without a statistically detectable loss in terminal success and without new unauthorized mutations. The `model-routing` scenario checks that cheaper profiles preserve success. The `escalation` scenario checks that a weaker profile failure promotes once, carries a valid checkpoint, and does not oscillate.
 
-Until that evidence exists for the current versions, routing behavior and savings remain unverified. Repository tests can validate route contracts, catalog neutrality, safety floors, bounded promotion, receipt shape, and deterministic graders. They cannot prove live model quality.
+Until that evidence exists for the current versions, adaptive-routing savings remain `UNVERIFIED`. Repository tests validate route contracts, durable calibration, catalog neutrality, safety floors, bounded promotion, receipt shape, and deterministic graders. They cannot prove live model quality.

@@ -4,7 +4,7 @@ All notable changes to this project appear in this file.
 
 ## 0.8.0 (unreleased release candidate)
 
-This candidate is not SkipHow 1.0. Live multi-trial release outcomes, fixture provisioning, routing ablation, and authenticated Claude coverage remain `UNVERIFIED`.
+This candidate is not SkipHow 1.0. Authenticated Claude execution, multi-trial real provider and service outcomes, adaptive-routing ablation, and cross-platform operation remain `UNVERIFIED`.
 
 ### Changed
 
@@ -13,14 +13,18 @@ This candidate is not SkipHow 1.0. Live multi-trial release outcomes, fixture pr
 - Replaced single-item capture routing with batch Intake, raw-record and atom provenance, evidence status, bounded candidate decisions, grouping, work-item shaping, Epic dependency validation, and persistence authority.
 - Expanded GitHub integration around candidate search, provenance, relationships, pull requests, checks, merge policy, and ownership-safe cleanup.
 - Added project configuration schema v2 while retaining v1 reads and reversible explicit migration.
+- Made the Intake CLI run grouping, work-item shaping, bounded candidate disposition, provenance merge, and optional Epic validation before idempotent persistence.
 
 ### Added
 
 - Added the local Python runner with transactional SQLite state, an append-only journal, leases, checkpoints, recovery capsules, cancellation, circuit breaking, and state-derived reconciliation.
 - Added foreground `execute` and single-frontier `worker` supervision, provider-session resume, lease renewal, persisted process-exit checkpoints, external-wait polling, and invocation time and reported-cost ceilings.
 - Added redaction at the runner store boundary so run, task, event, finding, attempt, checkpoint, snapshot, and export payloads do not persist recognized secret forms.
-- Added provider-neutral Codex and Claude adapters, subprocess transports, semantic model routing, outcome calibration, permission profiles, protected-action checks, redaction, and audit records.
-- Added versioned JSON schemas, durable CLI controls, twenty outcome scenarios, deterministic graders, and live eval harness v2 with exact-candidate release mode, provider adapters, grader-bound receipts, and failed-outcome aggregation.
+- Added provider-neutral Codex and Claude adapters, Claude Agent SDK-first transport selection, subprocess fallbacks, context compaction, durable semantic routing and outcome calibration, permission profiles, protected-action checks, redaction, and a compare-and-swap audit chain.
+- Added schema 2 runner migration with a consistent backup, hash-linked journal validation, exact-head snapshot recovery, and startup integrity checks.
+- Added trusted environment verification for write-capable provider tasks and durable, replay-safe `github-deliver` reconciliation.
+- Added versioned JSON schemas, durable CLI controls, twenty outcome scenarios, deterministic graders, and live eval harness v2 with exact-candidate release mode, isolated synthetic fixtures, trusted final-state collectors, grader-bound receipts, and failed-outcome aggregation.
+- Added an executable substrate spike for child-process SQLite recovery and no-model Codex App Server terminate/resume continuity.
 - Added an opt-in GitHub lifecycle gate for an owned disposable private repository. It requires a forced interruption and resume before it writes a gradeable receipt.
 - Added architecture, trust, operations, intake, model-routing, GitHub lifecycle, eval, prior-art, and durable-runtime decision documents.
 

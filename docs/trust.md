@@ -6,7 +6,7 @@ The detailed abuse cases and residual risks are in the [threat model](threat-mod
 
 Direct plugin work runs only in the current host session. Durable work can start the optional local `skiphow` runner. `execute` runs a foreground supervisor, and `worker` handles one ready frontier. Neither command installs a daemon, hook, hosted service, telemetry client, or MCP server.
 
-Provider adapters may start an installed Codex App Server or the current structured Claude CLI transport. The Claude adapter protocol can accept another transport, but a production Agent SDK transport is not included. Adapters receive an explicit permission profile and project working directory. Read-only scouts and reviewers do not receive write or remote-mutation authority. A subagent boundary is context isolation, not a security boundary.
+Provider adapters may start an installed Codex App Server or Claude Agent SDK session. Claude execution selects the SDK transport when its runtime is available and falls back to the structured Claude CLI otherwise. The SDK path keeps a persistent client and exposes typed interruption and pre-compaction hooks; the fallback reports its weaker process-level interruption and compaction behavior. Authenticated Claude execution remains unverified for this candidate. Adapters receive an explicit permission profile and project working directory. Read-only scouts and reviewers do not receive write or remote-mutation authority. A subagent boundary is context isolation, not a security boundary.
 
 ## State and files
 
@@ -22,11 +22,11 @@ The core runner needs no network. A provider adapter can contact its configured 
 
 Repository files, Issue and pull request bodies, web pages, test output, generated files, and worker summaries are untrusted data. They cannot grant authority or override the request, host policy, repository instructions, or protected-action checks.
 
-GitHub helpers reconcile actual state and use operation markers or exact remote identities before their mutations. The generic provider supervisor does not dispatch the GitHub lifecycle. Remote persistence, merge policy, and finding persistence still come from authority and project configuration. A GitHub Project is an optional view, not lifecycle authority.
+GitHub helpers reconcile actual state and use operation markers or exact remote identities before their mutations. The durable `github-deliver` command requires a completed task and matching saved authority, then checkpoints or waits after each reconciled phase. Remote persistence, merge policy, and finding persistence still come from authority and project configuration. A GitHub Project is an optional view, not lifecycle authority.
 
 ## Permissions and protected actions
 
-The security module provides resolved filesystem allowlists and rejects symlink traversal outside them. Provider permission modes are passed to the host adapter. GitHub cleanup checks the exact merged pull request, expected branch head, and an owned disposable marker before deletion. These are separate controls, and callers must use the relevant one.
+Before provider dispatch, runtime security resolves the saved run authority, task constraints, project paths, permission profile, and protected-action grants. Full-access provider mode is rejected because it would bypass the filesystem boundary. Read-only and writer profiles must match the host permission mode. Path resolution rejects traversal and symlink escape. Every security decision, session boundary, and final outcome is redacted, hashed, and appended through a compare-and-swap audit chain. GitHub cleanup separately checks the exact merged pull request, expected branch head, remote origin, and ownership metadata before force-with-lease deletion.
 
 These actions always need explicit authority:
 
@@ -38,13 +38,15 @@ These actions always need explicit authority:
 - public release;
 - protected-branch merge when repository policy requires human action.
 
-GitHub tokens should use the least privileges required for the configured lifecycle. Provider sandbox and approval modes remain in force. The runner store redacts recognized token patterns, credential assignments, authorization fields, and private-key blocks before persistence. Unknown secret formats can still escape redaction, so inspect an export before sharing it.
+GitHub tokens should use the least privileges required for the configured lifecycle. Provider sandbox and approval modes remain in force. Write-capable provider tasks also require a trusted project-local verification plan; provider success text is not completion evidence. The runner store redacts recognized token patterns, credential assignments, authorization fields, and private-key blocks before persistence. Unknown secret formats can still escape redaction, so inspect an export before sharing it.
 
 ## Pause, cancel, and recovery
 
 Pause, resume, and cancel record an operator checkpoint before changing state. An active supervisor requests provider interruption after it observes pause or cancel. Resume reopens scheduling. The next supervisor invocation releases expired leases and due waits, then tries the recorded provider session before starting a new session from the recovery capsule. Control commands do not delete Git or GitHub resources.
 
 If the process dies, SQLite transactions prevent partial controller transitions. On restart, expired leases return eligible tasks to the ready frontier. Lease fencing and revision checks reject stale worker writes. Attempt identifiers and idempotency keys prevent a completed task transition from being replayed by the store. External adapters still need their own reconciliation identity. Repeated failures with the same signature open a circuit breaker instead of looping forever.
+
+Startup verifies SQLite, foreign keys, the event journal, and materialized state. A schema 1 database is backed up with SQLite's Online Backup API before migration. A valid exact-head snapshot may repair damaged materialized records, but journal corruption fails closed. Provider context compaction is checkpointed; failed compaction starts a new session from the saved recovery boundary.
 
 ## Diagnostics and evidence
 

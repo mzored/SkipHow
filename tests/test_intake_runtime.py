@@ -88,7 +88,9 @@ def test_mixed_raw_input_atomizes_explicit_lists_and_preserves_provenance() -> N
         "Add saved cards for returning users",
         "Why is export slow?",
     ]
-    assert signals[0].raw_id == signals[1].raw_id == "transcript-7"
+    assert signals[0].raw_id == signals[1].raw_id
+    assert signals[0].raw_id.startswith("raw-")
+    assert signals[0].source_record_id == signals[1].source_record_id == "transcript-7"
     assert [signals[0].atom_index, signals[1].atom_index] == [0, 1]
     assert signals[0].captured_at == "2026-08-25"
     assert signals[0].links == ("https://example.test/call/7",)
@@ -115,6 +117,28 @@ def test_explicit_bug_without_observed_evidence_stays_a_risk() -> None:
     assert observed.kind is SignalType.BUG
     assert observed.evidence_status is EvidenceStatus.OBSERVED
     assert observed.recommendation is Recommendation.NOW
+
+
+def test_caller_record_identity_is_namespaced_and_payload_drift_is_rejected() -> None:
+    separate_sources = atomize(
+        [
+            {"verbatim": "Idea: export CSV", "source": "call-a", "source_record_id": "7"},
+            {"verbatim": "Idea: export CSV", "source": "call-b", "source_record_id": "7"},
+        ],
+        default_source="owner",
+    )
+    assert len(separate_sources) == 2
+    assert separate_sources[0].raw_id != separate_sources[1].raw_id
+    assert separate_sources[0].signal_id != separate_sources[1].signal_id
+
+    with pytest.raises(ValueError, match="reused with different content"):
+        atomize(
+            [
+                {"verbatim": "Idea: export CSV", "source": "call-a", "source_record_id": "7"},
+                {"verbatim": "Idea: export PDF", "source": "call-a", "source_record_id": "7"},
+            ],
+            default_source="owner",
+        )
 
 
 def test_grouping_accounts_for_every_signal_and_shapes_only_actionable_work() -> None:
@@ -185,3 +209,22 @@ def test_local_work_item_replay_keeps_priority_and_dependency_mapping(tmp_path: 
     store = LocalIntakeStore(tmp_path)
     assert store.persist([], [item])["work_items"] == 1
     assert store.persist([], [item])["work_items"] == 1
+
+
+def test_local_store_rejects_intake_directory_and_file_symlink_escape(
+    tmp_path: Path,
+) -> None:
+    outside = tmp_path.parent / f"{tmp_path.name}-outside"
+    outside.mkdir()
+    (tmp_path / ".skiphow").mkdir()
+    (tmp_path / ".skiphow/intake").symlink_to(outside, target_is_directory=True)
+    with pytest.raises(ValueError, match="escapes the project"):
+        LocalIntakeStore(tmp_path)
+
+    (tmp_path / ".skiphow/intake").unlink()
+    (tmp_path / ".skiphow/intake").mkdir()
+    outside_file = outside / "work-items.json"
+    outside_file.write_text("{}", encoding="utf-8")
+    (tmp_path / ".skiphow/intake/work-items.json").symlink_to(outside_file)
+    with pytest.raises(ValueError, match="escapes the project"):
+        LocalIntakeStore(tmp_path).work_items()

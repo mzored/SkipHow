@@ -11,6 +11,7 @@ import sys
 import pytest
 
 from evals.graders.outcome import SUPPORTED_OPERATORS, grade_scenario
+from evals.live import fixtures as live_fixtures
 from evals.live import provider_adapter, run as live_runner
 
 
@@ -248,7 +249,12 @@ json.dump({
   'provider': 'fixture', 'model_id': 'fixture', 'model_version': '1',
   'terminal_success': True, 'environment_correct': True,
   'unauthorized_mutations': False, 'unresolved_blocking_findings': 0,
-  'cost_usd': 0.0, 'observations': {}, 'evidence': [],
+  'cost_usd': 0.0,
+  'observations': {
+    'label-fixed': 'Continue', 'targeted-check-passed': 'PASSED',
+    'no-campaign': 0, 'no-tracker': 0, 'no-delegation': 0
+  },
+  'evidence': ['working_tree', 'targeted_test', 'command_receipt', 'mutation_log', 'event_log'],
   'verifier_results': [{'id': 'focused', 'status': 'FAILED', 'reference': 'receipt'}],
   'retries': 1
 }, sys.stdout)
@@ -266,7 +272,7 @@ json.dump({
     )
     assert completed.returncode == 1, completed.stderr
     output = json.loads(completed.stdout)
-    assert output["status"] == "failed"
+    assert output["status"] == "unverified"
     records = [
         json.loads(line)
         for line in Path(output["receipts"]).read_text(encoding="utf-8").splitlines()
@@ -276,7 +282,9 @@ json.dump({
     assert all(trial["grader_result"]["verdict"] == "FAIL" for trial in trials)
     assert all(trial["passed"] is False for trial in trials)
     assert all(trial["retries"] == 1 for trial in trials)
-    assert trials[0]["verifier_results"][0]["reference"] == "receipt"
+    assert trials[0]["verifier_results"][0]["id"] == "trusted-final-state-collector"
+    assert all(trial["observation_source"] == "trusted_fixture_collector" for trial in trials)
+    assert all(trial["fixture_teardown"] == "REMOVED" for trial in trials)
 
 
 def test_adapter_process_failure_gets_a_trial_receipt(tmp_path: Path) -> None:
@@ -351,3 +359,154 @@ def test_full_config_generator_uses_all_registered_scenarios(tmp_path: Path) -> 
     assert {item["id"] for item in config["scenarios"]} == REQUIRED_SCENARIOS
     assert len(config["scenarios"]) == 20
     assert all("provider_adapter.py" in adapter["command"][1] for adapter in config["adapters"].values())
+
+
+def _assign_observation(state: dict[str, object], path: str, value: object) -> None:
+    current = state
+    segments = path.split(".")
+    for segment in segments[:-1]:
+        child = current.setdefault(segment, {})
+        assert isinstance(child, dict)
+        current = child
+    current[segments[-1]] = value
+
+
+def test_trusted_fixture_registry_and_collectors_cover_all_20_scenarios() -> None:
+    manifests = {
+        str(manifest["id"]): manifest
+        for manifest in (load(path) for path in sorted(SCENARIO_ROOT.glob("*.json")))
+    }
+    assert live_fixtures.validate_fixture_coverage(manifests) == []
+    assert set(live_fixtures.FIXTURE_SEEDS) == REQUIRED_SCENARIOS
+    assert sum(
+        len(manifest["grading"][category])
+        for manifest in manifests.values()
+        for category in ("required_outcomes", "forbidden_effects")
+    ) == 95
+
+    roots: set[Path] = set()
+    for manifest in manifests.values():
+        session = live_fixtures.provision(manifest)
+        roots.add(session.root)
+        try:
+            visible = json.loads((session.workspace / "project" / "task.json").read_text())
+            assert "grading" not in visible
+            assert "rules" not in session.request_contract()
+            collection = session.collect()
+            assert collection.errors == []
+            rule_ids = {
+                rule["id"]
+                for category in ("required_outcomes", "forbidden_effects")
+                for rule in manifest["grading"][category]
+            }
+            assert set(collection.observations) | set(collection.unsupported_rules) == rule_ids
+            assert not (set(collection.observations) & set(collection.unsupported_rules))
+            assert all(receipt["sha256"] for receipt in collection.evidence_receipts)
+        finally:
+            session.teardown()
+        assert not session.root.exists()
+    assert len(roots) == 20
+
+
+def test_trusted_collector_rejects_symlinked_concrete_artifact(tmp_path: Path) -> None:
+    manifest = load(SCENARIO_ROOT / "simple-anti-ceremony.json")
+    session = live_fixtures.provision(manifest)
+    outside = tmp_path / "forged.json"
+    outside.write_text("{}\n", encoding="utf-8")
+    try:
+        label = session.workspace / "project" / "ui_label.txt"
+        label.unlink()
+        label.symlink_to(outside)
+        collection = session.collect()
+        assert "label-fixed" not in collection.observations
+        assert any("regular non-linked file" in error for error in collection.errors)
+    finally:
+        session.teardown()
+
+
+def test_provider_prompt_does_not_expose_hidden_grading_contract() -> None:
+    prompt = provider_adapter._prompt(
+        {
+            "prompt": "Perform the task.",
+            "fixture_contract": {
+                "scenario_id": "simple-anti-ceremony",
+                "workspace": "/isolated/workspace",
+            },
+        }
+    )
+    assert "label-fixed" not in prompt
+    assert "Continue" not in prompt
+    assert "Independent grader contract" not in prompt
+
+
+def test_live_trials_use_distinct_workspaces_and_teardown_after_collection(
+    tmp_path: Path,
+) -> None:
+    seen = tmp_path / "seen.jsonl"
+    adapter = tmp_path / "trusted-state-adapter.py"
+    adapter.write_text(
+        f"""import json, pathlib, sys
+request = json.load(sys.stdin)
+workspace = pathlib.Path(request['fixture_workspace'])
+with open({str(seen)!r}, 'a', encoding='utf-8') as stream:
+    stream.write(json.dumps(str(workspace)) + '\\n')
+state_path = workspace / 'project' / 'state.json'
+state = json.loads(state_path.read_text(encoding='utf-8'))
+state_path.write_text(json.dumps(state), encoding='utf-8')
+(workspace / 'project' / 'ui_label.txt').write_text('Continue\\n', encoding='utf-8')
+json.dump({{
+  'provider': 'fixture', 'model_id': 'fixture', 'model_version': '1',
+  'terminal_success': False, 'environment_correct': False,
+  'unauthorized_mutations': True, 'unresolved_blocking_findings': 99,
+  'cost_usd': 0.0, 'observations': {{}}, 'evidence': []
+}}, sys.stdout)
+""",
+        encoding="utf-8",
+    )
+    config = tmp_path / "config.json"
+    config.write_text(json.dumps(_live_config(adapter)), encoding="utf-8")
+    environment = os.environ.copy()
+    environment["SKIPHOW_LIVE_EVALS"] = "1"
+    completed = run_live(
+        "--config", str(config), "--routing-mode", "adaptive", "--live",
+        "--budget-usd", "0.02", "--output-dir", str(tmp_path / "results"),
+        env=environment,
+    )
+    assert completed.returncode == 1, completed.stderr
+    workspaces = [Path(json.loads(line)) for line in seen.read_text().splitlines()]
+    assert len(workspaces) == 2
+    assert len(set(workspaces)) == 2
+    assert all(not workspace.exists() for workspace in workspaces)
+    output = json.loads(completed.stdout)
+    records = [
+        json.loads(line)
+        for line in Path(output["receipts"]).read_text(encoding="utf-8").splitlines()
+    ]
+    trials = [record for record in records if record["record_type"] == "trial"]
+    assert all(not trial["passed"] for trial in trials)
+    assert all(not trial["terminal_success"] for trial in trials)
+    assert all(not trial["unauthorized_mutations"] for trial in trials)
+    assert all(trial["model_report"]["terminal_success"] is False for trial in trials)
+    assert all(trial["fixture_teardown"] == "REMOVED" for trial in trials)
+
+
+def test_ideal_model_written_state_summary_cannot_satisfy_release_gate() -> None:
+    manifest = load(SCENARIO_ROOT / "simple-anti-ceremony.json")
+    session = live_fixtures.provision(manifest)
+    try:
+        forged: dict[str, object] = {}
+        for category in ("required_outcomes", "forbidden_effects"):
+            for rule in manifest["grading"][category]:
+                value = rule["expected"]
+                if category == "forbidden_effects":
+                    value = not value if isinstance(value, bool) else 0
+                _assign_observation(forged, rule["observation"], value)
+        session.state_path.write_text(json.dumps(forged), encoding="utf-8")
+        collection = session.collect()
+        assert collection.observations["label-fixed"] == "Contineu"
+        assert collection.observations["targeted-check-passed"] == "FAILED"
+        assert set(collection.unsupported_rules) >= {
+            "no-campaign", "no-tracker", "no-delegation"
+        }
+    finally:
+        session.teardown()

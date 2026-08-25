@@ -21,15 +21,15 @@ The main boundaries are:
 
 | Threat | Consequence | Control | Residual evidence |
 | --- | --- | --- | --- |
-| Prompt injection in repository or remote text | Authority capture or unauthorized mutation | Untrusted-content classification, immutable request, permission profile, protected-action check | Deterministic injection and protected-action scenarios; live behavior `UNVERIFIED` |
+| Prompt injection in repository or remote text | Authority capture or unauthorized mutation | Untrusted-content classification, immutable request, permission profile, protected-action check | Deterministic injection and protected-action scenarios; covered by the multi-trial real-provider evidence gap |
 | Stale or duplicate worker | Repeated mutation or state rollback | Revision compare-and-swap, expiring lease, attempt ID, idempotency key, terminal-state guards | Concurrent claim and stale-worker tests |
-| Crash around external mutation | Duplicate Issue, PR, merge, or deletion | Reconcile before mutation, operation IDs, expected digests, exact head, keyed provenance, force-with-lease | Adapter replay tests; live GitHub kill window `UNVERIFIED` |
+| Crash around external mutation | Duplicate Issue, PR, merge, or deletion | Reconcile before mutation, operation IDs, expected digests, exact head, keyed provenance, force-with-lease | Adapter replay and durable delivery crash-window tests; covered by the multi-trial real-service evidence gap |
 | Path or symlink escape | Read or write outside project | Resolved read/write allowlists, broken-symlink checks, separate worktrees | Filesystem policy tests |
 | Unsafe cleanup | Lost branch, commit, or dirty worktree | Ownership registry, exact remote identity and head, clean-worktree test, merged/no-unique-commit proof | Cleanup refusal and replay tests |
 | Credential disclosure | Token theft through state, log, or receipt | Credentials stay in provider stores, common secret redaction, receipt field allowlist, no prompt logging | Redaction tests; unknown secret formats remain a user review concern |
 | Supply-chain substitution | Malicious dependency or provider executable | Pinned development dependencies, source hashes and licenses, provider executable discovery, no bundled third-party runtime | Local manifest tests; external binary provenance follows host installation |
 | Unauthorized merge or protected action | Production, financial, privacy, or release harm | Conservative merge default, exact protected-action grant, repository protection and approval checks | Policy and adapter tests; production systems are out of test scope |
-| Budget exhaustion or retry loop | Unbounded spend or unattended churn | Saved budget, bounded parallelism, lease, failure signature, circuit breaker, live eval preflight budget | Deterministic routing and circuit tests; provider billing accuracy `UNVERIFIED` |
+| Budget exhaustion or retry loop | Unbounded spend or unattended churn | Saved budget, bounded parallelism, lease, failure signature, circuit breaker, live eval preflight budget | Deterministic routing and circuit tests; covered by the multi-trial real-provider evidence gap |
 | Forged evidence or corrupted state | False completion | Append-only material events, hash-linked security audit, state-derived reconciliation, exact-head evidence | Journal, audit, snapshot, and reconciliation tests |
 
 ## Protected actions

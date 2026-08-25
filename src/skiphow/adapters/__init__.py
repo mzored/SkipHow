@@ -14,13 +14,19 @@ from .base import (
 )
 from .claude import ClaudeAdapter
 from .codex import CodexAdapter
-from .transports import ClaudeCliTransport, CodexAppServerTransport
+from .transports import (
+    ClaudeAgentSdkTransport,
+    ClaudeCliTransport,
+    CodexAppServerTransport,
+    create_claude_transport,
+)
 
 __all__ = [
     "AgentProviderAdapter",
     "Capability",
     "ContextHealth",
     "ClaudeAdapter",
+    "ClaudeAgentSdkTransport",
     "ClaudeCliTransport",
     "CodexAdapter",
     "CodexAppServerTransport",
@@ -31,4 +37,5 @@ __all__ = [
     "SessionRef",
     "StreamEvent",
     "Usage",
+    "create_claude_transport",
 ]

@@ -18,6 +18,6 @@
     "next_action": {"type": "string"},
     "failure_signature": {"type": ["string", "null"]},
     "failure_count": {"type": "integer", "minimum": 0},
-    "schema_version": {"const": 1}
+    "schema_version": {"const": 2}
   }
 }

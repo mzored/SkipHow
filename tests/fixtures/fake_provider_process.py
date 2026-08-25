@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 
 
@@ -85,6 +86,14 @@ def codex() -> None:
 
 
 def claude() -> None:
+    argument_offset = 2
+    if sys.argv[1] == "claude-record":
+        record_path = sys.argv[2]
+        argument_offset = 3
+        with open(record_path, "a", encoding="utf-8") as output:
+            output.write(
+                json.dumps({"argv": sys.argv[argument_offset:], "cwd": os.getcwd()}) + "\n"
+            )
     resume = None
     if "--resume" in sys.argv:
         resume = sys.argv[sys.argv.index("--resume") + 1]
@@ -94,7 +103,7 @@ def claude() -> None:
             "type": "system",
             "subtype": "init",
             "session_id": session_id,
-            "argv": sys.argv[2:],
+            "argv": sys.argv[argument_offset:],
         }
     )
     emit(

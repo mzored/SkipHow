@@ -25,11 +25,28 @@ class DurableRunner:
     def add_task(self, run_id: str, outcome: str, *, task_id: str | None = None, dependencies: tuple[str, ...] = (), constraints: tuple[str, ...] = (), priority: int = 0) -> Task:
         return self.store.add_task(Task.create(run_id, outcome, task_id=task_id, dependencies=dependencies, constraints=constraints, priority=priority))
 
-    def frontier(self, run_id: str, worker_id: str, *, lease_seconds: float = 60, now: float | None = None) -> list[dict[str, Any]]:
+    def frontier(
+        self,
+        run_id: str,
+        worker_id: str,
+        *,
+        lease_seconds: float = 60,
+        now: float | None = None,
+        limit: int | None = None,
+    ) -> list[dict[str, Any]]:
+        claim_limit = self.parallelism if limit is None else limit
+        if claim_limit < 1 or claim_limit > self.parallelism:
+            raise ValueError("frontier limit must be between 1 and runner parallelism")
         self.store.release_expired_leases(now=now)
         self.store.release_due_waits(run_id, now=now)
         self.store.promote_ready(run_id)
-        return self.store.claim_ready(run_id, worker_id, limit=self.parallelism, lease_seconds=lease_seconds, now=now)
+        return self.store.claim_ready(
+            run_id,
+            worker_id,
+            limit=claim_limit,
+            lease_seconds=lease_seconds,
+            now=now,
+        )
 
     def pause(self, run_id: str) -> Run:
         run = self.store.get_run(run_id)

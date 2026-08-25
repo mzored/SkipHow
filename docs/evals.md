@@ -80,9 +80,11 @@ SKIPHOW_LIVE_EVALS=1 python evals/live/run.py \
   --live
 ```
 
-Release mode requires a clean checkout whose revision and component versions match the config. It also requires the exact twenty-scenario registry. The harness rejects a budget below the configured worst case, grades each returned observation set against its registered manifest, records verifier and evidence references through a field allowlist, and fails the aggregate if any planned trial is missing or fails. Results go to `evals/live/results/` by default as append-only JSONL and an atomic summary.
+Release mode requires a clean checkout whose revision and component versions match the config. It also requires the exact twenty-scenario registry and complete code-owned fixture coverage. The harness rejects a budget below the configured worst case and fails the aggregate if any planned trial is missing or fails. Results go to `evals/live/results/` by default as append-only JSONL and an atomic summary.
 
-This is not yet a complete outcome laboratory. The provider adapter passes the fixture description and grading contract to the model, but the harness does not create a fresh fixture for each scenario. It also does not independently inspect the filesystem, process state, or remote systems to produce the observations. A model can therefore report an observation that the grader accepts without an independently provisioned and observed environment. Live release outcomes remain `UNVERIFIED` until fixture setup, isolation, teardown, and trusted observation collectors exist. Claude authentication and live Claude trials are also `UNVERIFIED`.
+Every registered trial gets a fresh harness-owned temporary workspace. The provider receives the request and visible fixture facts, but not grading rules, expected values, or collector internals. Hidden oracle and baseline data stay outside the writable workspace. After the provider exits, versioned collectors inspect concrete files and harness state and create content-addressed evidence receipts. Provider-written summary files and provider-reported observations, evidence, and success claims remain diagnostic. They cannot satisfy the gate. A rule with no independent collector makes the trial `UNVERIFIED`; it can never become a pass through a writable summary. Collector or teardown failure fails the trial, and teardown removes the isolated workspace before the receipt is committed.
+
+The registry maps all twenty scenarios and all ninety-five rules, but the current concrete collectors cover only facts derived from a few synthetic project files and harness capabilities. Rules that require Git or GitHub service history, tracker, deploy, or network audit, conversation and tool events, controller kill and restart, provider compaction, or task-level routing remain `UNVERIFIED` until dedicated collectors exist. Per-trial isolation, cleanup, unsupported-rule handling, and resistance to forged provider summaries have deterministic coverage. Authenticated Claude execution, multi-trial real provider and service outcomes, adaptive-routing ablation, and cross-platform operation remain `UNVERIFIED` for this release candidate.
 
 Use several trials for nondeterministic behavior. A release comparison runs the same real project tasks and fixtures for each candidate configuration. For routing, compare at least:
 
@@ -90,7 +92,7 @@ Use several trials for nondeterministic behavior. A release comparison runs the 
 - all eligible tasks on `BALANCED`;
 - adaptive profile routing with bounded escalation.
 
-The 0.7 prompt-only stack, the thin vNext kernel, and the vNext kernel with runner and routing are separate ablation subjects. Compare correctness and overhead on the same provisioned task set. This ablation has not yet produced release evidence.
+Compare the prompt-only baseline, the thin kernel, and the kernel with durable runner and routing on the same provisioned task set. The adaptive-routing ablation has not yet produced release evidence.
 
 ## GitHub lifecycle gate
 
@@ -122,4 +124,4 @@ A machine-readable receipt must bind every result to:
 
 Receipts must redact secrets and raw prompt content. The live config requires the repository revision and exact plugin, runner, and evaluator versions. The harness copies this candidate identity into its plan, start record, trial requests, and summary. Publish an aggregate only after all required scenarios have enough trials in independently provisioned fixtures. State unavailable checks as `UNVERIFIED`. State failed required checks as failed. Do not claim live model coverage unless the published receipt identifies the exact tested versions and date.
 
-The live harness writes run, scenario hash, profile, model, cost, latency, outcome, evidence references, verifier summaries, retries, grader result, and allowlisted economy fields. Repository tests exercise this format with a fake adapter. Those fixtures prove the harness contract, not provider behavior.
+The live harness writes run, scenario hash, profile, model, cost, latency, outcome, content-addressed evidence references, verifier summaries, retries, grader result, collector identity, and allowlisted economy fields. Repository tests exercise this format with adversarial fake adapters whose self-reported success cannot override trusted collection. These fixtures prove the harness contract, not provider behavior.

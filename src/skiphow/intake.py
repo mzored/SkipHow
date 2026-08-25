@@ -57,6 +57,7 @@ class Signal:
     evidence_status: EvidenceStatus = EvidenceStatus.SPECULATION
     captured_at: str = ""
     links: tuple[str, ...] = ()
+    source_record_id: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         value = asdict(self)
@@ -111,6 +112,45 @@ class WorkItem:
         if self.item_id in self.dependencies:
             raise ValueError("work item cannot depend on itself")
 
+    def to_dict(self) -> dict[str, Any]:
+        value = asdict(self)
+        for name in (
+            "signal_ids",
+            "acceptance",
+            "non_goals",
+            "relationships",
+            "evidence",
+            "dependencies",
+        ):
+            value[name] = list(value[name])
+        return value
+
+    @classmethod
+    def from_dict(cls, value: Mapping[str, Any]) -> WorkItem:
+        sequence_fields = (
+            "signal_ids",
+            "acceptance",
+            "non_goals",
+            "relationships",
+            "evidence",
+            "dependencies",
+        )
+        normalized = dict(value)
+        for name in sequence_fields:
+            raw = normalized.get(name, ())
+            if isinstance(raw, (str, bytes)) or not isinstance(raw, Sequence):
+                raise ValueError(f"work item {name} must be a sequence of strings")
+            if not all(isinstance(item, str) for item in raw):
+                raise ValueError(f"work item {name} must contain strings")
+            normalized[name] = tuple(raw)
+        try:
+            normalized["recommendation"] = Recommendation(
+                normalized.get("recommendation", Recommendation.INVESTIGATE)
+            )
+            return cls(**normalized)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("invalid stored work item") from exc
+
 
 def _stable_id(source: str, verbatim: str, context: str) -> str:
     digest = hashlib.sha256(f"{source}\0{verbatim}\0{context}".encode()).hexdigest()
@@ -119,6 +159,13 @@ def _stable_id(source: str, verbatim: str, context: str) -> str:
 
 def _raw_id(source: str, verbatim: str, context: str) -> str:
     digest = hashlib.sha256(f"{source}\0{verbatim}\0{context}".encode()).hexdigest()
+    return f"raw-{digest[:16]}"
+
+
+def _source_record_raw_id(source: str, source_record_id: str) -> str:
+    digest = hashlib.sha256(
+        f"source-record\0{source}\0{source_record_id}".encode()
+    ).hexdigest()
     return f"raw-{digest[:16]}"
 
 
@@ -196,7 +243,7 @@ def atomize(
     if isinstance(records, (str, Mapping)):
         records = [records]
     signals: list[Signal] = []
-    seen: set[str] = set()
+    seen: dict[str, Signal] = {}
     for record in records:
         if isinstance(record, str):
             item = {"verbatim": record}
@@ -245,7 +292,11 @@ def atomize(
             not isinstance(supplied_raw_id, str) or not supplied_raw_id.strip()
         ):
             raise ValueError("source_record_id must be a non-empty string")
-        raw_id = supplied_raw_id or _raw_id(source, verbatim, context)
+        raw_id = (
+            _source_record_raw_id(source, supplied_raw_id)
+            if supplied_raw_id is not None
+            else _raw_id(source, verbatim, context)
+        )
         atoms = _atoms(verbatim)
         for atom_index, atom in enumerate(atoms):
             signal_id = (
@@ -253,9 +304,6 @@ def atomize(
                 if supplied_raw_id is not None or len(atoms) > 1
                 else _stable_id(source, atom, context)
             )
-            if signal_id in seen:
-                continue
-            seen.add(signal_id)
             requested_kind = item.get("kind")
             kind = SignalType(requested_kind) if requested_kind else classify(atom, evidence)
             # A report without an observation is a risk to investigate, even if its
@@ -268,14 +316,22 @@ def atomize(
                 if requested_recommendation
                 else recommend(kind, confidence, evidence)
             )
-            signals.append(
-                Signal(
-                    signal_id, source, atom, context, evidence, confidence, kind,
-                    disposition, raw_id, atom_index,
-                    EvidenceStatus.OBSERVED if evidence else EvidenceStatus.SPECULATION,
-                    captured_at, links,
-                )
+            signal = Signal(
+                signal_id, source, atom, context, evidence, confidence, kind,
+                disposition, raw_id, atom_index,
+                EvidenceStatus.OBSERVED if evidence else EvidenceStatus.SPECULATION,
+                captured_at, links, supplied_raw_id or "",
             )
+            current = seen.get(signal_id)
+            if current is not None:
+                if current != signal:
+                    identity = supplied_raw_id or "derived raw record"
+                    raise ValueError(
+                        f"raw signal identity was reused with different content: {identity}"
+                    )
+                continue
+            seen[signal_id] = signal
+            signals.append(signal)
     return signals
 
 
@@ -472,11 +528,38 @@ class LocalIntakeStore:
     """Idempotent project-local fallback for signals and actionable work items."""
 
     def __init__(self, root: Path):
-        self.root = root.resolve() / ".skiphow" / "intake"
+        self.project_root = root.resolve()
+        self._configured_root = self.project_root / ".skiphow" / "intake"
+        self._root()
 
-    def persist(self, signals: Sequence[Signal], items: Sequence[WorkItem] = ()) -> dict[str, int]:
-        self.root.mkdir(parents=True, exist_ok=True)
-        signal_path = self.root / "signals.jsonl"
+    def _inside_project(self, path: Path) -> Path:
+        resolved = path.resolve(strict=False)
+        try:
+            resolved.relative_to(self.project_root)
+        except ValueError as exc:
+            raise ValueError("local intake store escapes the project") from exc
+        return resolved
+
+    def _root(self) -> Path:
+        return self._inside_project(self._configured_root)
+
+    @property
+    def root(self) -> Path:
+        """Resolved local ledger directory, retained for API compatibility."""
+        return self._root()
+
+    def _path(self, name: str) -> Path:
+        return self._inside_project(self._root() / name)
+
+    def persist(
+        self,
+        signals: Sequence[Signal],
+        items: Sequence[WorkItem] = (),
+        *,
+        provenance_updates: Sequence[WorkItem] = (),
+    ) -> dict[str, int]:
+        self._root().mkdir(parents=True, exist_ok=True)
+        signal_path = self._path("signals.jsonl")
         stored_signals = self._signals(signal_path)
         added: list[Signal] = []
         for signal in signals:
@@ -487,23 +570,43 @@ class LocalIntakeStore:
             if current is None:
                 stored_signals[signal.signal_id] = value
                 added.append(signal)
-        items_path = self.root / "work-items.json"
+        items_path = self._path("work-items.json")
         stored = self._items(items_path)
         for item in items:
             current = stored.get(item.item_id)
-            value = asdict(item)
-            value["signal_ids"] = list(item.signal_ids)
-            value["acceptance"] = list(item.acceptance)
-            value["non_goals"] = list(item.non_goals)
-            value["relationships"] = list(item.relationships)
-            value["evidence"] = list(item.evidence)
-            value["dependencies"] = list(item.dependencies)
+            value = item.to_dict()
             if current is not None and current != value:
                 raise ValueError(f"work item identity collision: {item.item_id}")
             stored[item.item_id] = value
+        for update in provenance_updates:
+            current_value = stored.get(update.item_id)
+            if current_value is None:
+                raise ValueError(f"provenance target does not exist: {update.item_id}")
+            current = WorkItem.from_dict(current_value)
+            immutable = (
+                "title",
+                "outcome",
+                "why",
+                "acceptance",
+                "non_goals",
+                "parent_id",
+                "dependencies",
+                "is_epic",
+            )
+            if any(getattr(current, name) != getattr(update, name) for name in immutable):
+                raise ValueError(f"provenance update changes work item scope: {update.item_id}")
+            merged = replace(
+                current,
+                signal_ids=tuple(dict.fromkeys((*current.signal_ids, *update.signal_ids))),
+                evidence=tuple(dict.fromkeys((*current.evidence, *update.evidence))),
+                relationships=tuple(
+                    dict.fromkeys((*current.relationships, *update.relationships))
+                ),
+            )
+            stored[update.item_id] = merged.to_dict()
         # Validate both ledgers before replacing either file. Exact replay is a no-op.
         if added:
-            temporary = signal_path.with_suffix(".jsonl.tmp")
+            temporary = self._path("signals.jsonl.tmp")
             temporary.write_text(
                 "".join(
                     json.dumps(value, sort_keys=True, ensure_ascii=False) + "\n"
@@ -512,11 +615,16 @@ class LocalIntakeStore:
                 encoding="utf-8",
             )
             temporary.replace(signal_path)
-        if items:
-            temporary = items_path.with_suffix(".json.tmp")
+        if items or provenance_updates:
+            temporary = self._path("work-items.json.tmp")
             temporary.write_text(json.dumps(stored, indent=2, sort_keys=True, ensure_ascii=False) + "\n", encoding="utf-8")
             temporary.replace(items_path)
         return {"signals_added": len(added), "signals_total": len(stored_signals), "work_items": len(stored)}
+
+    def work_items(self) -> list[WorkItem]:
+        """Read the local candidate set without creating the intake directory."""
+        values = self._items(self._path("work-items.json"))
+        return [WorkItem.from_dict(values[item_id]) for item_id in sorted(values)]
 
     @staticmethod
     def _signals(path: Path) -> dict[str, dict[str, Any]]:

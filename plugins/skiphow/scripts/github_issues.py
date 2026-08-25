@@ -277,9 +277,25 @@ def ensure_issue(
     """Reconcile one caller-authorized create operation by a durable identity."""
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}", operation_id):
         raise GitHubError("operation_id must be a stable non-secret identifier")
+    relationships = tuple(
+        sorted(
+            (relation, other)
+            for relation, other in (
+                ("parent", parent),
+                ("blocked_by", blocked_by),
+                ("blocking", blocking),
+            )
+            if other is not None
+        )
+    )
     digest = hashlib.sha256(
         json.dumps(
-            {"kind": kind, "title": title, "body": body},
+            {
+                "kind": kind,
+                "title": title,
+                "body": body,
+                "relationships": relationships,
+            },
             ensure_ascii=False,
             sort_keys=True,
         ).encode()
@@ -291,29 +307,33 @@ def ensure_issue(
             run(
                 [
                     "gh",
-                    "issue",
-                    "list",
-                    "--repo",
-                    repo,
-                    "--state",
-                    "all",
-                    "--search",
-                    f'"skiphow-operation:{operation_id}:" in:body',
-                    "--limit",
-                    "10",
-                    "--json",
-                    "number,title,body,url",
+                    "api",
+                    f"repos/{repo}/issues",
+                    "--method",
+                    "GET",
+                    "-f",
+                    "state=all",
+                    "-f",
+                    "per_page=100",
+                    "--paginate",
+                    "--slurp",
                 ]
             )
         )
     except json.JSONDecodeError as exc:
-        raise GitHubError("gh returned invalid operation search JSON") from exc
+        raise GitHubError("gh returned invalid operation listing JSON") from exc
     if not isinstance(rows, list):
-        raise GitHubError("gh returned an unexpected operation search result")
+        raise GitHubError("gh returned an unexpected operation listing result")
+    if rows and all(isinstance(page, list) for page in rows):
+        rows = [row for page in rows for row in page]
     matches = [
         row
         for row in rows
-        if isinstance(row, dict) and prefix in str(row.get("body", ""))
+        if (
+            isinstance(row, dict)
+            and "pull_request" not in row
+            and prefix in str(row.get("body", ""))
+        )
     ]
     if len(matches) > 1:
         raise GitHubError("operation identity is already attached to multiple issues")
@@ -322,10 +342,10 @@ def ensure_issue(
         row = matches[0]
         if marker not in str(row.get("body", "")):
             raise GitHubError("operation identity was reused with a different payload")
-        url = row.get("url")
+        url = row.get("html_url") or row.get("url")
         number = row.get("number")
         if not isinstance(url, str) or not isinstance(number, int):
-            raise GitHubError("operation search returned an incomplete issue")
+            raise GitHubError("operation listing returned an incomplete issue")
     else:
         if not allow_create:
             return IssueMutation("NOT_FOUND", "", ())
@@ -347,7 +367,7 @@ def ensure_issue(
 
 
 def create_relationship(repo: str, issue: int, relation: str, other: int) -> str:
-    """Create a native Issue relationship, or report an unsupported capability."""
+    """Create a native Issue relationship, or preserve a marked linked reference."""
     if issue == other:
         raise GitHubError("an issue cannot relate to itself")
     if relation == "parent":
@@ -368,9 +388,9 @@ def create_relationship(repo: str, issue: int, relation: str, other: int) -> str
     try:
         existing = json.loads(run(["gh", "api", endpoint, "--paginate", "--slurp"]))
     except (GitHubError, json.JSONDecodeError):
-        return "UNVERIFIED"
+        return _fallback_relationship_reference(repo, issue, relation, other)
     if not isinstance(existing, list):
-        return "UNVERIFIED"
+        return _fallback_relationship_reference(repo, issue, relation, other)
     if existing and all(isinstance(page, list) for page in existing):
         existing = [row for page in existing for row in page]
     if any(
@@ -384,10 +404,10 @@ def create_relationship(repo: str, issue: int, relation: str, other: int) -> str
             operation="gh issue API",
         )
     except GitHubError:
-        return "UNVERIFIED"
+        return _fallback_relationship_reference(repo, issue, relation, other)
     database_id = member_data.get("id")
     if not isinstance(database_id, int):
-        return "UNVERIFIED"
+        return _fallback_relationship_reference(repo, issue, relation, other)
     try:
         run(
             [
@@ -401,8 +421,65 @@ def create_relationship(repo: str, issue: int, relation: str, other: int) -> str
             ]
         )
     except GitHubError:
-        return "UNVERIFIED"
+        return _fallback_relationship_reference(repo, issue, relation, other)
     return "LINKED"
+
+
+def _fallback_relationship_reference(
+    repo: str, issue: int, relation: str, other: int
+) -> str:
+    """Best-effort fallback that never claims a native relationship was created."""
+    labels = {
+        "parent": "Parent reference",
+        "subissue": "Sub-issue reference",
+        "blocked_by": "Blocked-by reference",
+        "blocking": "Blocking reference",
+    }
+    marker = f"<!-- skiphow-relationship-reference:{relation}:{other} -->"
+    try:
+        comments = json.loads(
+            run(
+                [
+                    "gh",
+                    "api",
+                    f"repos/{repo}/issues/{issue}/comments",
+                    "--paginate",
+                    "--slurp",
+                ]
+            )
+        )
+        if not isinstance(comments, list):
+            return "UNVERIFIED"
+        if comments and all(isinstance(page, list) for page in comments):
+            comments = [row for page in comments for row in page]
+        if any(
+            isinstance(row, dict) and marker in str(row.get("body", ""))
+            for row in comments
+        ):
+            return "UNVERIFIED"
+        reference = f"https://github.com/{repo}/issues/{other}"
+        run(
+            [
+                "gh",
+                "issue",
+                "comment",
+                str(issue),
+                "--repo",
+                repo,
+                "--body",
+                "\n".join(
+                    [
+                        marker,
+                        f"{labels[relation]}: {reference}",
+                        "",
+                        "Native relationship status: UNVERIFIED",
+                    ]
+                ),
+            ]
+        )
+    except (GitHubError, json.JSONDecodeError):
+        pass
+    return "UNVERIFIED"
 
 
 def update_issue(

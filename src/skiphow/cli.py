@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+from collections import Counter
+from dataclasses import replace
 import json
 import os
 from pathlib import Path
@@ -15,12 +17,14 @@ from typing import Any, Sequence
 from . import __version__
 from .adapters import (
     ClaudeAdapter,
+    ClaudeAgentSdkTransport,
     ClaudeCliTransport,
     CodexAdapter,
     CodexAppServerTransport,
     ModelInfo,
     PermissionMode,
     ProviderError,
+    create_claude_transport,
 )
 from .config import (
     ConfigError,
@@ -28,11 +32,30 @@ from .config import (
     load_personal_config,
     load_project_config,
 )
-from .intake import LocalIntakeStore, atomize
+from .intake import (
+    Candidate,
+    DuplicateDisposition,
+    LocalIntakeStore,
+    Recommendation,
+    WorkItem,
+    actionable_work_items,
+    atomize,
+    decide_candidate,
+    find_candidates,
+    group_signals,
+    map_epic,
+)
+from .github_delivery import (
+    DeliveryError,
+    DeliveryPlan,
+    GhDeliveryBackend,
+    GitHubDeliveryCoordinator,
+)
 from .model_routing import SemanticProfile
 from .runner import DurableRunner
 from .schemas import RUN_TERMINAL
-from .supervisor import CampaignSupervisor, SupervisionLimits, route_provider_models
+from .supervisor import CampaignSupervisor, SupervisionLimits, route_provider_catalog
+from .verification import EnvironmentVerifier
 
 
 def _database(project: Path, explicit: str | None) -> Path:
@@ -64,6 +87,226 @@ def _write_json(path: Path, value: dict[str, Any]) -> None:
     temporary.replace(path)
 
 
+def _intake_candidates(
+    item: WorkItem,
+    signals_by_id: dict[str, Any],
+    existing: Sequence[WorkItem],
+) -> list[Candidate]:
+    candidates: dict[str, Candidate] = {}
+    for signal_id in item.signal_ids:
+        for candidate in find_candidates(signals_by_id[signal_id], existing):
+            current = candidates.get(candidate.item_id)
+            if current is None or candidate.score > current.score:
+                candidates[candidate.item_id] = candidate
+    return sorted(candidates.values(), key=lambda value: (-value.score, value.item_id))[:20]
+
+
+def _intake_epic(value: Any, children: Sequence[WorkItem]) -> tuple[WorkItem, tuple[WorkItem, ...]]:
+    if not isinstance(value, dict):
+        raise ValueError("intake epic must be an object")
+    child_ids_value = value.get("children", [item.item_id for item in children])
+    if isinstance(child_ids_value, (str, bytes)) or not isinstance(child_ids_value, list):
+        raise ValueError("intake epic children must be a list of work item IDs")
+    by_id = {item.item_id: item for item in children}
+    if not all(isinstance(item_id, str) and item_id in by_id for item_id in child_ids_value):
+        raise ValueError("intake epic refers to an unavailable child")
+    selected = [by_id[item_id] for item_id in child_ids_value]
+    acceptance = value.get("acceptance", [])
+    if isinstance(acceptance, (str, bytes)) or not isinstance(acceptance, list):
+        raise ValueError("intake epic acceptance must be a list of strings")
+    if not all(isinstance(entry, str) and entry.strip() for entry in acceptance):
+        raise ValueError("intake epic acceptance must contain non-empty strings")
+    non_goals = value.get("non_goals", [])
+    if isinstance(non_goals, (str, bytes)) or not isinstance(non_goals, list):
+        raise ValueError("intake epic non_goals must be a list of strings")
+    if not all(isinstance(entry, str) for entry in non_goals):
+        raise ValueError("intake epic non_goals must contain strings")
+    epic = WorkItem(
+        item_id=value.get("item_id", ""),
+        title=value.get("title", ""),
+        signal_ids=tuple(
+            dict.fromkeys(signal_id for item in selected for signal_id in item.signal_ids)
+        ),
+        outcome=value.get("outcome", ""),
+        why=value.get("why", ""),
+        acceptance=tuple(acceptance),
+        non_goals=tuple(non_goals),
+        recommendation=Recommendation(value.get("recommendation", "INVESTIGATE")),
+    )
+    dependencies = value.get("dependencies", {})
+    if not isinstance(dependencies, dict):
+        raise ValueError("intake epic dependencies must be an object")
+    return map_epic(epic, selected, dependencies=dependencies)
+
+
+def _run_intake(args: argparse.Namespace) -> dict[str, Any]:
+    project_config = load_project_config(args.project_root)
+    if project_config.tracker == "github":
+        raise ConfigError(
+            "the configured GitHub tracker requires the SkipHow plugin Intake workflow; "
+            "the local CLI will not substitute .skiphow/intake"
+        )
+    if project_config.tracker == "none" and args.persist:
+        raise ConfigError("intake persistence is disabled by tracker=none")
+    payload = json.loads(args.input.read_text(encoding="utf-8"))
+    if isinstance(payload, list):
+        records: Any = payload
+        decisions_value: Any = []
+        epic_value: Any = None
+    elif isinstance(payload, dict):
+        if "signals" not in payload:
+            raise ValueError("intake object must contain signals")
+        records = payload["signals"]
+        decisions_value = payload.get("decisions", [])
+        epic_value = payload.get("epic")
+    else:
+        raise ValueError("intake input must be a JSON array or object")
+    if not isinstance(decisions_value, list):
+        raise ValueError("intake decisions must be a list")
+
+    signals = atomize(records, default_source=args.source)
+    signals_by_id = {signal.signal_id: signal for signal in signals}
+    groups = group_signals(signals)
+    proposals = actionable_work_items(signals, groups)
+    store = (
+        LocalIntakeStore(args.project_root)
+        if project_config.tracker != "none"
+        else None
+    )
+    existing = store.work_items() if store is not None else []
+    existing_by_id = {item.item_id: item for item in existing}
+
+    decisions: dict[str, dict[str, Any]] = {}
+    for raw in decisions_value:
+        if not isinstance(raw, dict) or not isinstance(raw.get("item_id"), str):
+            raise ValueError("every intake decision needs a work item ID")
+        item_id = raw["item_id"]
+        if item_id in decisions:
+            raise ValueError(f"duplicate intake decision: {item_id}")
+        decisions[item_id] = raw
+
+    statuses: dict[str, str] = {}
+    candidate_output: dict[str, list[dict[str, Any]]] = {}
+    selected: list[WorkItem] = []
+    provenance_updates: list[WorkItem] = []
+    for item in proposals:
+        candidates = _intake_candidates(item, signals_by_id, existing)
+        candidate_output[item.item_id] = [
+            {"item_id": candidate.item_id, "title": candidate.title, "score": candidate.score}
+            for candidate in candidates
+        ]
+        current = existing_by_id.get(item.item_id)
+        if current is not None:
+            comparable = (
+                replace(current, parent_id=None, dependencies=(), is_epic=False)
+                if epic_value is not None
+                else current
+            )
+            if comparable.to_dict() != item.to_dict():
+                raise ValueError(f"work item identity collision: {item.item_id}")
+            statuses[item.item_id] = "UNCHANGED"
+            selected.append(item)
+            continue
+        raw_decision = decisions.pop(item.item_id, None)
+        if raw_decision is None:
+            if candidates:
+                statuses[item.item_id] = "UNRESOLVED"
+                continue
+            statuses[item.item_id] = "CREATE"
+            selected.append(item)
+            continue
+        disposition = DuplicateDisposition(raw_decision.get("disposition"))
+        candidate_item_id = raw_decision.get("candidate_item_id")
+        if candidate_item_id is not None and not isinstance(candidate_item_id, str):
+            raise ValueError("candidate_item_id must be a string")
+        reason = raw_decision.get("reason")
+        if not isinstance(reason, str):
+            raise ValueError("intake decision needs a reason")
+        decide_candidate(
+            signals_by_id[item.signal_ids[0]],
+            candidates,
+            candidate_item_id,
+            disposition,
+            reason,
+        )
+        if disposition in {DuplicateDisposition.DUPLICATE, DuplicateDisposition.UPDATE}:
+            target = existing_by_id[candidate_item_id]
+            provenance_updates.append(
+                replace(
+                    target,
+                    signal_ids=tuple(dict.fromkeys((*target.signal_ids, *item.signal_ids))),
+                    evidence=tuple(dict.fromkeys((*target.evidence, *item.evidence))),
+                    relationships=tuple(
+                        dict.fromkeys((*target.relationships, f"{disposition.value.lower()}:{item.item_id}"))
+                    ),
+                )
+            )
+            statuses[item.item_id] = disposition.value
+        elif disposition is DuplicateDisposition.NEEDS_RESEARCH:
+            statuses[item.item_id] = "UNRESOLVED"
+        else:
+            if disposition is DuplicateDisposition.RELATED and candidate_item_id is not None:
+                item = replace(
+                    item,
+                    relationships=tuple(
+                        dict.fromkeys((*item.relationships, f"related:{candidate_item_id}"))
+                    ),
+                )
+            statuses[item.item_id] = disposition.value
+            selected.append(item)
+    if decisions:
+        raise ValueError(f"intake decision refers to an unknown proposal: {sorted(decisions)[0]}")
+
+    epic_summary: dict[str, Any] | None = None
+    if epic_value is not None:
+        epic, mapped = _intake_epic(epic_value, selected)
+        selected_by_id = {item.item_id: item for item in selected}
+        for child in mapped:
+            selected_by_id[child.item_id] = child
+        selected = list(selected_by_id.values())
+        selected.append(epic)
+        statuses[epic.item_id] = (
+            "UNCHANGED" if epic.item_id in existing_by_id else "CREATE"
+        )
+        epic_summary = {
+            "item_id": epic.item_id,
+            "children": [item.item_id for item in mapped],
+            "dependencies": {item.item_id: list(item.dependencies) for item in mapped},
+        }
+
+    result: dict[str, Any] = {
+        "persisted": False,
+        "count": len(signals),
+        "signals": [signal.to_dict() for signal in signals],
+        "work_items": [item.to_dict() for item in proposals],
+        "candidates": candidate_output,
+        "dispositions": dict(sorted(statuses.items())),
+        "epic": epic_summary,
+        "summary": {
+            "signals": len(signals),
+            "signal_types": dict(sorted(Counter(signal.kind.value for signal in signals).items())),
+            "observed": sum(bool(signal.observed_evidence) for signal in signals),
+            "speculative": sum(not signal.observed_evidence for signal in signals),
+            "groups": len(groups),
+            "actionable": len(proposals),
+            "dispositions": dict(sorted(Counter(statuses.values()).items())),
+            "recommendations": dict(
+                sorted(Counter(item.recommendation.value for item in proposals).items())
+            ),
+        },
+    }
+    if args.persist:
+        if store is None:
+            raise ConfigError("intake persistence is disabled")
+        result["store"] = store.persist(
+            signals,
+            selected,
+            provenance_updates=provenance_updates,
+        )
+        result["persisted"] = True
+    return result
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="skiphow")
     parser.add_argument("--project-root", type=Path, default=Path.cwd())
@@ -91,7 +334,11 @@ def build_parser() -> argparse.ArgumentParser:
     start.add_argument("--parallelism", type=int, default=1)
 
     intake = commands.add_parser("intake", help="atomize and optionally persist product signals")
-    intake.add_argument("input", type=Path, help="JSON array of strings or signal objects")
+    intake.add_argument(
+        "input",
+        type=Path,
+        help="JSON signal array or intake object with signals, decisions, and optional Epic",
+    )
     intake.add_argument("--source", default="owner-request")
     intake.add_argument("--persist", action="store_true", help="write the project-local intake ledger")
 
@@ -102,6 +349,28 @@ def build_parser() -> argparse.ArgumentParser:
     add.add_argument("--depends-on", action="append", default=[])
     add.add_argument("--constraint", action="append", default=[])
     add.add_argument("--priority", type=int, default=0)
+
+    delivery = commands.add_parser(
+        "github-deliver",
+        help="reconcile one authorized campaign delivery through GitHub",
+    )
+    delivery.add_argument("run_id")
+    delivery.add_argument("--operation-id", required=True)
+    delivery.add_argument("--task-id", required=True)
+    delivery.add_argument("--repo", required=True)
+    delivery.add_argument("--issue", required=True, type=int)
+    delivery.add_argument("--branch", required=True)
+    delivery.add_argument("--base", default="main")
+    delivery.add_argument("--expected-head", required=True)
+    delivery.add_argument("--owner", required=True)
+    delivery.add_argument("--title", required=True)
+    delivery.add_argument("--body", required=True)
+    delivery.add_argument("--required-check", action="append", default=[])
+    delivery.add_argument(
+        "--merge-policy",
+        required=True,
+        choices=("when_green", "when_green_and_approved"),
+    )
 
     for name in ("execute", "worker"):
         execute = commands.add_parser(
@@ -130,6 +399,11 @@ def build_parser() -> argparse.ArgumentParser:
             "--permissions",
             choices=tuple(mode.value for mode in PermissionMode),
             default=PermissionMode.WORKSPACE_WRITE.value,
+        )
+        execute.add_argument(
+            "--verification-plan",
+            type=Path,
+            help="trusted JSON environment checks, required for write-capable execution",
         )
 
     for name in ("status", "pause", "resume", "cancel", "reconcile", "export"):
@@ -199,19 +473,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             _emit({"project_config": str(project_path), "backup": backup, "personal_config_written": personal_written})
             return 0
         if args.command == "intake":
-            records = json.loads(args.input.read_text(encoding="utf-8"))
-            if not isinstance(records, list):
-                raise ValueError("intake input must be a JSON array")
-            signals = atomize(records, default_source=args.source)
-            result: dict[str, Any] = {
-                "signals": [signal.to_dict() for signal in signals],
-                "count": len(signals),
-                "persisted": False,
-            }
-            if args.persist:
-                result["store"] = LocalIntakeStore(args.project_root).persist(signals)
-                result["persisted"] = True
-            _emit(result)
+            _emit(_run_intake(args))
             return 0
         runner = _runner(args)
         if args.command == "start":
@@ -235,6 +497,26 @@ def main(argv: Sequence[str] | None = None) -> int:
                 priority=args.priority,
             )
             _emit(task.to_dict())
+        elif args.command == "github-deliver":
+            plan = DeliveryPlan(
+                operation_id=args.operation_id,
+                task_id=args.task_id,
+                repo=args.repo,
+                issue=args.issue,
+                branch=args.branch,
+                base=args.base,
+                expected_head=args.expected_head,
+                owner=args.owner,
+                title=args.title,
+                body=args.body,
+                required_checks=tuple(args.required_check),
+                merge_policy=args.merge_policy,
+            )
+            coordinator = GitHubDeliveryCoordinator(
+                runner.store,
+                GhDeliveryBackend(args.project_root),
+            )
+            _emit(coordinator.advance(args.run_id, plan))
         elif args.command == "status":
             _emit(runner.status(args.run_id))
         elif args.command == "pause":
@@ -255,6 +537,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
     except (
         ConfigError,
+        DeliveryError,
         ProviderError,
         ValueError,
         KeyError,
@@ -294,8 +577,22 @@ async def _supervise(
         personal.max_cost_per_run,
     )
     provider_name = _provider_name(args.provider)
+    permission_mode = PermissionMode(args.permissions)
+    verifier = None
+    if args.verification_plan is not None:
+        plan_path = args.verification_plan.resolve()
+        try:
+            plan_path.relative_to(args.project_root.resolve())
+        except ValueError as exc:
+            raise ConfigError("verification plan must remain inside the project") from exc
+        verifier = EnvironmentVerifier.from_file(args.project_root, plan_path)
+    elif permission_mode is not PermissionMode.READ_ONLY:
+        raise ConfigError(
+            "write-capable execution requires --verification-plan; "
+            "provider terminal events are not proof"
+        )
     adapter: CodexAdapter | ClaudeAdapter
-    transport: CodexAppServerTransport | ClaudeCliTransport
+    transport: CodexAppServerTransport | ClaudeAgentSdkTransport | ClaudeCliTransport
     if provider_name == "codex":
         transport = await CodexAppServerTransport.launch(
             client_version=__version__
@@ -305,33 +602,35 @@ async def _supervise(
             configured_models=_configured_models(personal.providers, provider_name),
         )
     else:
-        transport = ClaudeCliTransport()
+        transport = create_claude_transport()
         adapter = ClaudeAdapter(
             transport,
             configured_models=_configured_models(personal.providers, provider_name),
         )
     try:
-        route = route_provider_models(
+        route, promotion_routes = route_provider_catalog(
             await adapter.list_models(),
             provider=provider_name,
             model_id=args.model,
             profile=SemanticProfile(args.profile),
+            outcomes=runner.store.list_route_outcomes(),
         )
         supervisor = CampaignSupervisor(
             runner,
             adapter,
             cwd=args.project_root,
-            permissions=PermissionMode(args.permissions),
+            permissions=permission_mode,
             limits=SupervisionLimits(
                 max_duration=max_duration,
                 max_cost_usd=max_cost,
                 lease_seconds=args.lease_seconds,
                 poll_interval=args.poll_interval,
             ),
+            promotion_routes=promotion_routes,
         )
         worker_id = args.worker_id or f"{provider_name}-{os.getpid()}"
         return await supervisor.run(
-            args.run_id, worker_id, route, once=once
+            args.run_id, worker_id, route, verifier=verifier, once=once
         )
     finally:
         if isinstance(transport, CodexAppServerTransport):

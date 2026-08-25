@@ -6,32 +6,46 @@ import asyncio
 from collections.abc import Awaitable, Callable, Mapping, Sequence
 from contextlib import suppress
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 import time
 from typing import Any
 
 from .adapters.base import (
     AgentProviderAdapter,
+    Capability,
+    ContextHealth,
     ModelInfo,
     PermissionMode,
     ProviderError,
     StreamEvent,
+    Usage,
 )
 from .model_routing import (
     CostPreference,
     HeuristicRouter,
     ModelCandidate,
     ModelCatalog,
+    OutcomeCalibrationStore,
+    OutcomeRecord,
     RouteDecision,
+    RoutingPolicy,
     SemanticProfile,
     TaskFeatures,
 )
 from .runner import DurableRunner
+from .routing_runtime import DurableRouteCoordinator
+from .runtime_security import (
+    DurableSecurityAudit,
+    RuntimeSecurityDecision,
+    RuntimeSecurityPolicy,
+)
 from .schemas import RUN_TERMINAL, RunStatus, TaskStatus
 from .store import ConflictError
+from .verification import FailClosedVerifier, VerificationResult
 
 
-Verifier = Callable[[Sequence[StreamEvent]], bool | Awaitable[bool]]
+Verifier = Callable[[Sequence[StreamEvent]], bool | Awaitable[bool]] | Any
 Clock = Callable[[], float]
 
 
@@ -69,6 +83,10 @@ class CampaignSupervisor:
         cwd: Path,
         permissions: PermissionMode = PermissionMode.WORKSPACE_WRITE,
         limits: SupervisionLimits | None = None,
+        security_policy: RuntimeSecurityPolicy | None = None,
+        security_audit: DurableSecurityAudit | None = None,
+        promotion_routes: Sequence[RouteDecision] = (),
+        routing_policy: RoutingPolicy | None = None,
         clock: Clock = time.monotonic,
     ) -> None:
         self.runner = runner
@@ -76,6 +94,15 @@ class CampaignSupervisor:
         self.cwd = cwd.resolve()
         self.permissions = permissions
         self.limits = limits or SupervisionLimits()
+        self.security_policy = security_policy or RuntimeSecurityPolicy(self.cwd)
+        if self.security_policy.cwd != self.cwd:
+            raise ValueError("security policy cwd must match the provider working directory")
+        self.security_audit = security_audit or DurableSecurityAudit(runner.store)
+        self._routes = DurableRouteCoordinator(
+            runner.store,
+            promotion_routes=promotion_routes,
+            policy=routing_policy,
+        )
         self.clock = clock
         self._started_at = 0.0
         self._measured_cost = 0.0
@@ -95,7 +122,13 @@ class CampaignSupervisor:
         """Supervise a campaign and return a machine-readable invocation receipt."""
         self._started_at = self.clock()
         self._restore_cost_state(run_id)
-        verify = verifier or terminal_event_verifier
+        verify = verifier
+        if verify is None:
+            verify = (
+                terminal_event_verifier
+                if self.permissions is PermissionMode.READ_ONLY
+                else FailClosedVerifier()
+            )
         completed: list[dict[str, Any]] = []
         exit_reason = "settled"
 
@@ -113,18 +146,19 @@ class CampaignSupervisor:
                 if self._cost_exhausted():
                     exit_reason = "cost_limit"
                     break
+                if self._cost_reporting_unavailable():
+                    exit_reason = "cost_unverified"
+                    break
 
                 claims = self.runner.frontier(
-                    run_id, worker_id, lease_seconds=self.limits.lease_seconds
+                    run_id,
+                    worker_id,
+                    lease_seconds=self.limits.lease_seconds,
+                    limit=1 if self._serial_claim_admission() else None,
                 )
                 if claims:
-                    receipts = await asyncio.gather(
-                        *(
-                            self._execute_claim(
-                                run_id, worker_id, claim, route, verify
-                            )
-                            for claim in claims
-                        )
+                    receipts = await self._execute_claims(
+                        run_id, worker_id, claims, route, verify
                     )
                     completed.extend(receipts)
                     self.runner.reconcile(run_id)
@@ -157,6 +191,52 @@ class CampaignSupervisor:
             "elapsed_seconds": max(0.0, self.clock() - self._started_at),
         }
 
+    async def _execute_claims(
+        self,
+        run_id: str,
+        worker_id: str,
+        claims: Sequence[dict[str, Any]],
+        route: RouteDecision,
+        verifier: Verifier,
+    ) -> list[dict[str, Any]]:
+        # One shared checkout cannot safely host concurrent writers. A hard cost
+        # ceiling also needs serialized admission because providers may report
+        # usage only after a turn has already spent its budget.
+        serialize = self._serial_claim_admission()
+        if not serialize:
+            return list(
+                await asyncio.gather(
+                    *(
+                        self._execute_claim(run_id, worker_id, claim, route, verifier)
+                        for claim in claims
+                    )
+                )
+            )
+
+        receipts: list[dict[str, Any]] = []
+        for index, claim in enumerate(claims):
+            if self._cost_admission_closed() or self._duration_exhausted():
+                reason = (
+                    "cost ceiling admission"
+                    if self._cost_admission_closed()
+                    else "duration limit"
+                )
+                for pending in claims[index:]:
+                    self._return_claim_to_frontier(
+                        pending["attempt_id"], worker_id, pending["task"], reason
+                    )
+                break
+            receipts.append(
+                await self._execute_claim(run_id, worker_id, claim, route, verifier)
+            )
+        return receipts
+
+    def _serial_claim_admission(self) -> bool:
+        return (
+            self.permissions is not PermissionMode.READ_ONLY
+            or self.limits.max_cost_usd is not None
+        )
+
     async def _execute_claim(
         self,
         run_id: str,
@@ -168,6 +248,47 @@ class CampaignSupervisor:
         task = claim["task"]
         attempt_id = claim["attempt_id"]
         capsule = self.runner.store.recovery_capsule(task.task_id)
+        security = self.security_policy.authorize(
+            authority=capsule["authority"],
+            constraints=task.constraints,
+            outcome=task.outcome,
+            permission_mode=self.permissions,
+        )
+        self._audit_security_decision(run_id, task.task_id, worker_id, security)
+        if not security.allowed:
+            running = self.runner.store.transition_attempt(
+                attempt_id,
+                worker_id,
+                TaskStatus.RUNNING,
+                expected_task_revision=task.revision,
+                next_action="security preflight denied provider dispatch",
+            )
+            blocked = self.runner.store.transition_attempt(
+                attempt_id,
+                worker_id,
+                TaskStatus.BLOCKED,
+                expected_task_revision=running.revision,
+                next_action=security.reason,
+            )
+            self.runner.store.checkpoint(
+                run_id,
+                "security_denied",
+                {
+                    "reason": security.reason,
+                    "permission_profile": security.profile.value,
+                    "provider_permission_mode": self.permissions.value,
+                    "protected_actions": [
+                        action.value for action in security.protected_actions
+                    ],
+                },
+                task_id=task.task_id,
+            )
+            return self._attempt_receipt(
+                blocked.task_id, "SECURITY_BLOCKED", None, (), False
+            )
+        route = self._routes.sticky(run_id, task.task_id, route)
+        force_new_session = self._requires_new_session(run_id, task.task_id)
+        claim_started_at = self.clock()
         checkpoint_id = self.runner.store.checkpoint(
             run_id,
             "before_provider_dispatch",
@@ -190,10 +311,37 @@ class CampaignSupervisor:
         session_id: str | None = None
         events: list[StreamEvent] = []
         next_event: asyncio.Task[StreamEvent] | None = None
+        context_handled = False
         try:
+            verification_baseline = await _prepare_verifier(verifier, task)
             prompt = recovery_prompt(capsule)
-            session, resumed = await self._open_session(capsule, prompt, route)
+            session, resumed = await self._open_session(
+                capsule, prompt, route, allow_resume=not force_new_session
+            )
             session_id = session.session_id
+            self.runner.store.checkpoint(
+                run_id,
+                "provider_session_opened",
+                {
+                    "provider_session": session_id,
+                    "resumed": resumed,
+                    "context_recovery_boundary": force_new_session,
+                },
+                task_id=task.task_id,
+            )
+            self.security_audit.append(
+                run_id,
+                actor=worker_id,
+                action="provider-session",
+                target=self.provider.__class__.__name__,
+                outcome="resumed" if resumed else "started",
+                details={
+                    "permission_profile": security.profile.value,
+                    "provider_permission_mode": self.permissions.value,
+                    "session_id": session_id,
+                },
+                task_id=task.task_id,
+            )
             self.runner.store.update_attempt_context(
                 attempt_id,
                 worker_id,
@@ -214,6 +362,7 @@ class CampaignSupervisor:
                     next_event = asyncio.create_task(stream.__anext__())
                 heartbeat = min(
                     self.limits.lease_seconds / 3,
+                    self.limits.poll_interval,
                     self._remaining_duration(default=self.limits.lease_seconds / 3),
                 )
                 done, _ = await asyncio.wait({next_event}, timeout=max(0.01, heartbeat))
@@ -224,6 +373,27 @@ class CampaignSupervisor:
                         lease_seconds=self.limits.lease_seconds,
                         next_action="await provider event",
                     )
+                    usage = await self._measure_usage(session_id)
+                    recover, context_handled = await self._handle_context_health(
+                        run_id,
+                        task.task_id,
+                        session_id,
+                        events,
+                        usage,
+                        context_handled=context_handled,
+                    )
+                    if recover:
+                        await self._interrupt(session_id)
+                        self._return_claim_to_frontier(
+                            attempt_id, worker_id, task, "context recovery boundary"
+                        )
+                        return self._attempt_receipt(
+                            task.task_id,
+                            "CONTEXT_RECOVERY",
+                            session_id,
+                            events,
+                            resumed,
+                        )
                     continue
                 try:
                     event = next_event.result()
@@ -237,7 +407,29 @@ class CampaignSupervisor:
                     lease_seconds=self.limits.lease_seconds,
                     next_action=f"provider event: {event.kind}",
                 )
-                await self._measure_usage(session_id)
+                usage = await self._measure_usage(session_id)
+                recover = False
+                if event.kind not in self.TERMINAL_EVENTS:
+                    recover, context_handled = await self._handle_context_health(
+                        run_id,
+                        task.task_id,
+                        session_id,
+                        events,
+                        usage,
+                        context_handled=context_handled,
+                    )
+                if recover:
+                    await self._interrupt(session_id)
+                    self._return_claim_to_frontier(
+                        attempt_id, worker_id, task, "context recovery boundary"
+                    )
+                    return self._attempt_receipt(
+                        task.task_id,
+                        "CONTEXT_RECOVERY",
+                        session_id,
+                        events,
+                        resumed,
+                    )
                 if self._cost_exhausted():
                     await self._interrupt(session_id)
                     self.runner.store.checkpoint(
@@ -270,10 +462,18 @@ class CampaignSupervisor:
                 expected_task_revision=current.revision,
                 next_action="verify provider result",
             )
-            passed = False if any(event.kind in self.FAILURE_EVENTS for event in events) else verifier(events)
-            if hasattr(passed, "__await__"):
-                passed = await passed  # type: ignore[assignment,misc]
-            self.runner.store.checkpoint(
+            if any(event.kind in self.FAILURE_EVENTS for event in events):
+                verification = VerificationResult(
+                    False,
+                    ({"kind": "provider", "passed": False, "reason": "provider failure event"},),
+                    (),
+                )
+            else:
+                verification = await _run_verifier(
+                    verifier, task, events, verification_baseline
+                )
+            passed = verification.passed
+            verification_checkpoint_id = self.runner.store.checkpoint(
                 run_id,
                 "after_verification",
                 {
@@ -281,6 +481,7 @@ class CampaignSupervisor:
                     "checkpoint_before_dispatch": checkpoint_id,
                     "verified": bool(passed),
                     "completed_evidence": [event.kind for event in events[-5:]],
+                    "environment_verification": verification.to_dict(),
                 },
                 task_id=task.task_id,
             )
@@ -300,11 +501,67 @@ class CampaignSupervisor:
                     expected_task_revision=current.revision,
                     next_action="retry after provider or verifier failure",
                 )
+                self._routes.promote(
+                    current.task_id,
+                    failure_signature="provider-result-unverified",
+                    checkpoint_id=verification_checkpoint_id,
+                )
                 current = self.runner.fail_attempt(current.task_id, "provider-result-unverified")
+            usage = await self._safe_usage(session_id)
+            self._record_route_outcome(
+                run_id,
+                current.task_id,
+                attempt_id,
+                route,
+                verifier_passed=bool(passed),
+                terminal_outcome=current.status.value,
+                usage=usage,
+                latency_ms=int(max(0.0, self.clock() - claim_started_at) * 1000),
+                retries=current.failure_count,
+            )
             return self._attempt_receipt(
                 current.task_id, current.status.value, session_id, events, resumed
             )
+        except asyncio.CancelledError:
+            if session_id is not None:
+                await self._interrupt(session_id)
+            current = self.runner.store.get_task(task.task_id)
+            if current.status is TaskStatus.VERIFYING:
+                current = self.runner.store.transition_task(
+                    current.task_id,
+                    TaskStatus.RUNNING,
+                    expected_revision=current.revision,
+                    next_action="resume after supervisor cancellation",
+                )
+            if current.status in {TaskStatus.CLAIMED, TaskStatus.RUNNING}:
+                self._return_claim_to_frontier(
+                    attempt_id, worker_id, current, "supervisor cancellation"
+                )
+            self.security_audit.append(
+                run_id,
+                actor=worker_id,
+                action="provider-dispatch",
+                target=self.provider.__class__.__name__,
+                outcome="cancelled",
+                task_id=task.task_id,
+            )
+            self.runner.store.checkpoint(
+                run_id,
+                "supervisor_cancelled",
+                {"next_action": "resume claimed work"},
+                task_id=task.task_id,
+            )
+            raise
         except BaseException as exc:
+            self.security_audit.append(
+                run_id,
+                actor=worker_id,
+                action="provider-dispatch",
+                target=self.provider.__class__.__name__,
+                outcome="error",
+                details={"error_type": type(exc).__name__},
+                task_id=task.task_id,
+            )
             self.runner.store.checkpoint(
                 run_id,
                 "provider_error",
@@ -312,10 +569,29 @@ class CampaignSupervisor:
                 task_id=task.task_id,
             )
             current = self.runner.store.get_task(task.task_id)
+            if current.status is TaskStatus.VERIFYING:
+                current = self.runner.store.transition_task(
+                    current.task_id,
+                    TaskStatus.RUNNING,
+                    expected_revision=current.revision,
+                    next_action="recover after verifier error",
+                )
             if current.status in {TaskStatus.CLAIMED, TaskStatus.RUNNING}:
-                self.runner.fail_attempt(
+                current = self.runner.fail_attempt(
                     task.task_id, f"provider:{type(exc).__name__}"
                 )
+            self._record_route_outcome(
+                run_id,
+                task.task_id,
+                attempt_id,
+                route,
+                verifier_passed=False,
+                terminal_outcome=current.status.value,
+                usage=Usage(),
+                latency_ms=int(max(0.0, self.clock() - claim_started_at) * 1000),
+                retries=current.failure_count,
+                error_type=type(exc).__name__,
+            )
             raise
         finally:
             if next_event is not None and not next_event.done():
@@ -330,6 +606,8 @@ class CampaignSupervisor:
         capsule: Mapping[str, Any],
         prompt: str,
         route: RouteDecision,
+        *,
+        allow_resume: bool = True,
     ) -> tuple[Any, bool]:
         previous = next(
             (
@@ -339,10 +617,28 @@ class CampaignSupervisor:
             ),
             None,
         )
-        if isinstance(previous, str):
+        task_id = capsule.get("task", {}).get("task_id")
+        latest_route = (
+            self.runner.store.latest_route_outcome(task_id)
+            if isinstance(task_id, str)
+            else None
+        )
+        route_matches_previous = latest_route is None or (
+            latest_route.get("provider") == route.candidate.provider
+            and latest_route.get("model_id") == route.candidate.model_id
+            and latest_route.get("model_version") == route.candidate.version
+            and latest_route.get("profile") == route.profile.value
+        )
+        if allow_resume and isinstance(previous, str) and route_matches_previous:
             try:
                 session = await self.provider.resume_session(
-                    previous, checkpoint=None
+                    previous,
+                    checkpoint={
+                        "cwd": str(self.cwd),
+                        "permission_mode": self.permissions.value,
+                        "model": route.candidate.model_id,
+                        "model_profile": route.profile.value,
+                    },
                 )
                 await self.provider.send_turn(session.session_id, prompt)
                 return session, True
@@ -361,19 +657,148 @@ class CampaignSupervisor:
         )
         return session, False
 
-    async def _measure_usage(self, session_id: str) -> None:
+    async def _safe_usage(self, session_id: str) -> Usage:
+        try:
+            return await self.provider.usage(session_id)
+        except Exception:
+            return Usage()
+
+    def _record_route_outcome(
+        self,
+        run_id: str,
+        task_id: str,
+        attempt_id: str,
+        route: RouteDecision,
+        *,
+        verifier_passed: bool,
+        terminal_outcome: str,
+        usage: Usage,
+        latency_ms: int,
+        retries: int,
+        error_type: str | None = None,
+    ) -> None:
+        self.runner.store.record_route_outcome(
+            run_id,
+            task_id,
+            attempt_id,
+            {
+                "provider": route.candidate.provider,
+                "model_id": route.candidate.model_id,
+                "model_version": route.candidate.version,
+                "profile": route.profile.value,
+                "route_reason": route.reason,
+                "estimated_cost": route.estimated_cost,
+                "input_tokens": usage.input_tokens,
+                "output_tokens": usage.output_tokens,
+                "cost_usd": usage.cost_usd,
+                "latency_ms": latency_ms,
+                "verifier_passed": verifier_passed,
+                "retries": retries,
+                "promotions": self._routes.promotion_count(task_id),
+                "terminal_outcome": terminal_outcome,
+                "error_type": error_type,
+            },
+        )
+
+    async def _measure_usage(self, session_id: str) -> Usage:
         usage = await self.provider.usage(session_id)
         if usage.cost_usd is None:
             if self.limits.max_cost_usd is not None:
                 self._unknown_cost_sessions.add(session_id)
                 self._cost_known = False
-            return
+            return usage
         self._unknown_cost_sessions.discard(session_id)
         self._session_costs[session_id] = max(
             self._session_costs.get(session_id, 0.0), usage.cost_usd
         )
         self._measured_cost = sum(self._session_costs.values())
         self._cost_known = not self._unknown_cost_sessions
+        return usage
+
+    async def _handle_context_health(
+        self,
+        run_id: str,
+        task_id: str,
+        session_id: str,
+        events: Sequence[StreamEvent],
+        usage: Usage,
+        *,
+        context_handled: bool,
+    ) -> tuple[bool, bool]:
+        if usage.context_health is not ContextHealth.APPROACHING_LIMIT:
+            return False, context_handled
+        completed_evidence = [event.kind for event in events[-5:]]
+        try:
+            capabilities = await self.provider.discover_capabilities()
+            can_compact = capabilities.has(Capability.COMPACT)
+        except (OSError, ProviderError):
+            can_compact = False
+        payload = {
+            "provider_session": session_id,
+            "context_tokens": usage.context_tokens,
+            "context_limit": usage.context_limit,
+            "completed_evidence": completed_evidence,
+            "next_action": self.runner.store.get_task(task_id).outcome,
+        }
+        if context_handled:
+            self.runner.store.checkpoint(
+                run_id,
+                "repeated_context_pressure",
+                payload,
+                task_id=task_id,
+            )
+            self.runner.store.checkpoint(
+                run_id,
+                "context_recovery_boundary",
+                {**payload, "force_new_session": True},
+                task_id=task_id,
+            )
+            return True, True
+        if can_compact:
+            self.runner.store.checkpoint(
+                run_id, "before_compaction", payload, task_id=task_id
+            )
+            try:
+                await self.provider.compact(session_id)
+            except (OSError, ProviderError) as exc:
+                self.runner.store.checkpoint(
+                    run_id,
+                    "compaction_failed",
+                    {
+                        "provider_session": session_id,
+                        "error_type": type(exc).__name__,
+                    },
+                    task_id=task_id,
+                )
+            else:
+                self.runner.store.checkpoint(
+                    run_id,
+                    "after_compaction",
+                    {"provider_session": session_id},
+                    task_id=task_id,
+                )
+                return False, True
+        self.runner.store.checkpoint(
+            run_id,
+            "context_recovery_boundary",
+            {**payload, "force_new_session": True},
+            task_id=task_id,
+        )
+        return True, True
+
+    def _requires_new_session(self, run_id: str, task_id: str) -> bool:
+        boundary = -1
+        opened = -1
+        for index, checkpoint in enumerate(
+            self.runner.store.export_run(run_id)["checkpoints"]
+        ):
+            if checkpoint.get("task_id") != task_id:
+                continue
+            if checkpoint.get("reason") == "context_recovery_boundary":
+                boundary = index
+            elif checkpoint.get("reason") == "provider_session_opened":
+                opened = index
+        return boundary > opened
 
     async def _interrupt(self, session_id: str) -> None:
         try:
@@ -423,6 +848,12 @@ class CampaignSupervisor:
             and self._cost_known
             and self._measured_cost >= self.limits.max_cost_usd
         )
+
+    def _cost_reporting_unavailable(self) -> bool:
+        return self.limits.max_cost_usd is not None and not self._cost_known
+
+    def _cost_admission_closed(self) -> bool:
+        return self._cost_exhausted() or self._cost_reporting_unavailable()
 
     def _remaining_duration(self, *, default: float) -> float:
         if self.limits.max_duration is None:
@@ -482,11 +913,39 @@ class CampaignSupervisor:
         self._measured_cost = sum(self._session_costs.values())
         self._cost_known = not self._unknown_cost_sessions
 
+    def _audit_security_decision(
+        self,
+        run_id: str,
+        task_id: str,
+        worker_id: str,
+        decision: RuntimeSecurityDecision,
+    ) -> None:
+        self.security_audit.append(
+            run_id,
+            actor=worker_id,
+            action="provider-dispatch-security-check",
+            target=task_id,
+            outcome="allowed" if decision.allowed else "denied",
+            details={
+                "reason": decision.reason,
+                "cwd": str(self.cwd),
+                "permission_profile": decision.profile.value,
+                "provider_permission_mode": self.permissions.value,
+                "required_permissions": [
+                    permission.value for permission in decision.required_permissions
+                ],
+                "protected_actions": [
+                    action.value for action in decision.protected_actions
+                ],
+            },
+            task_id=task_id,
+        )
+
     @staticmethod
     def _attempt_receipt(
         task_id: str,
         status: str,
-        session_id: str,
+        session_id: str | None,
         events: Sequence[StreamEvent],
         resumed: bool,
     ) -> dict[str, Any]:
@@ -533,12 +992,45 @@ async def terminal_event_verifier(events: Sequence[StreamEvent]) -> bool:
     return success is not False and event.kind in CampaignSupervisor.TERMINAL_EVENTS
 
 
+async def _prepare_verifier(verifier: Verifier, task: Any) -> Any:
+    prepare = getattr(verifier, "prepare", None)
+    if prepare is None:
+        return None
+    baseline = await asyncio.to_thread(prepare, task)
+    if hasattr(baseline, "__await__"):
+        baseline = await baseline
+    return baseline
+
+
+async def _run_verifier(
+    verifier: Verifier,
+    task: Any,
+    events: Sequence[StreamEvent],
+    baseline: Any,
+) -> VerificationResult:
+    method = getattr(verifier, "verify", None)
+    if method is not None:
+        result = await asyncio.to_thread(method, task, events, baseline)
+    else:
+        result = verifier(events)
+    if hasattr(result, "__await__"):
+        result = await result
+    if isinstance(result, VerificationResult):
+        return result
+    return VerificationResult(
+        bool(result),
+        ({"kind": "injected_verifier", "passed": bool(result)},),
+        (),
+    )
+
+
 def route_provider_models(
     models: Sequence[ModelInfo],
     *,
     provider: str,
     model_id: str | None = None,
     profile: SemanticProfile = SemanticProfile.BALANCED,
+    outcomes: Sequence[Mapping[str, Any]] = (),
 ) -> RouteDecision:
     """Build a runtime catalog from adapter discovery and route one campaign lane."""
     selected = [model for model in models if model.provider == provider]
@@ -561,7 +1053,84 @@ def route_provider_models(
         read_only=profile is SemanticProfile.ECONOMY,
         strong_verifier=profile is SemanticProfile.ECONOMY,
     )
-    return HeuristicRouter(ModelCatalog(candidates)).route(features, preference)
+    calibration = calibration_from_route_outcomes(outcomes)
+    return HeuristicRouter(
+        ModelCatalog(candidates), calibration=calibration
+    ).route(features, preference)
+
+
+def route_provider_catalog(
+    models: Sequence[ModelInfo],
+    *,
+    provider: str,
+    model_id: str | None = None,
+    profile: SemanticProfile = SemanticProfile.BALANCED,
+    outcomes: Sequence[Mapping[str, Any]] = (),
+) -> tuple[RouteDecision, tuple[RouteDecision, ...]]:
+    """Route the initial profile and build stronger discovered promotion choices."""
+    ordered = (
+        SemanticProfile.ECONOMY,
+        SemanticProfile.BALANCED,
+        SemanticProfile.FRONTIER,
+    )
+    initial = route_provider_models(
+        models,
+        provider=provider,
+        model_id=model_id,
+        profile=profile,
+        outcomes=outcomes,
+    )
+    promotions = tuple(
+        route_provider_models(
+            models,
+            provider=provider,
+            model_id=model_id,
+            profile=target,
+            outcomes=outcomes,
+        )
+        for target in ordered[ordered.index(profile) + 1 :]
+    )
+    return initial, promotions
+
+
+def calibration_from_route_outcomes(
+    outcomes: Sequence[Mapping[str, Any]],
+) -> OutcomeCalibrationStore:
+    """Hydrate version-aware scoring only from persisted verifier-linked outcomes."""
+    calibration = OutcomeCalibrationStore()
+    for item in outcomes:
+        try:
+            recorded_at = datetime.fromisoformat(str(item["recorded_at"]))
+            profile = SemanticProfile(str(item["profile"]))
+            model_version = str(item["model_version"])
+            if model_version in {"", "unknown", "runtime-discovered"}:
+                continue
+            verifier_passed = item["verifier_passed"]
+            if not isinstance(verifier_passed, bool):
+                continue
+            terminal = str(item["terminal_outcome"])
+            calibration.record(
+                OutcomeRecord(
+                    provider=str(item["provider"]),
+                    model_id=str(item["model_id"]),
+                    version=model_version,
+                    profile=profile,
+                    taxonomy=str(item.get("taxonomy", "campaign-execution")),
+                    repository=(str(item["repository"]) if item.get("repository") is not None else None),
+                    recorded_at=recorded_at,
+                    verifier_passed=verifier_passed,
+                    terminal_success=terminal == TaskStatus.DONE.value,
+                    latency_ms=_optional_nonnegative_int(item.get("latency_ms")),
+                    input_tokens=_optional_nonnegative_int(item.get("input_tokens")),
+                    output_tokens=_optional_nonnegative_int(item.get("output_tokens")),
+                    estimated_cost=_optional_nonnegative_float(item.get("cost_usd", item.get("estimated_cost"))),
+                    retries=_optional_nonnegative_int(item.get("retries")) or 0,
+                    promotions=_optional_nonnegative_int(item.get("promotions")) or 0,
+                )
+            )
+        except (KeyError, TypeError, ValueError):
+            continue
+    return calibration
 
 
 def model_candidate(model: ModelInfo, profile: SemanticProfile) -> ModelCandidate:
@@ -569,7 +1138,7 @@ def model_candidate(model: ModelInfo, profile: SemanticProfile) -> ModelCandidat
     return ModelCandidate(
         provider=model.provider,
         model_id=model.model_id,
-        version=model.model_version or "runtime-discovered",
+        version=model.model_version or "unknown",
         profile=profile,
         context_window=model.context_limit or 100_000,
         input_cost_per_million=_price(pricing, "input_cost_per_million", "input"),
@@ -584,4 +1153,14 @@ def _price(pricing: Mapping[str, Any], *keys: str) -> float | None:
         value = pricing.get(key)
         if isinstance(value, (int, float)) and not isinstance(value, bool) and value >= 0:
             return float(value)
+    return None
+
+
+def _optional_nonnegative_int(value: Any) -> int | None:
+    return value if isinstance(value, int) and not isinstance(value, bool) and value >= 0 else None
+
+
+def _optional_nonnegative_float(value: Any) -> float | None:
+    if isinstance(value, (int, float)) and not isinstance(value, bool) and value >= 0:
+        return float(value)
     return None

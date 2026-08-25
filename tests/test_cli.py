@@ -77,6 +77,162 @@ def test_cli_intake_dry_run_and_explicit_local_persistence(tmp_path: Path) -> No
     assert json.loads(persisted.stdout)["store"]["signals_added"] == 2
 
 
+def test_cli_intake_runs_grouping_triage_and_idempotent_work_item_pipeline(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "signals.json"
+    source.write_text(
+        json.dumps(
+            {
+                "signals": [
+                    {
+                        "verbatim": "- Checkout duplicate charge\n- Duplicate checkout charge",
+                        "source": "support-call",
+                        "source_record_id": "call-9",
+                        "observed_evidence": ["charge ids 1 and 2"],
+                        "confidence": 0.9,
+                    },
+                    "Idea: add saved cards",
+                    "The new colors are pleasant",
+                    "Could invoices be wrong?",
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    preview = invoke(tmp_path, "intake", str(source))
+    assert preview.returncode == 0, preview.stderr
+    value = json.loads(preview.stdout)
+    assert value["persisted"] is False
+    assert value["summary"] == {
+        "actionable": 2,
+        "dispositions": {"CREATE": 2},
+        "groups": 4,
+        "observed": 2,
+        "recommendations": {"LATER": 1, "NOW": 1},
+        "signal_types": {"BUG": 2, "FEEDBACK": 1, "IDEA": 1, "QUESTION": 1},
+        "signals": 5,
+        "speculative": 3,
+    }
+    assert not (tmp_path / ".skiphow/intake").exists()
+
+    first = invoke(tmp_path, "intake", str(source), "--persist")
+    second = invoke(tmp_path, "intake", str(source), "--persist")
+    assert first.returncode == second.returncode == 0
+    assert json.loads(first.stdout)["store"]["work_items"] == 2
+    replay = json.loads(second.stdout)
+    assert replay["store"]["signals_added"] == 0
+    assert replay["summary"]["dispositions"] == {"UNCHANGED": 2}
+
+
+def test_cli_intake_requires_controller_decision_for_candidate_then_merges_provenance(
+    tmp_path: Path,
+) -> None:
+    first_path = tmp_path / "first.json"
+    first_path.write_text(json.dumps(["Idea: add weekly report"]), encoding="utf-8")
+    assert invoke(tmp_path, "intake", str(first_path), "--persist").returncode == 0
+
+    second_path = tmp_path / "second.json"
+    payload = {
+        "signals": [
+            {
+                "verbatim": "Idea: add weekly reports",
+                "source_record_id": "request-2",
+                "source": "customer-2",
+            }
+        ]
+    }
+    second_path.write_text(json.dumps(payload), encoding="utf-8")
+    preview = invoke(tmp_path, "intake", str(second_path))
+    assert preview.returncode == 0, preview.stderr
+    value = json.loads(preview.stdout)
+    proposal_id = value["work_items"][0]["item_id"]
+    candidate_id = value["candidates"][proposal_id][0]["item_id"]
+    assert value["summary"]["dispositions"] == {"UNRESOLVED": 1}
+
+    payload["decisions"] = [
+        {
+            "item_id": proposal_id,
+            "candidate_item_id": candidate_id,
+            "disposition": "DUPLICATE",
+            "reason": "same affected user and requested outcome",
+        }
+    ]
+    second_path.write_text(json.dumps(payload), encoding="utf-8")
+    persisted = invoke(tmp_path, "intake", str(second_path), "--persist")
+    assert persisted.returncode == 0, persisted.stderr
+    result = json.loads(persisted.stdout)
+    assert result["summary"]["dispositions"] == {"DUPLICATE": 1}
+    assert result["store"]["work_items"] == 1
+    stored = json.loads((tmp_path / ".skiphow/intake/work-items.json").read_text())
+    assert len(stored[candidate_id]["signal_ids"]) == 2
+
+    replay = invoke(tmp_path, "intake", str(second_path), "--persist")
+    assert replay.returncode == 0, replay.stderr
+    assert json.loads(replay.stdout)["store"]["signals_added"] == 0
+
+
+def test_cli_intake_maps_explicit_epic_and_dependencies(tmp_path: Path) -> None:
+    source = tmp_path / "epic.json"
+    payload: dict[str, object] = {
+        "signals": [
+            "Idea: instrument checkout latency",
+            "Idea: notify on payment failures",
+        ]
+    }
+    source.write_text(json.dumps(payload), encoding="utf-8")
+    preview = invoke(tmp_path, "intake", str(source))
+    assert preview.returncode == 0, preview.stderr
+    child_ids = [item["item_id"] for item in json.loads(preview.stdout)["work_items"]]
+    assert len(child_ids) == 2
+    payload["epic"] = {
+        "item_id": "epic-checkout",
+        "title": "Detect checkout failures",
+        "outcome": "Operators detect checkout failures before customers report them",
+        "why": "Checkout failures cost revenue",
+        "acceptance": ["Both independently deliverable checks are live"],
+        "children": child_ids,
+        "dependencies": {child_ids[1]: [child_ids[0]]},
+    }
+    source.write_text(json.dumps(payload), encoding="utf-8")
+    first = invoke(tmp_path, "intake", str(source), "--persist")
+    assert first.returncode == 0, first.stderr
+    result = json.loads(first.stdout)
+    assert result["epic"]["children"] == child_ids
+    assert result["store"]["work_items"] == 3
+
+    replay = invoke(tmp_path, "intake", str(source), "--persist")
+    assert replay.returncode == 0, replay.stderr
+    assert json.loads(replay.stdout)["store"]["work_items"] == 3
+
+
+def test_cli_intake_honors_explicit_github_and_disabled_trackers(tmp_path: Path) -> None:
+    source = tmp_path / "signals.json"
+    source.write_text(json.dumps(["Idea: add reports"]), encoding="utf-8")
+
+    configured = invoke(
+        tmp_path,
+        "setup",
+        "--tracker",
+        "github",
+        "--project",
+        "owner/7",
+    )
+    assert configured.returncode == 0, configured.stderr
+    github = invoke(tmp_path, "intake", str(source), "--persist")
+    assert github.returncode == 2
+    assert "requires the SkipHow plugin Intake workflow" in github.stderr
+    assert "will not substitute .skiphow/intake" in github.stderr
+    assert not (tmp_path / ".skiphow/intake").exists()
+
+    disabled = invoke(tmp_path, "setup", "--tracker", "none")
+    assert disabled.returncode == 0, disabled.stderr
+    none = invoke(tmp_path, "intake", str(source), "--persist")
+    assert none.returncode == 2
+    assert "persistence is disabled by tracker=none" in none.stderr
+    assert not (tmp_path / ".skiphow/intake").exists()
+
+
 def test_cli_setup_migrates_v1_with_backup(tmp_path: Path) -> None:
     config = tmp_path / ".skiphow/config.json"
     config.parent.mkdir()

@@ -187,7 +187,7 @@ def test_ensure_issue_replays_by_operation_marker_and_rejects_payload_reuse() ->
     persist.assert_called_once()
 
     existing = json.dumps(
-        [{"number": 8, "title": "Export", "body": created_body, "url": result.url}]
+        [{"number": 8, "title": "Export", "body": created_body, "html_url": result.url}]
     )
     with (
         patch.object(issues, "run", return_value=existing),
@@ -201,11 +201,74 @@ def test_ensure_issue_replays_by_operation_marker_and_rejects_payload_reuse() ->
         r"(skiphow-operation:intake:42:)[0-9a-f]+", r"\1deadbeef", created_body
     )
     conflicting = json.dumps(
-        [{"number": 8, "title": "Export", "body": conflicting_body, "url": result.url}]
+        [{"number": 8, "title": "Export", "body": conflicting_body, "html_url": result.url}]
     )
     with patch.object(issues, "run", return_value=conflicting):
         with pytest.raises(issues.GitHubError, match="different payload"):
             issues.ensure_issue("owner/repo", "intake:42", "Feature", "Export", "changed")
+
+
+def test_issue_operation_identity_binds_normalized_relationships() -> None:
+    created_body = ""
+
+    def create(repo, kind, title, body, **relationships):
+        nonlocal created_body
+        created_body = body
+        return "https://github.com/owner/repo/issues/8"
+
+    with (
+        patch.object(issues, "run", return_value="[]"),
+        patch.object(issues, "persist", side_effect=create),
+        patch.object(issues, "create_relationship", return_value="LINKED"),
+    ):
+        issues.ensure_issue(
+            "owner/repo",
+            "intake:relationships",
+            "Feature",
+            "Export",
+            "body",
+            allow_create=True,
+            blocked_by=3,
+            parent=2,
+        )
+
+    existing = json.dumps(
+        [{"number": 8, "title": "Export", "body": created_body, "html_url": "https://github.com/owner/repo/issues/8"}]
+    )
+    with patch.object(issues, "run", return_value=existing):
+        replay = issues.ensure_issue(
+            "owner/repo",
+            "intake:relationships",
+            "Feature",
+            "Export",
+            "body",
+            parent=2,
+            blocked_by=3,
+        )
+        assert replay.status == "UNCHANGED"
+        with pytest.raises(issues.GitHubError, match="different payload"):
+            issues.ensure_issue(
+                "owner/repo",
+                "intake:relationships",
+                "Feature",
+                "Export",
+                "body",
+                parent=2,
+                blocked_by=4,
+            )
+
+
+def test_issue_recovery_uses_direct_api_listing_not_search_index() -> None:
+    with patch.object(issues, "run", return_value="[]") as run:
+        result = issues.ensure_issue(
+            "owner/repo", "intake:recovery", "Feature", "Export", "body"
+        )
+    assert result.status == "NOT_FOUND"
+    command = run.call_args.args[0]
+    assert command[:3] == ["gh", "api", "repos/owner/repo/issues"]
+    assert "--paginate" in command
+    assert "--slurp" in command
+    assert "--search" not in command
 
 
 def test_provenance_is_idempotent_by_caller_key() -> None:
@@ -236,6 +299,61 @@ def test_relationship_is_native_idempotent_or_honestly_unverified() -> None:
     run.assert_called_once()
     with patch.object(issues, "run", side_effect=issues.GitHubError("unsupported")):
         assert issues.create_relationship("owner/repo", 8, "parent", 2) == "UNVERIFIED"
+
+
+def test_unavailable_native_relationship_records_marked_reference() -> None:
+    responses = iter([issues.GitHubError("unsupported"), "[]", ""])
+
+    def fake_run(command, *, cwd="."):
+        response = next(responses)
+        if isinstance(response, Exception):
+            raise response
+        return response
+
+    with patch.object(issues, "run", side_effect=fake_run) as run:
+        outcome = issues.create_relationship("owner/repo", 8, "blocked_by", 2)
+
+    assert outcome == "UNVERIFIED"
+    comment = run.call_args_list[2].args[0]
+    assert comment[:3] == ["gh", "issue", "comment"]
+    body = comment[comment.index("--body") + 1]
+    assert "<!-- skiphow-relationship-reference:blocked_by:2 -->" in body
+    assert "https://github.com/owner/repo/issues/2" in body
+    assert "Native relationship status: UNVERIFIED" in body
+
+
+def test_relationship_reference_fallback_is_idempotent() -> None:
+    marker = "<!-- skiphow-relationship-reference:parent:2 -->"
+    with patch.object(
+        issues,
+        "run",
+        side_effect=[
+            issues.GitHubError("unsupported"),
+            json.dumps([[{"body": f"{marker}\nParent reference: existing"}]]),
+        ],
+    ) as run:
+        outcome = issues.create_relationship("owner/repo", 8, "parent", 2)
+
+    assert outcome == "UNVERIFIED"
+    assert run.call_count == 2
+
+
+def test_failed_native_relationship_mutation_records_reference() -> None:
+    with patch.object(
+        issues,
+        "run",
+        side_effect=[
+            "[]",
+            json.dumps({"id": 22}),
+            issues.GitHubError("mutation rejected"),
+            "[]",
+            "",
+        ],
+    ) as run:
+        outcome = issues.create_relationship("owner/repo", 8, "subissue", 2)
+
+    assert outcome == "UNVERIFIED"
+    assert run.call_args_list[-1].args[0][:3] == ["gh", "issue", "comment"]
 
 
 def test_update_issue_skips_matching_fields() -> None:

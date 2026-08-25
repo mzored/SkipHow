@@ -56,12 +56,16 @@ class ClaudeAdapter(AgentProviderAdapter):
         *,
         configured_models: Sequence[ModelInfo] = (),
         supports_compact: bool = True,
-        supports_compact_hooks: bool = False,
+        supports_compact_hooks: bool | None = None,
     ) -> None:
         self._transport = transport
         self._configured_models = tuple(configured_models)
         self._supports_compact = supports_compact
-        self._supports_compact_hooks = supports_compact_hooks
+        self._supports_compact_hooks = (
+            bool(getattr(transport, "supports_compact_hooks", False))
+            if supports_compact_hooks is None
+            else supports_compact_hooks
+        )
         self._usage: dict[str, Usage] = {}
 
     async def discover_capabilities(self) -> ProviderCapabilities:
@@ -90,6 +94,7 @@ class ClaudeAdapter(AgentProviderAdapter):
                 "transport": "agent-sdk-or-stream-json-cli",
                 "catalog": "configuration",
                 "interrupt_mode": getattr(self._transport, "interrupt_mode", "typed"),
+                "compact_hooks": tuple(getattr(self._transport, "compact_hooks", ())),
             },
         )
 
@@ -129,14 +134,13 @@ class ClaudeAdapter(AgentProviderAdapter):
     async def resume_session(
         self, session_id: str, *, checkpoint: Mapping[str, Any] | None = None
     ) -> SessionRef:
-        options = dict(checkpoint or {})
+        options = _claude_checkpoint_options(checkpoint)
         return _claude_session(await self._transport.resume(session_id, options))
 
     async def fork_session(
         self, session_id: str, *, checkpoint: Mapping[str, Any] | None = None
     ) -> SessionRef:
-        options = dict(checkpoint or {})
-        options["fork_session"] = True
+        options = _claude_checkpoint_options(checkpoint)
         child = _claude_session(await self._transport.fork(session_id, options))
         return SessionRef(
             provider=self.provider,
@@ -158,7 +162,7 @@ class ClaudeAdapter(AgentProviderAdapter):
     async def stream_events(self, session_id: str) -> AsyncIterator[StreamEvent]:
         async for message in self._transport.messages(session_id):
             kind = str(message.get("type", "unknown"))
-            measured = _claude_usage(message)
+            measured = _claude_usage(message, previous=self._usage.get(session_id))
             if measured is not None:
                 self._usage[session_id] = measured
             yield StreamEvent(
@@ -225,23 +229,107 @@ def _claude_permission_mode(mode: PermissionMode) -> str:
     }[mode]
 
 
-def _claude_usage(message: Mapping[str, Any]) -> Usage | None:
+def _claude_checkpoint_options(
+    checkpoint: Mapping[str, Any] | None,
+) -> dict[str, Any]:
+    options = dict(checkpoint or {})
+    permission = options.pop("permission_mode", None)
+    if isinstance(permission, str):
+        options["permission_mode"] = _claude_permission_mode(PermissionMode(permission))
+    profile = options.pop("model_profile", None)
+    if isinstance(profile, str):
+        options["profile"] = profile
+    return options
+
+
+def _claude_usage(
+    message: Mapping[str, Any], *, previous: Usage | None = None
+) -> Usage | None:
     raw = message.get("usage")
     if not isinstance(raw, Mapping) and isinstance(message.get("result"), Mapping):
         raw = message["result"].get("usage")
-    if not isinstance(raw, Mapping):
+    if not isinstance(raw, Mapping) and isinstance(message.get("message"), Mapping):
+        raw = message["message"].get("usage")
+    model_usage = message.get("model_usage", message.get("modelUsage"))
+    if not isinstance(raw, Mapping) and not isinstance(model_usage, Mapping):
         return None
+    raw = raw if isinstance(raw, Mapping) else {}
+    context_limit = _model_context_limit(model_usage)
+    explicit_context = _optional_token(raw, "context_tokens", "contextTokens")
+    kind = message.get("type")
+    context_tokens = explicit_context
+    if context_tokens is None and kind == "assistant":
+        context_tokens = sum(
+            _token(raw, *keys)
+            for keys in (
+                ("input_tokens", "inputTokens"),
+                ("cache_read_input_tokens", "cacheReadInputTokens"),
+                ("cache_creation_input_tokens", "cacheCreationInputTokens"),
+            )
+        )
+    if context_tokens is None and previous is not None:
+        context_tokens = previous.context_tokens
+    if context_limit is None:
+        context_limit = _optional_token(raw, "context_limit", "contextLimit")
+    if context_limit is None and previous is not None:
+        context_limit = previous.context_limit
+    explicit_health = _context_health(
+        raw.get("context_health", raw.get("contextHealth"))
+    )
+    context_health = _derived_context_health(
+        explicit_health, context_tokens, context_limit
+    )
+    cost_usd = _number(message.get("total_cost_usd", raw.get("cost_usd")))
+    if cost_usd is None and previous is not None:
+        cost_usd = previous.cost_usd
     return Usage(
-        input_tokens=_token(raw, "input_tokens", "inputTokens"),
-        output_tokens=_token(raw, "output_tokens", "outputTokens"),
-        cache_read_tokens=_token(raw, "cache_read_input_tokens", "cacheReadInputTokens"),
-        cache_write_tokens=_token(raw, "cache_creation_input_tokens", "cacheCreationInputTokens"),
-        cost_usd=_number(message.get("total_cost_usd", raw.get("cost_usd"))),
-        context_tokens=_optional_token(raw, "context_tokens", "contextTokens"),
-        context_limit=_optional_token(raw, "context_limit", "contextLimit"),
-        context_health=_context_health(raw.get("context_health", raw.get("contextHealth"))),
+        input_tokens=_token_or_previous(
+            raw, previous.input_tokens if previous else 0, "input_tokens", "inputTokens"
+        ),
+        output_tokens=_token_or_previous(
+            raw, previous.output_tokens if previous else 0, "output_tokens", "outputTokens"
+        ),
+        cache_read_tokens=_token_or_previous(
+            raw,
+            previous.cache_read_tokens if previous else 0,
+            "cache_read_input_tokens",
+            "cacheReadInputTokens",
+        ),
+        cache_write_tokens=_token_or_previous(
+            raw,
+            previous.cache_write_tokens if previous else 0,
+            "cache_creation_input_tokens",
+            "cacheCreationInputTokens",
+        ),
+        cost_usd=cost_usd,
+        context_tokens=context_tokens,
+        context_limit=context_limit,
+        context_health=context_health,
         raw=dict(raw),
     )
+
+
+def _model_context_limit(value: Any) -> int | None:
+    if not isinstance(value, Mapping) or len(value) != 1:
+        return None
+    row = next(iter(value.values()))
+    if not isinstance(row, Mapping):
+        return None
+    return _optional_token(row, "contextWindow", "context_window")
+
+
+def _derived_context_health(
+    explicit: ContextHealth,
+    context_tokens: int | None,
+    context_limit: int | None,
+) -> ContextHealth:
+    if explicit is not ContextHealth.UNKNOWN:
+        return explicit
+    if context_tokens is None or context_limit is None or context_limit <= 0:
+        return ContextHealth.UNKNOWN
+    if context_tokens * 100 >= context_limit * 80:
+        return ContextHealth.APPROACHING_LIMIT
+    return ContextHealth.HEALTHY
 
 
 def _subagent_id(message: Mapping[str, Any]) -> str | None:
@@ -265,6 +353,13 @@ def _integer(value: Any) -> int | None:
 
 def _token(raw: Mapping[str, Any], *keys: str) -> int:
     return _optional_token(raw, *keys) or 0
+
+
+def _token_or_previous(
+    raw: Mapping[str, Any], previous: int, *keys: str
+) -> int:
+    value = _optional_token(raw, *keys)
+    return previous if value is None else value
 
 
 def _optional_token(raw: Mapping[str, Any], *keys: str) -> int | None:

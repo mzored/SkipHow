@@ -12,6 +12,6 @@
     "occurred_at": {"type": "string"},
     "data": {"type": "object"},
     "sequence": {"type": ["integer", "null"], "minimum": 0},
-    "schema_version": {"const": 1}
+    "schema_version": {"const": 2}
   }
 }

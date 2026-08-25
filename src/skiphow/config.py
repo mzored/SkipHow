@@ -6,7 +6,18 @@ from dataclasses import dataclass, field
 import json
 import os
 from pathlib import Path, PurePosixPath, PureWindowsPath
+import re
 from typing import Any
+
+
+PROJECT_KEYS = frozenset(
+    {"schema_version", "tracker", "delivery", "findings", "campaign_root"}
+)
+V1_KEYS = frozenset({"tracker", "project", "campaign_root"})
+TRACKER_KEYS = frozenset({"type", "project"})
+DELIVERY_KEYS = frozenset({"merge_policy", "cleanup"})
+FINDINGS_KEYS = frozenset({"persist"})
+PROJECT_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9-]*/[1-9][0-9]*$")
 
 
 class ConfigError(ValueError):
@@ -23,6 +34,8 @@ class ProjectConfig:
     campaign_root: str = ".skiphow/runs"
 
     def run_root(self, root: Path) -> Path:
+        if not isinstance(self.campaign_root, str) or not self.campaign_root:
+            raise ConfigError("campaign_root must be a non-empty string")
         relative = PurePosixPath(self.campaign_root)
         windows = PureWindowsPath(self.campaign_root)
         if (
@@ -64,6 +77,23 @@ def _read(path: Path) -> dict[str, Any]:
     return value
 
 
+def _object(value: Any, field: str, allowed: frozenset[str]) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise ConfigError(f"{field} must be a JSON object")
+    unknown = sorted(set(value) - allowed)
+    if unknown:
+        raise ConfigError(f"unknown {field} field(s): {', '.join(unknown)}")
+    return value
+
+
+def _project(value: Any) -> str | None:
+    if value is None:
+        return None
+    if not isinstance(value, str) or PROJECT_RE.fullmatch(value) is None:
+        raise ConfigError("tracker.project must be null or an owner/number value")
+    return value
+
+
 def load_project_config(root: str | Path = ".") -> ProjectConfig:
     project_root = Path(root)
     path = project_root / ".skiphow" / "config.json"
@@ -71,23 +101,22 @@ def load_project_config(root: str | Path = ".") -> ProjectConfig:
         return ProjectConfig()
     value = _read(path)
     if value.get("schema_version") == 2:
-        tracker = value.get("tracker", {})
-        delivery = value.get("delivery", {})
-        findings = value.get("findings", {})
-        if not all(isinstance(item, dict) for item in (tracker, delivery, findings)):
-            raise ConfigError("tracker, delivery, and findings must be JSON objects")
+        _object(value, "project configuration", PROJECT_KEYS)
+        tracker = _object(value.get("tracker", {}), "tracker", TRACKER_KEYS)
+        delivery = _object(value.get("delivery", {}), "delivery", DELIVERY_KEYS)
+        findings = _object(value.get("findings", {}), "findings", FINDINGS_KEYS)
         config = ProjectConfig(
             tracker=tracker.get("type", "auto"),
-            project=tracker.get("project"),
+            project=_project(tracker.get("project")),
             merge_policy=delivery.get("merge_policy", "never"),
             cleanup=delivery.get("cleanup", "merged_only"),
             findings_persist=findings.get("persist", "local"),
             campaign_root=value.get("campaign_root", ".skiphow/runs"),
         )
-    elif set(value) <= {"tracker", "project", "campaign_root"}:
+    elif set(value) <= V1_KEYS:
         config = ProjectConfig(
             tracker=value.get("tracker", "auto"),
-            project=value.get("project"),
+            project=_project(value.get("project")),
             campaign_root=value.get("campaign_root", ".skiphow/runs"),
         )
     else:

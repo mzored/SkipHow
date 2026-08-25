@@ -238,6 +238,8 @@ class OutcomeCalibrationStore:
         for record in self._records:
             if (record.provider, record.model_id, record.version) != candidate.key:
                 continue
+            if record.profile is not candidate.profile:
+                continue
             if record.taxonomy != features.taxonomy:
                 continue
             repository_weight = 1.0 if record.repository == features.repository else 0.5

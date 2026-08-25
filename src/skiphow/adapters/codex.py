@@ -141,6 +141,8 @@ class CodexAdapter(AgentProviderAdapter):
     ) -> SessionRef:
         params: dict[str, Any] = {"threadId": session_id}
         _copy_codex_fields(params, checkpoint, _THREAD_RESUME_FIELDS)
+        if checkpoint is not None and isinstance(checkpoint.get("permission_mode"), str):
+            params["sandbox"] = _codex_sandbox(PermissionMode(checkpoint["permission_mode"]))
         return _codex_session(await self._transport.request("thread/resume", params))
 
     async def fork_session(
@@ -264,7 +266,10 @@ _THREAD_RESUME_FIELDS = frozenset(
         "serviceTier",
     }
 )
-_THREAD_FORK_FIELDS = _THREAD_RESUME_FIELDS | {"ephemeral", "lastTurnId"}
+_THREAD_FORK_FIELDS = (_THREAD_RESUME_FIELDS - {"personality"}) | {
+    "ephemeral",
+    "lastTurnId",
+}
 
 
 def _copy_codex_fields(
@@ -311,6 +316,15 @@ def _usage_from_payload(payload: Mapping[str, Any]) -> Usage | None:
     context_tokens = None
     if isinstance(last, Mapping):
         context_tokens = _optional_token(last, "totalTokens")
+    context_tokens = context_tokens or _optional_token(
+        breakdown, "context_tokens", "contextTokens"
+    )
+    context_limit = _optional_token(
+        raw, "modelContextWindow", "context_limit", "contextLimit"
+    )
+    explicit_health = _context_health(
+        breakdown.get("context_health", breakdown.get("contextHealth"))
+    )
     return Usage(
         input_tokens=_token(breakdown, "input_tokens", "inputTokens"),
         output_tokens=_token(breakdown, "output_tokens", "outputTokens"),
@@ -319,14 +333,10 @@ def _usage_from_payload(payload: Mapping[str, Any]) -> Usage | None:
             breakdown, "cache_write_tokens", "cacheWriteInputTokens", "cacheWriteTokens"
         ),
         cost_usd=_number(breakdown.get("cost_usd", breakdown.get("costUsd"))),
-        context_tokens=context_tokens or _optional_token(
-            breakdown, "context_tokens", "contextTokens"
-        ),
-        context_limit=_optional_token(
-            raw, "modelContextWindow", "context_limit", "contextLimit"
-        ),
-        context_health=_context_health(
-            breakdown.get("context_health", breakdown.get("contextHealth"))
+        context_tokens=context_tokens,
+        context_limit=context_limit,
+        context_health=_derived_context_health(
+            explicit_health, context_tokens, context_limit
         ),
         raw=dict(raw),
     )
@@ -353,3 +363,17 @@ def _context_health(value: Any) -> ContextHealth:
         return ContextHealth(value)
     except (TypeError, ValueError):
         return ContextHealth.UNKNOWN
+
+
+def _derived_context_health(
+    explicit: ContextHealth,
+    context_tokens: int | None,
+    context_limit: int | None,
+) -> ContextHealth:
+    if explicit is not ContextHealth.UNKNOWN:
+        return explicit
+    if context_tokens is None or context_limit is None or context_limit <= 0:
+        return ContextHealth.UNKNOWN
+    if context_tokens * 100 >= context_limit * 80:
+        return ContextHealth.APPROACHING_LIMIT
+    return ContextHealth.HEALTHY

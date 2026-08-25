@@ -19,16 +19,34 @@ not a general workflow programming system.
 
 ## Executable local proof
 
-The embedded candidate has a standard-library prototype at
-`scripts/durable_runtime_spike.py`. It commits a provider-turn receipt, exits at
-an injected crash point, resumes from SQLite, and records the external action
-once. Replaying the completed run does not duplicate either receipt.
+`scripts/durable_runtime_spike.py` runs one bounded comparison. The embedded
+candidate commits a provider-turn receipt, exits in a separate process, resumes
+from SQLite, and records the external action once. The provider-native candidate
+starts a Codex App Server thread, persists no-model goal metadata, terminates the
+server process, resumes the same thread in a new process, and deletes the thread
+it created. Restate and Temporal probes fail closed as `UNVERIFIED` when either
+the runtime executable or Python SDK is absent.
 
 Run the proof through the repository environment:
 
 ```bash
 python scripts/check.py --pytest tests/test_durable_runtime_spike.py
 ```
+
+Run the comparison and write an atomic machine-readable receipt:
+
+```bash
+SPIKE_DIR="$(mktemp -d)"
+python scripts/durable_runtime_spike.py \
+  --compare \
+  --workdir "$SPIKE_DIR/state" \
+  --output "$SPIKE_DIR/receipt.json"
+```
+
+The provider-native step starts no model turn and needs no run budget. It does
+require an installed Codex CLI and a writable App Server session store. The
+checked local result is
+[`durable-runtime-spike-receipt.json`](durable-runtime-spike-receipt.json).
 
 To inspect the two process runs directly:
 
@@ -43,27 +61,46 @@ The first process exits with code 75 after its commit. The next process prints
 `state=COMPLETED` with one `provider-turn` receipt and one `external-action`
 receipt. The third run keeps both counts at one.
 
-Fresh local result on 2026-08-25:
+Fresh deterministic test result on 2026-08-25:
 
 ```text
-tests/test_durable_runtime_spike.py .
-1 passed
+tests/test_durable_runtime_spike.py ..
+2 passed
 ```
 
-This proves atomic local recovery for the tested kill point. The runner suite
-also covers stale lease fencing, revision conflicts, checkpoints, and snapshot
-reconciliation. A kill during a live provider stream, schema migration from a
-released runner, and the uncertainty window of a real GitHub mutation remain
-`UNVERIFIED`.
+The receipt verifies SQLite process recovery and Codex App Server session
+continuity after process termination. It does not turn provider history into
+controller state. The runner suite also covers stale lease fencing, revision
+conflicts, checkpoints, a process
+exit followed by exact-head snapshot repair, and schema 1 to schema 2 migration.
+The migration uses SQLite's Online Backup API before an atomic transaction. A
+kill during a live provider stream and the uncertainty window of a real GitHub
+mutation need their separate outcome receipts.
 
 ## Candidate comparison
 
 | Candidate | Local executable result | Recovery and side effects | Install and operations | Decision |
 |---|---|---|---|---|
-| Embedded Python and SQLite | `VERIFIED` by the repository kill, replay, store, lease, and reconciliation tests | Transactions, unique receipts, revision checks, and leases work at tested boundaries. Persisted external timers and released-schema migrations remain. | Python standard library, one transient process, no account. SQLite supports the target desktop platforms. | `BUILD` |
+| Embedded Python and SQLite | `VERIFIED` by a real child-process exit, replay, store, lease, migration, and reconciliation tests | Transactions, unique receipts, revision checks, leases, persisted timers, and schema 1 migration work at tested boundaries. | Python standard library, one transient process, no account. SQLite supports the target desktop platforms. | `BUILD` |
 | Restate Server and Python SDK | `UNVERIFIED` locally. The `restate` executable was absent. | Journal replay, durable steps, timers, promises, retries, and invocation controls already exist. | Server is a separate process plus the Python service. Native install docs cover macOS and Linux. Windows packaging needs a real test. Server uses BSL 1.1; the Python SDK uses MIT. | `SPIKE`, then `INTEGRATE` only if embedded recovery fails or the domain grows |
 | Temporal and Python SDK | `UNVERIFIED` locally. The `temporal` executable was absent. | Workflow history and replay, Activities, timers, Signals, Updates, and Queries cover the domain. Workflow Pause is still marked pre-release. | CLI supports macOS, Linux, and Windows. A local server, Worker, task queue, replay rules, and upgrades add more operational work than this controller needs. | `DEFER` |
-| Provider-native sessions | Adapter mapping and fake-transport conformance are `VERIFIED`. No model was called. | Good conversation resume, fork, streaming, interruption, and usage. They do not own cross-provider dependencies, external receipts, or controller timers. | Codex and Claude are separate optional host installs with their own auth and retention. | `INTEGRATE` as adapters |
+| Provider-native sessions | Codex App Server no-model terminate/resume is `VERIFIED`; adapter conformance is covered separately. Claude native resume remains `UNVERIFIED` without authentication and a model budget. | Conversation continuity works. Sessions do not own cross-provider dependencies, external receipts, or controller timers. | Codex and Claude are separate optional host installs with their own auth and retention. | `INTEGRATE` as adapters |
+
+## Acceptance dimensions
+
+| Dimension | Embedded SQLite | Restate | Temporal | Provider-native sessions |
+|---|---|---|---|---|
+| One-command install and packaging | `VERIFIED` by runner wheel checks | `UNVERIFIED` locally | `UNVERIFIED` locally | Host install is separate; Codex is available locally |
+| macOS, Linux, Windows | Standard-library plan; package checks cover only available hosts | Docs cover macOS/Linux; Windows `UNVERIFIED` | CLI docs cover all three; local execution `UNVERIFIED` | Host-dependent |
+| Local repository and no cloud account | `VERIFIED` by local tests | Supported by docs, executable test absent | Supported by local server docs, executable test absent | Codex local session test `VERIFIED` |
+| Crash recovery and idempotent actions | `VERIFIED` at the injected boundary | `UNVERIFIED` | `UNVERIFIED` | Session resume only `VERIFIED`; actions do not belong here |
+| Pause, resume, cancel, timers, waits | Runner tests cover controls and waits | Docs describe primitives; executable test absent | Docs describe primitives; executable test absent | Provider interruption exists; controller pause and waits absent |
+| Audit and migration | SQLite journal and schema tests | Runtime journal and upgrades need a spike | History replay and Worker upgrades need a spike | Transcript audit only; no controller migration |
+| Size and operations | One transient Python process plus database | Server plus Python service | Server, Worker, task queue, and history | One optional host process per provider |
+| License and maintenance | Python and SQLite ecosystem; project MIT | Server BSL 1.1, SDK MIT | Server and SDK licenses need release review | Provider terms and host versions apply |
+
+Documentation-only cells are not execution evidence. In particular, a version
+probe never upgrades Restate or Temporal from `UNVERIFIED`.
 
 The Restate comparison must become executable before it can replace the
 embedded choice. Use the same sequence: complete a fake provider action, commit
@@ -76,10 +113,13 @@ documented alternative rather than an adopted dependency.
 
 Codex App Server exposes JSON-RPC methods for `thread/start`, `thread/resume`,
 `thread/fork`, `turn/start`, `turn/interrupt`, `thread/compact/start`, and
-`model/list`. Turn and item notifications form the stream. The adapter stores
-the returned thread ID as a foreign session ID and derives usage from structured
-events. The official documentation recommends the Codex SDK for automated jobs,
-while App Server is the deeper client integration.
+`model/list`. Turn and item notifications form the stream. The comparison uses
+`thread/start`, persists goal metadata without a turn, terminates App Server,
+and calls `thread/resume` with the recorded thread ID. The official protocol
+says clients must retain that ID. The adapter stores the returned thread ID as
+a foreign session ID and derives usage from structured events. The official
+documentation recommends the Codex SDK for automated jobs, while App Server is
+the deeper client integration.
 
 Claude Agent SDK has resumable and forked sessions, streaming input and output,
 `Query.interrupt()`, model discovery, cost and usage fields, context usage, and
@@ -89,11 +129,12 @@ does not prove that compaction happened. Session history does not restore the
 filesystem. SkipHow must checkpoint task facts outside the provider transcript.
 
 The Python code therefore uses injected transport protocols. It includes a
-Codex App Server JSONL subprocess transport and a degraded Claude structured
-CLI fallback. A production Claude SDK transport should use one long-lived
-streaming-input `Query`, since that path has typed interruption and live model
-controls. The CLI fallback terminates its active process on interrupt and must
-report that weaker behavior in runtime status.
+Codex App Server JSONL subprocess transport and selects the Claude Agent SDK
+when that runtime is installed. The SDK transport keeps a persistent client,
+uses typed interruption, and records `PreCompact` boundaries. If the SDK is
+unavailable or invalid, the factory uses the structured Claude CLI fallback.
+That fallback terminates its active process on interrupt and reports its weaker
+compaction and interruption behavior in runtime status.
 
 Model IDs come only from provider discovery or caller configuration. The core
 contract contains semantic profiles and capability fields, but no provider
