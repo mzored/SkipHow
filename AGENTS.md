@@ -10,7 +10,7 @@ When research changes the architecture, product contract, security policy, or mo
 
 Run focused tests through `python scripts/check.py --pytest <pytest-arguments>` so the repository-managed environment supplies the pinned dependencies. Before completion, run `python scripts/check.py` and `git diff --check`. These checks must remain local and deterministic. Do not run Codex, Claude Code, or another model from tests or CI.
 
-Live outcome evaluations are a separate, opt-in release activity. They require explicit credentials and a run budget, write machine-readable receipts, and never run from `scripts/check.py` or CI. A missing live receipt stays `UNVERIFIED`.
+Live outcome evaluations are a separate, opt-in release activity. For this repository, use only the installed Codex CLI with its existing ChatGPT OAuth login. Do not request or use provider API keys and do not incur separate model charges. Keep model calls deliberately rare, use the lowest sufficient reasoning effort, require an explicit invocation cap, write machine-readable receipts, and never run live models from `scripts/check.py` or CI. A missing live receipt stays `UNVERIFIED`.
 
 Tests, checks, and live gates must never create or delete a repository. Keep deterministic coverage local. A live GitHub gate may mutate only an explicitly named, pre-provisioned sandbox that is distinct from the candidate repository, and its credentials must not have repository creation or deletion authority.
 

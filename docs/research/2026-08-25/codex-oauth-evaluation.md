@@ -21,3 +21,9 @@ The operator must pass `--max-calls`. The evaluator derives the required invocat
 ## Remaining limits
 
 This mode can provide outcome and restart evidence without API-key charges. It cannot prove isolated installation, provider billing, implicit skill loading, autonomous model selection, or a hard token ceiling. The mutable GitHub scenario still needs a separate repository-preservation boundary.
+
+## First smoke result
+
+One `small-fix` trial ran against commit `ede99adce4a4` with Codex CLI 0.149.1, ChatGPT OAuth, `gpt-5.6-luna`, low reasoning effort, and `--max-calls 1`. The checked workspace outcome and host process passed. The receipt kept the overall claim `UNVERIFIED` because Codex events did not prove implicit skill loading. Provider cost stayed unavailable. Host telemetry reported 55,825 total tokens for the single call.
+
+That token count is too high for routine release checks under the owner's economy constraint. Do not run a broad live matrix by default. Prefer deterministic and package checks, and reserve another OAuth model call for a specific release question that cannot be answered locally.
