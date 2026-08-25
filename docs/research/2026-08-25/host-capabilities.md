@@ -10,6 +10,30 @@
 
 The local version check confirms that both commands were installed. It does not prove every documented UI or account feature was available to this session.
 
+## Verification record
+
+The following non-mutating checks ran on 2026-08-25 in a worktree at repository commit `b679bbb923bce1865fa9b130d74d811e55187ba9`:
+
+```bash
+codex --version
+codex features list | rg '^(goals|multi_agent|plugins|remote_compaction_v2)\s'
+codex --help | rg '^  (features|resume|fork|mcp|app|exec)\b'
+claude --version
+claude --help | rg -- '--(continue|resume|worktree|agent|plugin-dir)\b'
+```
+
+Observed results:
+
+- `codex --version` returned `codex-cli 0.149.1`.
+- The local Codex feature registry returned `stable true` for `goals`, `multi_agent`, `plugins`, and `remote_compaction_v2`.
+- Codex help listed the `resume`, `fork`, and `features` commands.
+- `claude --version` returned `2.1.240 (Claude Code)`.
+- Claude help listed `--agent`, `--continue`, `--resume`, `--worktree`, and `--plugin-dir`.
+
+These checks read local command metadata. They did not start a model session. Goal execution, subagent delegation, worktree isolation, compaction, restart recovery, account entitlements, and UI controls remain `UNVERIFIED` by this record.
+
+Use the same commands after a host upgrade. Also rerun the package checks and the opt-in live scenarios before changing a support claim.
+
 ## Decision
 
 SkipHow uses the host's execution features. It does not implement its own scheduler, worker protocol, provider transport, session store, context monitor, or task database.

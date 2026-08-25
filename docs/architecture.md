@@ -1,57 +1,54 @@
-# Accepted target architecture
+# Current architecture
 
-This document describes the architecture accepted for Issue #15. It becomes the current product architecture when that issue removes the custom runner and legacy skill tree.
+SkipHow is one portable Agent Skill for product and software work. The owner describes the outcome in ordinary language. SkipHow chooses the smallest workflow that can finish the authorized work and check the result.
 
-SkipHow will be one portable Agent Skill for product owners. It will translate a request into the smallest workflow that can finish the work and prove the result. It will not be a runner, scheduler, task database, or provider bridge.
+The Codex and Claude manifests package the same canonical `plugins/skiphow/skills/skiphow/SKILL.md`. They adapt installation metadata, not policy. SkipHow has no custom runner, scheduler, provider bridge, verifier process, model catalog, daemon, task database, hook, MCP server, or telemetry.
 
-Host manifests install the same canonical `SKILL.md`. They may adapt installation and capability names, but they must not copy policy. The public interface is ordinary language through the `skiphow` skill.
+The dated [research](research/2026-08-25/README.md) records the evidence behind this design. The [ADRs](decisions/README.md) record the accepted decisions.
 
-## Execution paths
+## Request routing
 
-Bounded work runs in the current host session. A direct request does not need an Issue, branch, review, subagent, or persistent artifact unless the result or repository policy requires one. Risk changes authority and evidence requirements. It does not make ceremony mandatory.
+The public interface is the `skiphow` skill. Four internal routes separate intent without making the owner choose a command:
 
-Long work uses the host's goals, background tasks, resume support, subagents, and worktrees. The root agent keeps the requested outcome, scope, authority, and integration responsibility. It may parallelize independent read-only work. Parallel mutations require separate host-managed worktrees with disjoint ownership.
+- `RESPOND` handles discussion, inspection, research, review, and diagnosis-only work. It is read-only.
+- `RECORD` turns ideas, bugs, questions, and feedback into persistent work records. It does not implement them.
+- `DELIVER` changes the product, verifies the result, and completes authorized delivery.
+- `CONTROL` reports status or applies pause, resume, narrower authority, and cancellation through the host.
 
-SkipHow does not emulate missing host features. Without background or resume support, it completes the safe sequential portion, saves a handoff in the canonical work record, and reports unattended continuation as `UNVERIFIED`.
+Bug repair is part of `DELIVER`. Long work is an execution choice, not another route.
+
+## Execution
+
+A bounded task runs in the current host session. It does not need an Issue, plan artifact, subagent, branch, review, or persistent state unless the task or repository policy calls for one.
+
+Long work uses the host's goals, background tasks, resume support, subagents, and worktrees when the installed host confirms them. The root agent owns the outcome, authority, work queue, integration, and final proof. It may parallelize independent read work. Parallel writes require separate worktrees and disjoint ownership.
+
+SkipHow does not emulate a missing host capability. If the host cannot preserve or resume the work, the agent completes the safe bounded portion, saves the next action in GitHub or `.skiphow/handoff.md`, and reports the missing behavior as `UNVERIFIED`.
 
 ## State and recovery
 
-Git is authoritative for code and history. When GitHub is connected, Issues define tracked work, pull requests record delivery, and checks record remote verification. Host task state coordinates the active run. SkipHow does not maintain a second task database.
+Git is authoritative for code and history. GitHub Issues are authoritative for tracked work. Pull requests and checks record delivery state. The host task coordinates the active run.
 
-Without GitHub, captured product signals use the append-only `.skiphow/inbox.md`. Long work that must stop uses `.skiphow/handoff.md`. These files are fallbacks, not mirrors of GitHub.
+Without GitHub, authorized intake appends to `.skiphow/inbox.md`. A stopped long task may use `.skiphow/handoff.md`. These files are fallbacks, not a second task system.
 
-At an Issue boundary, the agent updates the Issue or pull request with completed evidence, open findings, and the next action. After compaction or resume, it reconstructs the run from Git, GitHub, the host task, and any local fallback file. It does not require the full transcript.
+At a work-item boundary, the agent records completed evidence, open findings, and the next action. After compaction or resume, it re-reads the owner request, repository instructions, Git state, GitHub state, and host task before changing anything.
 
-## Progressive policy
+## Policy loading
 
-`SKILL.md` contains the owner contract, authority rules, routing, and completion standard. It stays short enough to load on every request. Detailed instructions live in references and load only when the request needs them.
+The canonical skill contains the owner contract, mutation boundary, request routing, and completion rule. Its seven references cover intake, product decisions, delivery, diagnosis, long work, GitHub, and model routing. The host loads them only when the task needs them.
 
-References may cover intake, product decisions, delivery, diagnosis, long work, GitHub, and model routing. Each rule has one canonical owner. Host adapters translate capabilities and syntax only.
+Each rule has one owner. Host manifests do not copy it. This keeps routine requests short and makes policy changes reviewable.
 
-## Model roles
+## Model selection
 
-Core policy uses semantic roles instead of model IDs:
+Shared policy uses `FAST`, `STANDARD`, and `DEEP` capability tiers. It contains no provider model IDs. The host resolves an available model or inherits the current one. Model capability and reasoning effort are separate decisions.
 
-- `FAST` handles bounded read-only search, inventory, extraction, and fact checks.
-- `STANDARD` handles implementation, debugging, tests, and documentation.
-- `DEEP` handles product shaping, architecture, security, unknown causes, reuse research, integration, and independent review when the risk warrants it.
+The root agent and integrator inherit the owner's main model. `FAST` is limited to bounded read-only work with direct checks. Normal code mutation starts at `STANDARD`. `DEEP` handles high-judgment work and independent review when the cost of an error warrants it. See [model routing](model-routing.md).
 
-The host maps each role to a current available model. The root agent and integrator inherit the user's main model. A cheap subagent does not receive normal code mutation by default. SkipHow does not call a separate router model.
+## Authority and completion
 
-Model role and reasoning effort remain separate choices. A transient failure keeps the same route. Repeated reasoning failure may increase effort or model role at a checkpoint. A mutable lane does not downgrade midway through its work. If the host cannot select a model role, the task inherits the current model and any claimed cost saving stays `UNVERIFIED`.
+The owner's words and repository policy set the mutation boundary. Read-only work cannot create files, Issues, branches, or remote state. A request to save information permits the named record. A request to fix or implement permits project changes and checks. An explicit end-to-end or unattended request also permits guarded merge and cleanup for that scope.
 
-## Authority and delivery
+Goals and subagents do not widen permissions. SkipHow never bypasses branch protection. It removes only clean owned worktrees and branches whose exact changes GitHub confirms as merged.
 
-Discussion and research are read-only. Requests to save work authorize persistence. Requests to fix or implement authorize ordinary repository changes and verification. End-to-end or unattended requests also authorize merge and cleanup when repository rules, required checks, required reviews, and the exact pull request head permit them.
-
-SkipHow never bypasses branch protection. It removes only clean worktrees and owned branches whose changes are merged. Product choices, production actions, credentials, payments, privacy changes, public release, and irreversible actions still require clear authority.
-
-GitHub delivery must reconcile remote state before every protected action and confirm the resulting state afterward. A small untracked change may stay on the direct path when repository policy allows it.
-
-## Evidence and findings
-
-Completion follows the changed behavior, not a model's claim. The agent uses the strongest practical evidence available for the exact final state. Local deterministic checks, remote checks, review, package validation, and live evaluation are distinct evidence types. Missing evidence stays `UNVERIFIED`.
-
-Material findings outside the current scope cannot disappear into the transcript. A blocking or inseparable defect joins the current work. An independent verified defect goes to the canonical tracker after a duplicate search. Uncertain findings become `NEEDS_RESEARCH`. Read-only work reports a ready work item but does not persist it without authority.
-
-Package support and behavior support are separate claims. A manifest installation check proves packaging only. Long-run recovery, model routing savings, and end-to-end GitHub delivery require fresh outcome evidence on each claimed host.
+Completion follows fresh evidence for the final state, not an agent's success claim. Missing evidence remains `UNVERIFIED`. A material finding outside the request is fixed when it blocks the task, saved after a duplicate search when independent, or reported without persistence during read-only work.

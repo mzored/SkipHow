@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run deterministic local checks without requiring either supported host."""
+"""Run deterministic checks for the portable SkipHow plugin."""
 
 from __future__ import annotations
 
@@ -19,11 +19,47 @@ import venv
 
 
 ROOT = Path(__file__).resolve().parents[1]
+PLUGIN_ROOT = ROOT / "plugins/skiphow"
+SKILL_ROOT = PLUGIN_ROOT / "skills/skiphow"
+CANONICAL_SKILL = SKILL_ROOT / "SKILL.md"
 REQUIREMENTS = ROOT / "requirements-dev.txt"
+REQUIRED_REFERENCES = frozenset(
+    {
+        "decision.md",
+        "delivery.md",
+        "diagnosis.md",
+        "github.md",
+        "intake.md",
+        "long-work.md",
+        "model-routing.md",
+    }
+)
+REMOVED_RUNTIME_PATHS = (
+    ROOT / "src/skiphow",
+    ROOT / "schemas",
+    ROOT / "pyproject.toml",
+    ROOT / "plugins/skiphow/scripts",
+    ROOT / "adapters/claude",
+    ROOT / ".claude-plugin/plugin.json",
+)
+PERSONAL_PATH = re.compile(
+    r"(?:/(?:Users|home)/[^/\s]+/|"
+    + "/"
+    + "root/"
+    + r"|[A-Za-z]:[\\/]+Users[\\/]+[^\\/\s]+[\\/]"
+    + r"|~/\.(?:codex|claude)(?:/|\b)|\$(?:\{)?HOME(?:\})?[\\/]"
+    + r"|%USERPROFILE%[\\/])"
+)
+CONCRETE_MODEL_ID = re.compile(
+    r"\b(?:gpt-\d[\w.-]*|claude-(?:\d|opus|sonnet|haiku)[\w.-]*|"
+    r"gemini-\d[\w.-]*|llama-\d[\w.-]*|"
+    r"mistral-(?:\d|small|medium|large)[\w.-]*|o[1-9](?:-[\w.-]+)?)\b",
+    re.IGNORECASE,
+)
 
 
 def managed_env_path() -> Path:
-    """Keep generated check dependencies outside the repository tree."""
+    """Keep check dependencies outside the repository."""
     cache_root = Path(
         os.environ.get(
             "SKIPHOW_CHECK_CACHE_DIR",
@@ -37,17 +73,10 @@ def managed_env_path() -> Path:
 
 MANAGED_ENV = managed_env_path()
 DEPENDENCY_STAMP = MANAGED_ENV / ".skiphow-requirements"
-PERSONAL_PATH = re.compile(
-    r"(?:/(?:Users|home)/[^/\s]+/|"
-    + "/"
-    + "root/"
-    + r"|[A-Za-z]:[\\/]+Users[\\/]+[^\\/\s]+[\\/]|~/\.(?:codex|claude)(?:/|\b)"
-    + r"|\$(?:\{)?HOME(?:\})?[\\/]|%USERPROFILE%[\\/])"
-)
 
 
 def pinned_requirements() -> dict[str, str]:
-    """Read the exact development dependency versions used by local checks."""
+    """Read the exact versions used by local checks."""
     result: dict[str, str] = {}
     for line in REQUIREMENTS.read_text(encoding="utf-8").splitlines():
         value = line.strip()
@@ -61,7 +90,7 @@ def pinned_requirements() -> dict[str, str]:
 
 
 def requirements_satisfied() -> bool:
-    """Return whether the current interpreter has every pinned check dependency."""
+    """Return whether this interpreter has every pinned check dependency."""
     try:
         return all(version(name) == expected for name, expected in pinned_requirements().items())
     except PackageNotFoundError:
@@ -69,12 +98,11 @@ def requirements_satisfied() -> bool:
 
 
 def managed_python() -> Path:
-    """Return the interpreter path for the repository-managed virtual environment."""
     return MANAGED_ENV / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
 
 
 def bootstrap_dependencies() -> int:
-    """Prepare pinned check dependencies and restart this command in the managed env."""
+    """Prepare pinned dependencies outside the checkout, then restart this command."""
     try:
         fingerprint = hashlib.sha256(REQUIREMENTS.read_bytes()).hexdigest()
     except OSError as exc:
@@ -86,13 +114,13 @@ def bootstrap_dependencies() -> int:
         try:
             venv.EnvBuilder(with_pip=True).create(MANAGED_ENV)
         except OSError as exc:
-            print(f"cannot create {MANAGED_ENV.relative_to(ROOT)}: {exc}", file=sys.stderr)
+            print(f"cannot create check environment: {exc}", file=sys.stderr)
             return 2
-    current_is_managed = Path(sys.executable).resolve() == python.resolve()
     try:
         installed_fingerprint = DEPENDENCY_STAMP.read_text(encoding="utf-8").strip()
     except OSError:
         installed_fingerprint = ""
+    current_is_managed = Path(sys.executable).resolve() == python.resolve()
     if current_is_managed or installed_fingerprint != fingerprint:
         try:
             completed = subprocess.run(
@@ -131,7 +159,7 @@ def checked(
     cwd: Path = ROOT,
     env: dict[str, str] | None = None,
 ) -> tuple[bool, str]:
-    """Run one bounded local command and retain concise failure output."""
+    """Run one bounded command without leaving Python bytecode in the checkout."""
     command_environment = os.environ.copy()
     command_environment["PYTHONDONTWRITEBYTECODE"] = "1"
     if env:
@@ -148,12 +176,11 @@ def checked(
         )
     except (OSError, subprocess.TimeoutExpired) as exc:
         return False, str(exc)
-    output = (result.stdout + result.stderr).strip()
-    return result.returncode == 0, output
+    return result.returncode == 0, (result.stdout + result.stderr).strip()
 
 
 def repository_files(suffixes: Iterable[str] | None = None) -> Iterable[Path]:
-    """Yield tracked and new non-ignored files reported by Git."""
+    """Yield tracked and new non-ignored files, with a fallback outside Git."""
     result = subprocess.run(
         ["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard"],
         cwd=ROOT,
@@ -170,9 +197,7 @@ def repository_files(suffixes: Iterable[str] | None = None) -> Iterable[Path]:
             if not any(part in ignored or part.endswith(".egg-info") for part in path.parts)
         )
     for path in paths:
-        if not path.is_file():
-            continue
-        if suffixes is None or path.suffix.lower() in suffixes:
+        if path.is_file() and (suffixes is None or path.suffix.lower() in suffixes):
             yield path
 
 
@@ -187,7 +212,6 @@ def validate_json() -> list[str]:
 
 
 def validate_yaml() -> list[str]:
-    """Parse every YAML document with the repository's pinned parser."""
     import yaml
 
     errors: list[str] = []
@@ -199,145 +223,232 @@ def validate_yaml() -> list[str]:
     return errors
 
 
-def validate_markdown_links() -> list[str]:
+def markdown_targets(path: Path) -> list[str]:
+    """Return link destinations parsed as CommonMark."""
     from markdown_it import MarkdownIt
 
-    markdown = MarkdownIt("commonmark")
+    result: list[str] = []
+    for token in MarkdownIt("commonmark").parse(path.read_text(encoding="utf-8")):
+        for child in token.children or ():
+            if child.type == "link_open" and child.attrGet("href"):
+                result.append(child.attrGet("href"))
+    return result
+
+
+def local_link(path: Path, target: str) -> Path | None:
+    parsed = urlsplit(target)
+    if parsed.scheme or parsed.netloc or (not parsed.path and parsed.fragment):
+        return None
+    target_path = unquote(parsed.path)
+    return (path.parent / target_path).resolve() if target_path else None
+
+
+def validate_markdown_links() -> list[str]:
     errors: list[str] = []
     for path in repository_files({".md"}):
-        text = path.read_text(encoding="utf-8")
-        for token in markdown.parse(text):
-            for child in token.children or ():
-                if child.type != "link_open":
-                    continue
-                target = child.attrGet("href")
-                if not target:
-                    continue
-                parsed = urlsplit(target)
-                if parsed.scheme or parsed.netloc or (not parsed.path and parsed.fragment):
-                    continue
-                target_path = unquote(parsed.path)
-                if not target_path:
-                    continue
-                candidate = (path.parent / target_path).resolve()
-                try:
-                    candidate.relative_to(ROOT)
-                except ValueError:
-                    errors.append(f"link escapes repository: {path.relative_to(ROOT)} -> {target}")
-                    continue
-                if not candidate.exists():
-                    errors.append(f"broken local link: {path.relative_to(ROOT)} -> {target}")
+        try:
+            targets = markdown_targets(path)
+        except OSError as exc:
+            errors.append(f"cannot read Markdown {path.relative_to(ROOT)}: {exc}")
+            continue
+        for target in targets:
+            candidate = local_link(path, target)
+            if candidate is None:
+                continue
+            try:
+                candidate.relative_to(ROOT)
+            except ValueError:
+                errors.append(f"link escapes repository: {path.relative_to(ROOT)} -> {target}")
+                continue
+            if not candidate.exists():
+                errors.append(f"broken local link: {path.relative_to(ROOT)} -> {target}")
     return errors
 
 
-def source_scan() -> list[str]:
-    errors: list[str] = []
-    roots = [
-        ROOT / ".agents",
-        ROOT / ".claude-plugin",
-        ROOT / "plugins",
-        ROOT / "adapters",
-        ROOT / "scripts",
-        ROOT / "src",
-        ROOT / "schemas",
-        ROOT / "evals",
+def portability_scan() -> list[str]:
+    """Reject personal paths from shipped files and public documentation."""
+    roots = (
+        PLUGIN_ROOT,
+        ROOT / ".agents/plugins/marketplace.json",
+        ROOT / ".claude-plugin/marketplace.json",
         ROOT / "docs",
-        ROOT / "pyproject.toml",
         ROOT / "README.md",
         ROOT / "CHANGELOG.md",
         ROOT / "CONTRIBUTING.md",
         ROOT / "SECURITY.md",
-    ]
+    )
+    errors: list[str] = []
     for path in repository_files():
-        if not any(path == source or path.is_relative_to(source) for source in roots):
+        if not any(path == root or path.is_relative_to(root) for root in roots):
             continue
         try:
             text = path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
             continue
         except OSError as exc:
-            errors.append(f"cannot read distributable source {path.relative_to(ROOT)}: {exc}")
+            errors.append(f"cannot read shipped file {path.relative_to(ROOT)}: {exc}")
             continue
         for match in PERSONAL_PATH.finditer(text):
-            errors.append(
-                f"non-portable personal path {match.group(0)!r} in {path.relative_to(ROOT)}"
-            )
+            errors.append(f"personal path {match.group(0)!r} in {path.relative_to(ROOT)}")
     return errors
 
 
-def validate_diff(base: str | None) -> list[str]:
-    """Check working changes and the committed candidate diff for whitespace errors."""
-    if not (ROOT / ".git").exists():
-        return []
-    errors: list[str] = []
-    commands = [["git", "diff", "--check"]]
-    if base:
-        commands.append(["git", "diff", "--check", base, "HEAD"])
-    for command in commands:
-        passed, output = checked(command)
-        if not passed:
-            errors.append(f"failed {' '.join(command)}: {output}")
-    return errors
+def load_json(relative: str) -> dict[str, object]:
+    value = json.loads((ROOT / relative).read_text(encoding="utf-8"))
+    if not isinstance(value, dict):
+        raise ValueError(f"{relative} must contain a JSON object")
+    return value
 
 
 def validate_version() -> list[str]:
-    """Check every release record against the single VERSION source."""
-    version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+    """Keep release metadata aligned with the single VERSION file."""
+    release = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
     errors: list[str] = []
     records = {
         "plugins/skiphow/.codex-plugin/plugin.json": ("version",),
-        ".claude-plugin/plugin.json": ("version",),
+        "plugins/skiphow/.claude-plugin/plugin.json": ("version",),
         ".claude-plugin/marketplace.json": ("metadata", "version"),
     }
     for relative, keys in records.items():
-        value: object = json.loads((ROOT / relative).read_text(encoding="utf-8"))
+        value: object = load_json(relative)
         for key in keys:
             value = value[key]  # type: ignore[index]
-        if value != version:
-            errors.append(f"version mismatch in {relative}: {value!r} != {version!r}")
-    marketplace = json.loads((ROOT / ".claude-plugin/marketplace.json").read_text())
-    if marketplace["plugins"][0]["version"] != version:
-        errors.append("version mismatch in .claude-plugin/marketplace.json plugin entry")
-    project_text = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
-    project_section = re.search(
-        r"(?ms)^\[project\][ \t]*$\n(.*?)(?=^\[|\Z)", project_text
-    )
-    project_version = (
-        re.search(r'^version[ \t]*=[ \t]*"([^"]+)"[ \t]*$', project_section.group(1), re.MULTILINE)
-        if project_section
-        else None
-    )
-    if project_version is None or project_version.group(1) != version:
-        errors.append("version mismatch in pyproject.toml")
-    package_source = (ROOT / "src/skiphow/__init__.py").read_text(encoding="utf-8")
-    if f'__version__ = "{version}"' not in package_source:
-        errors.append("version mismatch in src/skiphow/__init__.py")
-    if f"## {version}" not in (ROOT / "CHANGELOG.md").read_text(encoding="utf-8"):
-        errors.append(f"CHANGELOG.md has no {version} release heading")
-    if f"| {version.rsplit('.', 1)[0]}.x | Yes |" not in (
+        if value != release:
+            errors.append(f"version mismatch in {relative}: {value!r} != {release!r}")
+    marketplace = load_json(".claude-plugin/marketplace.json")
+    if marketplace["plugins"][0]["version"] != release:  # type: ignore[index]
+        errors.append("version mismatch in Claude marketplace plugin entry")
+    if f"## {release}" not in (ROOT / "CHANGELOG.md").read_text(encoding="utf-8"):
+        errors.append(f"CHANGELOG.md has no {release} release heading")
+    if f"| {release.rsplit('.', 1)[0]}.x | Yes |" not in (
         ROOT / "SECURITY.md"
     ).read_text(encoding="utf-8"):
-        errors.append("SECURITY.md does not support the current release line")
+        errors.append(f"SECURITY.md does not support {release.rsplit('.', 1)[0]}.x")
+    return errors
+
+
+def validate_runtime_removal() -> list[str]:
+    """Prevent the retired runner and policy copies from returning unnoticed."""
+    return [
+        f"retired runtime path still exists: {path.relative_to(ROOT)}"
+        for path in REMOVED_RUNTIME_PATHS
+        if path.is_file()
+        or (path.is_dir() and any(item.is_file() for item in path.rglob("*")))
+    ]
+
+
+def model_id_scan(paths: Iterable[Path] | None = None) -> list[str]:
+    """Keep provider model IDs out of portable skill policy."""
+    candidates = list(paths) if paths is not None else [
+        CANONICAL_SKILL,
+        *sorted((SKILL_ROOT / "references").glob("*.md")),
+    ]
+    errors: list[str] = []
+    for path in candidates:
+        try:
+            content = path.read_text(encoding="utf-8")
+        except OSError as exc:
+            errors.append(f"cannot scan model policy {path}: {exc}")
+            continue
+        for match in CONCRETE_MODEL_ID.finditer(content):
+            try:
+                relative = path.relative_to(ROOT)
+            except ValueError:
+                relative = path
+            errors.append(f"concrete model ID {match.group(0)!r} in {relative}")
     return errors
 
 
 def validate_plugin_static() -> list[str]:
-    """Check public metadata and the one-skill package shape locally."""
-    manifest = json.loads(
-        (ROOT / "plugins/skiphow/.codex-plugin/plugin.json").read_text(encoding="utf-8")
-    )
-    interface = manifest.get("interface") or {}
-    prompts = interface.get("defaultPrompt") or []
+    """Check the one-skill package shared by Codex and Claude."""
     errors: list[str] = []
-    if len(str(interface.get("shortDescription") or "")) > 30:
-        errors.append("Codex shortDescription exceeds 30 characters")
-    if not isinstance(prompts, list) or len(prompts) > 3:
-        errors.append("Codex defaultPrompt must contain at most three prompts")
-    skill_manifests = sorted((ROOT / "plugins/skiphow/skills").glob("*/SKILL.md"))
-    if [path.parent.name for path in skill_manifests] != ["skiphow"]:
-        errors.append("only plugins/skiphow/skills/skiphow may be public")
-    if any((ROOT / "plugins/skiphow/hooks").glob("*.json")):
-        errors.append("default package must not include lifecycle hooks")
+    codex_path = PLUGIN_ROOT / ".codex-plugin/plugin.json"
+    claude_path = PLUGIN_ROOT / ".claude-plugin/plugin.json"
+    for path in (codex_path, claude_path, CANONICAL_SKILL):
+        if not path.is_file():
+            errors.append(f"missing plugin file: {path.relative_to(ROOT)}")
+    if errors:
+        return errors
+
+    codex = json.loads(codex_path.read_text(encoding="utf-8"))
+    claude = json.loads(claude_path.read_text(encoding="utf-8"))
+    for host, manifest in (("Codex", codex), ("Claude", claude)):
+        if not isinstance(manifest, dict) or manifest.get("name") != "skiphow":
+            errors.append(f"{host} manifest must describe the skiphow plugin")
+            continue
+        if manifest.get("skills") != "./skills/":
+            errors.append(f"{host} manifest must load ./skills/")
+        if "hooks" in manifest:
+            errors.append(f"{host} manifest must not declare hooks")
+
+    public_skills = sorted(PLUGIN_ROOT.rglob("SKILL.md"))
+    if public_skills != [CANONICAL_SKILL]:
+        found = ", ".join(path.relative_to(PLUGIN_ROOT).as_posix() for path in public_skills)
+        errors.append(f"plugin must contain one canonical SKILL.md, found: {found or 'none'}")
+
+    top_level = {
+        path.name
+        for path in PLUGIN_ROOT.iterdir()
+        if path.is_file() or any(child.is_file() for child in path.rglob("*"))
+    }
+    unexpected = sorted(top_level - {".claude-plugin", ".codex-plugin", "skills"})
+    if unexpected:
+        errors.append(f"plugin has unexpected top-level entries: {', '.join(unexpected)}")
+
+    references = SKILL_ROOT / "references"
+    actual_references = {
+        path.name for path in references.iterdir() if path.is_file() and path.suffix == ".md"
+    } if references.is_dir() else set()
+    if actual_references != REQUIRED_REFERENCES:
+        missing = sorted(REQUIRED_REFERENCES - actual_references)
+        extra = sorted(actual_references - REQUIRED_REFERENCES)
+        if missing:
+            errors.append(f"missing skill references: {', '.join(missing)}")
+        if extra:
+            errors.append(f"unexpected skill references: {', '.join(extra)}")
+    errors.extend(model_id_scan())
+
+    linked = {
+        candidate
+        for target in markdown_targets(CANONICAL_SKILL)
+        if (candidate := local_link(CANONICAL_SKILL, target)) is not None
+    }
+    for reference in sorted(REQUIRED_REFERENCES):
+        expected = (references / reference).resolve()
+        if expected not in linked:
+            errors.append(f"canonical skill does not link references/{reference}")
+
+    hook_paths = [path for path in PLUGIN_ROOT.rglob("*") if "hooks" in path.parts]
+    if hook_paths:
+        errors.append("plugin package must not include hooks")
+
+    try:
+        codex_marketplace = load_json(".agents/plugins/marketplace.json")
+        codex_source = codex_marketplace["plugins"][0]["source"]  # type: ignore[index]
+        if codex_source != {"source": "local", "path": "./plugins/skiphow"}:
+            errors.append("Codex marketplace must package only plugins/skiphow")
+    except (KeyError, IndexError, TypeError, ValueError, OSError, json.JSONDecodeError):
+        errors.append("Codex marketplace does not contain the skiphow package")
+    try:
+        claude_marketplace = load_json(".claude-plugin/marketplace.json")
+        if claude_marketplace["plugins"][0]["source"] != "./plugins/skiphow":  # type: ignore[index]
+            errors.append("Claude marketplace must package only plugins/skiphow")
+    except (KeyError, IndexError, TypeError, ValueError, OSError, json.JSONDecodeError):
+        errors.append("Claude marketplace does not contain the skiphow package")
+    return errors
+
+
+def validate_diff(base: str | None) -> list[str]:
+    if not (ROOT / ".git").exists():
+        return []
+    commands = [["git", "diff", "--check"]]
+    if base:
+        commands.append(["git", "diff", "--check", base, "HEAD"])
+    errors: list[str] = []
+    for command in commands:
+        passed, output = checked(command)
+        if not passed:
+            errors.append(f"failed {' '.join(command)}: {output}")
     return errors
 
 
@@ -346,15 +457,13 @@ def offline_checks(base: str | None = None) -> list[str]:
         validate_json()
         + validate_yaml()
         + validate_markdown_links()
-        + source_scan()
+        + portability_scan()
         + validate_version()
+        + validate_runtime_removal()
         + validate_plugin_static()
     )
-    context_budget = [sys.executable, "scripts/context_budget.py", "--check"]
-    if base:
-        context_budget.extend(["--base", base])
     commands = [
-        context_budget,
+        [sys.executable, "scripts/context_budget.py", "--check"],
         [sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider"],
     ]
     for command in commands:
@@ -370,7 +479,7 @@ def main(argv: list[str] | None = None) -> int:
         if "--offline" in raw_args:
             print(
                 "repository checks UNVERIFIED: pinned dependencies are absent from the "
-                f"prepared cache at {MANAGED_ENV}; run scripts/check.py --prepare-only while online",
+                f"prepared cache at {MANAGED_ENV}",
                 file=sys.stderr,
             )
             return 2
@@ -378,6 +487,7 @@ def main(argv: list[str] | None = None) -> int:
             print("managed check environment does not satisfy requirements-dev.txt", file=sys.stderr)
             return 2
         return bootstrap_dependencies()
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--base", help="base commit for candidate-diff validation")
     parser.add_argument(
@@ -385,16 +495,8 @@ def main(argv: list[str] | None = None) -> int:
         nargs=argparse.REMAINDER,
         help="run pytest with the remaining arguments inside the managed environment",
     )
-    parser.add_argument(
-        "--prepare-only",
-        action="store_true",
-        help="prepare the managed environment without running repository checks",
-    )
-    parser.add_argument(
-        "--offline",
-        action="store_true",
-        help="never bootstrap dependencies from the network; report missing cache as UNVERIFIED",
-    )
+    parser.add_argument("--prepare-only", action="store_true")
+    parser.add_argument("--offline", action="store_true")
     args = parser.parse_args(raw_args)
     if args.prepare_only:
         print(sys.executable)
@@ -404,14 +506,7 @@ def main(argv: list[str] | None = None) -> int:
         environment["PYTHONDONTWRITEBYTECODE"] = "1"
         try:
             completed = subprocess.run(
-                [
-                    sys.executable,
-                    "-m",
-                    "pytest",
-                    "-p",
-                    "no:cacheprovider",
-                    *args.pytest,
-                ],
+                [sys.executable, "-m", "pytest", "-p", "no:cacheprovider", *args.pytest],
                 cwd=ROOT,
                 env=environment,
                 timeout=120,
@@ -421,6 +516,7 @@ def main(argv: list[str] | None = None) -> int:
             print("focused pytest run timed out after 120 seconds", file=sys.stderr)
             return 2
         return completed.returncode
+
     errors = offline_checks(args.base)
     if errors:
         print("repository checks failed:", file=sys.stderr)
@@ -428,8 +524,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"- {error}", file=sys.stderr)
         return 1
     print("local deterministic checks passed")
-    print("Codex official validator: UNVERIFIED (run scripts/check_hosts.py)")
-    print("Claude package validation: UNVERIFIED (run scripts/check_hosts.py)")
+    print("Host package checks: UNVERIFIED (run scripts/check_hosts.py)")
     return 0
 
 

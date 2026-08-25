@@ -1,7 +1,7 @@
 {
   "name": "skiphow",
-  "version": "0.8.0",
-  "description": "Deliver product and software work from one ordinary-language request.",
+  "version": "0.9.0",
+  "description": "Handle product and software work from one ordinary-language request.",
   "author": {
     "name": "mzored",
     "url": "https://github.com/mzored"
@@ -18,8 +18,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "SkipHow",
-    "shortDescription": "Project delivery autopilot",
-    "longDescription": "Understand a project request, make routine product and technical decisions, perform authorized work, verify the result, and use tracking or durable coordination only when the request needs them.",
+    "shortDescription": "Product work from one request",
+    "longDescription": "Understand the request, make routine technical decisions, do the work the user authorized, and verify the result. Use tracking and long-running coordination only when the task needs them.",
     "developerName": "mzored",
     "category": "Developer Tools",
     "capabilities": [],

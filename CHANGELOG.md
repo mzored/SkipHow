@@ -2,6 +2,33 @@
 
 All notable changes to this project appear in this file.
 
+## 0.9.0 (unreleased)
+
+Version 0.9.0 removes the Python runner introduced in 0.8. SkipHow is now one portable, owner-facing skill. Codex and Claude use the host's own sessions, goals, subagents, worktrees, resume support, and permission controls.
+
+This is a breaking release. The `skiphow` executable, its SQLite state, runtime schemas, provider adapters, and runner configuration no longer exist. SkipHow does not provide a compatibility command or migrate runner state. Git history retains the removed implementation.
+
+### Changed
+
+- Kept one public `skiphow` entry point for discussion, capture, delivery, and task control. Requests use ordinary language instead of separate fix, CTO, idea, or automode commands.
+- Made short tasks run in the current host session. Long work uses host-native goals and background tasks when the host provides them.
+- Made GitHub Issues, pull requests, and Git the durable record for tracked work. Projects without GitHub can keep explicit capture requests in `.skiphow/inbox.md`.
+- Replaced model names with the semantic `FAST`, `STANDARD`, and `DEEP` tiers. The host resolves the available model or inherits the current model when it cannot select a tier.
+- Limited automatic merge to explicit unattended or end-to-end work. Required checks, reviews, repository rules, and exact-head checks still apply.
+- Rewrote the plugin policy, architecture, research notes, decisions, and README around the host-native design.
+
+### Removed
+
+- Removed the `skiphow` Python package and the `setup`, `intake`, `start`, `add-task`, `github-deliver`, `execute`, `worker`, `status`, `pause`, `resume`, `cancel`, `reconcile`, and `export` CLI commands.
+- Removed SQLite run state, the supervisor, provider transports, model calibration, runtime verification, security journal, JSON runtime schemas, and runner-specific configuration.
+- Removed the copied Claude skill shim and vendored workflow instructions. Both host packages now use the same canonical skill.
+- Removed runner-specific tests and evals that did not install and exercise the exact candidate plugin.
+
+### Verification status
+
+- Deterministic repository and package checks remain in CI.
+- Live Codex and Claude outcome checks remain opt-in. Host-native continuation, unattended GitHub delivery, and model-tier savings stay `UNVERIFIED` until an exact 0.9 candidate passes those checks.
+
 ## 0.8.0 (unreleased release candidate)
 
 This candidate is not SkipHow 1.0. Authenticated Claude execution, multi-trial real provider and service outcomes, adaptive-routing ablation, and cross-platform operation remain `UNVERIFIED`.
