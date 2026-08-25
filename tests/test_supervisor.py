@@ -37,6 +37,7 @@ from skiphow.runtime_security import (
 )
 from skiphow.security import FilesystemPolicy
 from skiphow.schemas import TaskStatus
+from skiphow.store import ConflictError
 from skiphow.supervisor import (
     CampaignSupervisor,
     SupervisionLimits,
@@ -748,6 +749,36 @@ def test_security_audit_cas_serializes_concurrent_store_connections(tmp_path: Pa
     audit = DurableSecurityAudit(runner.store)
     assert len(audit.events(run.run_id)) == 40
     assert audit.verify(run.run_id)
+
+
+def test_security_audit_retries_sustained_cas_contention(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    class ContendedStore:
+        def __init__(self) -> None:
+            self.attempts = 0
+
+        def list_security_audit(self, run_id: str) -> list[dict[str, object]]:
+            return []
+
+        def append_security_audit(self, run_id, payload, **kwargs):
+            self.attempts += 1
+            if self.attempts <= 20:
+                raise ConflictError("simulated contention")
+            return dict(payload)
+
+    store = ContendedStore()
+    monkeypatch.setattr(time, "sleep", lambda delay: None)
+    event = DurableSecurityAudit(store).append(
+        "run",
+        actor="worker",
+        action="dispatch-check",
+        target="task",
+        outcome="allowed",
+    )
+
+    assert store.attempts == 21
+    assert event["sequence"] == 1
 
 
 def test_supervisor_polls_and_releases_due_external_wait(tmp_path: Path) -> None:

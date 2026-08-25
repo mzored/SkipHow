@@ -1,5 +1,11 @@
 # External analysis handoff — 2026-08-25
 
+> Historical record. Issue [#9](https://github.com/mzored/SkipHow/issues/9)
+> supersedes this document as the current release-integration status. The test
+> counts, interrupted work, and evidence gaps below describe the handoff state,
+> not the current candidate. Use fresh checks and exact-commit receipts for any
+> release decision.
+
 This document marks the exact stopping point of the SkipHow refactor. It is
 intended for an independent reviewer and is not a release-completion claim.
 

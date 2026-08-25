@@ -58,7 +58,7 @@ Each schema-v1 manifest records the intent, fixture, request, preconditions, exe
 
 ## Live harness v2
 
-The live suite is outside deterministic CI. Harness v2 has subprocess bridges for Codex App Server and Claude Code. `evals/live/generate_config.py` creates a provider-specific config containing all twenty registered scenarios, three semantic profiles, exact model labels, and per-trial cost caps. Use an isolated workspace outside the candidate checkout. Run the generator with `--help` for the required model, version, and cost arguments.
+The live suite is outside deterministic CI. Harness v2 has subprocess bridges for Codex App Server and Claude Code. `evals/live/generate_config.py` creates a provider-specific config containing all twenty registered scenarios, three semantic profiles, exact model labels, and per-trial cost caps. Put both the generated config and the isolated scenario workspace outside the candidate checkout. Run the generator with `--help` for the required model, version, and cost arguments.
 
 Inspect the matrix and worst-case cost without invoking an adapter:
 

@@ -113,6 +113,22 @@ python scripts/check_hosts.py --output path/to/host-proof.json
 
 The first command creates and reuses a pinned dependency cache outside the repository. `--offline` never accesses the network. The host check records package evidence as `VERIFIED`, `UNVERIFIED`, or `FAILED`.
 
+For a fail-closed release-candidate check, commit and push the exact candidate, then require every supported package path:
+
+```sh
+CANDIDATE_SHA="$(git rev-parse HEAD)"
+python scripts/check_hosts.py \
+  --require-codex-validator \
+  --require-codex-install \
+  --require-claude \
+  --require-claude-install \
+  --require-runner-package \
+  --codex-marketplace-ref "$CANDIDATE_SHA" \
+  --output ../skiphow-host-proof.json
+```
+
+This command fails if a required host, validator, installation, or runner package check is unavailable or fails. Keep the receipt outside the candidate checkout.
+
 The deterministic check also runs from a source archive without `.git`; file validation falls back to the archive tree and Git diff evidence is unavailable. Release identity and exact-host installation still require a Git checkout.
 
 The opt-in GitHub gate uses a clean committed candidate and an owned disposable private repository. It proves Issue, native dependency, pull request, CI, merge, branch cleanup, forced interruption, and resume. It is separate from `scripts/check.py` because it mutates remote state. See [GitHub lifecycle](docs/github-lifecycle.md).
