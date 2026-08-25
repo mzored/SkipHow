@@ -38,7 +38,7 @@ The check validates structure and isolated installation in each available suppor
 
 ## Live outcome evaluation
 
-Live evaluation is an opt-in release activity. It never runs from `scripts/check.py` or normal CI. Each run needs explicit credentials, a cost budget, exact provider and host versions, and an exact packaged SkipHow candidate.
+Live evaluation is an opt-in release activity. It never runs from `scripts/check.py` or normal CI. Each run needs an explicit authentication mode, exact provider and host versions, and an exact packaged SkipHow candidate. API-key runs need a cost budget. Codex ChatGPT OAuth runs use the existing subscription profile and a hard host-invocation count instead of a dollar budget.
 
 A valid run must:
 
@@ -58,7 +58,9 @@ python evals/live/run.py validate
 python evals/live/run.py plan
 ```
 
-`run` must execute from the clean committed candidate that it grades. Work and receipt directories must already exist outside that checkout. The command also needs the host credential, an explicit root model and effort, a positive total budget, a per-invocation budget, and `--confirm-live`.
+`run` must execute from the clean committed candidate that it grades. Work and receipt directories must already exist outside that checkout. Every command needs an explicit root model and effort plus `--confirm-live`.
+
+Codex ChatGPT OAuth mode requires an existing `codex login status` result of `Logged in using ChatGPT`, the current `CODEX_HOME`, and an exact enabled `skiphow@skiphow` payload already present in that profile. The evaluator does not copy OAuth credentials or install a marketplace. It removes ambient API keys from the child environment, passes `--ignore-user-config`, runs ephemeral sessions, and records profile isolation as `UNVERIFIED`. `--max-calls` must cover the exact selected invocation count and bounds token use only indirectly. Codex CLI exposes no hard token cap for `exec`.
 
 A Codex run needs `--codex-marketplace-source` pointing to a pre-provisioned plain local snapshot outside the candidate. It must contain the exact `.agents` marketplace manifest and `plugins/skiphow` payload, with no `.git`, links, or special files. Remote Git sources are rejected because host installation may clone them. Codex also needs `--accept-advisory-codex-budget`; the installed CLI does not expose a hard dollar cap. Claude validates and loads the exact candidate through `--plugin-dir` and receives the per-invocation limit through `--max-budget-usd`.
 
@@ -81,7 +83,24 @@ python evals/live/run.py run \
   --confirm-live
 ```
 
-The evaluator gives the host runtime basics, the selected provider credential, and an isolated host config. Claude runs in bare mode, requires sandbox startup, and disables unsandboxed command fallback. The evaluator never executes code written into a trial workspace.
+An OAuth run uses no API key or dollar-budget arguments:
+
+```sh
+python evals/live/run.py run \
+  --host codex \
+  --candidate "$PWD" \
+  --scenario small-fix \
+  --model <root-model> \
+  --effort low \
+  --trials 1 \
+  --work-root <existing-plain-directory> \
+  --receipt-root <existing-plain-directory> \
+  --codex-oauth \
+  --max-calls 1 \
+  --confirm-live
+```
+
+API-key runs give the host runtime basics, the selected provider credential, and an isolated host config. Codex OAuth runs reuse the current profile because the OAuth credential remains in the host store. Claude runs in bare mode, requires sandbox startup, and disables unsandboxed command fallback. The evaluator never executes code written into a trial workspace.
 
 Collectors read bounded file deltas, JSON, the versioned Markdown inbox and handoff, fixed Git state, read-only GitHub API state, and host telemetry. The evaluator preserves redacted host events, failed workspaces, and receipts. It does not remove them automatically.
 

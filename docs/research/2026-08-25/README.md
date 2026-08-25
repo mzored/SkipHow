@@ -11,6 +11,7 @@ This directory preserves the evidence used for the current SkipHow architecture.
 | [Security and evals](security-and-evals.md) | Trust boundaries, evidence rules, and live evaluation limits |
 | [Live evaluation hosts](live-evaluation-hosts.md) | Exact candidate loading, noninteractive host commands, budgets, events, and replacement-suite boundaries |
 | [Release-readiness audit](release-readiness-audit.md) | Final semantic, packaging, security, and evidence corrections after the host-native rewrite |
+| [Codex OAuth evaluation](codex-oauth-evaluation.md) | API-key-free live evaluation through the existing ChatGPT OAuth profile |
 | [Prior art](prior-art.md) | Pinned reviews of GSD, OpenSpec, Superpowers, Matt Pocock skills, BMAD, Paperclip, Mesa, and Autonomous PM |
 
 The review applies to repository commit `a6d34a25614bc0723517032af617b0782158df4d`. Later implementation work may remove the audited code. The findings remain useful because they explain why it was removed.

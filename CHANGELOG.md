@@ -2,6 +2,12 @@
 
 All notable changes to this project appear in this file.
 
+## Unreleased
+
+### Changed
+
+- Added a Codex ChatGPT OAuth evaluation mode. It reuses the current Codex profile without copying credentials, requires an exact enabled cached plugin payload, forbids API-key and dollar-budget options, and caps host invocations with `--max-calls`.
+
 ## 0.9.0 (2026-08-25, preview)
 
 Version 0.9.0 removes the Python runner introduced in 0.8. SkipHow is now one portable, owner-facing skill. Codex and Claude use the host's own sessions, goals, subagents, worktrees, resume support, and permission controls.

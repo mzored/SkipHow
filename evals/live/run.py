@@ -619,24 +619,36 @@ def gate(
     args: argparse.Namespace,
     scenarios: list[dict[str, Any]],
     call_count: int | None = None,
-) -> tuple[Path, Decimal, Decimal, list[str]]:
+) -> tuple[Path, Decimal | None, Decimal | None, list[str]]:
     if not args.confirm_live:
         raise GateError("live execution requires the exact --confirm-live flag")
-    total = _positive_decimal(args.total_budget_usd, "--total-budget-usd")
-    per_trial = _positive_decimal(args.per_invocation_budget_usd, "--per-invocation-budget-usd")
     calls = call_count if call_count is not None else len(scenarios)
-    if total < per_trial * calls:
-        raise GateError("total budget must cover every planned host invocation")
+    codex_oauth = args.host == "codex" and getattr(args, "codex_oauth", False)
+    if codex_oauth:
+        if args.credential_env or args.total_budget_usd or args.per_invocation_budget_usd or args.accept_advisory_codex_budget:
+            raise GateError("Codex OAuth mode forbids API credential and dollar-budget options")
+        if not isinstance(getattr(args, "max_calls", None), int) or args.max_calls < calls:
+            raise GateError(f"Codex OAuth mode requires --max-calls of at least {calls}")
+        total = per_trial = None
+        secrets: list[str] = []
+    else:
+        if args.total_budget_usd is None or args.per_invocation_budget_usd is None:
+            raise GateError("API-key live execution requires total and per-invocation dollar budgets")
+        total = _positive_decimal(args.total_budget_usd, "--total-budget-usd")
+        per_trial = _positive_decimal(args.per_invocation_budget_usd, "--per-invocation-budget-usd")
+        if total < per_trial * calls:
+            raise GateError("total budget must cover every planned host invocation")
+        if args.host == "codex" and not args.accept_advisory_codex_budget:
+            raise GateError("Codex API-key budget is advisory; pass --accept-advisory-codex-budget to continue")
+        credential_name = args.credential_env or hosts.CREDENTIAL_ENV[args.host]
+        if credential_name != hosts.CREDENTIAL_ENV[args.host]:
+            raise GateError(f"{args.host} requires credential environment name {hosts.CREDENTIAL_ENV[args.host]}")
+        credential = os.environ.get(credential_name)
+        if not credential:
+            raise GateError("host credential environment variable is unset or empty")
+        secrets = [credential]
     if not args.model or not args.effort:
         raise GateError("live execution requires explicit --model and --effort")
-    if args.host == "codex" and not args.accept_advisory_codex_budget:
-        raise GateError("Codex budget is advisory; pass --accept-advisory-codex-budget to continue")
-    credential_name = args.credential_env or hosts.CREDENTIAL_ENV[args.host]
-    if credential_name != hosts.CREDENTIAL_ENV[args.host]:
-        raise GateError(f"{args.host} requires credential environment name {hosts.CREDENTIAL_ENV[args.host]}")
-    credential = os.environ.get(credential_name)
-    if not credential:
-        raise GateError("host credential environment variable is unset or empty")
     candidate = Path(args.candidate).resolve()
     work_root = _outside(candidate, Path(args.work_root), "work root")
     receipt_root = _outside(candidate, Path(args.receipt_root), "receipt root")
@@ -647,7 +659,7 @@ def gate(
             raise GateError(f"{label} must be an existing ordinary directory")
         if (root / ".git").exists():
             raise GateError(f"{label} must not be a repository")
-    return candidate, total, per_trial, [credential]
+    return candidate, total, per_trial, secrets
 
 
 def _write_text(path: Path, value: str) -> None:
@@ -704,7 +716,7 @@ def _host_call(
     receipt_root: Path,
     explicit_skill: bool,
     network: bool,
-    per_call_budget: Decimal,
+    per_call_budget: Decimal | None,
     budget: dict[str, Any],
     secrets: list[str],
     github_token: str | None = None,
@@ -719,8 +731,9 @@ def _host_call(
         str(receipt_root),
         str(args.codex_marketplace_source or ""),
     ]
-    credential = os.environ[args.credential_env or hosts.CREDENTIAL_ENV[args.host]]
-    if budget["observed_spend"] >= budget["total"]:
+    codex_oauth = args.host == "codex" and getattr(args, "codex_oauth", False)
+    credential = None if codex_oauth else os.environ[args.credential_env or hosts.CREDENTIAL_ENV[args.host]]
+    if budget["total"] is not None and budget["observed_spend"] >= budget["total"]:
         result = {
             "status": Status.BLOCKED.value,
             "detail": "observed spend reached the total budget before this invocation",
@@ -735,6 +748,7 @@ def _host_call(
             call_root,
             credential=credential,
             github_token=github_token,
+            codex_oauth=codex_oauth,
         )
         install = hosts.install_candidate(
             args.host,
@@ -742,6 +756,7 @@ def _host_call(
             environment,
             version=proof["version"],
             codex_source=args.codex_marketplace_source,
+            codex_oauth=codex_oauth,
         )
         if candidate_proof(candidate) != proof:
             raise hosts.HostError("candidate payload changed during installation")
@@ -762,7 +777,7 @@ def _host_call(
             prompt,
             args.model,
             args.effort,
-            str(per_call_budget),
+            str(per_call_budget) if per_call_budget is not None else "",
             environment,
             candidate=candidate,
             explicit_skill=explicit_skill,
@@ -789,7 +804,7 @@ def _host_call(
     usage = collectors.provider_usage(events)
     if usage.get("cost_status") == Status.PASSED.value and usage.get("cost_usd") is not None:
         budget["observed_spend"] += Decimal(str(usage["cost_usd"]))
-        if budget["observed_spend"] > budget["total"]:
+        if budget["total"] is not None and budget["observed_spend"] > budget["total"]:
             process_status = Status.FAILED
             detail = "host-reported spend exceeded the total budget"
     result = {
@@ -1279,13 +1294,18 @@ def run_live(args: argparse.Namespace) -> int:
         "schema_version": 1,
         "run_id": run_id,
         "candidate": proof,
-        "host": {**host_identity, "credential_env": args.credential_env or hosts.CREDENTIAL_ENV[args.host]},
+        "host": {
+            **host_identity,
+            "auth_mode": "chatgpt-oauth" if args.host == "codex" and getattr(args, "codex_oauth", False) else "api-key",
+            "credential_env": None if args.host == "codex" and getattr(args, "codex_oauth", False) else args.credential_env or hosts.CREDENTIAL_ENV[args.host],
+        },
         "requested": {
             "root_model": args.model,
             "root_effort": args.effort,
-            "total_budget_usd": str(total_budget),
-            "per_invocation_budget_usd": str(per_call_budget),
-            "budget_mode": "advisory" if args.host == "codex" else "host-enforced-per-invocation",
+            "total_budget_usd": str(total_budget) if total_budget is not None else None,
+            "per_invocation_budget_usd": str(per_call_budget) if per_call_budget is not None else None,
+            "max_calls": args.max_calls if args.host == "codex" and getattr(args, "codex_oauth", False) else None,
+            "budget_mode": "oauth-call-count" if args.host == "codex" and getattr(args, "codex_oauth", False) else "advisory" if args.host == "codex" else "host-enforced-per-invocation",
             "trials": args.trials,
         },
         "github": {key: value for key, value in (github or {}).items() if key != "sandbox_path"} or None,
@@ -1329,8 +1349,10 @@ def parser() -> argparse.ArgumentParser:
     run.add_argument("--model", required=True)
     run.add_argument("--effort", required=True)
     run.add_argument("--credential-env")
-    run.add_argument("--total-budget-usd", required=True)
-    run.add_argument("--per-invocation-budget-usd", required=True)
+    run.add_argument("--total-budget-usd")
+    run.add_argument("--per-invocation-budget-usd")
+    run.add_argument("--codex-oauth", action="store_true", help="use the current ChatGPT OAuth profile without API credentials")
+    run.add_argument("--max-calls", type=int, help="hard host-invocation count for Codex OAuth mode")
     run.add_argument("--work-root", required=True)
     run.add_argument("--receipt-root", required=True)
     run.add_argument("--scenario", action="append", default=[])

@@ -31,7 +31,7 @@ Pause, resume, and cancel use the host's controls only when the host confirms th
 
 Credentials remain in host, provider, Git, or GitHub credential stores. Do not put secrets in the skill, project files, Issues, pull requests, handoffs, receipts, or prompts sent to an unrelated provider.
 
-GitHub work needs the least repository access that can perform the authorized lifecycle. Live evaluations need separate explicit credentials and a budget. A live GitHub test may use only a named pre-provisioned sandbox repository and must not receive repository creation or deletion authority.
+GitHub work needs the least repository access that can perform the authorized lifecycle. Live evaluations need an explicit authentication mode and a bounded call count or cost budget. Codex ChatGPT OAuth stays in the host credential store and is never copied into receipts or temporary configuration. A live GitHub test may use only a named pre-provisioned sandbox repository and must not receive repository creation or deletion authority.
 
 ## Evidence
 

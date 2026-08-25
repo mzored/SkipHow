@@ -85,21 +85,37 @@ def fresh_config(
     host: str,
     trial_root: Path,
     *,
-    credential: str,
+    credential: str | None,
     github_token: str | None = None,
+    codex_oauth: bool = False,
 ) -> tuple[Path, dict[str, str]]:
-    config = trial_root / "host-config"
-    config.mkdir(mode=0o700, parents=True, exist_ok=False)
     environment = {
         name: os.environ[name]
         for name in ("PATH", "LANG", "LC_ALL", "TMPDIR", "SSL_CERT_FILE", "SSL_CERT_DIR")
         if os.environ.get(name)
     }
-    environment[CREDENTIAL_ENV[host]] = credential
+    if codex_oauth:
+        if host != "codex" or credential is not None:
+            raise HostError("ChatGPT OAuth mode is available only for Codex without an API key")
+        config = Path(os.environ.get("CODEX_HOME", Path.home() / ".codex")).resolve()
+        environment["CODEX_HOME"] = str(config)
+    else:
+        if credential is None:
+            raise HostError("API credential is required outside Codex OAuth mode")
+        config = trial_root / "host-config"
+        config.mkdir(mode=0o700, parents=True, exist_ok=False)
+        environment[CREDENTIAL_ENV[host]] = credential
+        environment["CODEX_HOME" if host == "codex" else "CLAUDE_CONFIG_DIR"] = str(config)
     if github_token:
         environment["GH_TOKEN"] = github_token
-    environment["CODEX_HOME" if host == "codex" else "CLAUDE_CONFIG_DIR"] = str(config)
     return config, environment
+
+
+def require_codex_chatgpt_oauth(environment: dict[str, str]) -> None:
+    binary = executable("codex")
+    code, stdout, stderr = _run([binary, "login", "status"], cwd=Path.cwd(), env=environment, timeout=30)
+    if code or "logged in using chatgpt" not in (stdout + stderr).lower():
+        raise HostError("Codex is not logged in using ChatGPT OAuth")
 
 
 def _payload(root: Path) -> dict[str, str]:
@@ -160,8 +176,31 @@ def install_candidate(
     *,
     version: str,
     codex_source: str | None = None,
+    codex_oauth: bool = False,
 ) -> dict[str, Any]:
     binary = executable(host)
+    if host == "codex" and codex_oauth:
+        require_codex_chatgpt_oauth(config_env)
+        code, stdout, _ = _run([binary, "plugin", "list", "--json"], cwd=candidate, env=config_env)
+        if code:
+            raise HostError("Codex plugin inventory failed in ChatGPT OAuth mode")
+        try:
+            inventory = _installed_skiphow(host, stdout)
+        except (ValueError, KeyError, TypeError) as exc:
+            raise HostError(f"host inventory cannot prove the SkipHow installation: {exc}") from exc
+        if inventory.get("version") != version or inventory.get("enabled") is not True or inventory.get("installed") is not True:
+            raise HostError("host inventory does not show the exact enabled SkipHow candidate")
+        installed_path = Path(str(inventory.pop("path"))).resolve()
+        payload = _payload(candidate / "plugins/skiphow")
+        if _payload(installed_path) != payload:
+            raise HostError("installed SkipHow payload does not match the candidate")
+        return {
+            "auth_mode": "chatgpt-oauth",
+            "isolation_status": "UNVERIFIED",
+            "load_mode": "existing-codex-profile",
+            "payload_sha256": _payload_id(payload),
+            "version": version,
+        }
     if host == "codex":
         marketplace, payload_id = verify_codex_plain_source(candidate, codex_source)
         commands = [
@@ -240,7 +279,7 @@ def invoke(
     binary = executable(host)
     request = (("$skiphow\n\n" if host == "codex" else "/skiphow:skiphow\n\n") if explicit_skill else "") + prompt
     if host == "codex":
-        command = [binary, "exec", "--json", "--ephemeral", "--skip-git-repo-check", "--sandbox", "workspace-write", "--model", model, "-c", f'model_reasoning_effort="{effort}"']
+        command = [binary, "exec", "--json", "--ephemeral", "--ignore-user-config", "--skip-git-repo-check", "--sandbox", "workspace-write", "--model", model, "-c", f'model_reasoning_effort="{effort}"']
         if network:
             command.extend(["-c", "sandbox_workspace_write.network_access=true"])
         command.extend(["-C", str(workspace), request])

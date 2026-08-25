@@ -24,6 +24,8 @@ Live Codex trials accept only a pre-provisioned plain local marketplace whose ma
 
 Receipt serialization recursively redacts known credentials and private run paths. Structured collectors retain comparison results, counts, hashes, and mismatches, not raw JSON values, inbox records, GitHub snapshots, or workspace paths.
 
+Codex live evaluation may use the current ChatGPT OAuth profile when the operator forbids API-key spending. This mode never copies the OAuth credential. It removes ambient API keys, ignores user config, uses ephemeral sessions, verifies the enabled cached plugin payload byte for byte, and requires an exact host-invocation cap. Because auth and plugin state still come from the existing profile, profile isolation remains `UNVERIFIED`.
+
 The mutable GitHub scenario fails closed before credentials or host execution. It remains `UNVERIFIED` until an external boundary can preserve repository existence while permitting only the required Git and GitHub operations. A confirmation flag is not such a boundary.
 
 Routing receipts report cost ablation under the operator-controlled map separately from autonomous route selection. The latter stays `UNVERIFIED` until host telemetry demonstrates it.

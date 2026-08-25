@@ -83,6 +83,33 @@ def test_budget_and_credential_gates_are_explicit(tmp_path: Path, monkeypatch: p
     assert (tmp_path / "work").stat().st_mode & 0o777 == 0o755
 
 
+def test_codex_oauth_gate_uses_call_count_without_api_key(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    candidate = tmp_path / "candidate"
+    candidate.mkdir()
+    (tmp_path / "work").mkdir()
+    (tmp_path / "receipts").mkdir()
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    args = SimpleNamespace(
+        confirm_live=True,
+        total_budget_usd=None,
+        per_invocation_budget_usd=None,
+        model="model",
+        effort="low",
+        host="codex",
+        codex_oauth=True,
+        max_calls=1,
+        accept_advisory_codex_budget=False,
+        credential_env=None,
+        candidate=str(candidate),
+        work_root=str(tmp_path / "work"),
+        receipt_root=str(tmp_path / "receipts"),
+    )
+    assert run.gate(args, [{"id": "small-fix"}])[1:] == (None, None, [])
+    args.max_calls = 0
+    with pytest.raises(run.GateError, match="max-calls"):
+        run.gate(args, [{"id": "small-fix"}])
+
+
 def test_candidate_proof_hash_is_sorted_and_deterministic(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     candidate = tmp_path / "candidate"
     plugin = candidate / "plugins/skiphow"
@@ -357,6 +384,58 @@ def test_host_environment_is_minimal_and_inventory_is_exact(tmp_path: Path, monk
     assert hosts._installed_skiphow("claude", json.dumps(claude))["enabled"] is True
     with pytest.raises(ValueError, match="expected one"):
         hosts._installed_skiphow("claude", json.dumps(claude * 2))
+
+
+def test_codex_oauth_environment_reuses_auth_without_api_credentials(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    codex_home = tmp_path / "codex-home"
+    codex_home.mkdir()
+    monkeypatch.setenv("CODEX_HOME", str(codex_home))
+    monkeypatch.setenv("OPENAI_API_KEY", "must-not-pass")
+    monkeypatch.setenv("AWS_SECRET_ACCESS_KEY", "must-not-pass")
+    config, environment = hosts.fresh_config("codex", tmp_path / "host", credential=None, codex_oauth=True)
+    assert config == codex_home
+    assert environment["CODEX_HOME"] == str(codex_home)
+    assert "OPENAI_API_KEY" not in environment
+    assert "AWS_SECRET_ACCESS_KEY" not in environment
+
+
+def test_codex_oauth_install_requires_exact_enabled_cached_payload(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    candidate = tmp_path / "candidate"
+    installed = tmp_path / "installed"
+    shutil.copytree(ROOT / "plugins/skiphow", candidate / "plugins/skiphow")
+    shutil.copytree(ROOT / "plugins/skiphow", installed)
+    inventory = {
+        "installed": [
+            {
+                "pluginId": "skiphow@skiphow",
+                "version": "0.9.0",
+                "enabled": True,
+                "installed": True,
+                "source": {"path": str(installed)},
+            }
+        ]
+    }
+    monkeypatch.setattr(hosts, "executable", lambda host: "codex")
+    monkeypatch.setattr(hosts, "require_codex_chatgpt_oauth", lambda environment: None)
+    monkeypatch.setattr(hosts, "_run", lambda command, **kwargs: (0, json.dumps(inventory), ""))
+    result = hosts.install_candidate(
+        "codex",
+        candidate,
+        {"CODEX_HOME": str(tmp_path / "codex-home")},
+        version="0.9.0",
+        codex_oauth=True,
+    )
+    assert result["auth_mode"] == "chatgpt-oauth"
+    assert result["load_mode"] == "existing-codex-profile"
+    (installed / "LICENSE").write_text("changed", encoding="utf-8")
+    with pytest.raises(hosts.HostError, match="payload does not match"):
+        hosts.install_candidate(
+            "codex",
+            candidate,
+            {"CODEX_HOME": str(tmp_path / "codex-home")},
+            version="0.9.0",
+            codex_oauth=True,
+        )
 
 
 def test_codex_live_source_is_plain_external_and_byte_exact(tmp_path: Path) -> None:
