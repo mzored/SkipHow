@@ -243,6 +243,36 @@ def test_engineering_methods_keep_the_removed_behavioral_contracts() -> None:
     assert "After a second failure with the same cause or failure signature" in delivery
 
 
+def test_real_task_application_contracts_stay_explicit() -> None:
+    skill = read("plugins/skiphow/skills/skiphow/SKILL.md")
+    delivery = read("plugins/skiphow/skills/skiphow/references/delivery.md")
+    github = read("plugins/skiphow/skills/skiphow/references/github.md")
+    decision = read("plugins/skiphow/skills/skiphow/references/decision.md")
+    diagnosis = read("plugins/skiphow/skills/skiphow/references/diagnosis.md")
+    assert "shortcut never overrides repository policy" in skill
+    assert "pre-existing, warning-only, or outside the final diff is not a disposition" in skill
+    assert {"IN_SCOPE", "PERSIST", "DUPLICATE", "EXPECTED", "NONMATERIAL"} <= code_tokens(delivery)
+    assert "A warning on the changed surface can weaken completion evidence" in delivery
+    assert "capture their pre-change identities and diff" in delivery
+    assert "requires an Issue-linked branch or pull request makes the work tracked" in github
+    assert "A durable update is mandatory" in decision
+    assert "code comment or test alone is not the product record" in decision
+    assert "synthetic fixtures and redacted identifiers" in diagnosis
+
+
+def test_application_regression_prompts_do_not_spoon_feed_the_policy() -> None:
+    finding_prompt = read("evals/live/prompts/independent-finding.md").lower()
+    privacy_prompt = read("evals/live/prompts/privacy-boundary-change.md").lower()
+    assert not {"finding", "inbox", "save", "persist"} & set(finding_prompt.split())
+    assert not {"decision", "record", "adr"} & set(privacy_prompt.split())
+    finding_oracle = json_object("evals/live/oracles/independent-finding.json")
+    privacy_oracle = json_object("evals/live/oracles/privacy-boundary-change.json")
+    finding_ids = {item["id"] for item in finding_oracle["assertions"]}
+    privacy_ids = {item["id"] for item in privacy_oracle["assertions"]}
+    assert "finding" in finding_ids
+    assert {"projection-contract", "durable-decision"} <= privacy_ids
+
+
 def test_github_markers_and_cleanup_are_race_safe_by_contract() -> None:
     github = read("plugins/skiphow/skills/skiphow/references/github.md")
     assert "correlation data only" in github

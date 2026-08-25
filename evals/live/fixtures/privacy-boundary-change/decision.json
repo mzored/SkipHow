@@ -1,0 +1,7 @@
+{
+  "id": "profile-email-projection",
+  "status": "accepted",
+  "public_email_source": "signup_email",
+  "withdrawn_users": "hidden",
+  "reason": "Public profiles use the signup-time snapshot."
+}

@@ -6,6 +6,21 @@ All notable changes to this project appear in this file.
 
 No changes yet.
 
+## 1.0.1 (2026-08-26)
+
+### Changed
+
+- Made repository-required tracked delivery take precedence over the small-change shortcut.
+- Required durable reconciliation for privacy and audience-boundary changes and for decisions that supersede an accepted product record.
+- Added explicit independent-finding triage, changed-surface warning handling, and pre-change attribution for overlapping dirty files.
+- Preferred synthetic or redacted diagnostic evidence when private or production-derived data is unnecessary.
+- Added non-spoon-fed live scenarios for implicit independent findings and public data-boundary changes.
+
+### Verification status
+
+- Deterministic repository and package checks remain the release requirement.
+- Model interpretation of the new scenarios remains `UNVERIFIED` until an opt-in live receipt proves the exact candidate.
+
 ## 1.0.0 (2026-08-26)
 
 SkipHow 1.0 is the first stable release of the host-native design. It remains one portable skill, with no SkipHow runner or task database.

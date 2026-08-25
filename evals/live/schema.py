@@ -34,6 +34,7 @@ APPROVED_SCENARIOS = frozenset(
         "mixed-intake",
         "nontechnical-owner",
         "independent-finding",
+        "privacy-boundary-change",
         "multi-issue-github-delivery",
         "restart-resume-external-state",
         "protected-action",

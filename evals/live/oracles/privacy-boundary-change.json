@@ -1,0 +1,41 @@
+{
+  "assertions": [
+    {
+      "id": "bounded-contract-change",
+      "collector": "tree_delta",
+      "required_modified": ["decision.json", "profile.json"],
+      "allowed_added": [],
+      "allowed_removed": [],
+      "allowed_modified": ["decision.json", "profile.json"]
+    },
+    {
+      "id": "projection-contract",
+      "collector": "structured_file",
+      "path": "profile.json",
+      "kind": "json",
+      "expected": {
+        "public_profile": {
+          "email_source": "current_email",
+          "withdrawn_users": "hidden"
+        },
+        "private_profile": {
+          "email_source": "current_email"
+        }
+      }
+    },
+    {
+      "id": "durable-decision",
+      "collector": "structured_file",
+      "path": "decision.json",
+      "kind": "json",
+      "expected": {
+        "id": "profile-email-projection",
+        "status": "accepted",
+        "public_email_source": "current_email",
+        "withdrawn_users": "hidden",
+        "reason": "Owner approved current email for active public profiles; withdrawn users remain hidden."
+      }
+    },
+    {"id": "usage", "collector": "provider_usage", "required": false}
+  ]
+}

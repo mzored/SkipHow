@@ -6,7 +6,7 @@ Use this reference for `DELIVER`. Carry the authorized outcome through implement
 
 Read repository instructions, inspect the relevant implementation, and preserve unrelated changes. Resolve routine reversible details from project evidence. Ask only when a missing product choice changes scope, cost, risk, or the public result.
 
-Use the current session for a bounded task. Read [long work](long-work.md) for a selected queue, an external wait, unattended work, or recovery. Read [GitHub delivery](github.md) when the repository uses tracked delivery.
+Use the current session for a bounded task. Read [long work](long-work.md) for a selected queue, an external wait, unattended work, or recovery. Read [GitHub delivery](github.md) when the repository uses tracked delivery. A repository rule that requires an Issue-linked branch or pull request owns the delivery shape even for a small change; reconcile it before implementation.
 
 ## Run project code safely
 
@@ -24,19 +24,25 @@ Read [engineering methods](engineering.md) when a stable test seam, module bound
 
 Make the smallest coherent change that solves the whole request. Add or update evidence that could fail for the original defect or requirement. Prefer observable behavior over internal details. Run focused checks during development and the repository-required final checks before completion.
 
-Inspect the final diff, security boundaries, public contracts, failure paths, and cleanup. Use independent review when repository policy, risk, a public contract, or weak verification warrants it.
+If touched files already contain unrelated changes, capture their pre-change identities and diff before editing. Attribute implementation, checks, review, and candidate claims to the delta from that baseline. Preserve the earlier changes. If required tracked delivery cannot isolate or prove the candidate safely, mark that delivery `UNVERIFIED` or `BLOCKED`; do not bypass the repository gate.
+
+Inspect the final diff, security boundaries, public contracts, failure paths, and cleanup. A private or internal value becoming public changes the data boundary: reconcile the owning durable decision or contract, keep unaffected projections unchanged, and verify consent withdrawal or equivalent exclusion behavior. Use independent review when repository policy, risk, a public contract, or weak verification warrants it.
 
 After a second failure with the same cause or failure signature, stop unchanged retries. Add the smallest durable prevention within scope, such as a test, lint rule, deterministic check, script fix, or skill correction. If that prevention is outside authority, save one deduplicated decision-ready finding. Resume only after the premise changes and the smallest reproducer passes.
 
 ## Account for findings
 
-- Fix a blocker, immediate safety risk, or inseparable defect in the current work.
-- Save one record for each independent actionable defect after a duplicate search.
-- Save a material unknown as `NEEDS_RESEARCH`.
-- Mark an invalid or obsolete finding `DISMISSED` with evidence.
+Keep a lightweight working triage, not a second task database. Classify every credible candidate as `IN_SCOPE`, `PERSIST`, `DUPLICATE`, `EXPECTED`, or `NONMATERIAL`.
+
+- Fix an `IN_SCOPE` blocker, immediate safety risk, or inseparable defect in the current work.
+- For `PERSIST`, save one record for each independent actionable defect after a duplicate search. Save a material unknown as `NEEDS_RESEARCH`.
+- Link `DUPLICATE` to its canonical record. Treat expected negative-test output as `EXPECTED` only when the test contract proves it. Use `NONMATERIAL` only with evidence that no actionable product, safety, or delivery risk remains.
+- Mark an invalid or obsolete persisted finding `DISMISSED` with evidence.
+
+A warning on the changed surface can weaken completion evidence even when the command exits successfully. Triage it before making a green claim. Do not persist benign expected output merely to prove it was seen.
 
 Do not implement or reprioritize an independent finding merely because delivery authority allowed its record.
 
 ## Finish
 
-Recheck the original request against the final state. Report the result and fresh evidence. Name any persisted follow-up, missing check, or external blocker. Never call an unavailable or stale check passed.
+Recheck the original request against the final state. Report the result and fresh evidence. Name every persisted follow-up, or state that triage found none material. Name any missing check or external blocker. Never call an unavailable or stale check passed.

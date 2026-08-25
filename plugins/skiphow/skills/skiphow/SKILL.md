@@ -28,7 +28,7 @@ Use one primary route. Split a compound request only when its outcomes need diff
 
 Load other references only when needed:
 
-- Read [product decisions](references/decision.md) for a material product choice or uncertain scope.
+- Read [product decisions](references/decision.md) for a material product choice, uncertain scope, a privacy or audience boundary change, or a change that supersedes a durable decision.
 - Read [diagnosis and repair](references/diagnosis.md) when a cause is unknown.
 - Read [GitHub delivery](references/github.md) when GitHub owns the work item or delivery record.
 - Read [long work](references/long-work.md) for a selected queue, external wait, unattended work, or recovery.
@@ -37,7 +37,7 @@ Load other references only when needed:
 
 ## Match the process to the work
 
-Handle a clear bounded request in the current session. Do not create an issue, plan, campaign, branch, or subagent merely because code changes.
+Handle a clear bounded request in the current session. Do not create an issue, plan, campaign, branch, or subagent merely because code changes. This shortcut never overrides repository policy: when that policy requires tracked delivery, reconcile the owning work item and use its required branch or pull-request lifecycle before implementation.
 
 For a clear change, keep a short working brief:
 
@@ -52,6 +52,6 @@ Use host goals, background tasks, subagents, resume, and worktrees only when the
 
 ## Account for findings and evidence
 
-Do not hide a material problem found during delivery. Fix it when it blocks the outcome, creates immediate safety risk, or cannot be separated. Otherwise read [intake](references/intake.md), search for a duplicate, and record it once without expanding scope.
+Do not hide a material problem found during delivery. Triage each candidate finding; pre-existing, warning-only, or outside the final diff is not a disposition by itself. Fix it when it blocks the outcome, creates immediate safety risk, or cannot be separated. Otherwise read [intake](references/intake.md), search for a duplicate, and record each material actionable finding once without expanding scope.
 
-Before completion, compare the final state with the original request. Run fresh checks for the changed behavior. Report the outcome, evidence, saved follow-ups, and every material `BLOCKED` or `UNVERIFIED` limit.
+Before completion, compare the final state with the original request. Run fresh checks for the changed behavior. Report the outcome, evidence, saved follow-ups or that no material follow-up was found, and every material `BLOCKED` or `UNVERIFIED` limit.

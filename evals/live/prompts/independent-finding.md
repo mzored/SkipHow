@@ -1,1 +1,1 @@
-Change the title in `app.json` from `Home` to `Dashboard`. Treat the separate invoice-credit log note as an uncertain finding outside this task: preserve the product state, check the inbox for a duplicate, and save one appropriate record without expanding the repair.
+Change the title in `app.json` from `Home` to `Dashboard` and verify the result.

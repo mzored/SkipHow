@@ -4,7 +4,7 @@ Use this reference when behavior is broken and the cause is unknown. A diagnosis
 
 ## Build the signal first
 
-Create one repeatable check that reaches the reported behavior and distinguishes failure from success. Prefer an existing or focused test, a CLI or HTTP call, a headless UI check, a redacted trace replay, a small harness, a differential check, or a structured human reproduction in that order when practical.
+Create one repeatable check that reaches the reported behavior and distinguishes failure from success. Prefer an existing or focused test, a CLI or HTTP call, a headless UI check, a redacted trace replay, a small harness, a differential check, or a structured human reproduction in that order when practical. Prefer synthetic fixtures and redacted identifiers when they can prove the same behavior; do not query private or production-derived data merely for convenience.
 
 Run the check before forming a theory. It must exercise the exact symptom, not a nearby failure. For intermittent behavior, measure repeated runs and raise the reproduction rate. For performance, record a baseline with a timing harness, profiler, or query plan.
 
