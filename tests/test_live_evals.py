@@ -225,6 +225,11 @@ def test_host_call_detail_stays_redacted_in_trial_receipt(tmp_path: Path, monkey
     call_root = tmp_path / "private-host-1"
     candidate = call_root / "private-candidate"
     receipt_root = tmp_path / "receipts"
+
+    def reject_candidate(*args: object, **kwargs: object) -> dict[str, object]:
+        raise run.hosts.HostError(f"rejected {candidate} with {credential}")
+
+    monkeypatch.setattr(run.hosts, "install_candidate", reject_candidate)
     call = run._host_call(
         SimpleNamespace(
             host="claude",
