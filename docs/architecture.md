@@ -1,83 +1,57 @@
-# Architecture
+# Accepted target architecture
 
-SkipHow has two planes. The plugin kernel handles ordinary work inside the current host. The optional runner exists only for work that must survive a session or process interruption, coordinate independent tracked items, or wait for external state.
+This document describes the architecture accepted for Issue #15. It becomes the current product architecture when that issue removes the custom runner and legacy skill tree.
 
-```text
-owner request
-    |
-semantic kernel ---- direct path in the current host
-    |
-durable runner, when required
-    |
-provider adapters ---- Git, GitHub, CI, local tracker
-```
+SkipHow will be one portable Agent Skill for product owners. It will translate a request into the smallest workflow that can finish the work and prove the result. It will not be a runner, scheduler, task database, or provider bridge.
 
-The kernel owns intent, authority, scope, evidence, finding disposition, and final alignment with the original request. The runner owns transactions, task scheduling, leases, checkpoints, retries, control state, provider sessions, recovery, and terminal reconciliation. A foreground supervisor dispatches provider work and enforces invocation limits. Provider and integration adapters execute mechanical protocols. They do not decide product scope or engineering method.
+Host manifests install the same canonical `SKILL.md`. They may adapt installation and capability names, but they must not copy policy. The public interface is ordinary language through the `skiphow` skill.
 
-## Direct path
+## Execution paths
 
-`ANSWER`, bounded `CHANGE`, `REPAIR`, and `INTAKE` requests run directly unless they need durable coordination. Intake can atomize and group a batch, shape work items, apply explicit candidate dispositions, merge provenance, and validate an Epic graph without starting the campaign runner. Direct work does not need runner state, a tracker, a branch, a review, or a persistent artifact unless the outcome itself needs one. Risk changes evidence and authority checks, not the execution shape.
+Bounded work runs in the current host session. A direct request does not need an Issue, branch, review, subagent, or persistent artifact unless the result or repository policy requires one. Risk changes authority and evidence requirements. It does not make ceremony mandatory.
 
-## Durable runner
+Long work uses the host's goals, background tasks, resume support, subagents, and worktrees. The root agent keeps the requested outcome, scope, authority, and integration responsibility. It may parallelize independent read-only work. Parallel mutations require separate host-managed worktrees with disjoint ownership.
 
-The runner is an optional Python package and CLI. It uses SQLite transactions as controller authority, a hash-linked material event journal, integrity-bound snapshots, revision checks, attempt IDs, idempotency keys, and expiring leases. Provider transcripts are supporting records, never the only state. Startup validates SQLite, foreign keys, the event chain, and materialized records. Schema 1 databases receive a consistent sibling backup before the atomic schema 2 migration. Exact-head snapshots can repair corrupt materialized state, but never a damaged journal.
+SkipHow does not emulate missing host features. Without background or resume support, it completes the safe sequential portion, saves a handoff in the canonical work record, and reports unattended continuation as `UNVERIFIED`.
 
-`skiphow execute` starts one foreground supervisor and runs until the campaign settles, pauses, or reaches a configured duration or reported-cost ceiling. `skiphow worker` processes one ready frontier. The supervisor renews leases while waiting for provider events, polls persisted external waits, and checkpoints process exit. Pause and duration stops return unfinished claimed work to the frontier. A cost stop blocks the task for inspection. The runner has no mandatory server, dashboard, or daemon. A machine reboot does not restart it automatically.
+## State and recovery
 
-The provider contract supports capability discovery, configured model catalogs, session start and resume, forking, turns, event streams, interruption, compaction, usage, and cleanup. Model IDs and provider flags come from adapters or personal configuration. Core routing sees only `ECONOMY`, `BALANCED`, and `FRONTIER` profiles plus required capabilities. The runner persists sticky route lanes and exact attempt outcomes, then rebuilds version-aware calibration from that history. Promotion is bounded and happens only at a checkpoint.
+Git is authoritative for code and history. When GitHub is connected, Issues define tracked work, pull requests record delivery, and checks record remote verification. Host task state coordinates the active run. SkipHow does not maintain a second task database.
 
-## Policy ownership
+Without GitHub, captured product signals use the append-only `.skiphow/inbox.md`. Long work that must stop uses `.skiphow/handoff.md`. These files are fallbacks, not mirrors of GitHub.
 
-| Concern | Canonical owner |
-| --- | --- |
-| Intent, authority, and direct or durable selection | `skills/skiphow/SKILL.md` |
-| Technical delivery and evidence | `references/engineering/cto/` |
-| Product decisions | `references/product/shape/` |
-| Product signal intake | `references/product/intake/` |
-| Durable mechanics | `src/skiphow/` and `schemas/` |
-| Tracker and delivery protocols | `references/trackers/` and adapters |
-| Host capability vocabulary | `references/host-capabilities.md` |
+At an Issue boundary, the agent updates the Issue or pull request with completed evidence, open findings, and the next action. After compaction or resume, it reconstructs the run from Git, GitHub, the host task, and any local fallback file. It does not require the full transcript.
 
-The legacy `references/campaign/cto-run/` files retain the short semantic handoff contract. They do not claim that prose provides process durability.
+## Progressive policy
 
-## Host capability contract
+`SKILL.md` contains the owner contract, authority rules, routing, and completion standard. It stays short enough to load on every request. Detailed instructions live in references and load only when the request needs them.
 
-The controller selects mechanisms by capability. The canonical vocabulary is:
+References may cover intake, product decisions, delivery, diagnosis, long work, GitHub, and model routing. Each rule has one canonical owner. Host adapters translate capabilities and syntax only.
 
-- `inspect_project`
-- `mutate_project`
-- `run_local_commands`
-- `optional_external_verifier`
-- `research_external_sources`
-- `delegate_read_only`
-- `delegate_mutable_lane`
-- `fresh_independent_review`
-- `persist_external_work`
-- `perform_protected_action`
-- `durable_execution`
+## Model roles
 
-Missing delegation does not block bounded sequential work. Missing `durable_execution` means background, crash recovery, and resume claims stay `UNVERIFIED`. Protected actions still need explicit authority.
+Core policy uses semantic roles instead of model IDs:
 
-## Campaign state
+- `FAST` handles bounded read-only search, inventory, extraction, and fact checks.
+- `STANDARD` handles implementation, debugging, tests, and documentation.
+- `DEEP` handles product shaping, architecture, security, unknown causes, reuse research, integration, and independent review when the risk warrants it.
 
-Run and task transitions are monotonic and revision-checked. A stale worker cannot move a terminal task back into execution. Each mutable attempt records its worker, lease, idempotency key, optional owned resources and state identities, last progress, failure signature, provider session, and next action. The current code checkpoints provider dispatch, external waits, control requests, provider errors, verification, cost-limit stops, and process exit. Integration adapters must add their own checkpoint and reconciliation evidence.
+The host maps each role to a current available model. The root agent and integrator inherit the user's main model. A cheap subagent does not receive normal code mutation by default. SkipHow does not call a separate router model.
 
-Recovery first tries to resume the last recorded provider session. If resume is unavailable, it starts a new session with a capsule containing the immutable outcome, current task, constraints, saved decisions, Git state supplied by prior checkpoints, completed evidence, open findings, session identifiers, and one next action. Open-finding text is labelled untrusted. The capsule does not replay the full transcript. When context approaches the provider limit, the supervisor checkpoints completed evidence and requests compaction. An unsupported or failed compaction creates a recovery boundary and continues in a new session from that capsule.
+Model role and reasoning effort remain separate choices. A transient failure keeps the same route. Repeated reasoning failure may increase effort or model role at a checkpoint. A mutable lane does not downgrade midway through its work. If the host cannot select a model role, the task inherits the current model and any claimed cost saving stays `UNVERIFIED`.
 
-Git, GitHub, and CI remain authoritative for their own records. `skiphow github-deliver` binds one completed runner task to saved GitHub authority, serializes the operation with a process lock, and durably reconciles the pull request, exact-head checks, merge, Issue closure, and remote branch cleanup. It returns explicit external waits and revalidates remote state on replay. The standalone E2E gate exercises the real service path. Cleanup requires verified ownership and preserves unmerged branches, unique commits, dirty worktrees, and unrelated user state.
+## Authority and delivery
 
-## Persistence boundary
+Discussion and research are read-only. Requests to save work authorize persistence. Requests to fix or implement authorize ordinary repository changes and verification. End-to-end or unattended requests also authorize merge and cleanup when repository rules, required checks, required reviews, and the exact pull request head permit them.
 
-The SQLite store redacts recognized tokens, credential assignments, authorization fields, and private-key blocks before serializing controller records. This applies to run and task payloads, journal events, attempts, findings, checkpoints, snapshots, route outcomes, security audit records, and exports. Runtime security resolves saved authority, project paths, provider permission mode, and protected-action grants before dispatch. Each decision and provider-session boundary enters a hash-linked compare-and-swap audit chain. Redaction is defense in depth, not proof that every possible secret format is covered.
+SkipHow never bypasses branch protection. It removes only clean worktrees and owned branches whose changes are merged. Product choices, production actions, credentials, payments, privacy changes, public release, and irreversible actions still require clear authority.
 
-## Configuration and persistence
+GitHub delivery must reconcile remote state before every protected action and confirm the resulting state afterward. A small untracked change may stay on the direct path when repository policy allows it.
 
-Project-safe configuration uses `.skiphow/config.json` schema v2. Personal execution preferences and provider catalogs use the user's platform configuration directory. Credentials stay in provider or host credential stores and never enter either file.
+## Evidence and findings
 
-The runner reads v1 project configuration. Explicit setup can migrate it after writing an adjacent backup. A missing configuration file keeps zero-config direct use working.
+Completion follows the changed behavior, not a model's claim. The agent uses the strongest practical evidence available for the exact final state. Local deterministic checks, remote checks, review, package validation, and live evaluation are distinct evidence types. Missing evidence stays `UNVERIFIED`.
 
-## Verification
+Material findings outside the current scope cannot disappear into the transcript. A blocking or inseparable defect joins the current work. An independent verified defect goes to the canonical tracker after a duplicate search. Uncertain findings become `NEEDS_RESEARCH`. Read-only work reports a ready work item but does not persist it without authority.
 
-Write-capable provider execution requires a trusted project-local verification plan. The supervisor snapshots forbidden paths before dispatch and verifies declared filesystem state, evidence files, and bounded commands afterward. A provider terminal event cannot mark a mutation task complete by itself.
-
-`scripts/check.py` runs deterministic local checks and never starts a model. The GitHub E2E gate and live model harness are separate opt-in commands. Harness v2 binds release runs to a clean exact candidate, provisions isolated synthetic fixtures for all twenty registered scenarios, and grades trusted final-state observations rather than provider self-reports. Package checks, adapter conformance, service receipts, live behavior receipts, and release claims remain separate evidence.
+Package support and behavior support are separate claims. A manifest installation check proves packaging only. Long-run recovery, model routing savings, and end-to-end GitHub delivery require fresh outcome evidence on each claimed host.

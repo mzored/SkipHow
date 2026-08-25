@@ -116,17 +116,12 @@ def test_campaign_state_is_sparse() -> None:
     assert "After three consecutive failures" not in policy
 
 
-def test_host_capability_vocabulary_stays_in_sync() -> None:
-    canonical = read(
-        "plugins/skiphow/skills/skiphow/references/host-capabilities.md"
-    )
+def test_architecture_records_the_accepted_host_native_boundary() -> None:
     architecture = read("docs/architecture.md")
-    architecture_section = architecture.split("## Host capability contract", 1)[1].split(
-        "## Campaign state", 1
-    )[0]
-    canonical_names = set(re.findall(r"^- `([^`]+)`:", canonical, re.MULTILINE))
-    documented_names = set(re.findall(r"^- `([^`]+)`$", architecture_section, re.MULTILINE))
-    assert canonical_names == documented_names
+    assert "accepted for Issue #15" in architecture
+    assert "one portable Agent Skill" in architecture
+    assert "host's goals, background tasks, resume support, subagents, and worktrees" in architecture
+    assert "does not maintain a second task database" in architecture
 
 
 def test_campaign_and_authority_boundaries_are_explicit() -> None:
