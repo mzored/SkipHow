@@ -78,7 +78,7 @@ def test_plugin_change_requires_a_version_bump() -> None:
         "checked",
         side_effect=[
             (True, "plugins/skiphow/skills/skiphow/SKILL.md\n"),
-            (True, "1.0.0\n"),
+            (True, "1.0.1\n"),
         ],
     ):
         assert check.validate_release_version_change("base") == [

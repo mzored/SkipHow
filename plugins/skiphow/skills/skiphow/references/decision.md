@@ -10,9 +10,11 @@ Separate verified facts, assumptions, and preferences. Seek evidence that could 
 
 If the owner need not decide now, choose the safest reversible default and record the assumption. A read-only decision request does not authorize implementation.
 
+An exact owner grant can supersede an accepted product choice, including a privacy-sensitive disclosure, but it does not erase the old contract silently. Find the owning decision, specification, or policy and reconcile the new direction against it before delivery.
+
 ## Scale the record
 
-Keep routine reasoning in the working brief. Use a durable extended record only when the decision is consequential, disputed, regulated, measured over time, or must survive across teams or sessions. Record only fields that affect the decision:
+Keep routine reasoning in the working brief. Use a durable extended record when the decision is consequential, disputed, regulated, measured over time, or must survive across teams or sessions. A durable update is mandatory when a change moves data across a private, internal, or public audience boundary or supersedes an existing durable decision. Update the owning record when possible instead of creating a competing decision. A code comment or test alone is not the product record.
 
 ```text
 Outcome and users
@@ -33,4 +35,4 @@ Keep libraries, schemas, file paths, and test strategy out of a product record u
 
 Product acceptance is conditional. Use it for a material contract change, a regulated or high-impact flow, or an explicit repository gate. Before delivery, name only the user-visible scenarios that require acceptance and the evidence for each.
 
-After technical verification, recheck scenarios whose journey, output, error state, accessibility behavior, privacy behavior, or other contract-visible result changed. Carry unaffected acceptance forward. Do not create an acceptance receipt for an ordinary clear change or rerun product acceptance because only implementation details changed.
+After technical verification, recheck scenarios whose journey, output, error state, accessibility behavior, privacy behavior, or other contract-visible result changed. For a data-boundary change, include disclosure and withdrawal or exclusion scenarios. Carry unaffected acceptance forward. Do not create an acceptance receipt for an ordinary clear change or rerun product acceptance because only implementation details changed.

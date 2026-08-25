@@ -31,7 +31,7 @@ Bug repair is a form of `DELIVER`. Long-running work is an execution choice with
 
 SkipHow does not add public `/fix`, `/cto`, `/idea`, or `/automode` commands. It does not ask the owner to chain an intake command, a planning command, and an execution command.
 
-Mutation authority comes from the owner's words and host policy. Repository policy may narrow that authority but cannot expand it. Requests such as "discuss" and "research" stay read-only. Requests such as "save" permit persistence. Requests such as "fix", "implement", and "complete these issues end-to-end" permit the corresponding delivery work. The agent owns technical choices unless a decision changes product behavior, scope, cost, risk, rollout, privacy, or requires a protected action.
+Mutation authority comes from the owner's words and host policy. Repository policy may narrow that authority but cannot expand it. Requests such as "discuss" and "research" stay read-only. Requests such as "save" permit persistence. Requests such as "fix", "implement", and "complete these issues end-to-end" permit the corresponding delivery work. The agent owns technical choices unless a decision changes product behavior, scope, cost, risk, rollout, privacy, or requires a protected action. A change that moves data across a private, internal, or public audience boundary, or supersedes a durable accepted decision, must reconcile and update the owning durable product record.
 
 ## Consequences
 
@@ -40,6 +40,7 @@ Mutation authority comes from the owner's words and host policy. Repository poli
 - Codex and Claude manifests must point to the same skill payload. Host wrappers must not copy policy.
 - Internal route names may appear in technical documentation and tests, but they are not user-facing modes.
 - When a request does not grant mutation clearly, SkipHow uses the read-only route and states what would require authority.
+- The root skill loads product-decision guidance for privacy or audience changes and durable supersession, even when the owner has already selected the new direction.
 - Hosts that cannot select the skill implicitly require their own explicit invocation syntax. SkipHow documents this as a host difference rather than inventing a portable command that does not exist.
 
 ## Rejected alternatives
@@ -61,6 +62,7 @@ A sequence based on setup, run IDs, verification files, and execute commands is 
 - [Product and UX research](../research/2026-08-25/product-and-ux.md)
 - [Host capability research](../research/2026-08-25/host-capabilities.md)
 - [Prior-art research](../research/2026-08-25/prior-art.md)
+- [Real-task application audit](../research/2026-08-26/real-task-application-audit.md)
 
 ## Revalidation triggers
 

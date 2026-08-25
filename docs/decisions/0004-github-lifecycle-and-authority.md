@@ -20,7 +20,7 @@ The retired runtime split local execution from GitHub delivery. It could mark a 
 
 When a repository uses GitHub and the work is tracked, GitHub is the source of truth. Issues hold the accepted work items and their relationships. Pull requests hold delivery and review state. Git records the exact code state. SkipHow does not maintain a parallel task database.
 
-A small direct task may stay untracked unless the user or repository policy requires an Issue or pull request.
+A small direct task may stay untracked unless the user or repository policy requires an Issue or pull request. A repository requirement makes the work tracked before implementation; the proportional small-change shortcut cannot override it.
 
 Authority comes from the owner's request and host policy. Repository policy may narrow that authority. It cannot grant merge, cleanup, release, or another action that the owner and host did not grant.
 
@@ -48,6 +48,8 @@ Tracked work follows one lifecycle:
 12. Re-read the pull request and require GitHub to report a merged timestamp before closing work.
 13. Close the Issue with the correct reason, update dependency state, and reconcile any recorded external operation.
 14. Remove only the branch and worktree owned by this operation after the cleanup checks below pass.
+
+When an operation must touch a path that was already dirty, it records the path's pre-change identity and diff and attributes implementation, verification, and review to the operation's delta. Broad dirty state cannot prove an exact candidate or satisfy a required clean-delivery gate. If isolation or attribution cannot be proved safely, the affected delivery is `UNVERIFIED` or `BLOCKED`; SkipHow does not bypass the tracked lifecycle.
 
 An unattended run may enable auto-merge for its explicit scope when the owner granted guarded merge, repository rules allow it, and the operation can later disable it or leave the merge queue. Auto-merge must wait for branch protection, required checks, required reviews, and merge-queue rules. Pause, cancellation, or narrower authority stops new mutations and cancels the owned pending merge action. An unconfirmed cancellation is `BLOCKED`. SkipHow does not weaken repository rules or change settings to make the merge pass.
 
@@ -108,6 +110,7 @@ A branch can contain unique work or belong to another person. Cleanup needs prov
 - [Security and evaluation research](../research/2026-08-25/security-and-evals.md)
 - [Live evaluation host contract](../research/2026-08-25/live-evaluation-hosts.md)
 - [Release 1.0 audit](../research/2026-08-26/release-1.0-audit.md)
+- [Real-task application audit](../research/2026-08-26/real-task-application-audit.md)
 
 ## Revalidation triggers
 
