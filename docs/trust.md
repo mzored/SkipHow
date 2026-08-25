@@ -1,18 +1,32 @@
 # Trust and operations
 
-## Data and commands
+## Data, commands, and remote changes
 
-SkipHow has no telemetry, hosted service, MCP server, or background process. The host may give it access to project files, commands, and connected services. SkipHow uses those capabilities only within the request, repository instructions, and host permissions.
+SkipHow has no telemetry, hosted service, MCP server, background process, scheduler, or bundled runtime. The host may give it access to project files, commands, and connected services. Host sandboxing, approvals, repository instructions, and the request remain in force.
 
-For authorized change requests, it may edit project files and run the project's build, test, formatter, or inspection commands. Read-only requests do not change files, trackers, branches, or campaign state.
+Read-only requests do not change files, trackers, branches, configuration, or campaign state. An authorized change may edit project files and run relevant builds, tests, formatters, previews, or inspection commands.
 
-GitHub access is optional. SkipHow reads or changes GitHub only for explicit persistence, existing tracked work, repository-required lifecycle operations, or requested setup. A Project is changed only when an explicit configuration identifies it. The default package installs no hooks.
+GitHub access is optional. SkipHow may write to GitHub for explicit persistence, delivery of existing tracked work, repository-required lifecycle operations, or requested setup. Creating an Issue, branch, comment, closing reference, or Project update is a remote mutation. A Project update requires an explicit `owner/number`; Project failure does not undo a completed canonical Issue or local delivery.
 
-## Disable an integration
+The default package installs no hooks. SkipHow does not build a replacement verifier, service, or integration merely because an optional check is unavailable.
 
-Set `tracker: none` and `project: disabled` in `.skiphow/config.yml`, or remove the file to return to automatic safe defaults. Revoking `gh` authentication also makes the GitHub adapter unavailable without affecting core local work.
+## Configuration
 
-## Diagnostics without secrets
+The only project configuration path is `.skiphow/config.json`:
+
+```json
+{
+  "tracker": "auto",
+  "project": null,
+  "campaign_root": ".skiphow/runs"
+}
+```
+
+`tracker` accepts `auto`, `none`, `github`, or `local`. `project` is `null` or an explicit `owner/number`. `campaign_root` is a relative path that must remain inside the project. The shared parser rejects unknown keys, absolute paths, and traversal. A missing file is normal. Setup writes the file only after an explicit request.
+
+To disable remote tracker writes, set `tracker` to `none`. To keep local persistence, use `local`. Revoking `gh` authentication also makes GitHub unavailable without affecting core local work.
+
+## Diagnostics and package proof
 
 Run:
 
@@ -20,23 +34,24 @@ Run:
 python plugins/skiphow/scripts/doctor.py
 ```
 
-The report contains capability states, not tokens or credential values. Before sharing any command output, review repository names, paths, remote URLs, and error text for private information.
+Doctor is read-only. It reports host CLI availability separately from package proof. `codex --version` or `claude --version` can establish only `Host CLI: AVAILABLE`; it cannot establish package installation, skill activation, or outcome correctness.
 
-## Update
+Package proof is `VERIFIED`, `UNVERIFIED`, or `FAILED` and includes its receipt or reference when one exists. `UNVERIFIED` is an honest missing proof, not a pass. Doctor exits nonzero only when an explicit `--require` condition is unmet.
 
-Update the marketplace source, then reinstall the plugin through the host's plugin command. Start a new task or session so the host loads the new package. Read the changelog for migration notes before updating a repository with an active campaign.
+Doctor output does not include token or credential values. Before sharing output, review project names, paths, remote URLs, and error text for private information.
 
-## Roll back
+## Update and rollback
 
-Install the previous tagged release from the marketplace source. Existing `.skiphow/inbox.md`, optional configuration, Issues, Projects, and campaign directories are user data and are not removed by a package rollback.
+Use the host's plugin browser or marketplace commands to refresh the marketplace and reinstall the package. Start a new session so the host loads the updated skill. If Claude Code reports an on-disk plugin change, run `/reload-plugins`.
+
+For rollback, install the previous tagged release from the same marketplace. A package rollback does not delete `.skiphow/config.json`, `.skiphow/inbox.md`, campaign directories, Issues, branches, comments, or Projects.
 
 ## Uninstall
 
-Run:
+In Codex CLI, open `/plugins`, select SkipHow, and choose uninstall. In Claude Code, run:
 
-```sh
-codex plugin remove skiphow@skiphow
-claude plugin uninstall skiphow@skiphow
+```text
+/plugin uninstall skiphow@skiphow
 ```
 
-Uninstalling does not delete project files or remote resources. Remove `.skiphow/config.yml`, `.skiphow/inbox.md`, or completed campaign directories only after reviewing them. Delete or disconnect a GitHub Project separately if you created it and no longer want it.
+Uninstall removes the plugin package, not project data or remote resources. Review and remove `.skiphow/config.json`, `.skiphow/inbox.md`, and completed campaign directories separately. Delete Issues, branches, comments, or Projects through GitHub only if you no longer need them.

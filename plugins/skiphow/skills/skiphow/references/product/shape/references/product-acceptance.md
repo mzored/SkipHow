@@ -1,6 +1,6 @@
 # Selective product acceptance
 
-Product acceptance is conditional. Use it when an extended product decision, campaign, regulated or high-impact flow, or repository policy requires an explicit product check. Do not create an acceptance receipt for an ordinary clear change.
+Product acceptance is conditional. Use it when an extended product decision, regulated or high-impact flow, or repository policy requires an explicit product check. Campaign execution alone does not trigger it. Do not create an acceptance receipt for an ordinary clear change.
 
 Before delivery, name only the contract-visible scenarios that require acceptance and the evidence for each one. After technical verification, compare the affected scenarios with the governing decision record. Return concrete mismatches to the technical controller. Return desired behavior changes to product decision work.
 

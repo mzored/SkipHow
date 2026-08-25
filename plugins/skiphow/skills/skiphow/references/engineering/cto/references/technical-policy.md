@@ -1,88 +1,64 @@
 # Technical policy
 
-## Authority and ownership
+## Authority
 
-Apply authority in this order:
+Order constraints as follows: host and safety policy; repository instructions; the current verbatim user request; non-conflicting governing runbooks, specifications, and architecture decisions; this policy; derived briefs and plans. Specificity breaks ties within a tier. Never infer authority for destructive, production, credential, privacy, financial, protected, or irreversible actions.
 
-1. System, safety, legal, sandbox, and tool constraints.
-2. Repository instructions that apply to the current scope.
-3. The project runbook, accepted specifications, and approved architecture decisions.
-4. This technical policy.
-5. Task-local plans and worker briefs.
+Record conflicts in durable state. Use the safest non-destructive reading, block affected work, and continue independent work. The root owns authority; reviewers provide evidence.
 
-Specificity breaks ties only within one authority tier. Host policy takes priority.
+## Readiness and changed surfaces
 
-The Owner decides vision, audience, portfolio or business priority, material scope, commercial limits, cost or risk commitments, protected actions, and irreversible product or production actions. The product controller decides routine reversible behavior within that direction and may recommend priority. The CTO owns reversible technical choices. Reviewers supply evidence without taking decision authority. Never infer permission for destructive, production, credential, privacy, financial, or externally irreversible actions.
+Maintain only the task state that is material to this run. For a clear local change, outcome, constraints and acceptance evidence may remain implicit in working context. Add dependencies, rollback, migration, observability, ownership or durable state only when the changed surface or execution shape needs them.
 
-Record conflicts in durable state when a durable run exists. Take the safest non-destructive reading, block only the affected work, and continue independent work.
+Identify concrete changed surfaces. Authentication, authorization, privacy, persisted data, billing, public contracts, production infrastructure, concurrency, shared framework code, and protected actions can require stronger evidence. Blast radius, reversibility, uncertainty, and verification difficulty change evidence and review, not execution shape, tracking, or specialist routing. Repository policy owns mandatory gates.
 
-## Readiness, surfaces, and decisions
+Resolve uncertainty from authoritative sources, the narrowest reversible interpretation, or a bounded spike. Escalate only an Owner decision. State the question, evidence, recommendation, cost of delay, and smallest required action.
 
-A task needs a clear objective and non-goals, traceable acceptance criteria, dependencies, one owner, one mutable scope, a starting-state identity, and a validation plan. Include migration, compatibility, rollback, observability, and documentation work when the change needs it.
-
-Identify concrete changed surfaces instead of assigning a universal low, medium, or high score. Relevant surfaces include:
-
-- authentication, authorization, permissions, security, and privacy;
-- persisted data and migrations;
-- billing, payments, and money;
-- public APIs, protocols, and schemas;
-- production infrastructure and availability;
-- concurrency and shared framework primitives with a large blast radius;
-- protected or irreversible external actions.
-
-Blast radius, reversibility, uncertainty, and verification difficulty refine the evidence required for those surfaces. They do not select `EXECUTE` or `CAMPAIGN`, a tracker, or a capability role. Repository policy owns any mandatory gates.
-
-Resolve uncertainty by checking authoritative sources and current documentation, choosing the narrowest reversible interpretation, running a bounded spike, then escalating only if an Owner decision is truly required. An escalation states the question, facts, options, recommendation, affected dependencies, cost of delay, and smallest Owner action.
-
-Consume an existing domain glossary, context map, and ADRs automatically when they apply. Update domain vocabulary only when the work establishes or changes a durable domain concept; keep implementation detail, plans, and scratch notes out of the glossary. Record an ADR only when a decision is consequential, hard to reverse, surprising without its context, and the result of a real trade-off. Ordinary features, routine reuse choices, and architecture reviews do not create documentation by default.
+Use existing glossaries and architecture decisions when applicable. Update durable vocabulary only for a durable domain concept. Record an architecture decision only for a consequential, hard-to-reverse or surprising trade-off, not routine implementation.
 
 ## Build versus reuse
 
-Before adding a subsystem, dependency, service, protocol, or general-purpose helper, search first-party code, platform facilities, official SDKs, maintained libraries, integrations, managed services, and a bounded spike. The gate also applies to parsing, serialization, retrying, scheduling, diffing, validation, transport, cryptography, time handling, caching, rate limits, state machines, templating, and similar solved work.
+Before adding a subsystem, dependency, service, protocol, or general helper, inspect first-party code, platform facilities, official SDKs, maintained libraries, integrations, and managed services. Use a bounded spike when fit is unclear.
 
-Evaluate material fit, compatibility, integration cost, security, license, performance, operations, maintenance evidence appropriate to the project's maturity, adoption or operational evidence when relevant, lock-in, exit path, and total ownership cost. Treat release cadence, maintainer count, and pre-1.0 status as context rather than universal thresholds. Repository policy may set numeric freshness or support requirements. Mark unavailable material checks as `unverified`.
+Evaluate only material factors: compatibility, integration and operating cost, security, license, performance, maintenance evidence appropriate to the project's maturity, relevant adoption evidence, lock-in, and exit path. Treat cadence, maintainer count, and pre-1.0 status as context rather than universal thresholds. Mark an unavailable material check `UNVERIFIED`.
 
-When the work actually makes a dependency or subsystem decision, record one verdict: `ADOPT`, `INTEGRATE`, `BUILD`, `DEFER`, or `SPIKE`. `BUILD` needs evidence that suitable maintained alternatives fail a material requirement or cost more to own. When the ADR threshold above is met, record context, alternatives, decision, consequences, confidence, and invalidation conditions. Do not add `reuse_check` to work that made no reuse decision.
+When the work makes this choice, record `ADOPT`, `INTEGRATE`, `BUILD`, `DEFER`, or `SPIKE`. `BUILD` needs evidence that suitable maintained options miss a material requirement or cost more to own. If the architecture-decision threshold applies, record alternatives, consequences, evidence, confidence, and invalidation conditions.
 
-## Engineering capabilities
+## Conditional capabilities
 
-Use `../../../capabilities/codebase-design/SKILL.md` when a new interface, module, adapter, dependency direction, or test seam needs design work. Use `../../../capabilities/testing/SKILL.md` when a stable behavioral seam can provide durable evidence. The CTO chooses the seam and whether TDD adds value.
+Load codebase design for a new interface, module, adapter, dependency direction, or test seam. Load testing when a stable behavioral seam can provide durable evidence. The CTO chooses the seam and whether TDD helps.
 
-Use `../../../capabilities/technical-review/SKILL.md` when repository policy or a changed surface requires independent review. One fresh reviewer can cover separate Spec and Standards axes. Add a security, privacy, data, authorization, compatibility, operations, or other specialist lens only when the changed surface calls for it.
+Load technical review only when repository policy or the changed surface requires independent review. One fresh reviewer may cover specification and standards. Add a specialist lens only for an affected surface. Load prototype only for a disposable interaction or state-model question, then return its validated decision to execution. Load merge-conflict guidance only for an existing Git conflict.
 
-Use `../../../capabilities/prototype/SKILL.md` when one unresolved desired interaction or state-model question benefits from a disposable artifact. Return its validated decision to normal execution; do not harden or merge the prototype. Use `../../../capabilities/resolving-merge-conflicts/SKILL.md` only for an already-conflicted Git merge or rebase.
+## Human handoff
 
-## Human-action handoff
-
-When a credential, dashboard, account, protected environment, migration, or other step genuinely requires a person, first automate every safe authorized part that the available tools can perform. For the irreducible human action, provide the shortest precise sequence: destination, exact action, values produced or changed, secret-handling boundary, reversibility, and the signal that proves completion. Generate a helper only when it materially reduces repeated manual work; do not require a script for a short one-off procedure.
-
-Stop before any protected or irreversible action that lacks authority. After the human reports completion, verify the resulting state from primary evidence and continue automatically. A handoff is an execution mechanism for a real prerequisite, not a reason to delegate an available agent action or ask the Owner an engineering question.
+Automate every safe authorized part before requesting a person. For the irreducible action, give the destination, exact action and values, secret boundary, reversibility, and completion signal. Stop before a protected action without authority. After reported completion, verify primary state and continue. Do not turn a short one-off step into a helper or ask the Owner an engineering question.
 
 ## Delegation and execution health
 
-The root owns the task graph, shared resources, integration queue, and final accountability. Use one agent for a small coherent task. Use a read-only subagent to isolate a large investigation or documentation scan, a fresh agent for required independent review, and parallel writers only for genuinely independent mutable scopes. Delegation is a context and coordination tool, not a default rigor step.
+Use one agent for a small coherent task. Delegate only to isolate substantial inspection, obtain required fresh review, or parallelize independent mutable scopes. Delegation is not a default rigor step.
 
-Give any lane one coherent result, one owner, an explicit mutable scope, a starting-state identity, acceptance criteria, validation commands and budgets, prohibited actions, an evidence location, and a compact structured return. Use isolated workspaces for parallel writers and reserve paths before they write. Serialize integration and shared lifecycle transitions. The parent verifies every child result. A required final integration review covers the delivered state and effective diff.
+For a delegated mutable lane or campaign lane, name one result, owner, mutable scope, starting identity, acceptance evidence, validation, prohibited actions, evidence location, and compact return. Isolate concurrent writers and serialize shared integration. The parent verifies each result. Do not impose this contract on ordinary single-agent steps.
 
-Give each operation an expected duration, no-progress limit, cancellation path, result, and failure signature. Do not hide an unexplained failure by extending a timeout, adding a retry, skipping a check, weakening an assertion, or accepting a flaky pass.
+For a long-running, external, retryable, expensive, or unattended operation, define expected duration, no-progress limit, cancellation path, result, and failure signature. Never hide failure by extending time, retrying without a changed premise, skipping a check, weakening an assertion, or accepting one flaky pass.
 
-## Validation, scope, and handoff
+## Validation, findings, and closure
 
-Validate from the smallest targeted check through any affected-component, integration, and repository-required gates. During iteration, rerun only checks invalidated by the delta. Run a required whole-state gate once at the final integration boundary. Bind every completion claim to the delivered-state identity, acceptance criteria, command or procedure, environment, result, and evidence location. The identity may be a Git commit, working tree, deployment, or generated artifact. A new identity invalidates only evidence whose subject, assumptions, environment, or behavior materially changed. Green checks do not replace review of the actual behavior, diff, architecture, security, compatibility, operations, and rollback path.
+Validate from the smallest targeted check through affected integration and repository-required gates. Rerun only evidence invalidated by a later delta. Bind completion claims to the delivered state, behavior checked, environment, result, and evidence location. A new state invalidates only proof whose subject, assumptions, environment, or behavior materially changed. Green checks do not replace inspection of the actual behavior and diff.
 
-When planned verification is unavailable because an environment, credential, permission, host, or external service is unavailable, record the affected claim as `UNVERIFIED`. If that proof is required for the requested outcome or release, stop at an external prerequisite. Otherwise report the bounded gap and continue with the evidence that remains valid. Do not build a new validator, CI path, or workaround infrastructure unless the accepted scope authorizes that work.
+For a material behavior change ask: if it regressed, would any available evidence fail? Keep the smallest sufficient evidence when it would. If it would not and the regression matters, add the cheapest durable check or report `UNVERIFIED`. Do not require a test for a visual edit, one-off artifact, or behavior without a stable seam.
 
-Preserve unrelated and reserved changes. Do not reset, clean, stash, overwrite, absorb, or commit paths outside the lane's scope. Fix an adjacent defect only when it blocks acceptance, makes the change unsafe, invalidates verification, or cannot be separated from the smallest correct fix.
+If planned proof is unavailable because of environment, credentials, permissions, host, or external service, mark the affected claim `UNVERIFIED`. Stop only when that proof is required for the requested outcome or release. Do not build new validation infrastructure unless scope authorizes it.
 
-Every material finding discovered during inspection, diagnosis, implementation, tests, review, or verification must reach one terminal disposition:
+Preserve unrelated changes and reserved scopes. Fix an adjacent defect only when it blocks acceptance, makes the result unsafe, invalidates verification, or cannot be separated from the smallest correct fix.
 
-- `RESOLVED`: it belongs to the current coherent scope and is fixed or otherwise satisfied;
-- `PERSISTED`: it is independent, actionable, supported by enough evidence, and saved through the owning durable tracker adapter for later work;
-- `DUPLICATE`: an existing canonical item already owns it and is linked;
-- `DISMISSED`: it is invalid, immaterial, speculative, or not actionable, with the reason recorded.
+Every material finding names concrete source or evidence, affected behavior or surface, and claim type: confirmed defect, risk, investigation, or suggestion. Unsupported suspicion is not a bug. Give each finding one terminal disposition:
 
-Validate a finding cheaply before disposition. A preference or vague concern is not automatically backlog work. Decide `PERSISTED` before loading a tracker capability, then search for a duplicate and persist or link the finding. The adapter does not decide scope, methods, review, or orchestration. Persistence must not expand the current repair or delivery scope. Before completion, reconcile all material findings and mutable state so none remains orphaned.
+- `RESOLVED`: satisfied in the current coherent scope;
+- `PERSISTED`: independent, actionable, evidenced, and saved through the owning tracker;
+- `DUPLICATE`: linked to its existing canonical item;
+- `DISMISSED`: invalid, immaterial, speculative, or not actionable, with a reason.
 
-For structured routing output, use ceremony `resolve-current` for `RESOLVED`, `persist-follow-up` for `PERSISTED`, `link-duplicate` for `DUPLICATE`, and `dismiss-finding` for `DISMISSED`. Report a scoped follow-up review as `scoped-rereview` and unavailable planned proof as testing status `UNVERIFIED`.
+Validate cheaply before disposition. Decide to persist before loading a tracker, then search for a duplicate. Persistence cannot expand delivery scope. Reconcile material findings before completion.
 
-Technical work ends only when every in-scope item has final-state evidence, an accepted no-code decision, proven supersession, or a blocker caused by an Owner decision, missing authority, protected action, or external prerequisite. If coordination, evidence machinery, or meta-work starts growing faster than progress toward the requested outcome, reassess the scope and execution shape. No executable work or unaccounted mutable state may remain.
+Technical work ends when each authorized in-scope item has final-state evidence, an accepted no-code decision, proven supersession, or an authorized blocker. If coordination or evidence work outgrows progress, reassess scope and execution shape. No authorized in-scope executable work or owned mutable state may remain.

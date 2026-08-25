@@ -1,4 +1,4 @@
-"""Repository-level contracts for the 0.6 package."""
+"""Repository-level contracts for the current package."""
 
 import json
 from pathlib import Path
@@ -39,6 +39,7 @@ def test_claude_controller_can_reach_internal_campaign_policy() -> None:
 
 def test_router_owns_intent_and_mutation_policy() -> None:
     router = read("plugins/skiphow/skills/skiphow/SKILL.md")
+    assert "project answers, inspection, research, review" in router
     for intent in ("ANSWER", "CAPTURE", "DECIDE", "CHANGE", "REPAIR", "CONTINUE"):
         assert f"`{intent}`" in router
     assert "Analysis, research, review, diagnosis-only, and planning requests are read-only" in router
@@ -75,6 +76,9 @@ def test_tracking_is_optional_and_issues_first() -> None:
     assert "Project absence is `NOT_CONFIGURED`" in tracker
     assert "Never scan all Projects" in tracker
     assert "Core SkipHow needs no setup" in setup
+    assert ".skiphow/config.json" in setup
+    assert ".skiphow/config.yml" not in setup
+    assert "strict_lifecycle" not in setup
     assert ".skiphow/inbox.md" in capture
 
 
@@ -112,12 +116,41 @@ def test_campaign_state_is_sparse() -> None:
     assert "After three consecutive failures" not in policy
 
 
+def test_host_capability_vocabulary_stays_in_sync() -> None:
+    canonical = read(
+        "plugins/skiphow/skills/skiphow/references/host-capabilities.md"
+    )
+    architecture = read("docs/architecture.md")
+    architecture_section = architecture.split("## Host capability contract", 1)[1].split(
+        "## Campaign state", 1
+    )[0]
+    canonical_names = set(re.findall(r"^- `([^`]+)`:", canonical, re.MULTILINE))
+    documented_names = set(re.findall(r"^- `([^`]+)`$", architecture_section, re.MULTILINE))
+    profile_names = set(
+        json.loads(read("plugins/skiphow/evals/host_profiles.json"))["capabilities"]
+    )
+    assert canonical_names == documented_names == profile_names
+
+
+def test_campaign_and_authority_boundaries_are_explicit() -> None:
+    controller = read("plugins/skiphow/skills/skiphow/references/engineering/cto/SKILL.md")
+    technical = read("plugins/skiphow/skills/skiphow/references/engineering/cto/references/technical-policy.md")
+    campaign = read("plugins/skiphow/skills/skiphow/references/campaign/cto-run/SKILL.md")
+    acceptance = read("plugins/skiphow/skills/skiphow/references/product/shape/references/product-acceptance.md")
+    assert "Bounded parallel work stays `EXECUTE`" in controller
+    assert "current verbatim user request" in technical
+    assert "Defining a hard-stop condition does not stop the run" in campaign
+    assert "Campaign execution alone does not trigger it" in acceptance
+
+
 def test_technical_reuse_policy_is_contextual() -> None:
     policy = read("plugins/skiphow/skills/skiphow/references/engineering/cto/references/technical-policy.md")
     assert "maintenance evidence appropriate to the project's maturity" in policy
     assert "universal thresholds" in policy
     assert "release within the last 12 months" not in policy
     assert "Each receipt includes `reuse_check`" not in policy
+    router = read("plugins/skiphow/skills/skiphow/SKILL.md")
+    assert "report that check as `UNVERIFIED` without weakening independent evidence" in router
 
 
 def test_documentation_has_zero_config_first_run_and_support_matrix() -> None:

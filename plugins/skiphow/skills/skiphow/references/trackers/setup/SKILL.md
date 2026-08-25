@@ -11,13 +11,14 @@ Start with a read-only inspection and show the intended changes. Keep setup idem
 
 If the user asks for GitHub tracking, prefer Issues. If the user asks for a Project or board, create or connect one explicit Project and store its owner and number in optional configuration. Do not scan the user's Projects to choose one. Preserve unrelated fields and views. Do not create labels or a universal status schema unless the user asks for those exact fields.
 
-An optional `.skiphow/config.yml` may override defaults:
+Write `.skiphow/config.json` only when the user explicitly requests configuration:
 
-```yaml
-tracker: auto
-project: disabled
-strict_lifecycle: false
-campaign_root: .skiphow/runs
+```json
+{
+  "tracker": "auto",
+  "project": null,
+  "campaign_root": ".skiphow/runs"
+}
 ```
 
-Accepted tracker values are `auto`, `none`, `github`, and `local`. `project` may be `disabled`, `auto` only when an existing explicit repository link identifies one, or `owner/number`. The file is never required.
+Accepted tracker values are `auto`, `none`, `github`, and `local`. `project` is `null` or an explicit `owner/number`. `campaign_root` must be a relative path inside the project. Reject unknown keys, absolute paths, and traversal. The file is never required.

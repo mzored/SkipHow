@@ -1,6 +1,6 @@
 # SkipHow
 
-Give one ordinary-language request. SkipHow makes routine product and technical decisions, performs the authorized work, and returns evidence for the result.
+Give SkipHow one ordinary-language request. It makes routine product and technical decisions, does the authorized work, and returns evidence for the result.
 
 ```text
 Add a way to pause a subscription. Make the routine product and technical decisions and implement it.
@@ -10,101 +10,94 @@ Payments are sometimes charged twice. Find the cause, fix it, and verify the res
 Save this idea for later without expanding it: a monthly customer report.
 ```
 
-No tracker, Project, Python, `gh`, setup command, or hook is required. SkipHow has no telemetry or remote service. It uses the files, commands, and connected services already available in the host, subject to the host and repository permissions.
+No tracker, Project, Python, `gh`, setup command, or hook is required. SkipHow has no telemetry, hosted service, or background process. It uses the files, commands, and connected services already available in the host, subject to host and repository permissions.
 
 ## Install with Codex
 
+Add this repository as a personal marketplace, then use the plugin browser:
+
 ```sh
 codex plugin marketplace add mzored/SkipHow
-codex plugin add skiphow@skiphow
+codex
+# Enter /plugins, select SkipHow, and install it.
 ```
 
-Start a new Codex task in a project and describe the outcome. SkipHow is available in Codex CLI and the Codex desktop project workflow.
+Start a new session after installation. `/plugins` is the canonical install, update, enable, and removal interface. See the [OpenAI plugin guide](https://learn.chatgpt.com/docs/plugins).
+
+Package discovery and activation still need a release receipt before this release can claim support. The Codex IDE extension is not claimed. The current marketplace policy limits the package to Codex, so ChatGPT Chat and Work are not claimed.
 
 ## Install with Claude Code
 
-```sh
-claude plugin marketplace add mzored/SkipHow
-claude plugin install skiphow@skiphow
+```text
+/plugin marketplace add mzored/SkipHow
+/plugin install skiphow@skiphow
 ```
 
-Open a project and describe the outcome. The plugin exposes one public skill, `skiphow`; internal workflows are loaded only when needed.
+Start a new session after installation. If Claude Code says that plugins changed on disk, run `/reload-plugins`. See the [Claude Code plugin guide](https://code.claude.com/docs/en/discover-plugins). Package discovery and activation still need a release receipt before this release can claim support.
 
 ## What SkipHow decides
 
-SkipHow resolves routine reversible product details, architecture, dependencies, implementation, testing, review, sequencing, and integration. It asks one focused question only when the choice belongs to the Owner.
+SkipHow resolves routine reversible product details, architecture, dependencies, implementation, testing, review, sequencing, and integration. It asks a focused question only when the choice belongs to the Owner.
 
-The Owner keeps authority over vision, audience, portfolio and business priority, material scope, commercial constraints, cost or risk commitments, protected actions, and irreversible external actions.
+The Owner keeps authority over vision, audience, portfolio priority, material scope, commercial constraints, cost or risk commitments, protected actions, and irreversible external actions.
 
-Analysis, research, review, diagnosis-only, and planning requests are read-only unless you ask to save or change something.
+Analysis, research, review, diagnosis-only, and planning requests stay read-only unless you ask to save or change something.
 
 ## How work is handled
 
-A clear feature goes straight from a small internal delivery brief to implementation and scenario evidence. It does not require a tracker item, product contract, reviewer ceremony, or acceptance receipt.
+A clear software change goes straight to implementation and relevant evidence. A document, report, or other non-software project artifact uses artifact-appropriate checks without loading the engineering workflow.
 
-A consequential product decision can use a longer decision record and independent product review. A hard bug gets focused diagnosis before repair. Work gets durable campaign state only when coordination, session recovery, dependency waits, or parallel work needs it.
+A hard bug gets focused diagnosis before repair. Work gets durable campaign state only when coordination or recovery must survive a session, interruption, external wait, or dependency handoff. You do not select a mode or command.
 
-These are internal choices. You do not select a mode or command.
+## Optional configuration
 
-## Optional persistence and GitHub
+`.skiphow/config.json` is optional. SkipHow writes it only when you explicitly request setup.
 
-When you explicitly ask to save an idea or finding, SkipHow uses the repository's configured tracker. With a GitHub origin and authenticated `gh`, it can create a GitHub Issue without a Project. With no tracker, it can use `.skiphow/inbox.md` as the canonical local fallback.
-
-A GitHub Project is an optional view. SkipHow connects or creates one only when you ask. It never scans all of your Projects to guess which one to use, and Project status does not block completed code.
-
-Optional overrides may live in `.skiphow/config.yml`:
-
-```yaml
-tracker: auto
-project: disabled
-strict_lifecycle: false
-campaign_root: .skiphow/runs
+```json
+{
+  "tracker": "auto",
+  "project": null,
+  "campaign_root": ".skiphow/runs"
+}
 ```
 
-The file is not required. See [architecture](docs/architecture.md) for the adapter contract and campaign details.
+`tracker` accepts `auto`, `none`, `github`, or `local`. `project` is `null` or an explicit `owner/number`. `campaign_root` must be a relative path inside the project. Unknown keys, absolute paths, and path traversal are errors.
+
+When you explicitly ask to save an idea or finding, SkipHow uses the configured tracker. With a GitHub origin and authenticated `gh`, `auto` can use a GitHub Issue. With no available tracker, it can use `.skiphow/inbox.md`. A GitHub Project is an optional view, never lifecycle authority.
 
 ## Support matrix
 
-| Product | Support |
-| --- | --- |
-| Codex CLI | Supported and package-validated |
-| Codex desktop project workflow | Supported through the same Codex plugin package |
-| Claude Code | Supported and package-validated |
-| Codex IDE extension | Plugin packaging is not supported |
-| ChatGPT Work | Not claimed until repository outcome evals pass with its available tools |
+No host has package-validated support until release CI produces a fresh receipt for that exact package and host profile.
 
-Core work needs a host that can inspect a project and, for change requests, edit files and run the project's checks. Optional GitHub persistence needs authenticated `gh`. Optional helper scripts support Python 3.10 through 3.13, but Python is not a core requirement.
+| Product | Discover/install | Skill activation | Inspect | Mutate | Commands | Subagents | Live outcomes |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Codex CLI | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` |
+| Codex desktop | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` |
+| Claude Code | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` | `UNVERIFIED` |
+| Codex IDE | not claimed | not claimed | not claimed | not claimed | not claimed | not claimed | not claimed |
+| ChatGPT Chat/Work | policy excluded | policy excluded | not claimed | not claimed | not claimed | not claimed | not claimed |
 
-## Trust, privacy, and removal
+Core work needs project inspection. Change requests also need file mutation, and repository checks need command execution. Missing subagents do not block bounded work. Optional GitHub persistence needs authenticated `gh`; optional helper scripts support Python 3.10 through 3.13.
 
-SkipHow sends no telemetry and runs no background service. It may read or change local project files and run local commands when the request authorizes that work. It reads or changes GitHub only for explicit persistence, existing tracked work, repository-required lifecycle work, or requested setup. The default package installs no lifecycle hooks.
+## Trust and removal
 
-See [trust and operations](docs/trust.md) for data access, diagnostics, updates, rollback, and uninstall instructions.
+SkipHow may read or change local project files and run local commands only when the request authorizes that work. GitHub writes require explicit persistence, existing tracked work, repository-required lifecycle work, or requested setup. The default package installs no hooks.
+
+See [trust and operations](docs/trust.md) for remote mutations, diagnostics, package proof, updates, rollback, and uninstall.
 
 ## Maintainer checks
 
 ```sh
 python scripts/check.py
-python scripts/check_hosts.py
+python scripts/check_hosts.py --output path/to/host-proof.json
 ```
 
-The first command is deterministic and local. It does not require a Codex host validator. The second reports unavailable host proof as `UNVERIFIED`; release CI requires the configured official Codex validator.
+The first command is deterministic and local. The second writes host proof as `VERIFIED`, `UNVERIFIED`, or `FAILED`; pass that receipt to doctor with `--package-proof-receipt`. Paid live evals are opt-in; release claims come from machine-readable receipts bound to the candidate commit, not an installed CLI version.
 
-Routing, activation, and repository outcome corpora live under `plugins/skiphow/evals/`. Offline validation runs through `scripts/check.py`. Paid live runs are opt-in:
+## Research and prior art
 
-```sh
-python scripts/run_codex_evals.py --execute
-python scripts/run_claude_evals.py --execute
-python scripts/run_outcome_evals.py --host codex
-python scripts/run_outcome_evals.py --host claude
-```
+SkipHow adapts selected engineering practices from [mattpocock/skills](https://github.com/mattpocock/skills). Source-only copies retain their pinned commits and licenses; runtime policy does not load them. Exact vendored sources and pins live in the [source manifest](plugins/skiphow/skills/skiphow/references/third_party/sources.json).
 
-## Project documents
+Campaign and decision mechanics draw narrowly from [Paperclip](https://github.com/PaperclipAI/paperclip), [Mesa](https://github.com/msoedov/mesa), [OpenSpec](https://github.com/Fission-AI/OpenSpec), [BMAD](https://docs.bmad-method.org/), and [Autonomous PM](https://github.com/mlobo2012/autonomous-pm-plugin). They are research inputs, not runtime dependencies or claims of superiority.
 
-- [Architecture](docs/architecture.md)
-- [Trust and operations](docs/trust.md)
-- [Changelog](CHANGELOG.md)
-- [Contributing](CONTRIBUTING.md)
-- [Security policy](SECURITY.md)
-- [Code of Conduct](CODE_OF_CONDUCT.md)
-- [MIT License](LICENSE)
+Project documents: [architecture](docs/architecture.md), [trust](docs/trust.md), [changelog](CHANGELOG.md), [contributing](CONTRIBUTING.md), [security](SECURITY.md), [license](LICENSE).

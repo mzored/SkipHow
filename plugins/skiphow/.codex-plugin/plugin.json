@@ -1,6 +1,6 @@
 {
   "name": "skiphow",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Deliver product and software work from one ordinary-language request.",
   "author": {
     "name": "mzored",
@@ -18,7 +18,7 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "SkipHow",
-    "shortDescription": "Software delivery autopilot",
+    "shortDescription": "Project delivery autopilot",
     "longDescription": "Understand a project request, make routine product and technical decisions, perform authorized work, verify the result, and use tracking or durable coordination only when the request needs them.",
     "developerName": "mzored",
     "category": "Developer Tools",

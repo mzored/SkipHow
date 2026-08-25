@@ -13,5 +13,3 @@ Use this capability only when Git is already in a conflicted merge or rebase sta
 4. Check for semantic conflicts outside marked hunks: renamed call sites, schema or API drift, duplicated behavior, and tests that encode only one side.
 5. Run the smallest relevant checks, then every repository-required final gate. Fix failures caused by the integration without absorbing unrelated work.
 6. Stage only the resolved operation's files and continue the merge or rebase through all remaining commits. Report the final Git state, preserved intent, checks, and any residual uncertainty.
-
-This adaptation is informed by the pinned source described in `upstream/SOURCE.md`. SkipHow's safety and repository policies take priority.

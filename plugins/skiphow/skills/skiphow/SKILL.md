@@ -1,34 +1,41 @@
 ---
 name: skiphow
-description: Autopilot for product and software work. Use when the user asks to understand, save, decide, change, repair, or continue work in a project. Do not use for unrelated conversation or research with no project-work intent.
+description: Autopilot for project work. Use for project answers, inspection, research, review, capture, decisions, changes, repairs, or continuation. Do not use for unrelated conversation.
 ---
 
 # SkipHow
 
-Treat the user as the Owner. Understand the request, inspect the project and its instructions, choose the smallest sufficient internal path, and carry the work to the requested outcome. Do not ask the user to name a workflow or learn SkipHow's internal roles.
+Treat the user as Owner. Inspect the project and its instructions, choose the smallest sufficient path, and complete the outcome without asking for an internal workflow. Keep the original request verbatim as normative input. Briefs may clarify but never replace, narrow, or extend it.
 
 ## Protect the mutation boundary
 
-Analysis, research, review, diagnosis-only, and planning requests are read-only unless the user explicitly asks to persist or change state. Read-only means no file edits, tracker writes, branches, campaign state, setup, or other local or remote mutation.
+Analysis, research, review, diagnosis-only, and planning requests are read-only unless the user explicitly asks to persist or change state. Read-only permits no file, tracker, branch, campaign, setup, or remote mutation.
 
-Permission to modify the project does not imply permission to create an issue, Project, branch, product record, acceptance receipt, or campaign. Inspect a tracker only after persistence is requested, an existing tracked item is part of the request, or repository policy requires tracking.
+Project mutation does not authorize tracking, branches, records, receipts, or campaigns. Inspect a tracker only for requested persistence, existing tracked work, or repository policy.
 
 ## Resolve the intent
 
 - `ANSWER`: answer, inspect, research, review, diagnose, or plan without mutation.
 - `CAPTURE`: save exactly the idea or problem requested. Read `references/product/idea/SKILL.md`.
 - `DECIDE`: investigate and make or recommend a product decision. Read `references/product/shape/SKILL.md`. Do not implement unless the request also authorizes implementation.
-- `CHANGE`: implement a clear requested outcome directly. Form a lightweight delivery brief and read `references/engineering/cto/SKILL.md`.
+- `CHANGE`: implement a clear requested outcome directly. Dispatch by changed surface as described below.
 - `REPAIR`: fix broken behavior. Read `references/engineering/fix/SKILL.md`.
 - `CONTINUE`: continue the previously agreed outcome using the authority already granted. Do not require the phrase "approved work" or an issue identifier.
 
-Setup and diagnostics are explicit operations, not first-run routes. Read `references/trackers/setup/SKILL.md` only when the user asks to configure an integration or Project. Read `references/trackers/doctor/SKILL.md` only when the user asks to inspect readiness or diagnose integration support.
+Setup and diagnostics are explicit. Read `references/trackers/setup/SKILL.md` for requested integration setup and `references/trackers/doctor/SKILL.md` for readiness diagnosis. Read `references/project-context.md` only for explicit context setup, refresh, record, or audit. Read `references/extension-contract.md` only when changing a domain or integration capability.
 
-`CAMPAIGN` is an internal execution shape, not an intent. The technical controller selects it only when coordination needs durable recovery state.
+`CAMPAIGN` is an internal execution shape, not an intent. Select it only when execution needs durable coordination or recovery state.
 
 ## Deliver clear changes directly
 
-For an ordinary clear change, create an ephemeral brief in working context:
+Dispatch inside `CHANGE` without creating a public route:
+
+- Software, system behavior, or repository mechanics: form a lightweight delivery brief and read `references/engineering/cto/SKILL.md`.
+- Non-software project artifact: work directly under repository instructions. Do not load engineering policy unless technical behavior or repository mechanics also change. The requested output is the primary contract. Use current authoritative sources for factual claims and an available render or preview for visual output. Match evidence to the artifact.
+
+Load a domain capability only when its trigger applies.
+
+For an ordinary clear change, keep this ephemeral brief in working context:
 
 ```text
 Outcome
@@ -37,38 +44,18 @@ Non-goals or constraints
 Acceptance evidence
 ```
 
-Resolve routine reversible product and technical details from repository evidence. Then implement and verify. Do not require shaping, tracker mutation, a Product Contract, Owner approval, a fresh product reviewer, or a product-acceptance receipt.
+Resolve routine reversible details from project evidence, then implement and verify. Do not require shaping, tracking, a Product Contract, approval, product review, or a receipt.
 
-Use product decision work before implementation only when the user asks for a decision or plan, or when material ambiguity could change the outcome. If implementation was requested, resume delivery after resolving the ambiguity. Ask one focused Owner question only when the unresolved choice belongs to Owner authority.
+Use product decision work first only when requested or when material ambiguity could change the outcome. Resume authorized implementation after resolving it. Ask one focused question only for Owner authority.
 
-## Apply authority consistently
+## Apply authority
 
-- The Owner owns vision, audience, portfolio or business priority, material scope, commercial constraints, cost or risk commitments, protected actions, and irreversible external actions.
-- The product controller translates intent into behavior, resolves routine reversible product details, and may recommend priority. It does not change portfolio priority.
-- The technical controller owns architecture, dependencies, implementation, tests, sequencing, review, and integration.
-- Reviewers and specialists provide evidence. They do not take product or technical authority.
-
-Follow an existing ordered queue. Do not create or reorder portfolio priorities without Owner authority. Resolve questions at the lowest role that owns them. Never ask the Owner to choose a library, schema, testing seam, implementation plan, or review method.
+Owner controls vision, audience, portfolio priority, material scope, commercial or risk commitments, protected actions, and irreversible external actions. Product resolves routine reversible behavior. Technical owns engineering mechanisms. Reviewers provide evidence. Follow an existing queue and never ask Owner to choose engineering mechanisms.
 
 ## Report the result
 
-Return only the sections that apply:
+Report the outcome and fresh evidence. Include only material `BLOCKED` or `UNVERIFIED` limits, referenced persisted follow-ups, and exact human-only actions. Keep internal process out unless it explains a blocker or adds trust.
 
-```text
-Result
-What changed or what was decided.
+If the request or host profile names an unavailable optional verifier, report that check as `UNVERIFIED` without weakening independent evidence.
 
-Verification
-Fresh evidence for the delivered state.
-
-Limitations
-Only material BLOCKED or UNVERIFIED claims.
-
-Persisted follow-ups
-Only independent material work saved with a reference.
-
-Human action
-Only an exact action that the available tools cannot perform.
-```
-
-Keep routes, roles, campaign records, receipts, and reviewer chatter internal unless they explain a blocker or materially increase trust.
+Before completion, compare the result with the verbatim request. Mark each outcome completed, declined with reason, or blocked. Confirm no narrowed intent, unauthorized material behavior, or lost constraint, format, prohibition, or read-only boundary. This is an internal check, not a document or review lane.

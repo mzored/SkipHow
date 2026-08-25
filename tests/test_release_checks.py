@@ -1,6 +1,7 @@
 """Tests for local and host release check separation."""
 
 import importlib.util
+import json
 from pathlib import Path
 import sys
 from unittest.mock import patch
@@ -68,3 +69,56 @@ def test_isolated_install_failure_is_unverified_unless_required() -> None:
     ):
         assert hosts.main([]) == 0
         assert hosts.main(["--require-codex-install"]) == 1
+
+
+def test_host_check_writes_machine_readable_unverified_receipt(tmp_path: Path) -> None:
+    output = tmp_path / "host-proof.json"
+    with (
+        patch.object(hosts, "codex_validator", return_value=None),
+        patch.object(hosts.shutil, "which", return_value=None),
+        patch.object(
+            hosts,
+            "candidate_identity",
+            return_value={"commit": "abc123", "tree": "tree123", "dirty": False},
+        ),
+    ):
+        assert hosts.main(["--skip-install", "--output", str(output)]) == 0
+    receipt = json.loads(output.read_text(encoding="utf-8"))
+    assert receipt["schema_version"] == 1
+    assert receipt["status"] == "UNVERIFIED"
+    assert receipt["candidate"] == {
+        "commit": "abc123",
+        "tree": "tree123",
+        "dirty": False,
+    }
+    assert receipt["host_cli_versions"] == {"claude": None, "codex": None}
+    assert receipt["checks"]["codex_validator"]["status"] == "UNVERIFIED"
+    assert receipt["checks"]["claude_package"]["status"] == "UNVERIFIED"
+    assert receipt["reference"]
+
+
+def test_host_check_receipt_is_verified_only_for_clean_fully_proven_candidate(
+    tmp_path: Path,
+) -> None:
+    output = tmp_path / "host-proof.json"
+    validator = tmp_path / "validate.py"
+    validator.write_text("", encoding="utf-8")
+    with (
+        patch.object(hosts, "codex_validator", return_value=validator),
+        patch.object(hosts.shutil, "which", return_value="/bin/host"),
+        patch.object(hosts, "checked", return_value=(True, "host 1.2.3")),
+        patch.object(hosts, "isolated_install", return_value=(True, "skiphow")),
+        patch.object(
+            hosts,
+            "candidate_identity",
+            return_value={"commit": "abc123", "tree": "tree123", "dirty": False},
+        ),
+    ):
+        assert hosts.main(["--output", str(output)]) == 0
+    receipt = json.loads(output.read_text(encoding="utf-8"))
+    assert receipt["status"] == "VERIFIED"
+    assert receipt["host_cli_versions"] == {
+        "claude": "host 1.2.3",
+        "codex": "host 1.2.3",
+    }
+    assert all(check["status"] == "VERIFIED" for check in receipt["checks"].values())

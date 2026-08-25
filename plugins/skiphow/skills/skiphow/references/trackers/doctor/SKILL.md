@@ -20,7 +20,9 @@ Core: READY | LIMITED
 Repository: READY | LIMITED
 GitHub Issues: AVAILABLE | NOT AVAILABLE
 GitHub Project: CONNECTED | NOT CONFIGURED | UNAVAILABLE
-Host checks: VERIFIED | UNVERIFIED
+Configuration: VALID | INVALID
+Host CLI: AVAILABLE | NOT AVAILABLE
+Package proof: VERIFIED | UNVERIFIED | FAILED
 ```
 
-Missing Python, `gh`, authentication, Project, or another optional integration never makes core readiness fail. Return a nonzero status only when the explicitly requested workflow cannot run. Do not install tools, authenticate, create configuration, or mutate local or remote state.
+CLI availability does not prove package installation or activation. Package proof needs a receipt or reference for the exact candidate. Missing Python, `gh`, authentication, Project, or another optional integration never makes core readiness fail. Return nonzero only for an explicit `--require` condition. Do not install tools, authenticate, create configuration, or mutate local or remote state.

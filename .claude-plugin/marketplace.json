@@ -6,13 +6,13 @@
   },
   "metadata": {
     "description": "Deliver product and software work from one ordinary-language request.",
-    "version": "0.6.0"
+    "version": "0.7.0"
   },
   "plugins": [
     {
       "name": "skiphow",
       "description": "Deliver product and software work from one ordinary-language request.",
-      "version": "0.6.0",
+      "version": "0.7.0",
       "author": {
         "name": "mzored",
         "url": "https://github.com/mzored"

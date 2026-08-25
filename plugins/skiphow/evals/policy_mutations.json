@@ -1,0 +1,40 @@
+{
+  "schema_version": 2,
+  "mutations": [
+    {
+      "id": "mutation-boundary",
+      "rule": "mutation_boundary",
+      "source": "plugins/skiphow/skills/skiphow/SKILL.md",
+      "target": "Analysis, research, review, diagnosis-only, and planning requests are read-only unless the user explicitly asks to persist or change state. Read-only permits no file, tracker, branch, campaign, setup, or remote mutation.",
+      "replacement": "Analysis and planning requests may update files and trackers whenever that seems useful."
+    },
+    {
+      "id": "automatic-campaign",
+      "rule": "no_automatic_campaign",
+      "source": "plugins/skiphow/skills/skiphow/references/engineering/cto/references/technical-policy.md",
+      "target": "Blast radius, reversibility, uncertainty, and verification difficulty change evidence and review, not execution shape, tracking, or specialist routing.",
+      "replacement": "High blast radius, uncertainty, or security impact automatically selects a durable campaign."
+    },
+    {
+      "id": "full-rereview",
+      "rule": "proportional_rereview",
+      "source": "plugins/skiphow/skills/skiphow/references/capabilities/technical-review/SKILL.md",
+      "target": "After the CTO fixes findings, re-review only the original findings, their fix diff, and regressions plausibly introduced by those fixes. Do not restart review of untouched code or reopen settled observations.",
+      "replacement": "After any review fix, restart a full review of all code and reopen settled observations."
+    },
+    {
+      "id": "verification-ceiling",
+      "rule": "verification_ceiling",
+      "source": "plugins/skiphow/skills/skiphow/references/engineering/cto/references/technical-policy.md",
+      "target": "If planned proof is unavailable because of environment, credentials, permissions, host, or external service, mark the affected claim `UNVERIFIED`. Stop only when that proof is required for the requested outcome or release. Do not build new validation infrastructure unless scope authorizes it.",
+      "replacement": "If any verifier is unavailable, build a replacement validator or CI subsystem before finishing."
+    },
+    {
+      "id": "brief-over-intent",
+      "rule": "verbatim_intent_alignment",
+      "source": "plugins/skiphow/skills/skiphow/SKILL.md",
+      "target": "Keep the original request verbatim as normative input. Briefs may clarify but never replace, narrow, or extend it.",
+      "replacement": "Treat an agent-generated brief as normative even when it narrows or conflicts with the original request."
+    }
+  ]
+}

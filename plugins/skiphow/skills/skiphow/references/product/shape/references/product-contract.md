@@ -40,4 +40,20 @@ Acceptance scenarios when selective product acceptance is required
 Owner decision, only when authority requires it
 ```
 
+When a consequential or ambiguous change needs behavior alignment across sessions, repositories, or teams, add only the touched behavior:
+
+```text
+Current behavior
+ADDED behavior
+MODIFIED behavior
+REMOVED behavior
+Concrete scenarios
+Unchanged behavior or non-goals
+Acceptance evidence
+```
+
+This behavior delta is optional. Do not create a proposal directory or expand it into a mandatory design and task workflow for ordinary changes.
+
+Every material score, verdict, or priority claim in an extended decision cites source-backed evidence. Before an expensive or irreversible decision, look for evidence that would disconfirm the preferred choice. If measurement is part of a launch or experiment decision, define the target and decision date before declaring success. Do not add measurement fields when measurement is not part of the decision.
+
 Keep architecture, schemas, libraries, file paths, state management, and test strategy out of the product record. Store portfolio priority only when the Owner or an existing ordered queue establishes it.

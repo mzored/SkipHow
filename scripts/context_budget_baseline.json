@@ -1,0 +1,376 @@
+{
+  "increase_explanations": [
+    {
+      "from": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "reason": "track validated runtime Markdown references",
+      "route": "runtime_references",
+      "to": "999a145cf01692e41491a34723d5cd05d84698a44054beb4faa2da59b457f2a6",
+      "unit": "entries"
+    },
+    {
+      "from": 13978,
+      "reason": "report a named unavailable optional verifier without weakening independent evidence",
+      "route": "common",
+      "to": 14124,
+      "unit": "bytes"
+    },
+    {
+      "from": 1843,
+      "reason": "report a named unavailable optional verifier without weakening independent evidence",
+      "route": "common",
+      "to": 1862,
+      "unit": "words"
+    },
+    {
+      "from": 13978,
+      "reason": "report a named unavailable optional verifier without weakening independent evidence",
+      "route": "clear",
+      "to": 14124,
+      "unit": "bytes"
+    },
+    {
+      "from": 1843,
+      "reason": "report a named unavailable optional verifier without weakening independent evidence",
+      "route": "clear",
+      "to": 1862,
+      "unit": "words"
+    },
+    {
+      "from": 16478,
+      "reason": "report a named unavailable optional verifier without weakening independent evidence",
+      "route": "repair",
+      "to": 16624,
+      "unit": "bytes"
+    },
+    {
+      "from": 2191,
+      "reason": "report a named unavailable optional verifier without weakening independent evidence",
+      "route": "repair",
+      "to": 2210,
+      "unit": "words"
+    },
+    {
+      "from": 19430,
+      "reason": "report a named unavailable optional verifier without weakening independent evidence",
+      "route": "diagnosis",
+      "to": 19576,
+      "unit": "bytes"
+    },
+    {
+      "from": 2636,
+      "reason": "report a named unavailable optional verifier without weakening independent evidence",
+      "route": "diagnosis",
+      "to": 2655,
+      "unit": "words"
+    },
+    {
+      "from": 16255,
+      "reason": "report a named unavailable optional verifier without weakening independent evidence",
+      "route": "testing",
+      "to": 16401,
+      "unit": "bytes"
+    },
+    {
+      "from": 2198,
+      "reason": "report a named unavailable optional verifier without weakening independent evidence",
+      "route": "testing",
+      "to": 2217,
+      "unit": "words"
+    },
+    {
+      "from": 16957,
+      "reason": "report a named unavailable optional verifier without weakening independent evidence",
+      "route": "technical_review",
+      "to": 17103,
+      "unit": "bytes"
+    },
+    {
+      "from": 2260,
+      "reason": "report a named unavailable optional verifier without weakening independent evidence",
+      "route": "technical_review",
+      "to": 2279,
+      "unit": "words"
+    },
+    {
+      "from": 16690,
+      "reason": "report a named unavailable optional verifier without weakening independent evidence",
+      "route": "codebase_design",
+      "to": 16836,
+      "unit": "bytes"
+    },
+    {
+      "from": 2242,
+      "reason": "report a named unavailable optional verifier without weakening independent evidence",
+      "route": "codebase_design",
+      "to": 2261,
+      "unit": "words"
+    },
+    {
+      "from": 4283,
+      "reason": "report a named unavailable optional verifier on every intent",
+      "route": "router",
+      "to": 4429,
+      "unit": "bytes"
+    },
+    {
+      "from": 572,
+      "reason": "report a named unavailable optional verifier on every intent",
+      "route": "router",
+      "to": 591,
+      "unit": "words"
+    },
+    {
+      "from": 4429,
+      "reason": "activate read-only project inspection and research",
+      "route": "router",
+      "to": 4447,
+      "unit": "bytes"
+    },
+    {
+      "from": 14124,
+      "reason": "activate read-only project inspection and research",
+      "route": "common",
+      "to": 14142,
+      "unit": "bytes"
+    },
+    {
+      "from": 14124,
+      "reason": "activate read-only project inspection and research",
+      "route": "clear",
+      "to": 14142,
+      "unit": "bytes"
+    },
+    {
+      "from": 16624,
+      "reason": "activate read-only project inspection and research",
+      "route": "repair",
+      "to": 16642,
+      "unit": "bytes"
+    },
+    {
+      "from": 19576,
+      "reason": "activate read-only project inspection and research",
+      "route": "diagnosis",
+      "to": 19594,
+      "unit": "bytes"
+    },
+    {
+      "from": 16401,
+      "reason": "activate read-only project inspection and research",
+      "route": "testing",
+      "to": 16419,
+      "unit": "bytes"
+    },
+    {
+      "from": 17103,
+      "reason": "activate read-only project inspection and research",
+      "route": "technical_review",
+      "to": 17121,
+      "unit": "bytes"
+    },
+    {
+      "from": 16836,
+      "reason": "activate read-only project inspection and research",
+      "route": "codebase_design",
+      "to": 16854,
+      "unit": "bytes"
+    }
+  ],
+  "routes": {
+    "clear": {
+      "bytes": 14142,
+      "words": 1862
+    },
+    "codebase_design": {
+      "bytes": 16854,
+      "words": 2261
+    },
+    "common": {
+      "bytes": 14142,
+      "words": 1862
+    },
+    "diagnosis": {
+      "bytes": 19594,
+      "words": 2655
+    },
+    "repair": {
+      "bytes": 16642,
+      "words": 2210
+    },
+    "router": {
+      "bytes": 4447,
+      "words": 591
+    },
+    "technical_review": {
+      "bytes": 17121,
+      "words": 2279
+    },
+    "testing": {
+      "bytes": 16419,
+      "words": 2217
+    }
+  },
+  "runtime_references": [
+    {
+      "source": "SKILL.md",
+      "target": "references/engineering/cto/SKILL.md"
+    },
+    {
+      "source": "SKILL.md",
+      "target": "references/engineering/fix/SKILL.md"
+    },
+    {
+      "source": "SKILL.md",
+      "target": "references/extension-contract.md"
+    },
+    {
+      "source": "SKILL.md",
+      "target": "references/product/idea/SKILL.md"
+    },
+    {
+      "source": "SKILL.md",
+      "target": "references/product/shape/SKILL.md"
+    },
+    {
+      "source": "SKILL.md",
+      "target": "references/project-context.md"
+    },
+    {
+      "source": "SKILL.md",
+      "target": "references/trackers/doctor/SKILL.md"
+    },
+    {
+      "source": "SKILL.md",
+      "target": "references/trackers/setup/SKILL.md"
+    },
+    {
+      "source": "references/engineering/cto/SKILL.md",
+      "target": "references/campaign/cto-run/SKILL.md"
+    },
+    {
+      "source": "references/engineering/cto/SKILL.md",
+      "target": "references/capabilities/codebase-design/SKILL.md"
+    },
+    {
+      "source": "references/engineering/cto/SKILL.md",
+      "target": "references/capabilities/prototype/SKILL.md"
+    },
+    {
+      "source": "references/engineering/cto/SKILL.md",
+      "target": "references/capabilities/resolving-merge-conflicts/SKILL.md"
+    },
+    {
+      "source": "references/engineering/cto/SKILL.md",
+      "target": "references/capabilities/technical-review/SKILL.md"
+    },
+    {
+      "source": "references/engineering/cto/SKILL.md",
+      "target": "references/capabilities/testing/SKILL.md"
+    },
+    {
+      "source": "references/engineering/cto/SKILL.md",
+      "target": "references/engineering/cto/references/technical-policy.md"
+    },
+    {
+      "source": "references/engineering/cto/SKILL.md",
+      "target": "references/engineering/diagnose/SKILL.md"
+    },
+    {
+      "source": "references/engineering/cto/SKILL.md",
+      "target": "references/host-capabilities.md"
+    },
+    {
+      "source": "references/engineering/cto/SKILL.md",
+      "target": "references/product/shape/references/product-acceptance.md"
+    },
+    {
+      "source": "references/engineering/cto/SKILL.md",
+      "target": "references/trackers/github-task/SKILL.md"
+    },
+    {
+      "source": "references/engineering/fix/SKILL.md",
+      "target": "references/engineering/cto/SKILL.md"
+    },
+    {
+      "source": "references/engineering/fix/SKILL.md",
+      "target": "references/engineering/diagnose/SKILL.md"
+    },
+    {
+      "source": "references/engineering/fix/SKILL.md",
+      "target": "references/product/shape/SKILL.md"
+    },
+    {
+      "source": "references/engineering/fix/SKILL.md",
+      "target": "references/trackers/github-task/SKILL.md"
+    }
+  ],
+  "schema_version": 2,
+  "targets": {
+    "clear": {
+      "bytes": 15577,
+      "words": 2081
+    },
+    "codebase_design": {
+      "bytes": 20251,
+      "words": 2727
+    },
+    "common": {
+      "bytes": 14648,
+      "words": 1953
+    },
+    "diagnosis": {
+      "bytes": 22681,
+      "words": 3257
+    },
+    "repair": {
+      "bytes": 17652,
+      "words": 2392
+    },
+    "router": {
+      "bytes": 4454,
+      "words": 619
+    },
+    "technical_review": {
+      "bytes": 19017,
+      "words": 2674
+    },
+    "testing": {
+      "bytes": 18965,
+      "words": 2606
+    }
+  },
+  "v0_6_reference": {
+    "clear": {
+      "bytes": 19472,
+      "words": 2602
+    },
+    "codebase_design": {
+      "bytes": 28931,
+      "words": 3896
+    },
+    "common": {
+      "bytes": 18310,
+      "words": 2442
+    },
+    "diagnosis": {
+      "bytes": 32402,
+      "words": 4654
+    },
+    "repair": {
+      "bytes": 22065,
+      "words": 2991
+    },
+    "router": {
+      "bytes": 4454,
+      "words": 619
+    },
+    "technical_review": {
+      "bytes": 27168,
+      "words": 3820
+    },
+    "testing": {
+      "bytes": 27094,
+      "words": 3724
+    }
+  }
+}

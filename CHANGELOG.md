@@ -2,6 +2,39 @@
 
 All notable changes to this project appear in this file.
 
+## 0.7.0
+
+### Changed
+
+- Replaced runtime reads of vendored upstream methods with compact, self-contained diagnosis, testing, technical review, and codebase design capabilities. Source copies, licenses, and pinned attribution remain source-only.
+- Reduced every measured route closure. Common software routes are at least 23 percent smaller than v0.6; diagnosis and optional capability routes are at least 37 percent smaller.
+- Made readiness, delegation lane contracts, operation health fields, review, and durable records conditional on the work that needs them.
+- Added direct execution for non-software project artifacts inside the existing `CHANGE` intent, with source, render, or preview evidence suited to the artifact.
+- Added verbatim request alignment, verification-gap checks, evidence-backed finding types, and precise in-scope completion semantics.
+- Reworked repository outcome evals around correctness, mutation boundaries, required evidence, forbidden side effects, and separately reported economy signals.
+- Replaced host-name assumptions with a semantic capability contract and single-agent fallback for bounded work.
+- Split GitHub candidate search from semantic duplicate decisions, separated linked-branch creation from delivery provenance, and made Project status mapping explicit and optional.
+- Corrected support documentation so CLI availability is not package proof and untested hosts or products remain `UNVERIFIED` or unclaimed.
+
+### Added
+
+- Added `scripts/context_budget.py`, a committed decreasing baseline, runtime-to-upstream lint, and CI ratchet for route context.
+- Added `.skiphow/config.json` as the only optional config contract, with strict validation for tracker, Project, and campaign path settings.
+- Added package-proof receipts to doctor, host capability profiles, 20 repository outcome scenarios, five policy mutations, multi-trial release aggregation, and machine-readable live receipts.
+- Added campaign-only goal ancestry, budget envelopes, cancellation, idempotent lane claims, checkpoints, orphan recovery, and final reconciliation.
+- Added lazy contracts for extensions, consequential behavior deltas, source-backed product decisions, and explicitly maintained verified project context.
+
+### Removed
+
+- Removed `.skiphow/config.yml`, `strict_lifecycle`, runtime upstream loading, implicit substring duplicate claims, and automatic Project status assumptions.
+- Removed package-validated support claims that were not backed by a fresh receipt.
+
+### Migration from 0.6
+
+- If `.skiphow/config.yml` exists, move supported values to `.skiphow/config.json`, replace disabled Project values with `null`, and delete `strict_lifecycle`.
+- GitHub adapter callers should use `find_candidates`, `create_linked_branch`, and `record_delivery`; Project status updates now require an explicit field and option mapping.
+- Treat existing host support statements as historical only. Generate fresh package and live outcome receipts for the exact 0.7 candidate before publishing support claims.
+
 ## 0.6.0
 
 ### Changed

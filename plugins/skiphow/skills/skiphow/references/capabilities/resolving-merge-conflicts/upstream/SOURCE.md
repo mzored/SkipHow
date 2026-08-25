@@ -1,9 +1,8 @@
 # Upstream source
 
-Adapted from `mattpocock/skills`, `skills/engineering/resolving-merge-conflicts/SKILL.md`.
+This directory preserves exact files from `mattpocock/skills` at commit `6654f6b60cd9d5be8b54c6fafe44346dabeb3b76`:
 
-- Repository: https://github.com/mattpocock/skills
-- Source revision: `6654f6b60cd9d5be8b54c6fafe44346dabeb3b76`
-- License: MIT; see `LICENSE`
+- `SKILL.md` from `skills/engineering/resolving-merge-conflicts/SKILL.md`
+- `LICENSE` from the repository root
 
-The SkipHow wrapper adds authority, destructive-action, semantic-conflict, and scoped-verification boundaries while preserving intent-based conflict resolution.
+The parent `../SKILL.md` is the SkipHow adaptation. The central source manifest records pinned hashes for every copied file.

@@ -5,16 +5,31 @@ description: Diagnose hard bugs and performance regressions whose cause remains 
 
 # diagnose
 
-Read `upstream/SKILL.md` and use Phases 1 through 4 of its diagnostic procedure. It is pinned from `mattpocock/skills` at commit `6654f6b60cd9d5be8b54c6fafe44346dabeb3b76`.
+Use this temporary branch only when the cause of broken behavior or a performance regression remains unknown. Diagnosis proves a cause. It does not authorize a repair.
 
-Stop after the probes prove the root cause. Do not execute Phase 5. Remove tagged diagnostic instrumentation and throwaway prototypes using the relevant Phase 6 cleanup steps, then return the root cause and evidence to the owning workflow. Report when the user requested diagnosis only; otherwise continue into normal execution.
+## Build a usable signal
 
-Apply these organization rules:
+Start with one repeatable check that reaches the reported behavior and can distinguish the failure from success. Prefer, in order, an existing or focused test, a CLI or HTTP invocation, a headless UI script, replay of a redacted trace, a small harness, a differential or bisection check, then a structured human-assisted reproduction as a last resort.
 
-1. Treat the human as the Owner, not the debugging partner. Keep ranked hypotheses and technical checkpoints with the owning CTO or as internal working notes. Show them to the Owner only when their domain evidence or a product decision could change the investigation.
-2. Exhaust repository evidence, available environments, tools, and bounded specialist work before requesting an artifact or action from the Owner.
-3. Escalate only when missing evidence requires a human or protected action. State what was tried, the exact missing artifact or access, and why diagnosis cannot continue without it.
-4. Return the verified root cause and evidence to the calling workflow. Let the controller identify the repair surface and required evidence; do not start `cto-run` merely because diagnosis was required.
-5. Repository and CTO policy own architecture, integration, review, whole-repository verification, tracker lifecycle, and completion claims. Do not duplicate them here.
+Run the check before forming a theory. It must exercise the reported symptom rather than a nearby error. Make it as deterministic and fast as practical. For intermittent behavior, measure repeated runs and raise the reproduction rate. For performance, record a baseline with a timing harness, profiler, or query plan.
 
-Always redact secrets and sensitive captured data before sharing output or storing evidence.
+If no usable signal is possible, record what was tried and the exact missing evidence. Exhaust repository evidence, available environments, tools, and bounded specialist work before asking the Owner for access, a redacted artifact, or a protected action.
+
+## Reduce and test hypotheses
+
+Minimize the reproduction one input, caller, configuration value, data item, or step at a time. Re-run the signal after each removal. Keep only elements required for the failure.
+
+Create three to five ranked, falsifiable hypotheses when the evidence permits. For each one, state the observation or controlled change that would support or reject it. Keep this technical checkpoint internal unless Owner domain knowledge could materially change the ranking.
+
+Test one prediction at a time. Prefer debugger or REPL inspection, then narrowly placed logs. Tag all temporary instrumentation with one unique marker so cleanup is searchable. Do not replace a missing signal with speculation or broad logging.
+
+Stop when a probe distinguishes the verified cause from the alternatives and the original signal supports that result. Record:
+
+- the reproduction command or procedure and observed symptom;
+- the minimal case;
+- the confirmed cause and the evidence that separates it from the rejected hypotheses;
+- any limitation that leaves part of the claim `UNVERIFIED`.
+
+Remove tagged instrumentation and throwaway harnesses unless the owning workflow deliberately keeps one as regression evidence. Redact credentials, authorization headers, personal data, and sensitive payloads from stored or shared evidence.
+
+Return the cause and evidence to the controller. If the user requested diagnosis only, report without mutation. If repair is authorized, let normal execution select the repair and verification. Diagnosis alone does not require a campaign, tracker item, architecture change, or full review.

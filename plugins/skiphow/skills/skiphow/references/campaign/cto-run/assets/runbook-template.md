@@ -6,6 +6,10 @@ This runbook defines what the campaign must accomplish. The cto-run policy defin
 
 <Describe the product outcome, why it matters now, and the observable result.>
 
+## Immutable original outcome
+
+<Copy the authorized outcome without narrowing or rewriting it. Later decisions may clarify it but do not replace this field.>
+
 ## Coordinates
 
 - Repository: `<repository location>`
@@ -22,6 +26,13 @@ This runbook defines what the campaign must accomplish. The cto-run policy defin
 ## Protected actions
 
 <List production, deployment, data, credential, privacy, financial, owner-reserved, and external actions that require explicit authorization.>
+
+## Budget and cancellation
+
+- Estimated envelope: `<reliable host signal, tool calls, attempts, or wall-clock>`
+- No-progress limit: `<failure signature and bounded limit>`
+- Hard stop: `<condition>`
+- Cancel flag: `<durable location>`
 
 ## Terminal condition
 

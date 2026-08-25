@@ -222,7 +222,11 @@ def offline_checks(base: str | None = None) -> list[str]:
         + validate_version()
         + validate_plugin_static()
     )
+    context_budget = [sys.executable, "scripts/context_budget.py", "--check"]
+    if base:
+        context_budget.extend(["--base", base])
     commands = [
+        context_budget,
         [sys.executable, "scripts/run_codex_evals.py"],
         [sys.executable, "scripts/run_claude_evals.py"],
         [sys.executable, "scripts/run_outcome_evals.py"],

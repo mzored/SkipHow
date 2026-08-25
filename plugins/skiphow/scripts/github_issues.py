@@ -13,6 +13,7 @@ import re
 import shutil
 import subprocess
 from dataclasses import dataclass
+from functools import cache
 from typing import Any, Sequence
 
 
@@ -85,9 +86,8 @@ def _issues(payload: str) -> list[Issue]:
     ]
 
 
-def find_duplicate(repo: str, summary: str, evidence: str | None = None) -> Issue | None:
-    query = " ".join(summary.split())
-    rows = _issues(
+def _search(repo: str, query: str) -> list[Issue]:
+    return _issues(
         run(
             [
                 "gh",
@@ -98,7 +98,7 @@ def find_duplicate(repo: str, summary: str, evidence: str | None = None) -> Issu
                 "--state",
                 "open",
                 "--search",
-                f"{query} in:title",
+                query,
                 "--limit",
                 "20",
                 "--json",
@@ -106,14 +106,39 @@ def find_duplicate(repo: str, summary: str, evidence: str | None = None) -> Issu
             ]
         )
     )
-    normalized = query.casefold()
-    for issue in rows:
+
+
+def find_candidates(repo: str, summary: str, evidence: str | None = None) -> list[Issue]:
+    """Return bounded search candidates without making a duplicate decision."""
+    summary_query = " ".join(summary.split())
+    queries = [f"{summary_query} in:title"]
+    evidence_query = " ".join((evidence or "").split())
+    if evidence_query and evidence_query.casefold() != summary_query.casefold():
+        queries.append(evidence_query)
+
+    candidates: list[Issue] = []
+    seen: set[int] = set()
+    for query in queries:
+        for issue in _search(repo, query):
+            if issue.number not in seen:
+                seen.add(issue.number)
+                candidates.append(issue)
+            if len(candidates) == 20:
+                return candidates
+    return candidates
+
+
+def find_duplicate(repo: str, summary: str) -> Issue | None:
+    """Return only an exact-title duplicate; semantic matching belongs to the controller."""
+    normalized = " ".join(summary.split()).casefold()
+    for issue in find_candidates(repo, summary):
         candidate = " ".join(issue.title.split()).casefold()
-        if candidate == normalized or normalized in candidate or candidate in normalized:
+        if candidate == normalized:
             return issue
     return None
 
 
+@cache
 def available_issue_types(repo: str) -> set[str]:
     """Return repository-supported issue types, or an empty set when unavailable."""
     try:
@@ -125,17 +150,20 @@ def available_issue_types(repo: str) -> set[str]:
     return {
         str(row["name"])
         for row in payload
-        if isinstance(row, dict) and isinstance(row.get("name"), str)
+        if isinstance(row, dict)
+        and isinstance(row.get("name"), str)
+        and row.get("is_enabled", True) is not False
     }
 
 
+@cache
 def supported_create_flags() -> set[str]:
-    help_text = run(["gh", "issue", "create", "--help"])
-    return {
-        flag
-        for flag in ("--type", "--parent", "--blocked-by", "--blocking")
-        if flag in help_text
-    }
+    try:
+        help_text = run(["gh", "issue", "create", "--help"])
+    except GitHubError:
+        return set()
+    available = set(re.findall(r"(?m)^\s+(?:-\w,\s+)?(--[\w-]+)(?:\s|$)", help_text))
+    return available & {"--type", "--parent", "--blocked-by", "--blocking"}
 
 
 def persist(
@@ -163,25 +191,31 @@ def persist(
     for flag, value in optional.items():
         if value and flag in flags:
             args.extend([flag, value])
-    return run(args).splitlines()[-1]
+    output = run(args).splitlines()
+    if not output:
+        raise GitHubError("gh issue create returned no issue URL")
+    return output[-1]
 
 
-def link_delivery(repo: str, issue: int, delivery: str) -> None:
-    if delivery.startswith("http://") or delivery.startswith("https://"):
-        run(
-            [
-                "gh",
-                "issue",
-                "comment",
-                str(issue),
-                "--repo",
-                repo,
-                "--body",
-                f"Delivery: {delivery}",
-            ]
-        )
-        return
-    run(["gh", "issue", "develop", str(issue), "--repo", repo, "--name", delivery])
+def create_linked_branch(repo: str, issue: int, name: str) -> None:
+    run(["gh", "issue", "develop", str(issue), "--repo", repo, "--name", name])
+
+
+def record_delivery(repo: str, issue: int, url: str) -> None:
+    if not url.startswith(("http://", "https://")):
+        raise GitHubError("delivery provenance must be an http(s) URL")
+    run(
+        [
+            "gh",
+            "issue",
+            "comment",
+            str(issue),
+            "--repo",
+            repo,
+            "--body",
+            f"Delivery: {url}",
+        ]
+    )
 
 
 def parser() -> argparse.ArgumentParser:
@@ -192,6 +226,10 @@ def parser() -> argparse.ArgumentParser:
     duplicate = commands.add_parser("find-duplicate")
     duplicate.add_argument("repo")
     duplicate.add_argument("summary")
+    candidates = commands.add_parser("find-candidates")
+    candidates.add_argument("repo")
+    candidates.add_argument("summary")
+    candidates.add_argument("--evidence")
     create = commands.add_parser("persist")
     create.add_argument("repo")
     create.add_argument("kind")
@@ -200,10 +238,14 @@ def parser() -> argparse.ArgumentParser:
     create.add_argument("--parent")
     create.add_argument("--blocked-by")
     create.add_argument("--blocking")
-    link = commands.add_parser("link-delivery")
-    link.add_argument("repo")
-    link.add_argument("issue", type=int)
-    link.add_argument("delivery")
+    branch = commands.add_parser("create-linked-branch")
+    branch.add_argument("repo")
+    branch.add_argument("issue", type=int)
+    branch.add_argument("name")
+    delivery = commands.add_parser("record-delivery")
+    delivery.add_argument("repo")
+    delivery.add_argument("issue", type=int)
+    delivery.add_argument("url")
     return root
 
 
@@ -216,6 +258,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         if args.command == "find-duplicate":
             issue = find_duplicate(args.repo, args.summary)
             print(issue.url if issue else "")
+            return 0
+        if args.command == "find-candidates":
+            rows = find_candidates(args.repo, args.summary, args.evidence)
+            print(json.dumps([issue.__dict__ for issue in rows], sort_keys=True))
             return 0
         if args.command == "persist":
             print(
@@ -230,7 +276,10 @@ def main(argv: Sequence[str] | None = None) -> int:
                 )
             )
             return 0
-        link_delivery(args.repo, args.issue, args.delivery)
+        if args.command == "create-linked-branch":
+            create_linked_branch(args.repo, args.issue, args.name)
+            return 0
+        record_delivery(args.repo, args.issue, args.url)
         return 0
     except GitHubError as exc:
         print(f"error: {exc}")

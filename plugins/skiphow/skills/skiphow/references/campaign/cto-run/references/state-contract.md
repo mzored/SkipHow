@@ -6,9 +6,12 @@ The run directory is durable state, not a substitute for the repository, tracker
 
 ```json
 {
+  "original_outcome": "immutable verbatim outcome",
+  "budget": {"basis": "tool_calls|attempts|wall_clock|reliable_host_signal", "estimated_envelope": "value", "consumed": "value"},
+  "control": {"cancel_requested": false, "hard_stop": "condition or null"},
   "current_target": "string or null",
   "current_state": {"kind": "git-commit|working-tree|deployment|artifact|other", "identity": "exact identifier"},
-  "active_lanes": [{"task": "id", "owner": "id", "scope": ["path"], "base_identity": "id", "status": "active"}],
+  "active_lanes": [{"task": "id", "parent_goal": "goal id", "why": "goal contribution", "owner": "id", "scope": ["path"], "base_identity": "id", "claim_token": "idempotency token", "lease": "expiry or handle", "status": "active"}],
   "blocked_lanes": [{"task": "id", "status": "blocked", "blocker": "reason", "next_action": "action"}],
   "not_yet_specified": [{"area": "in-scope uncertainty", "revisit_after": ["task-id"]}],
   "decisions": [{"id": "ADR-1", "verdict": "ADOPT|INTEGRATE|BUILD|DEFER|SPIKE", "evidence": "path"}],
@@ -18,7 +21,7 @@ The run directory is durable state, not a substitute for the repository, tracker
 }
 ```
 
-Keep only fields used by the campaign. Add the concrete task DAG, native dependency edges, leases, path reservations, attempts, command budgets, contract hashes, exact state identities, product acceptance, or recovery notes when the run needs them. Keep ambiguity that cannot yet be phrased as executable work in `not_yet_specified`, not speculative lanes or tracker items. For Git delivery these identities are commits. The root updates global state. Workers write only scoped receipts.
+Keep only fields used by the campaign. Preserve `original_outcome` once created. Add the concrete task DAG, native dependency edges, leases, path reservations, attempts, command budgets, contract hashes, exact state identities, product acceptance, or recovery notes when the run needs them. Keep ambiguity that cannot yet be phrased as executable work in `not_yet_specified`, not speculative lanes or tracker items. For Git delivery these identities are commits. The root updates global state. Workers write only scoped receipts.
 
 When resuming state written before the final-state identity contract, interpret `repository_commit`, `base_commit`, `commit`, and `candidate_commit` fields as Git identities. Preserve the append-only journal and normalize those fields to `current_state`, `base_identity`, or `state_identity` on the next root-owned atomic write. Record the migration in `journal.jsonl`.
 
@@ -28,7 +31,7 @@ When resuming state written before the final-state identity contract, interpret 
 {"at":"timestamp","task":"task-id","event":"lane-dispatched","status":"active","summary":"scope reserved","evidence":"receipts/task-id.json"}
 ```
 
-`briefing.md` records the authority map, source hashes, decisions, exact source locations, open questions, and corrections discovered during the run. Keep it concise and queryable. Split it into indexed parts if it grows beyond a practical working size.
+`briefing.md` records the authority map, source hashes, decisions, exact source locations, open questions, and corrections discovered during the run. Keep it concise and queryable. A handoff checkpoint also records ready, active, blocked, and orphaned lanes, lease state, budget consumption, cancellation state, the last accepted evidence, and the exact resume action. Split it into indexed parts if it grows beyond a practical working size.
 
 Create `decisions/`, `evidence/`, and `receipts/` only when the first corresponding artifact exists. A worker receipt contains status, base and final identities, evidence, blocker, and next action. Add `reuse_check` only when the task made a dependency or subsystem decision. Keep each material finding in `state.json` until it has a terminal disposition. Persisted and duplicate findings include their canonical tracker reference; resolved and dismissed findings include their evidence or reason.
 
