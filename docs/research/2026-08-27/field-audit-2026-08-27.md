@@ -117,12 +117,87 @@ second sighting has this to pool against.
   waiting primitive. A host-behaviour note, not a package defect: the package names external waits without
   prescribing a mechanism, which is correct, but a run that reaches for chained sleeps will keep meeting this.
 
+## The re-read, after `7c5f12fa` finished
+
+The sections above were written while the session was live and read 595 records. It ran on to `22:34:34Z`:
+**1195 records, eleven delegations, five tracker items worked.** The counts above are the live snapshot, not
+the finished run. Nothing in them reverses; the queue only got longer.
+
+**The report was never owed.** The session ends mid-tool, with none of the five headings and no finding tags.
+A run that ends mid-tool owes no report, so this is not scored — scoring it is the easiest false positive this
+audit could produce, which is why the first pass deferred it rather than guessing.
+
+**Merge and cleanup conformed, and those are scoreable.** Three items reached the integration branch by merge
+commit. Two were then reopened by the run itself, each with a comment stating that only the repository half
+had landed and naming what still needed a vendor cabinet, a mail panel, and DNS — declining to close what it
+could not finish rather than reporting done. Two Issues were created for findings met on the way. Two further
+branches were still in review when it stopped. Unowned uncommitted work on a local branch was flagged and left
+untouched, with the reason it existed only locally and that the run's own verification dispatcher had been
+executing from it.
+
+**The handoff count, with its honest denominator.** `.skiphow/handoff.md` has now been written **0 times
+across all eight external sessions read**. That number is weaker than it looks: the long-work trigger genuinely
+applied in **1 of those 8**, and the other seven were single bounded items that owed no checkpoint. The
+applicable sample is one session — the one already ruled above as a receipt request against 1.9.0.
+
+What the re-read adds is that the run was not unaware of the file. Its **first command of the session** was
+`cat .skiphow/handoff.md`. It checked, found nothing, and never wrote one, across five item boundaries. The
+read side reached it and the write side did not. That does not change the ruling above: `delivery.md` did load,
+and at 1.7.0 that file carries the same "read long work for a selected queue" trigger. A plain instruction was
+in context and was not followed, which is `VARIANCE` at best and `UNVERIFIED` in a single session, never a
+defect in the reference body.
+
+## What compaction costs, measured
+
+The question that opened this re-read was why the run did not checkpoint as it neared the context limit. The
+measurements answer it and correct a sentence in the record.
+
+- `63ef1e3e` compacted automatically at `preTokens: 368850`, `postTokens: 15768`.
+- `7c5f12fa` peaked near **355,000** context tokens and never compacted — roughly 14k short of that mark.
+- The only context-budget signal either session receives is `<total_tokens>N tokens left</total_tokens>`,
+  counting down from **15,000,000**. That is a session *spend* budget, not context fill: it read about
+  **14.85M** at the moment `63ef1e3e` compacted with its window full, having moved about 1% across the whole
+  fill.
+
+[ADR 0007](../../decisions/0007-host-adapters-for-routing-and-continuity.md) rejected a `PreCompact` hook and
+replaced "checkpoint before compaction" with "at every item boundary", on the stated ground that the model
+"cannot foresee" compaction. The threshold turns out to be a real number, so that phrase is imprecise. The
+accurate form is that **no calibrated in-context gauge of context fill exists in this host build**, and the one
+counter that looks like a budget measures something else by two orders of magnitude. The conclusion is
+unchanged and the rejection stands on its other ground — a hook cannot know the agent's state. It is also moot
+here: five item boundaries passed long before context was a question, and the existing rule would have produced
+a checkpoint hours earlier.
+
+`NOT-A-DEFECT` for the missing compaction checkpoint. The threshold figure is one observation on one host build
+and one model — evidence that a threshold exists, not a constant.
+
+## ADR 0004 and the shipped template disagree
+
+Found while checking the above. [ADR 0004](../../decisions/0004-github-lifecycle-and-authority.md) says a
+handoff records scope, current authority and restrictions, accepted decisions, queue, exact GitHub and Git
+state, owned resources, last external result, evidence, blockers, and next safe action. The template in
+`long-work.md` ships eight fields and omits accepted decisions, owned resources, last external result, and
+evidence. Both are current text. `UNSAVED`: outside this audit's request and no record was created, so the
+owner can ask to save it.
+
+## How this re-read was checked
+
+Its first draft ruled the read/write placement a `DEFECT` and proposed narrowing the checkpoint template to
+four fields. That draft went through the 1.12 cross-host rung — one read-only `codex exec` pass at `high`,
+given the package, the ADRs' rejected alternatives, and the budgets — and did not survive. The loaded
+`delivery.md` trigger undercut the defect ruling; ADR 0004 rather than ADR 0007 owns the template; and
+`long-work.md` uses the handoff precisely where the host cannot resume, so it cannot assume the tracker is
+reachable. Every factual correction it made was verified against the files afterwards and all of them held,
+including two errors of fact in the draft's own reading of the repository. First use of that rung on an audit
+rather than on a diff, and the first time it caught a wrong ruling rather than a code defect.
+
 ## Limits
 
-`7c5f12fa` was live for the whole audit, so its report, merge, cleanup, and finding tags are outside this
-sample and need a re-read after it finishes. Findings a run noticed and silently dropped leave no trace, so
-every conformance count here is an upper bound. No network calls were made: tracker and check states are the
-transcripts' claims about themselves, never verified against the services.
+`7c5f12fa`'s report, merge, cleanup, and finding tags were outside the first pass and are supplied by the
+re-read above; the sections written before it stopped keep their live-snapshot counts. Findings a run noticed
+and silently dropped leave no trace, so every conformance count here is an upper bound. No network calls were
+made: tracker and check states are the transcripts' claims about themselves, never verified against the
+services.
 
-Audited `7c5f12fa` · 595 records · plugin 1.7.0 · correct subagent models; `long-work` and `model-routing` unloaded; no handoff written
+Audited `7c5f12fa` · 1195 records · plugin 1.7.0 · re-read after it finished: merge and cleanup conformed, no report owed, handoff still unwritten
 Audited `43408b2d` · 265 records · plugin 1.9.0 · read-only, five headings, tags matched the records created
