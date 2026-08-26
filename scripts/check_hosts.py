@@ -156,7 +156,7 @@ def _created_repository(root: Path) -> bool:
 
 def _codex_policy_block(output: str) -> bool:
     lowered = output.lower()
-    return "requirements.toml" in lowered or "allowed source" in lowered or "source is not allowed" in lowered
+    return "allowed source" in lowered or "source is not allowed" in lowered
 
 
 def isolated_install(
@@ -240,6 +240,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="pre-provisioned plain local marketplace; defaults to a temporary snapshot",
     )
     args = parser.parse_args(argv)
+    if args.skip_install and (args.require_codex_install or args.require_claude_install):
+        parser.error("--skip-install cannot satisfy --require-codex-install or --require-claude-install")
 
     errors: list[str] = []
     codex = shutil.which("codex")
