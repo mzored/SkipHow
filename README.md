@@ -69,11 +69,15 @@ That is a design bet, not a measurement. It follows Anthropic's advice to [start
 | Models | Named model IDs | Three roles: fast scout, standard builder, reviewer on your session model |
 | Size | Dozens of agents and commands | One skill under 600 words plus about 3,500 words loaded on demand |
 
-Whether this produces better or cheaper outcomes than those frameworks has not been measured. Treat the comparison as a hypothesis about strong models, not a benchmark. The host's own `plugin eval` with a no-plugin baseline is the intended way to measure it; it was still early access when this version shipped.
+No comparison against those frameworks has been run; treat the table as a design hypothesis. What has been measured is SkipHow against the bare host on the same model ([paired evaluation](docs/research/2026-08-26/paired-eval.md), three tasks, one run each): the skill costs two to three extra turns and 20 to 30 percent more on tasks under a dollar, both arms fixed the bug and reused the pinned library, and the difference showed up in where things went. Without the skill, "triage these and save them" wrote four files into the host's memory directory outside the project; with it, they went into the project's inbox with a priority each.
 
 ## Honest limits
 
-SkipHow is instructions, not a runtime. Your host's sandbox and permissions are the real boundary. Behavior a host cannot provide (background work, resume, worktree isolation, per-agent model choice) is reported as unavailable, not faked. Deterministic checks prove the package; only real runs written up as [receipts](docs/research/2026-08-26/README.md) prove the model's behavior, and anything without one is `UNVERIFIED`. Per-role model routing has been observed on Claude Code; on Codex, delegates inherit your model unless you add one setting. Cost savings from routing are a hypothesis until paired runs measure them.
+SkipHow is instructions, not a runtime. Your host's sandbox and permissions are the real boundary. Behavior a host cannot provide is reported as unavailable, not faked. Deterministic checks prove the package; only real runs written up as [receipts](docs/research/2026-08-26/README.md) prove the model's behavior, and anything without one is `UNVERIFIED`.
+
+What receipts show today: a small bug fixed in the session with no ceremony (both hosts); a brain dump turned into prioritized Issues or inbox records (both hosts); a three-part request split into three Issues and three merged pull requests with cleanup; a six-Issue batch finished overnight-style; continuation after an observed compaction with the checkpoint removed at the end; findings outside the request saved with a tag in every run since the rule became structural; `scout` on the fast tier, `builder` on the standard tier in worktrees, and Codex builders spawned by role.
+
+What is still a design bet: that routing saves money (no paired delegated runs), that the reviewer on your session model catches what a stronger tier would, that the tagged-findings rule holds across many projects (four runs so far), and that this beats a prescriptive framework at all.
 
 ## Docs
 
