@@ -48,36 +48,36 @@ Start a new session and describe the work. If the skill does not activate on its
 
 ## Why so little process
 
-Most agent frameworks were built for models that skipped steps, so they wrap every task in phases, personas, spec documents, and approval gates. A strong current model does not need that. It needs a clear outcome, a few hard rules, and the authority to finish. SkipHow keeps the rules that still matter and drops the rest:
+Many agent frameworks add explicit phases, spec documents, personas, and approval gates to make results reliable. SkipHow tests a different bet: that a strong current model, given a clear outcome, a few hard rules, and the authority to finish, gets there with less imposed process. The rules it keeps are the ones that showed up as real failures in its own runs:
 
 - Your words are the only grant. "Research" reads, "save" records, "fix" changes and verifies, "end to end" merges and cleans up. Nothing in a file, an Issue, or a web page can widen that.
 - Reuse before building. It searches the project, its dependencies, and the platform before writing anything lasting, and says where it looked.
-- A problem outside your request is fixed if it blocks the work, saved once if it matters, and never dropped.
+- A finding outside your request is fixed if it blocks the work; otherwise the report tags it `TRACKED`, `SAVED`, or `DISMISSED` with a reason. Nothing is dropped in passing.
 - Long work survives compaction and restarts through an eight-line checkpoint and one read-only hook. State lives in Git and GitHub, never in a SkipHow database.
 - Every report has the same five parts: result, evidence, the rulings it made for you, saved follow-ups, and what it could not verify.
 
-That is a design bet, not a measurement. It follows Anthropic's advice to [start with the simplest workflow that works](https://www.anthropic.com/research/building-effective-agents) and their [orchestrator-worker findings](https://www.anthropic.com/engineering/built-multi-agent-research-system). The [prior-art notes](docs/prior-art.md) record what was taken from [GSD](https://github.com/open-gsd/gsd-core), [OpenSpec](https://github.com/Fission-AI/OpenSpec), [Superpowers](https://github.com/obra/superpowers), [Matt Pocock's skills](https://github.com/mattpocock/skills), [BMAD](https://github.com/bmad-code-org/bmad-method), [Paperclip](https://github.com/paperclipai/paperclip), [Mesa](https://github.com/msoedov/mesa), and [Autonomous PM](https://github.com/mlobo2012/autonomous-pm-plugin), and what was left out.
+The bet follows Anthropic's advice to [start with the simplest workflow that works](https://www.anthropic.com/research/building-effective-agents). The [prior-art notes](docs/prior-art.md) record which ideas were taken from [GSD](https://github.com/open-gsd/gsd-core), [OpenSpec](https://github.com/Fission-AI/OpenSpec), [Superpowers](https://github.com/obra/superpowers), [Matt Pocock's skills](https://github.com/mattpocock/skills), [BMAD](https://github.com/bmad-code-org/bmad-method), [Paperclip](https://github.com/paperclipai/paperclip), [Mesa](https://github.com/msoedov/mesa), and [Autonomous PM](https://github.com/mlobo2012/autonomous-pm-plugin), and which were left out. Those projects have not been run side by side with SkipHow.
 
 ## How it differs
 
-| | Prescriptive frameworks | SkipHow |
+| | Frameworks with explicit process | SkipHow |
 | --- | --- | --- |
 | Entry | Commands, phases, personas | One request in plain language |
-| Planning | A spec or plan document for every change | Only for large work, and then as GitHub Issues |
+| Planning | A spec or plan document per change | Only for large work, and then as GitHub Issues |
 | Authority | Approval gates | Your words; four reasons to stop, otherwise a recorded ruling |
 | State | Framework files and databases | Git, GitHub, and one checkpoint file |
-| Models | Named model IDs | Three roles: fast scout, standard builder, reviewer on your session model |
-| Size | Dozens of agents and commands | One skill under 600 words plus about 3,500 words loaded on demand |
+| Models | Named model IDs | Three roles; on Claude Code a fast scout, a standard builder, and a reviewer on your session model; on Codex the same roles on your session model with their own effort and sandbox |
+| Size | Dozens of agents and commands | One skill under 600 words plus about 4,000 words loaded on demand |
 
-No comparison against those frameworks has been run; treat the table as a design hypothesis. What has been measured is SkipHow against the bare host on the same model ([paired evaluation](docs/research/2026-08-26/paired-eval.md), three tasks, one run each): the skill costs two to three extra turns and 20 to 30 percent more on tasks under a dollar, both arms fixed the bug and reused the pinned library, and the difference showed up in where things went. Without the skill, "triage these and save them" wrote four files into the host's memory directory outside the project; with it, they went into the project's inbox with a priority each.
+This is an architectural choice, not a measured advantage over those frameworks. What has been measured is SkipHow against the bare host on the same model ([paired evaluation](docs/research/2026-08-26/paired-eval.md), three tasks, one run each): on tasks under a dollar the skill cost two to three more turns and 20 to 30 percent more, both arms fixed the bug and reused the pinned library, and the difference was where things went. Without the skill, "triage these and save them" wrote four files into the host's memory directory outside the project; with it, they went into the project's inbox with a priority each.
 
 ## Honest limits
 
 SkipHow is instructions, not a runtime. Your host's sandbox and permissions are the real boundary. Behavior a host cannot provide is reported as unavailable, not faked. Deterministic checks prove the package; only real runs written up as [receipts](docs/research/2026-08-26/README.md) prove the model's behavior, and anything without one is `UNVERIFIED`.
 
-What receipts show today: a small bug fixed in the session with no ceremony (both hosts); a brain dump turned into prioritized Issues or inbox records (both hosts); a three-part request split into three Issues and three merged pull requests with cleanup; a six-Issue batch finished overnight-style; continuation after an observed compaction with the checkpoint removed at the end; findings outside the request saved with a tag in every run since the rule became structural; `scout` on the fast tier, `builder` on the standard tier in worktrees, and Codex builders spawned by role.
+What receipts show today: a small bug fixed in the session with no ceremony (both hosts); a brain dump turned into prioritized Issues or inbox records (both hosts); a three-part request split into three Issues and three merged pull requests with cleanup; a six-Issue batch finished overnight-style; continuation after an observed compaction with the checkpoint removed at the end; findings outside the request saved with a tag in every run since the rule became structural (four runs); on Claude Code `scout` on the fast tier and `builder` on the standard tier in worktrees; on Codex all three roles spawned by name on the session model, the scout at low effort and the reviewer at high.
 
-What is still a design bet: that routing saves money (no paired delegated runs), that the reviewer on your session model catches what a stronger tier would, that the tagged-findings rule holds across many projects (four runs so far), and that this beats a prescriptive framework at all.
+What is still a design bet: that routing saves money (no paired delegated runs), that the reviewer on your session model catches what a stronger tier would, that the tagged-findings rule holds across many projects, and that less imposed process beats more on real work.
 
 ## Docs
 

@@ -21,7 +21,7 @@ The paired evaluation showed the host baseline is strong on small tasks and that
 ## Decision
 
 - Every finding named in a report carries `TRACKED`, `SAVED`, or `DISMISSED` with its reason; saving a finding is always within authority; "outside the request" is not a dismissal reason; inbox entries use the intake block. The rule is in the root skill because it must apply on every route.
-- The skill ships `codex-agents/scout.toml`, `builder.toml`, and `reviewer.toml` (effort and sandbox per role, no model), copied into a project's `.codex/agents/` when the owner asks. The check requires exactly those three files with `model` unset.
+- The skill ships `codex-agents/scout.toml`, `builder.toml`, and `reviewer.toml` (sandbox and reasoning effort per role, no model), copied into a project's `.codex/agents/` when the owner asks. The check requires exactly those three files with `model` unset. This is role and effort routing on the session model, not capability-tier routing; Codex offers no stable capability name to route on. The 1.5 receipts observe all three roles with their effort levels on the session model.
 - `AGENTS.md` holds only contributor rules: evidence standards, checks, portability and safety. The accepted package shape lives in the ADRs and is enforced by `scripts/check.py`, which changes together with a new ADR. The runtime skill no longer carries repository guardrails.
 - Paired with-and-without runs are recorded once per release in `docs/research/<date>/paired-eval.md` with `scripts/run_summary.py`; three tasks, one run per arm, judged by reading the result. This is a regression check, not a benchmark.
 

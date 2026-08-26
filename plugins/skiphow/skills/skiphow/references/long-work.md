@@ -24,7 +24,7 @@ Append a checkpoint to `.skiphow/handoff.md` at every item boundary and before a
 
 ```text
 ## <task-id> / <checkpoint-id>
-- Recorded: <RFC 3339 UTC>
+- Recorded: <output of `date -u +%Y-%m-%dT%H:%M:%SZ`, or `unknown`>
 - Outcome: <owner's original request, one line>
 - Selected scope: <Issue numbers, batch marker, or rule>
 - Authority: <granted words and later restrictions>
