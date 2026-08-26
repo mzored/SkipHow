@@ -271,6 +271,26 @@ def test_cross_host_review_names_both_directions() -> None:
     assert [token for token in mechanics if token in engineering] == []
 
 
+def test_every_adr_status_agrees_with_the_index() -> None:
+    """An ADR whose own Status omits its amendment reads as still in force.
+
+    Five ADRs disagreed with the index at once, in both directions, leaving
+    superseded Decisions -- Codex `[agents]` config, shipped role files -- looking
+    current to anyone who opened the file rather than the table.
+    """
+    index = read("docs/decisions/README.md")
+    rows = dict(re.findall(r"\| \[(\d{4})\]\([^)]+\) \| [^|]+ \| ([^|]+) \|", index))
+    decisions = sorted((ROOT / "docs/decisions").glob("0*.md"))
+    assert {path.name[:4] for path in decisions} == set(rows)
+    for path in decisions:
+        status = re.search(r"## Status\n\n(.+)", path.read_text(encoding="utf-8")).group(1)
+        amended = set()
+        for clause in re.split(r"(?<=[.])\s+", status):
+            if "Amended by" in clause or "Superseded by" in clause:
+                amended |= set(re.findall(r"ADR (\d{4})", clause))
+        assert amended == set(re.findall(r"\b(\d{4})\b", rows[path.name[:4]])), path.name
+
+
 def test_continuity_hook_is_the_only_hook() -> None:
     hooks_dir = PLUGIN / "hooks"
     assert [path.name for path in hooks_dir.iterdir()] == ["hooks.json"]

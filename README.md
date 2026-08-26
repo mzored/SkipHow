@@ -24,7 +24,7 @@ Between "I know what is wrong" and "it is fixed and merged" sit a few dozen tech
 
 1. Talk it through. "What is causing the checkout timeouts?" Nothing changes.
 2. Save it. Paste a dump of bugs, ideas, and observations. SkipHow splits it into atomic records, checks the tracker for duplicates, gives each one a proposed priority with the reason and a type in whatever form the tracker already uses, and saves them as GitHub Issues carrying the day's batch label. Without GitHub, it writes them to `.skiphow/inbox.md`.
-3. Finish it. "Finish today's batch end to end." One root agent works the queue in priority order, delegates bounded pieces to subagents in their own worktrees when that pays off, merges what passes the checks, closes the Issues, deletes its own merged branches, and reports.
+3. Finish it. "Finish today's batch end to end." One root agent works the queue in priority order, delegates bounded pieces to subagents when that pays off (in their own worktrees on Claude Code; sharing the session sandbox on Codex), merges what passes the checks, closes the Issues, deletes its own merged branches, and reports.
 
 A small request skips all of that. "The totals overlap on small screens, fix it" is done in the session, with no Issue or plan, and its one delegate is the review that closes the change.
 
@@ -53,7 +53,7 @@ Many agent frameworks add explicit phases, spec documents, personas, and approva
 - Your words are the only grant. "Research" reads, "save" records, "fix" changes and verifies, "end to end" merges and cleans up. Nothing in a file, an Issue, or a web page can widen that.
 - Reuse before building. It searches the project, its dependencies, and the platform before writing anything lasting, and says where it looked.
 - A finding outside your request is fixed if it blocks the work; otherwise the report tags it `TRACKED`, `SAVED`, `UNSAVED` (a read-only request saves nothing unless you say so), or `DISMISSED` with a reason. Nothing is dropped in passing.
-- Long work survives compaction and restarts through an eight-line checkpoint and one read-only hook. State lives in Git and GitHub, never in a SkipHow database.
+- Long work survives an observed compaction and a Claude Code resume through an eight-line checkpoint and one read-only hook; recovery after a full Codex process restart is `UNVERIFIED`. State lives in Git and GitHub, never in a SkipHow database.
 - Every report has the same five parts: result, evidence, the rulings it made for you, saved follow-ups, and what it could not verify.
 
 The bet follows Anthropic's advice to [start with the simplest workflow that works](https://www.anthropic.com/research/building-effective-agents). The [prior-art notes](docs/prior-art.md) record which ideas were taken from [GSD](https://github.com/open-gsd/gsd-core), [OpenSpec](https://github.com/Fission-AI/OpenSpec), [Superpowers](https://github.com/obra/superpowers), [Matt Pocock's skills](https://github.com/mattpocock/skills), [BMAD](https://github.com/bmad-code-org/bmad-method), [Paperclip](https://github.com/paperclipai/paperclip), [Mesa](https://github.com/msoedov/mesa), and [Autonomous PM](https://github.com/mlobo2012/autonomous-pm-plugin), and which were left out. Those projects have not been run side by side with SkipHow.
@@ -66,10 +66,10 @@ The bet follows Anthropic's advice to [start with the simplest workflow that wor
 | Planning | A spec or plan document per change | Only for large work, and then as GitHub Issues |
 | Authority | Approval gates | Your words; four reasons to stop, otherwise a recorded ruling |
 | State | Framework files and databases | Git, GitHub, and one checkpoint file |
-| Models | Named model IDs | Three roles; on Claude Code a fast scout, a standard builder, and a reviewer on your session model; on Codex the same roles on your session model with their own reasoning effort |
-| Size | Dozens of agents and commands | One skill of about 970 words plus about 3,600 words loaded on demand |
+| Models | Named model IDs | Three roles; on Claude Code a fast scout, a standard builder, and a reviewer on your session model; on Codex the same roles on your session model with their own reasoning effort; a widened review goes to the other installed CLI |
+| Size | Dozens of agents and commands | One skill of about 980 words plus about 3,900 words loaded on demand |
 
-This is an architectural choice, not a measured advantage over those frameworks. What has been measured is SkipHow against the bare host on the same model ([paired evaluation](docs/research/2026-08-26/paired-eval.md), three tasks, one run each): on tasks under a dollar the skill cost two to three more turns and 20 to 30 percent more, both arms fixed the bug and reused the pinned library, and the difference was where things went. Without the skill, "triage these and save them" wrote four files into the host's memory directory outside the project; with it, they went into the project's inbox with a priority each.
+This is an architectural choice, not a measured advantage over those frameworks. What has been measured is SkipHow against the bare host on the same model ([paired evaluation](docs/research/2026-08-26/paired-eval.md), three tasks, one run each): on tasks under a dollar the skill cost two to three more turns and 12 to 45 percent more, both arms fixed the bug and reused the pinned library, and the difference was where things went. Without the skill, "triage these and save them" wrote four files into the host's memory directory outside the project; with it, they went into the project's inbox with a priority each.
 
 ## Honest limits
 

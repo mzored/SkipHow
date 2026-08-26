@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted in 1.3.0. Amends [ADR 0007](0007-host-adapters-for-routing-and-continuity.md) (hook shape). [ADR 0008](0008-receipts-over-a-live-harness.md) and [ADR 0009](0009-reviewer-inherits-and-one-engineering-reference.md) stand.
+Accepted in 1.3.0. Amended by [ADR 0011](0011-findings-tag-codex-role-files-neutral-repo-instructions.md) on the evidence. Amends [ADR 0007](0007-host-adapters-for-routing-and-continuity.md) (hook shape). [ADR 0008](0008-receipts-over-a-live-harness.md) and [ADR 0009](0009-reviewer-inherits-and-one-engineering-reference.md) stand.
 
 ## Date
 

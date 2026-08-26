@@ -4,7 +4,7 @@ All notable changes to this project appear in this file.
 
 ## 1.12.0 (2026-08-27)
 
-SkipHow 1.12 sends the escalated review to the other installed host, so the pass that judges a change no longer shares the priors of the run that wrote it.
+SkipHow 1.12 tells an escalated review to run on the other installed host, so the pass that judges a change no longer shares the priors of the run that wrote it.
 
 ### Changed
 

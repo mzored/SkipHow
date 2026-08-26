@@ -15,16 +15,16 @@ Two sections carry the weight and every ADR keeps them: `## Rejected alternative
 | ADR | Decision | Status |
 | --- | --- | --- |
 | [0001](0001-one-owner-entry.md) | Use one owner-facing SkipHow skill | Accepted |
-| [0002](0002-host-native-execution.md) | Use host-native execution | Accepted |
+| [0002](0002-host-native-execution.md) | Use host-native execution | Accepted, amended by 0007 |
 | [0003](0003-semantic-model-routing.md) | Route models by semantic capability | Accepted |
 | [0004](0004-github-lifecycle-and-authority.md) | Define GitHub lifecycle and authority | Accepted, amended by 0014 |
 | [0005](0005-fail-closed-release-evaluation.md) | Keep release evaluation repository-free and fail closed | Superseded by 0008 (claims policy stands) |
-| [0006](0006-host-native-campaign-and-engineering-policy.md) | Keep campaign and engineering policy host-native | Accepted, amended by 0009 and 0016 |
+| [0006](0006-host-native-campaign-and-engineering-policy.md) | Keep campaign and engineering policy host-native | Accepted, amended by 0007, 0009, and 0016 |
 | [0007](0007-host-adapters-for-routing-and-continuity.md) | Resolve model tiers and session continuity in host adapters | Accepted, amended by 0009, 0010, and 0012 |
 | [0008](0008-receipts-over-a-live-harness.md) | Prove model behavior with receipts, not a live harness | Accepted |
-| [0009](0009-reviewer-inherits-and-one-engineering-reference.md) | Reviewer inherits the session model; one engineering reference | Accepted |
+| [0009](0009-reviewer-inherits-and-one-engineering-reference.md) | Reviewer inherits the session model; one engineering reference | Accepted, amended by 0015 and in 1.12.0 |
 | [0010](0010-two-matcher-hook-and-codex-project-loading.md) | One hook with two matcher groups; Codex evidence through project-level loading | Accepted, amended by 0011 |
-| [0011](0011-findings-tag-codex-role-files-neutral-repo-instructions.md) | Tagged findings, shipped Codex role files, neutral repository instructions | Accepted, amended by 0012 and 0013 |
+| [0011](0011-findings-tag-codex-role-files-neutral-repo-instructions.md) | Tagged findings, shipped Codex role files, neutral repository instructions | Accepted, amended by 0012, 0013, and 0015 |
 | [0012](0012-per-spawn-effort-and-portable-timestamps.md) | Codex effort per spawn, no role files; portable timestamp rule | Accepted |
 | [0013](0013-read-only-requests-save-nothing.md) | Read-only requests report findings `UNSAVED`; records need a granting request | Accepted |
 | [0014](0014-conform-to-the-tracker-classification.md) | Conform to the tracker's classification, do not configure it | Accepted, amended in 1.11.0 |

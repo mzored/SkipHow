@@ -84,7 +84,7 @@ own — which is what [ADR 0002](0002-host-native-execution.md) asks for.
 
 ### Consequences
 
-An owner with one CLI keeps exactly today's behavior and is told so. An owner with both gets a
+An owner with one CLI keeps exactly today's behavior and is told so. An owner with both is told to use a
 different model family on the changes where a missed defect costs most, at the price of one external
 call that runs in minutes, not seconds. Nothing is installed, written, or configured to get it.
 
