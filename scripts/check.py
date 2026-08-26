@@ -55,7 +55,7 @@ AGENT_MODELS = frozenset({"haiku", "sonnet", "opus", "inherit"})
 AGENT_EFFORTS = frozenset({"low", "medium", "high"})
 AGENT_FIELDS = frozenset({"name", "description", "model", "effort", "tools", "isolation", "maxTurns"})
 CONTINUITY_MATCHERS = frozenset({"startup", "clear", "compact", "resume"})
-ROOT_SKILL_LIMITS = {"bytes": 6000, "words": 850}
+ROOT_SKILL_LIMITS = {"bytes": 7000, "words": 1000}
 REFERENCE_LIMITS = {"total_words": 4000, "file_words": 600}
 
 

@@ -2,7 +2,8 @@
 
 ## Status
 
-Accepted in 1.8.0. Amends [ADR 0009](0009-reviewer-inherits-and-one-engineering-reference.md) (root and
+Accepted in 1.8.0, amended in 1.10.0 (the root budget becomes 1,000 words and 7,000 bytes; see the amendment
+below). Amends [ADR 0009](0009-reviewer-inherits-and-one-engineering-reference.md) (root and
 reference budgets) and [ADR 0011](0011-findings-tag-codex-role-files-neutral-repo-instructions.md) (the
 findings tags). Restores the merge boundary of [ADR 0004](0004-github-lifecycle-and-authority.md) to a
 surface that always loads. [ADR 0013](0013-read-only-requests-save-nothing.md) and
@@ -73,6 +74,21 @@ edit to match.
 The layout bet is narrowed, not abandoned. Progressive disclosure still carries procedure — how to run a
 queue, how to reduce a failing case, how to review a candidate. It no longer carries authority boundaries.
 
+## Amendment, 1.10.0
+
+The budget bound again, which is this ADR's own third revalidation trigger. Moving the delegate brief and the
+failure-escalation ladder into the root for 1.10.0 left it at 847 of 850 words — three words of slack, which
+is the condition that produces the failure this ADR exists to prevent. A contributor facing a binding budget
+shaves meaning out of a sentence, and that is how ADR 0004 lost its step 4 for six releases.
+
+The budget becomes **1,000 words and 7,000 bytes**, with the same stated purpose it was given in 1.8.0: it
+bounds drift, never which words to shave. The number is chosen so the root still reads in one sitting and
+still has room for the next rule that turns out to be unconditional, rather than being set at whatever the
+current text happens to measure. Reference budgets are unchanged.
+
+The reasoning for the move itself belongs to
+[ADR 0016](0016-decomposition-needs-a-trigger-a-run-can-evaluate.md), which this amendment does not restate.
+
 ## Rejected alternatives
 
 - **Leave the budget at 600 and compress to fit.** This was tried first while making this change, and it
@@ -104,5 +120,5 @@ asks, not a run that merely loads the reference before its first write.
 ## Revalidation triggers
 
 Revisit when a receipt shows a run merging or pushing without an end-to-end grant on 1.8.0 or later, when a
-run that loaded a reference still breaks the rule the reference carries, when the root budget binds again, or
+run that loaded a reference still breaks the rule the reference carries, when the root budget binds again at 1,000 words, or
 when a receipt shows the root's growth degrading behavior that 1.7.0 performed correctly.

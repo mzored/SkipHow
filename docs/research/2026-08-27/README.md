@@ -1,0 +1,14 @@
+# Research from 2026-08-27
+
+This directory records the second audit of real SkipHow sessions run in other repositories.
+
+| Topic | What it records |
+| --- | --- |
+| [Field audit](field-audit-2026-08-27.md) | A live eight-delegate session judged against 1.7.0: the first field proof that agent definitions resolve subagent models, the delegation rules that reached no run, a decomposed run with no handoff, and a version the owner believed was in use and was not |
+
+The decision this audit amended is [ADR 0016](../../decisions/0016-decomposition-needs-a-trigger-a-run-can-evaluate.md).
+The receipts policy it follows is [ADR 0008](../../decisions/0008-receipts-over-a-live-harness.md). Earlier
+field evidence is under [2026-08-26](../2026-08-26/README.md).
+
+Facts in this directory describe the dated audit. Host behavior, plugin resolution, and vendor formats can
+change. Recheck the linked primary sources before changing packaging or making a support claim.

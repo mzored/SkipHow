@@ -2,6 +2,26 @@
 
 All notable changes to this project appear in this file.
 
+## 1.10.0 (2026-08-27)
+
+SkipHow 1.10 moves the two delegation rules that bind unconditionally out of the reference no run opens.
+
+### Changed
+
+- A session decomposed an owner request into eight delegates across isolated worktrees and never loaded `model-routing.md`. That is 5 of 5 delegating sessions, and the governing sentence is identical in every version audited ([field audit](docs/research/2026-08-27/field-audit-2026-08-27.md)).
+- Its routing was correct anyway. The shipped agent definitions carry the tier in their own descriptions, so a run picks `builder` or `reviewer` from the host's agent listing without reading anything. The observed models were `claude-sonnet-5` for all five builders and the session model for all three reviewers — the first field evidence that [ADR 0007](docs/decisions/0007-host-adapters-for-routing-and-continuity.md) and [ADR 0009](docs/decisions/0009-reviewer-inherits-and-one-engineering-reference.md) resolve at runtime. Earlier research recorded that "the tiers are documentation"; they are not, and that line is no longer `UNVERIFIED`.
+- What the reference held alone was the brief contract and the failure-escalation ladder, and those reached nobody. [ADR 0016](docs/decisions/0016-decomposition-needs-a-trigger-a-run-can-evaluate.md) had named measuring exactly this as the next receipt's job. Both rules move into the root beside the delegation sentences, `model-routing.md` stops repeating them per [ADR 0015](docs/decisions/0015-unconditional-invariants-live-in-the-root.md), and the reference keeps only what is genuinely conditional: which tier a job needs, the Codex spawn mechanics, and the effective-model rule.
+- The same session carried a five-item queue, parallel worktrees, external waits, and an owner turn calling the change systemic, and wrote no handoff at any point. 1.9.0's rewritten trigger would have fired on it, so this is a receipt request against 1.9.0 rather than a change: the decomposition fix is still unseen in the field.
+- The root's escalation ladder is scoped to the unit that failed. `long-work.md` already told a queue run to mark the item `BLOCKED` and move on, so a ladder in the root ending "stop and report" would have contradicted it on every queue — the two sentences had never been in context together before, because neither reference reliably loads.
+- The root budget rises from 850 words to 1,000, and 6,000 bytes to 7,000. The move left the root at 847 of 850, and three words of slack is the condition [ADR 0015](docs/decisions/0015-unconditional-invariants-live-in-the-root.md) exists to prevent: it is a drift guard, never a target to compress toward. That ADR's own third revalidation trigger — "when the root budget binds again" — is what authorized the change, and it is amended with the new number.
+- Contributor-side only: an ADR is no longer the record a policy edit produces. `docs/decisions/` had reached 12,898 words against a 4,790-word package because releases 1.1 through 1.9 each wrote one. The `dogfood` skill conflated "needs the owner's approval" with "needs a new ADR"; approval still gates every contract wording change, but the record is the changelog section and the receipt, and an edit that answers a question an ADR already owns amends that ADR. This is the rule the product already gives owners under "Record proportionately" in `references/decision.md`, which the repository was not applying to itself.
+
+### Verification status
+
+- Deterministic checks pass (34 tests). Claude package validation and Claude isolated install pass locally; Codex package validation and Codex isolated install are `UNVERIFIED` here, as the Codex validator was not available in this environment. The root sits at 847 words against its new 1,000-word budget.
+- That the moved rules change a run's behavior is `UNVERIFIED`. They now load on every request, which is necessary and not yet shown sufficient — the same standing 1.8.0 left for the merge boundary.
+- 1.9.0's decomposition trigger remains `UNVERIFIED` in the field: no audited session has run it on a multi-item request.
+
 ## 1.9.0 (2026-08-26)
 
 SkipHow 1.9 gives decomposition a trigger a run can evaluate before it starts working.

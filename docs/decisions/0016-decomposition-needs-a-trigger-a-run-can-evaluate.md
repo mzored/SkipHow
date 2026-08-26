@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted in 1.9.0. Amends [ADR 0006](0006-host-native-campaign-and-engineering-policy.md) by stating the
+Accepted in 1.9.0, amended in 1.10.0 (see the amendment below). Amends [ADR 0006](0006-host-native-campaign-and-engineering-policy.md) by stating the
 trigger it left unstated: 0006 defines how a campaign queue is run, never what makes a request one. Follows
 [ADR 0015](0015-unconditional-invariants-live-in-the-root.md) (unconditional rules live in the root). [ADR 0004](0004-github-lifecycle-and-authority.md) and
 [ADR 0003](0003-semantic-model-routing.md) stand.
@@ -75,6 +75,29 @@ The change does not adopt an orchestrator, an integration branch, or a progress 
 [parallel orchestration survey](../research/2026-08-26/parallel-orchestration-proposals.md) rejected those on
 their own evidence and this ADR does not disturb that. It changes when the existing procedure is reached.
 
+## Amendment, 1.10.0
+
+The Consequences above ended by naming what the next receipt should measure: whether the tier table, the
+brief contract, and the escalation ladder reach a run that decomposes. The
+[2026-08-27 field audit](../research/2026-08-27/field-audit-2026-08-27.md) measured it. They do not.
+
+A session decomposed an owner request into eight delegated units across isolated worktrees and never loaded
+`model-routing.md`, which makes it 5 of 5 delegating sessions. It routed correctly anyway: the shipped agent
+definitions carry the tier in their own descriptions, so a run picks `builder` or `reviewer` from the host's
+agent listing without the reference. The observed models were `claude-sonnet-5` for every builder and the
+session model for every reviewer — the first field evidence that
+[ADR 0007](0007-host-adapters-for-routing-and-continuity.md) and
+[ADR 0009](0009-reviewer-inherits-and-one-engineering-reference.md) resolve at runtime.
+
+So the tier table loses nothing by staying conditional; it is redundant with the agent descriptions at this
+host. The brief contract and the escalation ladder are not redundant with anything, and they were reaching no
+one. Both move into the root beside the delegation sentences, and `model-routing.md` stops repeating them per
+[ADR 0015](0015-unconditional-invariants-live-in-the-root.md). The reference keeps what is genuinely
+conditional: which tier a job needs, the Codex spawn mechanics, and the effective-model rule.
+
+This does not fix the loading trigger, and it is not meant to. It removes the two rules whose absence had a
+cost from the file that does not load.
+
 ## Rejected alternatives
 
 - **Move the decomposition procedure into the root.** It is conditional detail by any reading — most requests
@@ -95,7 +118,11 @@ their own evidence and this ADR does not disturb that. It changes when the exist
 
 ## Revalidation triggers
 
-Revisit when a receipt shows a run decomposing a request that should have stayed one unit, when a run that
-decomposed still did not load `model-routing.md` before delegating, when a receipt shows the new trigger
-firing on a request the owner considered bounded, or when a decomposed run loses selected work that a single
-pass would have finished.
+Revisit when a receipt shows a run decomposing a request that should have stayed one unit, when a receipt
+shows the new trigger firing on a request the owner considered bounded, when a decomposed run loses selected
+work that a single pass would have finished, or when a receipt shows a delegation made without a brief or a
+third failure worked past without `BLOCKED` — the two rules the 1.10.0 amendment moved into the root.
+
+The "still did not load `model-routing.md`" trigger is retired by that amendment: it fired 5 of 5 times and
+the answer each time was that the reference held nothing the run needed. What remains in it is conditional
+detail, so its loading is no longer evidence of anything.

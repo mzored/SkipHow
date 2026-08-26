@@ -43,7 +43,7 @@ A rule you did not load did not stop applying. When the work reaches one of thes
 
 A clear bounded request is finished in the session with no Issue, plan, branch, or subagent, unless repository policy requires tracked delivery.
 
-A request is not bounded when it lists several items that could each land and be verified on their own, or when the owner calls a change systemic. Split it into those units before starting any of them, and read [long work](references/long-work.md) to run them. Delegate a unit only when isolation or parallel work pays for the transfer, and name the role of every delegate; nothing inherits by omission. Delegates never hold credentials and never write to remote systems.
+A request is not bounded when it lists several items that could each land and be verified on their own, or when the owner calls a change systemic. Split it into those units before starting any of them, and read [long work](references/long-work.md) to run them. Delegate a unit only when isolation or parallel work pays for the transfer, and name the role of every delegate; nothing inherits by omission. Give each delegate a brief — objective, inputs, owned scope, what to return — and accept a summary back, never a transcript. Delegates never hold credentials and never write to remote systems. After a second failure with the same cause, raise the role one tier or review the premise; after one more, stop that unit and report it `BLOCKED` with its next action.
 
 Before building something new, search the project, its dependencies, and the platform for it; say where you looked.
 
