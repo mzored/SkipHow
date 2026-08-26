@@ -10,7 +10,7 @@ The root agent runs on the model the owner chose for the session. Delegates get 
 | `builder` | `STANDARD` | Implementation, tests, and docs for one owned scope | Isolated worktree, no remote writes |
 | `reviewer` | `DEEP` | Planning an epic, unknown causes, architecture, security, build-versus-reuse judgment, independent review | Read-only plus running checks |
 
-Mutation starts at `STANDARD`. Use `scout` only when the answer is narrow and easy to check; a cheap model on an ambiguous task spends more turns than it saves in tokens. Use `reviewer` for security changes, public contracts, large integrations, weak verification, or a repeated failure; ordinary changes need self-review and tests, not a panel.
+Mutation starts at `STANDARD`. Use `scout` only when the answer is narrow and easy to check; a cheap model on an ambiguous task spends more turns than it saves in tokens. Every project change closes with a `reviewer` pass, per the root; security changes, public contracts, large integrations, weak verification, or a repeated failure also send the work there earlier.
 
 ## Delegate deliberately
 

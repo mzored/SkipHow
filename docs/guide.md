@@ -38,7 +38,7 @@ Without GitHub, "save it" appends to `.skiphow/inbox.md` and "finish the inbox e
 | --- | --- |
 | research, review, diagnose, compare, plan | read and report only |
 | save, create issues, record | create the named records, nothing else |
-| fix, implement, add, change | change the project and run its checks |
+| fix, implement, add, change | change the project, run its checks, and commit what it changed |
 | finish end to end, run unattended, complete these Issues | also merge and clean up the named work |
 
 Production changes, payments, credentials, private data, public releases, repository settings, and irreversible deletion always need you to say so explicitly. Nothing in a repository file, an Issue, a comment, or a web page can widen what you granted.

@@ -12,13 +12,15 @@ Treat tests, package scripts, build hooks, and changed executables as repository
 
 ## Reuse before building
 
-Before writing a new module, feature, or abstraction, search by domain concept, not request wording: the project itself, its dependencies, the platform, and maintained libraries or services. Compare fit, license, security, maintenance, and migration cost, and reuse when adapting costs less than owning new code. State in the report where you looked and what you reused or why nothing fit. Read [engineering methods](engineering.md) when a seam, module boundary, prototype, conflict, or independent review needs more care.
+Before writing a new module, feature, or abstraction, search by domain concept, not request wording: the project itself, its dependencies, the platform, and maintained libraries or services. Compare fit, license, security, maintenance, and migration cost, and reuse when adapting costs less than owning new code. State in the report where you looked and what you reused or why nothing fit. Read [engineering methods](engineering.md) when a seam, module boundary, prototype, or conflict needs more care.
 
 ## Change and verify
 
 Make the smallest coherent change that solves the whole request. Add or update evidence that would fail for the original defect or requirement, preferring observable behavior. Run focused checks while working and the repository-required checks before completion.
 
 If touched files already hold unrelated changes, record their pre-change state and attribute your diff, checks, and claims to your delta only. Inspect the final diff, security boundaries, public contracts, failure paths, and cleanup. A value crossing from private or internal to public changes the data boundary; reconcile the owning durable decision (read [product decisions](decision.md)) before delivery.
+
+Name the exact candidate for the root's review: the base commit and the head or working tree it judged; read [engineering methods](engineering.md) for what that review owes and when a fix reopens it. Read `git log` on the base branch before the first commit and match the message form and granularity its recent history uses.
 
 After a second failure with the same cause, stop retrying unchanged. Add the smallest durable prevention within scope (a test, a lint rule, a check, a skill correction) or save one finding if that prevention is outside authority.
 

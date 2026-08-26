@@ -2,6 +2,26 @@
 
 All notable changes to this project appear in this file.
 
+## 1.11.0 (2026-08-27)
+
+SkipHow 1.11 makes the project's own record, not the conversation, decide how a run writes into it.
+
+### Changed
+
+- An owner who talks to the run in Russian got Russian commit messages in a repository whose history is entirely English ([owner report](docs/research/2026-08-27/owner-report-commit-language.md)). The package said nothing about commits — `commit` appeared three times in it, all incidental — and nothing anywhere about the language of what a run writes. With no convention named, the run took the only signal in front of it.
+- The defect sits one level above commits: the same slip reaches branch names, pull request bodies, and Issue titles. The root gains one invariant — durable text a run writes into the project follows the conventions its own recent history shows, in the language that history uses, and the conversation's language never sets it.
+- The package also never said to commit at all, and never said who checks the work before it is reported. The root's completion step now compares the final state with the request, runs fresh checks, sends the candidate to a `reviewer` delegate, fixes in scope what it confirms, reruns the affected checks, and commits that delta and nothing else. The [field audit](docs/research/2026-08-27/field-audit-2026-08-27.md) is what earns the unconditional pass: two of three reviewer delegations in a real session returned blocking defects on branches that were otherwise ready. It sits in the root because a bounded change loads no reference and would otherwise skip it ([ADR 0015](docs/decisions/0015-unconditional-invariants-live-in-the-root.md)); `delivery.md` carries only the conditional detail — naming the exact candidate and matching `git log` — and stops where the root already speaks.
+- A bounded request still opens no Issue or plan; the reviewer is now its one permitted delegate, which the sizing rule previously forbade outright. Three references stated their own conditional trigger for independent review and now defer to the root ([ADR 0015](docs/decisions/0015-unconditional-invariants-live-in-the-root.md)), and the root's own load triggers stop firing on a bounded change that only closes with the review. `engineering.md` and `model-routing.md` both said an ordinary change needs no reviewer, and `model-routing.md` is the file a run reads immediately before delegating — both now defer to the root instead of gating it ([ADR 0015](docs/decisions/0015-unconditional-invariants-live-in-the-root.md)).
+- The commit is a grant, not a habit: the Authority section names it under "fix" and "implement", the run commits its own delta and nothing else, and a run that changed no project file commits nothing. Merge, push to a shared branch, and branch deletion stay where they were, behind end-to-end authority.
+- No commit-message vocabulary ships with this. Mandating Conventional Commits would be the same failure [ADR 0014](docs/decisions/0014-conform-to-the-tracker-classification.md) already names for labels, one surface over: the project's history supplies the form. That ADR is amended rather than succeeded — it already held "read how the project does it, match it, never invent a convention" for trackers, and the amendment extends it to every durable artifact a run writes.
+- `setup-matt-pocock-skills`'s per-repository tracker config was re-read against this and again adopts nothing. It is a `gh` mechanics cheat sheet with wayfinder-specific conventions; it names neither commits nor language, and ADR 0014 had already rejected its config mechanism because a live read cannot go stale.
+
+### Verification status
+
+- Deterministic checks pass (34 tests). Claude package validation and Claude isolated install pass locally; Codex package validation and Codex isolated install are `UNVERIFIED` here, as the Codex validator was not available in this environment. The root sits at 971 words of 1,000 and 6,292 bytes of 7,000; the largest reference is `long-work.md` at 596 of 600, and the references total 3,639 of 4,000.
+- That the invariant changes a run's behavior is `UNVERIFIED`: no receipt yet shows a 1.11.0 run committing in a project whose history language differs from the conversation's, or closing a bounded change with a reviewer pass.
+- The release dogfooded its own new rule by hand, which is not a receipt for it: `AGENTS.md` forbids running the installed plugin in this repository, so two reviewer passes were driven manually over this diff. They returned sixteen findings across three passes, among them three wrong word counts in this section, three references still stating the conditional review trigger, a completion step that committed before its fresh checks, two owner-facing docs still promising no subagent, a branching rule that would have based this very release off the wrong branch, and a missing receipt. All were fixed on the candidate and rechecked.
+
 ## 1.10.0 (2026-08-27)
 
 SkipHow 1.10 moves the two delegation rules that bind unconditionally out of the reference no run opens.

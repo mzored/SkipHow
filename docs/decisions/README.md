@@ -27,6 +27,6 @@ Two sections carry the weight and every ADR keeps them: `## Rejected alternative
 | [0011](0011-findings-tag-codex-role-files-neutral-repo-instructions.md) | Tagged findings, shipped Codex role files, neutral repository instructions | Accepted, amended by 0012 and 0013 |
 | [0012](0012-per-spawn-effort-and-portable-timestamps.md) | Codex effort per spawn, no role files; portable timestamp rule | Accepted |
 | [0013](0013-read-only-requests-save-nothing.md) | Read-only requests report findings `UNSAVED`; records need a granting request | Accepted |
-| [0014](0014-conform-to-the-tracker-classification.md) | Conform to the tracker's classification, do not configure it | Accepted |
+| [0014](0014-conform-to-the-tracker-classification.md) | Conform to the tracker's classification, do not configure it | Accepted, amended in 1.11.0 |
 | [0015](0015-unconditional-invariants-live-in-the-root.md) | Unconditional invariants live in the root skill | Accepted, amended in 1.10.0 |
 | [0016](0016-decomposition-needs-a-trigger-a-run-can-evaluate.md) | Decomposition needs a trigger a run can evaluate | Accepted, amended in 1.10.0 |
