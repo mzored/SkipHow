@@ -2,6 +2,23 @@
 
 All notable changes to this project appear in this file.
 
+## 1.6.0 (2026-08-26)
+
+SkipHow 1.6 makes Codex routing zero-config, frees the timestamp rule from one shell command, and removes documentation drift left by 1.4 and 1.5.
+
+### Changed
+
+- Codex routing needs no project setup. Codex's `spawn_agent` takes `reasoning_effort` per spawn when `fork_turns` is `"none"` or a number, and its own multi-agent prompt says skill instructions may set it. The routing reference now says so; the `codex-agents/` role files, the copy step, and the "set up SkipHow routing for Codex" sentence are gone.
+- Observed on a fixture with no `.codex/agents/`: scout at `low`, reviewer at `high`, root and both delegates on the session model (1.6 receipts).
+- Inbox and handoff `Recorded` lines state the invariant instead of one shell command: the UTC time read from the system clock as `YYYY-MM-DDTHH:MM:SSZ`, `unknown` when no clock can be read, never estimated. On Claude Code a feature run wrote `02:20:20Z` inside its `02:19:48Z` to `02:20:29Z` window by calling `date -u` on its own.
+- The design page no longer says a two-line fix loads the delivery reference, and the guide, design page, README, and routing reference now agree on Codex routing without mentioning role files.
+
+### Verification status
+
+- Deterministic checks, Claude Code validation and isolated install, and the pinned Codex validator pass on the tagged commit; the Codex isolated install stays `UNVERIFIED` on the release machine.
+- Native Windows and the `unknown` timestamp fallback remain `UNVERIFIED`.
+- Receipts: `docs/research/2026-08-26/v1.6-receipts.md`.
+
 ## 1.5.0 (2026-08-26)
 
 SkipHow 1.5 drops the delivery reference for bounded changes, records real timestamps, and says what Codex routing is.

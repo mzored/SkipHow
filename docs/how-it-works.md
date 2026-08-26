@@ -20,7 +20,7 @@ Only the owner's words and host policy grant actions. Everything else (repositor
 
 ## Four routes
 
-Every request takes one route: `RESPOND` (read and report), `RECORD` (save), `DELIVER` (change and prove), or `CONTROL` (report, pause, resume, cancel). The route decides which reference loads. A two-line fix loads the skill and the delivery reference; a night of Issues also loads long work, GitHub, and routing.
+Every request takes one route: `RESPOND` (read and report), `RECORD` (save), `DELIVER` (change and prove), or `CONTROL` (report, pause, resume, cancel). The route decides which reference loads. A two-line fix loads the skill and nothing else; a larger change loads the delivery reference; a night of Issues also loads long work, GitHub, and routing.
 
 ## Small work stays small
 
@@ -44,7 +44,7 @@ Shared policy names three roles and tiers, never a vendor's model IDs:
 | builder | `STANDARD` | implementation and tests for one owned scope | isolated worktree, no remote writes |
 | reviewer | `DEEP` | planning, unknown causes, architecture, security, independent review | read-only plus checks |
 
-On Claude Code the plugin ships the three roles as agent definitions: the scout on the `haiku` family alias, the builder on `sonnet`, and the reviewer on the session model itself, so the deepest tier is always the model the owner chose and never ages behind it. Codex has no family aliases and a plugin cannot ship agents, so on Codex every delegate runs on the session model and the tiers collapse to role, sandbox, and reasoning effort on that model. The skill carries the three role files under `codex-agents/`; when the owner asks for routing, SkipHow copies them into the project's `.codex/agents/`. Observed: `builder` at the session's effort, `scout` at low, and `reviewer` at high, all on the session model. Capability routing on Codex waits for the host to expose a stable capability name. Mutation never starts on the cheap tier, because a cheap model on an ambiguous task spends more turns than it saves in tokens. Cost savings are a design hypothesis until paired runs measure them ([ADR 0003](decisions/0003-semantic-model-routing.md), [ADR 0007](decisions/0007-host-adapters-for-routing-and-continuity.md), [ADR 0009](decisions/0009-reviewer-inherits-and-one-engineering-reference.md)).
+On Claude Code the plugin ships the three roles as agent definitions: the scout on the `haiku` family alias, the builder on `sonnet`, and the reviewer on the session model itself, so the deepest tier is always the model the owner chose and never ages behind it. Codex has no family aliases and a plugin cannot ship agents, so on Codex every delegate runs on the session model and the tiers collapse to reasoning effort on that model, set per spawn: the scout at low, the reviewer at high, the builder at the session's. Nothing is written into the project for this. Observed with no role files present: scout `low`, reviewer `high`, all on the session model. Capability routing on Codex waits for the host to expose a stable capability name. Mutation never starts on the cheap tier, because a cheap model on an ambiguous task spends more turns than it saves in tokens. Cost savings are a design hypothesis until paired runs measure them ([ADR 0003](decisions/0003-semantic-model-routing.md), [ADR 0007](decisions/0007-host-adapters-for-routing-and-continuity.md), [ADR 0009](decisions/0009-reviewer-inherits-and-one-engineering-reference.md), [ADR 0012](decisions/0012-per-spawn-effort-and-portable-timestamps.md)).
 
 ## Continuity
 

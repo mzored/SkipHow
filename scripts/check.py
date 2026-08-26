@@ -367,7 +367,6 @@ def model_id_scan(paths: Iterable[Path] | None = None) -> list[str]:
     candidates = list(paths) if paths is not None else [
         CANONICAL_SKILL,
         *sorted((SKILL_ROOT / "references").rglob("*.md")),
-        *sorted((SKILL_ROOT / "codex-agents").glob("*.toml")),
     ]
     errors: list[str] = []
     for path in candidates:
@@ -434,16 +433,6 @@ def validate_agents(agents_dir: Path = PLUGIN_ROOT / "agents") -> list[str]:
         if role != "builder" and any(tool in str(meta.get("tools", "")) for tool in ("Edit", "Write")):
             errors.append(f"{relative} must stay read-only")
         errors.extend(model_id_scan([path]))
-    codex_dir = SKILL_ROOT / "codex-agents"
-    codex_found = {path.stem for path in codex_dir.glob("*.toml")} if codex_dir.is_dir() else set()
-    if codex_found != set(AGENT_ROLES):
-        errors.append("skill codex-agents/ must hold exactly scout, builder, reviewer TOML files")
-    for path in sorted(codex_dir.glob("*.toml")) if codex_dir.is_dir() else []:
-        text = path.read_text(encoding="utf-8")
-        if re.search(r"^model\s*=", text, re.MULTILINE):
-            errors.append(f"{path.relative_to(ROOT)} must leave model unset")
-        if f'name = "{path.stem}"' not in text or "developer_instructions" not in text:
-            errors.append(f"{path.relative_to(ROOT)} must set name and developer_instructions")
     return errors
 
 
