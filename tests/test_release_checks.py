@@ -60,8 +60,17 @@ def test_local_package_and_document_checks_pass() -> None:
     assert check.validate_budget() == []
 
 
+def test_budget_limits_are_the_accepted_ones() -> None:
+    """Pin the four accepted numbers, not whatever the module currently holds.
+
+    The fixtures below scale with the constants, so raising a limit tenfold used
+    to leave every budget test green.
+    """
+    assert check.ROOT_SKILL_LIMITS == {"bytes": 7000, "words": 1000}
+    assert check.REFERENCE_LIMITS == {"total_words": 4000, "file_words": 600}
+
+
 def test_budget_reports_measured_and_allowed_values(tmp_path: Path) -> None:
-    # Derive the numbers from the accepted shape; the test asserts the report, not the budget.
     root_limit = check.ROOT_SKILL_LIMITS["words"]
     file_limit = check.REFERENCE_LIMITS["file_words"]
     skill = tmp_path / "SKILL.md"
@@ -155,16 +164,19 @@ def test_non_plugin_change_does_not_require_a_version_bump() -> None:
 
 
 def test_plugin_version_cannot_move_backward() -> None:
+    current = (check.ROOT / "VERSION").read_text(encoding="utf-8").strip()
+    major, minor, patch_number = (int(part) for part in current.split("."))
+    ahead = f"{major + 1}.{minor}.{patch_number}"
     with patch.object(
         check,
         "checked",
         side_effect=[
             (True, "plugins/skiphow/skills/skiphow/SKILL.md\n"),
-            (True, "9.0.0\n"),
+            (True, f"{ahead}\n"),
         ],
     ):
         assert check.validate_release_version_change("base") == [
-            "plugin version must increase from 9.0.0 to a later stable version"
+            f"plugin version must increase from {ahead} to a later stable version"
         ]
 
 
@@ -176,13 +188,100 @@ def test_portable_policy_rejects_provider_model_ids(tmp_path: Path) -> None:
     assert "gpt-5.6-example" in errors[0]
 
 
-def test_portability_scan_includes_untracked_package_files() -> None:
-    untracked = check.PLUGIN_ROOT / "personal-path.txt"
+def test_portability_scan_includes_untracked_package_files(tmp_path: Path) -> None:
+    """The scan reaches a new, unstaged file -- proven without touching the package."""
+    plugin = tmp_path / "plugins/skiphow"
+    plugin.mkdir(parents=True)
+    untracked = plugin / "personal-path.txt"
     untracked.write_text("/" + "Users/person/secret\n", encoding="utf-8")
-    try:
-        assert any("personal-path.txt" in error for error in check.portability_scan())
-    finally:
-        untracked.unlink()
+    with (
+        patch.object(check, "ROOT", tmp_path),
+        patch.object(check, "PLUGIN_ROOT", plugin),
+        patch.object(check, "repository_files", return_value=[untracked]),
+    ):
+        errors = check.portability_scan()
+    assert any("personal-path.txt" in error for error in errors)
+
+
+def test_portability_scan_catches_a_home_path_with_no_trailing_separator(tmp_path: Path) -> None:
+    """`/Users/person` at the end of a sentence used to pass the scan."""
+    plugin = tmp_path / "plugins/skiphow"
+    plugin.mkdir(parents=True)
+    candidate = plugin / "note.md"
+    candidate.write_text("Run it from /" + "Users/person.\n", encoding="utf-8")
+    with (
+        patch.object(check, "ROOT", tmp_path),
+        patch.object(check, "PLUGIN_ROOT", plugin),
+        patch.object(check, "repository_files", return_value=[candidate]),
+    ):
+        assert check.portability_scan() != []
+
+
+def test_model_scan_covers_every_shipped_file_and_current_families(tmp_path: Path) -> None:
+    """The default scan read the prose only, and named no current Claude family.
+
+    A `claude-fable-5` in the Codex adapter or either manifest passed both gates.
+    """
+    for identifier in ("claude-fable-5", "fable-5", "gpt-oss-120b", "grok-4", "qwen3-235b"):
+        candidate = tmp_path / "policy.md"
+        candidate.write_text(f"Use {identifier}.\n", encoding="utf-8")
+        assert check.model_id_scan([candidate]) != [], identifier
+    scanned = {
+        path.relative_to(check.PLUGIN_ROOT).as_posix()
+        for path in check.PLUGIN_ROOT.rglob("*")
+        if path.is_file()
+    }
+    assert scanned == set(check.PACKAGE_FILES)
+
+
+def test_package_shape_rejects_an_extra_shipped_file(tmp_path: Path) -> None:
+    """The old check named directories, so any extra file inside one passed."""
+    assert "agents/scout.md" in check.PACKAGE_FILES
+    assert "agents/extra.txt" not in check.PACKAGE_FILES
+    shipped = {
+        path.relative_to(check.PLUGIN_ROOT).as_posix()
+        for path in check.PLUGIN_ROOT.rglob("*")
+        if path.is_file() or path.is_symlink()
+    }
+    assert shipped == set(check.PACKAGE_FILES)
+
+
+def test_changelog_must_lead_with_the_released_version() -> None:
+    """A newer section above the released one used to satisfy the heading search."""
+    changelog = (check.ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+    release = (check.ROOT / "VERSION").read_text(encoding="utf-8").strip()
+    dated = re.findall(r"^## (\S+) \(\d{4}-\d{2}-\d{2}\)$", changelog, re.MULTILINE)
+    assert dated[0] == release
+    assert check.validate_version() == []
+
+
+def test_run_summary_refuses_evidence_it_cannot_read(tmp_path: Path) -> None:
+    """A corrupt or unfinished transcript produced a plausible zero-cost summary."""
+    summary = load("skiphow_run_summary", "scripts/run_summary.py")
+    broken = tmp_path / "broken.jsonl"
+    broken.write_text("not json\n", encoding="utf-8")
+    with pytest.raises(summary.TranscriptError):
+        summary.summarize(broken)
+    unfinished = tmp_path / "unfinished.jsonl"
+    unfinished.write_text('{"type": "assistant", "message": {"model": "m", "content": []}}\n', encoding="utf-8")
+    with pytest.raises(summary.TranscriptError):
+        summary.summarize(unfinished)
+    assert summary.main([]) == 2
+
+
+def test_skip_install_cannot_satisfy_a_required_install() -> None:
+    """`--skip-install` used to silently answer `--require-*-install` with exit 0."""
+    for required in ("--require-codex-install", "--require-claude-install"):
+        with pytest.raises(SystemExit) as raised:
+            hosts.main(["--skip-install", required])
+        assert raised.value.code == 2
+
+
+def test_only_a_source_policy_denial_is_downgraded() -> None:
+    """Any output naming requirements.toml used to be read as a policy block."""
+    assert hosts._codex_policy_block("blocked by allowed source policy")
+    assert hosts._codex_policy_block("source is not allowed")
+    assert not hosts._codex_policy_block("failed to parse /etc/codex/requirements.toml")
 
 
 def test_file_enumeration_falls_back_without_git(tmp_path: Path) -> None:
