@@ -17,7 +17,7 @@ SkipHow 1.9 gives decomposition a trigger a run can evaluate before it starts wo
 
 ### Verification status
 
-- Deterministic checks pass (34 tests). Claude package validation and Claude isolated install pass. Codex package validation and Codex isolated install are `UNVERIFIED` on this release: the Codex plugin validator was not present on the machine that cut it, so no Codex evidence was produced for 1.9.0.
+- Deterministic checks pass (34 tests). Claude package validation and Claude isolated install pass locally; Codex package validation passes in CI, which is the only place the Codex validator was available. Codex isolated install is `UNVERIFIED`: neither environment ran it.
 - The root is 794 words and 5,279 bytes against the 850-word, 6,000-byte budget; references total 3,599 words against 4,000, none over 600.
 - Every 1.9.0 behavior change is `UNVERIFIED`. The receipt it needs is a run given several items in one request that splits them into units before starting, and a second showing whether such a run loads `model-routing.md` before it delegates — the reference has not loaded in 4 of 4 delegating sessions read so far, and this release will produce more delegations.
 - 1.8.0 stays `UNVERIFIED` on every count. Its merge-boundary receipt is a delivery run on a "fix this" request that stops at the branch, not one that merely loads the reference.
