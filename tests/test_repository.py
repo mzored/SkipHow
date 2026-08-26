@@ -170,12 +170,15 @@ def test_named_contracts_stay_in_lazy_references() -> None:
     routing = read("plugins/skiphow/skills/skiphow/references/model-routing.md")
     review = code_tokens(read("plugins/skiphow/skills/skiphow/references/engineering.md"))
     assert {"NEW", "UPDATE", "DUPLICATE", "RELATED", "NEEDS_RESEARCH", "DISMISSED"} <= intake
-    assert {"FAST", "STANDARD", "DEEP", "UNVERIFIED", "BLOCKED"} <= code_tokens(routing)
+    # `BLOCKED` left this reference in 1.10.0 with the escalation ladder it belonged to.
+    # The ladder binds wherever a delegate exists, so it lives in the root now (ADR 0016).
+    assert {"FAST", "STANDARD", "DEEP", "UNVERIFIED"} <= code_tokens(routing)
+    assert "BLOCKED" not in code_tokens(routing)
     assert {"scout", "builder", "reviewer"} <= set(re.findall(r"`(\w+)`", routing))
     # Review findings carry the skill's four tags. A second findings vocabulary in a
     # reference contradicts the root contract, which is how `PERSISTED` reached a report.
     tags = code_tokens(read("plugins/skiphow/skills/skiphow/SKILL.md"))
-    assert {"TRACKED", "SAVED", "UNSAVED", "DISMISSED"} <= tags
+    assert {"TRACKED", "SAVED", "UNSAVED", "DISMISSED", "BLOCKED"} <= tags
     assert not review & {"RESOLVED", "PERSISTED"}
     for relative in ("long-work.md", "github.md", "delivery.md"):
         assert {"BLOCKED", "UNVERIFIED"} & code_tokens(read(f"plugins/skiphow/skills/skiphow/references/{relative}"))
