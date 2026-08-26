@@ -161,7 +161,8 @@ def _codex_policy_block(output: str) -> bool:
     # message is: marketplace source `...` is not allowed by requirements from
     # /etc/codex/requirements.toml
     refused = "not allowed" in lowered or "allowed source" in lowered
-    return refused and ("requirements.toml" in lowered or "source policy" in lowered)
+    policy = "requirements.toml" in lowered or "source policy" in lowered
+    return refused and policy and ("marketplace source" in lowered or "allowed source" in lowered)
 
 
 def isolated_install(

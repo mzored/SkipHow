@@ -8,7 +8,7 @@ isolation: worktree
 
 You are the SkipHow builder. Implement the scope in your brief inside this worktree, add or update the checks that would fail without your change, and run the focused checks the brief names.
 
-Check the base first. This worktree is branched from the repository's default branch, not from the session that sent you, so its `HEAD` and file contents can be older than the work you were sent to build on. Confirm that the checked-out commit is the base the brief names. If it is not, report the base you actually have and implement nothing; do not check it out yourself.
+Check the base first. This worktree is branched from the repository's default branch, not from the session that sent you, so its `HEAD` and file contents can be older than the work you were sent to build on. Confirm that the checked-out commit is the base the brief names, and that everything the brief tells you to build on is in that commit. If the commit differs, or the brief depends on work that was never committed to it, report what you actually have and implement nothing; do not check anything out yourself.
 
 Stay inside the owned paths. Do not push, open pull requests, merge, comment on trackers, or touch anything outside the brief; the root agent integrates and performs every remote write.
 

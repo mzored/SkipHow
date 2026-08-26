@@ -234,10 +234,19 @@ def test_model_scan_covers_every_shipped_file_and_current_families(tmp_path: Pat
 
     A `claude-fable-5` in the Codex adapter or either manifest passed both gates.
     """
-    for identifier in ("claude-fable-5", "fable-5", "gpt-oss-120b", "grok-4", "qwen3-235b"):
+    # `claude-future-5` and `gemini-pro-3` name no family the pattern lists; the
+    # invariant is no versioned ID, so enumerating the families of the day is not enough.
+    for identifier in (
+        "claude-fable-5", "fable-5", "gpt-oss-120b", "grok-4", "qwen3-235b",
+        "claude-future-5", "gemini-pro-3", "mistral-large-2",
+    ):
         candidate = tmp_path / "policy.md"
         candidate.write_text(f"Use {identifier}.\n", encoding="utf-8")
         assert check.model_id_scan([candidate]) != [], identifier
+    for innocent in ("claude-code", "Claude Code 2.1.246", "a fabled release", "the opus of work"):
+        candidate = tmp_path / "prose.md"
+        candidate.write_text(f"{innocent}\n", encoding="utf-8")
+        assert check.model_id_scan([candidate]) == [], innocent
     # Default mode, over a manifest -- the file kind the old candidate list skipped.
     package = tmp_path / "skiphow"
     (package / ".codex-plugin").mkdir(parents=True)
@@ -332,6 +341,12 @@ def test_run_summary_refuses_evidence_it_cannot_read(tmp_path: Path) -> None:
     partial = tmp_path / "partial.jsonl"
     partial.write_text('{"type": "result", "num_turns": 3}\n', encoding="utf-8")
     assert summary.summarize(partial)["cost_usd"] is None
+    # `float("nan")` is an instance of float, and a negative count is not a count.
+    for impossible in ('{"type": "result", "num_turns": NaN}', '{"type": "result", "num_turns": -1}'):
+        broken_metric = tmp_path / "metric.jsonl"
+        broken_metric.write_text(impossible + "\n", encoding="utf-8")
+        with pytest.raises(summary.TranscriptError):
+            summary.summarize(broken_metric)
     assert summary.main([]) == 2
 
 
@@ -358,6 +373,10 @@ def test_only_a_source_policy_denial_is_downgraded() -> None:
     assert hosts._codex_policy_block("blocked by allowed source policy")
     assert not hosts._codex_policy_block("failed to parse /etc/codex/requirements.toml")
     assert not hosts._codex_policy_block("network unreachable")
+    # An unrelated refusal beside a parse error is not a source-policy denial.
+    assert not hosts._codex_policy_block(
+        "network setting is not allowed; failed to parse /etc/codex/requirements.toml"
+    )
 
 
 def test_file_enumeration_falls_back_without_git(tmp_path: Path) -> None:

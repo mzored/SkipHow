@@ -44,10 +44,11 @@ PERSONAL_PATH = re.compile(
     + r"|%USERPROFILE%[\\/])"
 )
 CONCRETE_MODEL_ID = re.compile(
-    r"\b(?:gpt-(?:\d|oss)[\w.-]*|claude-(?:\d|opus|sonnet|haiku|fable)[\w.-]*|"
-    r"gemini-\d[\w.-]*|llama-\d[\w.-]*|grok-\d[\w.-]*|"
-    r"deepseek-(?:\d|r\d|v\d)[\w.-]*|qwen[\d.]+[\w.-]*|"
-    r"mistral-(?:\d|small|medium|large)[\w.-]*|o[1-9](?:-[\w.-]+)?|"
+    # A provider name, any number of family words, then a version component. Naming the
+    # families instead would age: `claude-fable-5` and `claude-future-5` both slipped past
+    # an enumerated list, and the invariant is no versioned ID at all.
+    r"\b(?:(?:claude|gpt|gemini|llama|mistral|grok|qwen|deepseek)(?:-[a-z]+)*-?\d[\w.-]*|"
+    r"mistral-(?:small|medium|large)[\w.-]*|o[1-9](?:-[\w.-]+)?|"
     r"(?:opus|sonnet|haiku|fable)-\d[\w.-]*)\b",
     re.IGNORECASE,
 )

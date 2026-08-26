@@ -8,6 +8,7 @@ Prints one line per file so paired runs (with and without the plugin) can be com
 from __future__ import annotations
 
 import json
+import math
 import sys
 from collections import Counter
 from pathlib import Path
@@ -51,8 +52,12 @@ def summarize(path: Path) -> dict[str, object]:
         raise TranscriptError(f"{path}: no terminal result event; the run did not finish")
     for field in ("num_turns", "total_cost_usd", "duration_ms"):
         value = result.get(field)
-        if field in result and (isinstance(value, bool) or not isinstance(value, (int, float))):
+        if field not in result:
+            continue
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
             raise TranscriptError(f"{path}: result event has a non-numeric {field}")
+        if not math.isfinite(value) or value < 0:
+            raise TranscriptError(f"{path}: result event has an impossible {field}: {value!r}")
 
     def measured(field: str, scale: float = 1.0, digits: int | None = 2) -> float | int | None:
         # A field the host did not report stays absent. Reporting it as zero is how a
