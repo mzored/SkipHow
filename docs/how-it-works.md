@@ -9,7 +9,7 @@ plugins/skiphow/
   skills/skiphow/SKILL.md        the owner contract, loaded on every request (under 600 words)
   skills/skiphow/references/     eight policy files loaded only when the work needs them (about 3,500 words)
   agents/                        Claude Code role adapters: scout, builder, reviewer
-  hooks/hooks.json               one read-only SessionStart hook (startup, compaction, resume)
+  hooks/hooks.json               one read-only SessionStart hook (startup and clear; compaction and resume)
 ```
 
 Codex and Claude Code load the same skill. There is no SkipHow process, database, scheduler, or provider bridge; the host owns sessions, subagents, worktrees, permissions, and compaction ([ADR 0002](decisions/0002-host-native-execution.md)).
@@ -32,7 +32,7 @@ A clear bounded request is finished in the session with no Issue, branch, plan, 
 
 ## Long work
 
-One root agent owns the outcome, the queue, integration, every remote write, the handoff, and the report. The queue is fixed from the owner's words (Issue numbers, a batch label, or an approved rule); an epic given as one request is split into bounded Issues first. Dependencies decide readiness and never add scope. Delegates receive a brief and return a summary. Only four things justify stopping to ask: an irreversible action, a security-sensitive action, an external side effect beyond the grant, or a plan so broken every path is a guess. Everything else becomes a recorded ruling and the work continues. Same-cause failures are capped at two before the item is marked `BLOCKED` with a next action ([ADR 0006](decisions/0006-host-native-campaign-and-engineering-policy.md)).
+One root agent owns the outcome, the queue, integration, every remote write, the handoff, and the report. The queue is fixed from the owner's words (Issue numbers, a batch label, the inbox when there is no tracker, or an approved rule); an epic given as one request is split into bounded Issues first. Dependencies decide readiness and never add scope. Delegates receive a brief and return a summary. Only four things justify stopping to ask: an irreversible action, a security-sensitive action, an external side effect beyond the grant, or a plan so broken every path is a guess. Everything else becomes a recorded ruling and the work continues. Same-cause failures are capped at two before the item is marked `BLOCKED` with a next action ([ADR 0006](decisions/0006-host-native-campaign-and-engineering-policy.md)).
 
 ## Model routing
 

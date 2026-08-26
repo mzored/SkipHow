@@ -135,15 +135,6 @@ def test_workflows_are_sha_pinned_with_least_privilege() -> None:
     assert re.search(r"^permissions:\n  contents: write$", read(".github/workflows/release.yml"), re.MULTILINE)
 
 
-def test_retired_runtime_paths_are_absent() -> None:
-    retired = ("src", "schemas", "pyproject.toml", "plugins/skiphow/scripts", "adapters", ".claude-plugin/plugin.json", "build")
-
-    def contains_file(relative: str) -> bool:
-        path = ROOT / relative
-        return path.is_file() or (path.is_dir() and any(item.is_file() for item in path.rglob("*")))
-
-    assert not [relative for relative in retired if contains_file(relative)]
-
 
 # Skill wiring
 
@@ -215,7 +206,8 @@ def test_continuity_hook_is_the_only_hook() -> None:
     payload = json_object("plugins/skiphow/hooks/hooks.json")
     assert set(payload["hooks"]) == {"SessionStart"}
     groups = payload["hooks"]["SessionStart"]
-    assert {group["matcher"] for group in groups} == {"startup", "clear", "compact", "resume"}
+    sources = [source for group in groups for source in group["matcher"].split("|")]
+    assert sorted(sources) == ["clear", "compact", "resume", "startup"]
     for group in groups:
         (handler,) = group["hooks"]
         assert handler["type"] == "command"

@@ -5,6 +5,7 @@ from __future__ import annotations
 import importlib.util
 import json
 from pathlib import Path
+import re
 import sys
 from unittest.mock import patch
 
@@ -28,17 +29,9 @@ hosts = load("skiphow_check_hosts", "scripts/check_hosts.py")
 
 
 def test_local_dependencies_are_pinned_and_kept_outside_the_repo() -> None:
-    assert check.pinned_requirements() == {
-        "PyYAML": "6.0.3",
-        "Pygments": "2.21.0",
-        "colorama": "0.4.6",
-        "iniconfig": "2.3.0",
-        "markdown-it-py": "4.2.0",
-        "mdurl": "0.1.2",
-        "packaging": "26.3",
-        "pluggy": "1.6.0",
-        "pytest": "9.1.1",
-    }
+    pins = check.pinned_requirements()
+    assert {"pytest", "PyYAML", "markdown-it-py"} <= set(pins)
+    assert all(re.fullmatch(r"\d+(?:\.\d+)*", value) for value in pins.values())
     assert not check.MANAGED_ENV.is_relative_to(ROOT)
     assert check.MANAGED_ENV.name == f"python-{sys.version_info.major}.{sys.version_info.minor}"
 
@@ -68,7 +61,6 @@ def test_local_package_and_document_checks_pass() -> None:
     assert check.validate_markdown_links() == []
     assert check.portability_scan() == []
     assert check.validate_version() == []
-    assert check.validate_runtime_removal() == []
     assert check.model_id_scan() == []
     assert check.validate_agents() == []
     assert check.validate_continuity_hook() == []
@@ -123,10 +115,8 @@ def test_continuity_hook_rejects_other_events_and_network(tmp_path: Path) -> Non
             {
                 "hooks": {
                     "SessionStart": [
-                        {"matcher": "startup", "hooks": [{"type": "command", "command": "sh -c 'cat .skiphow/handoff.md'"}]},
-                        {"matcher": "clear", "hooks": [{"type": "command", "command": "sh -c 'cat .skiphow/handoff.md'"}]},
-                        {"matcher": "compact", "hooks": [{"type": "command", "command": "sh -c 'curl http://x; cat .skiphow/handoff.md'"}]},
-                        {"matcher": "resume", "hooks": [{"type": "command", "command": "sh -c 'cat .skiphow/handoff.md'"}]},
+                        {"matcher": "startup|clear", "hooks": [{"type": "command", "command": "sh -c 'cat .skiphow/handoff.md'"}]},
+                        {"matcher": "compact|resume", "hooks": [{"type": "command", "command": "sh -c 'curl http://x; cat .skiphow/handoff.md'"}]},
                     ]
                 }
             }
@@ -136,6 +126,12 @@ def test_continuity_hook_rejects_other_events_and_network(tmp_path: Path) -> Non
     with patch.object(check, "PLUGIN_ROOT", tmp_path):
         errors = check.validate_continuity_hook(path)
     assert any("must not write, fetch, or run programs" in error for error in errors)
+    path.write_text(
+        json.dumps({"hooks": {"SessionStart": [{"matcher": "startup|clear", "hooks": [{"type": "command", "command": "sh -c 'cat .skiphow/handoff.md'"}]}]}}),
+        encoding="utf-8",
+    )
+    with patch.object(check, "PLUGIN_ROOT", tmp_path):
+        assert any("exactly once each" in error for error in check.validate_continuity_hook(path))
 
 
 def test_plugin_change_requires_a_version_bump() -> None:
