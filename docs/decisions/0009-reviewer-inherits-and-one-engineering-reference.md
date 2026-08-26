@@ -88,6 +88,8 @@ An owner with one CLI keeps exactly today's behavior and is told so. An owner wi
 different model family on the changes where a missed defect costs most, at the price of one external
 call that runs in minutes, not seconds. Nothing is installed, written, or configured to get it.
 
+Amended again in 1.13.0: effort is requested only from the host that validates the request. `claude --effort` warns and falls back on an unknown value; `codex -c model_reasoning_effort` accepts any value, including a bogus one, and the run stays at the host default, so naming a level there was a claim the tool does not honour. The model is still never named on either side.
+
 The mechanics are two commands in `model-routing.md` and one sentence in `engineering.md`; the root is
 untouched, because the rule is conditional on the other host existing and [ADR 0015](0015-unconditional-invariants-live-in-the-root.md)
 puts conditional detail in a reference. Both loading triggers the root already lists reach it.

@@ -258,10 +258,14 @@ def test_cross_host_review_names_both_directions() -> None:
     # Each direction declares its own boundary flag. They are not equally strong
     # -- Codex sandboxes the pass, plan mode only bounds the model's tools -- so
     # dropping either one leaves that direction's boundary unstated.
-    assert 'model_reasoning_effort="high"' in bullets["Claude Code"]
     assert 'sandbox_mode="read-only"' in bullets["Claude Code"]
     assert "--effort high" in bullets["Codex"]
     assert "--permission-mode plan" in bullets["Codex"]
+    # Measured 2026-08-27: `claude --effort` warns and falls back on an unknown value,
+    # so the request is real. `codex -c model_reasoning_effort` is accepted for any
+    # value, including a bogus one, and the run stays at the host default -- so naming
+    # a level there would be a claim the tool does not honour.
+    assert "model_reasoning_effort" not in routing
     # `--allowedTools` pre-approves rather than restricts, so it is never the boundary.
     assert "--allowedTools" not in routing
     # The trigger stays where the review widens; the mechanics stay here.
