@@ -1,6 +1,6 @@
 # Research from 2026-08-26
 
-This directory records the 1.0 release audit, the review that set the direction for 1.1, and the 1.1 receipts.
+This directory records the 1.0 release audit, the review that set the direction for 1.1, and the 1.1 and 1.2 receipts.
 
 | Topic | What it records |
 | --- | --- |
@@ -11,7 +11,8 @@ This directory records the 1.0 release audit, the review that set the direction 
 | [Prior-art mechanics](prior-art-mechanics.md) | Concrete mechanics from nine projects worth borrowing or leaving out |
 | [1.1 brief](v1.1-brief.md) | The work order that 1.1.0 implemented |
 | [1.1 receipts](v1.1-receipts.md) | Real runs on the 1.1.0 candidate: routing, compaction continuity, small task, findings outside scope |
+| [1.2 receipts](v1.2-receipts.md) | Real runs on the 1.2.0 candidate: small task, feature, reuse, findings without GitHub, batch intake and end-to-end GitHub delivery, resume |
 
-The accepted campaign and engineering decision is in [ADR 0006](../../decisions/0006-host-native-campaign-and-engineering-policy.md). The routing and continuity decision is [ADR 0007](../../decisions/0007-host-adapters-for-routing-and-continuity.md); the evaluation decision is [ADR 0008](../../decisions/0008-receipts-over-a-live-harness.md). Earlier research for the host-native rewrite remains under [2026-08-25](../2026-08-25/README.md).
+The accepted campaign and engineering decision is in [ADR 0006](../../decisions/0006-host-native-campaign-and-engineering-policy.md). The routing and continuity decision is [ADR 0007](../../decisions/0007-host-adapters-for-routing-and-continuity.md); the evaluation decision is [ADR 0008](../../decisions/0008-receipts-over-a-live-harness.md); the 1.2 reviewer and reference layout decision is [ADR 0009](../../decisions/0009-reviewer-inherits-and-one-engineering-reference.md). Earlier research for the host-native rewrite remains under [2026-08-25](../2026-08-25/README.md).
 
 Facts in this directory describe the dated audit. Host behavior, repository settings, action tags, and vendor formats can change. Recheck the linked primary sources before changing packaging or making a support claim.

@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted. Supersedes [ADR 0005](0005-fail-closed-release-evaluation.md) on the evaluation mechanism; its claims policy stands.
+Accepted. Supersedes [ADR 0005](0005-fail-closed-release-evaluation.md) on the evaluation mechanism; its claims policy stands. On 2026-08-26 the host's `claude plugin eval` (with a no-plugin baseline arm) existed but was early access and unavailable to this project; [ADR 0009](0009-reviewer-inherits-and-one-engineering-reference.md) records that it is the intended path once available.
 
 ## Date
 

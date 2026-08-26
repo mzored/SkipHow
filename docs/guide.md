@@ -25,8 +25,8 @@ Start a new session and describe the work. If the skill does not activate on its
 Three moves, each optional:
 
 1. Talk it through. "What is causing the checkout timeouts?" or "Compare our two caching options." Nothing changes.
-2. Save it. Paste a dump of bugs, ideas, and observations and say "triage these and save them as Issues". SkipHow splits them, searches for duplicates, creates or updates Issues, and labels the batch `skiphow-batch:<date>`.
-3. Finish it. "Finish today's batch end to end" or "Finish Issues #41, #44, and #48 end to end. Merge what passes." One root agent works the queue, delegates bounded pieces, merges what passes its checks, closes the Issues, and deletes its own merged branches.
+2. Save it. Paste a dump of bugs, ideas, and observations and say "triage these and save them as Issues". SkipHow splits them, searches for duplicates, gives each a type and a proposed priority with its reason, creates or updates Issues, and labels the batch `skiphow-batch:<date>`. You reorder; you do not write tickets.
+3. Finish it. "Finish today's batch end to end" or "Finish Issues #41, #44, and #48 end to end. Merge what passes." One root agent works the queue in priority order, delegates bounded pieces, merges what passes its checks, closes the Issues, and deletes its own merged branches. A large feature given as one request is split into Issues first, then worked the same way.
 
 A small request ("the totals overlap on small screens, fix it") skips all of that and is done in the session.
 
@@ -54,7 +54,7 @@ claude -p "Finish today's batch end to end. Merge what passes." \
   --permission-mode auto --max-budget-usd 20
 ```
 
-`-p` runs headless and exits when done. `--permission-mode auto` lets a classifier approve routine actions and still stops on risky ones. `--max-budget-usd` is a hard spending cap. Add `--max-turns <n>` for a turn cap.
+`-p` runs headless and exits when done. `--permission-mode auto` lets a classifier approve routine actions and still stops on risky ones. `--max-budget-usd` is a hard spending cap. Add `--max-turns <n>` for a turn cap. Pick the session model you want for planning and review; the reviewer runs on it, the builder on the standard tier, the scout on the fast one.
 
 Codex:
 
@@ -83,4 +83,4 @@ Every completion report has five parts:
 
 ## Where records live
 
-Git holds the code. GitHub holds Issues and pull requests. The host holds its own session state. SkipHow adds at most two files to a project: `.skiphow/inbox.md` (records saved when GitHub is not connected) and `.skiphow/handoff.md` (checkpoints for long work). Uninstalling the plugin deletes none of these; remove them through the system that owns them.
+Git holds the code. GitHub holds Issues and pull requests. The host holds its own session state. SkipHow adds at most two files to a project: `.skiphow/inbox.md` (records saved when GitHub is not connected) and `.skiphow/handoff.md` (checkpoints for long work, deleted when the queue is done). Uninstalling the plugin deletes none of these; remove them through the system that owns them.

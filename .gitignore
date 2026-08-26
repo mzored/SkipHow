@@ -3,5 +3,3 @@ __pycache__/
 .venv/
 .pytest_cache/
 *.egg-info/
-evals/live/config.local*.json
-evals/live/results/

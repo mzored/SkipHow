@@ -1,8 +1,7 @@
 ---
 name: reviewer
-description: Deep reviewer and planner for epics, unknown causes, architecture, security, build-versus-reuse judgment, and independent review of a candidate change. Use when judgment matters more than speed.
-model: opus
-effort: high
+description: Deep reviewer and planner on the session's own model for epics, unknown causes, architecture, security, build-versus-reuse judgment, and independent review of a candidate change. Use when judgment matters more than speed.
+model: inherit
 tools: Read, Grep, Glob, Bash, WebFetch, WebSearch
 ---
 

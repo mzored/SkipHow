@@ -26,11 +26,6 @@ REFERENCES = frozenset(
         "github.md",
         "intake.md",
         "long-work.md",
-        "methods/conflicts.md",
-        "methods/design.md",
-        "methods/prototype.md",
-        "methods/review.md",
-        "methods/testing.md",
         "model-routing.md",
     }
 )
@@ -182,7 +177,7 @@ def test_report_and_record_formats_are_fenced() -> None:
 def test_named_contracts_stay_in_lazy_references() -> None:
     intake = code_tokens(read("plugins/skiphow/skills/skiphow/references/intake.md"))
     routing = read("plugins/skiphow/skills/skiphow/references/model-routing.md")
-    review = code_tokens(read("plugins/skiphow/skills/skiphow/references/methods/review.md"))
+    review = code_tokens(read("plugins/skiphow/skills/skiphow/references/engineering.md"))
     assert {"NEW", "UPDATE", "DUPLICATE", "RELATED", "NEEDS_RESEARCH", "DISMISSED"} <= intake
     assert {"FAST", "STANDARD", "DEEP", "UNVERIFIED", "BLOCKED"} <= code_tokens(routing)
     assert {"scout", "builder", "reviewer"} <= set(re.findall(r"`(\w+)`", routing))
@@ -199,9 +194,9 @@ def test_agent_adapters_route_roles_to_family_aliases() -> None:
     assert set(agents) == {"scout", "builder", "reviewer"}
     assert agents["scout"]["model"] == "haiku"
     assert agents["builder"]["model"] == "sonnet"
-    assert agents["reviewer"]["model"] == "opus"
+    assert agents["reviewer"]["model"] == "inherit"
     assert agents["scout"]["effort"] == "low"
-    assert agents["reviewer"]["effort"] == "high"
+    assert "effort" not in agents["reviewer"]
     assert agents["builder"]["isolation"] == "worktree"
     for role, meta in agents.items():
         assert meta["name"] == role

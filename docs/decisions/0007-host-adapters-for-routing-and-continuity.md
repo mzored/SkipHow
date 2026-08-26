@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted in 1.1.0. The adapters, the hook, and the deterministic checks below ship in that release.
+Accepted in 1.1.0. The adapters, the hook, and the deterministic checks below ship in that release. Amended by [ADR 0009](0009-reviewer-inherits-and-one-engineering-reference.md): the `reviewer` adapter inherits the session model instead of pinning `opus`.
 
 ## Date
 
