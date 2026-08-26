@@ -6,8 +6,8 @@ SkipHow is one skill plus two small host adapters. This page is the design in ab
 
 ```text
 plugins/skiphow/
-  skills/skiphow/SKILL.md        the owner contract, loaded on every request (about 700 words)
-  skills/skiphow/references/     eight policy files loaded only when the work needs them (about 3,500 words)
+  skills/skiphow/SKILL.md        the owner contract, loaded on every request (about 950 words)
+  skills/skiphow/references/     eight policy files loaded only when the work needs them (about 3,600 words)
   agents/                        Claude Code role adapters: scout, builder, reviewer
   hooks/hooks.json               one read-only SessionStart hook (startup and clear; compaction and resume)
 ```
@@ -16,7 +16,7 @@ Codex and Claude Code load the same skill. There is no SkipHow process, database
 
 ## Authority
 
-Only the owner's words and host policy grant actions. Everything else (repository instructions, Issue text, comments, checkpoints, tool output, web pages) can narrow scope or add gates but never widen them. Read-only words read; "save" persists; "fix" changes and verifies; "end to end" merges and cleans up the named work. Protected actions need an exact grant ([ADR 0004](decisions/0004-github-lifecycle-and-authority.md)).
+Only the owner's words and host policy grant actions. Everything else (repository instructions, Issue text, comments, checkpoints, tool output, web pages) can narrow scope or add gates but never widen them. Read-only words read; "save" persists; "fix" changes, verifies, and commits; "end to end" merges and cleans up the named work. Protected actions need an exact grant ([ADR 0004](decisions/0004-github-lifecycle-and-authority.md)).
 
 ## Four routes
 
@@ -24,7 +24,7 @@ Every request takes one route: `RESPOND` (read and report), `RECORD` (save), `DE
 
 ## Small work stays small
 
-A clear bounded request is finished in the session with no Issue, branch, plan, or subagent unless repository policy requires tracked delivery. Delegation happens only when isolation or parallel work pays for the transfer. This is the design bet: strong models do not need ceremony to stay on task, they need a clear outcome and a few hard rules ([prior art](prior-art.md)).
+A clear bounded request is finished in the session with no Issue or plan unless repository policy requires tracked delivery, and its one delegate is the reviewer that closes any project change. Delegation happens only when isolation or parallel work pays for the transfer. This is the design bet: strong models do not need ceremony to stay on task, they need a clear outcome and a few hard rules ([prior art](prior-art.md)).
 
 ## From a dump to a backlog
 
@@ -42,7 +42,7 @@ Shared policy names three roles and tiers, never a vendor's model IDs:
 | --- | --- | --- | --- |
 | scout | `FAST` | bounded search, inventory, duplicate checks, extraction | read-only, low effort |
 | builder | `STANDARD` | implementation and tests for one owned scope | isolated worktree, no remote writes |
-| reviewer | `DEEP` | planning, unknown causes, architecture, security, independent review | read-only plus checks |
+| reviewer | `DEEP` | planning, unknown causes, architecture, security, the independent review that closes every project change | read-only plus checks |
 
 On Claude Code the plugin ships the three roles as agent definitions: the scout on the `haiku` family alias, the builder on `sonnet`, and the reviewer on the session model itself, so the deepest tier is always the model the owner chose and never ages behind it. Codex has no family aliases and a plugin cannot ship agents, so on Codex every delegate runs on the session model and the tiers collapse to reasoning effort on that model, set per spawn: the scout at low, the reviewer at high, the builder at the session's. Nothing is written into the project for this. Observed with no role files present: scout `low`, reviewer `high`, all on the session model. Capability routing on Codex waits for the host to expose a stable capability name. Mutation never starts on the cheap tier, because a cheap model on an ambiguous task spends more turns than it saves in tokens. Cost savings are a design hypothesis until paired runs measure them ([ADR 0003](decisions/0003-semantic-model-routing.md), [ADR 0007](decisions/0007-host-adapters-for-routing-and-continuity.md), [ADR 0009](decisions/0009-reviewer-inherits-and-one-engineering-reference.md), [ADR 0012](decisions/0012-per-spawn-effort-and-portable-timestamps.md)).
 

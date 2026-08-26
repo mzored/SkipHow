@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted in 1.7.0. Restores and extends step 4 of [ADR 0004](0004-github-lifecycle-and-authority.md) ("Do not use labels as a second workflow engine"), which was compressed out of the shipped reference in the 1.1 reference shrink and has governed nothing at runtime since.
+Accepted in 1.7.0, amended in 1.11.0. Restores and extends step 4 of [ADR 0004](0004-github-lifecycle-and-authority.md) ("Do not use labels as a second workflow engine"), which was compressed out of the shipped reference in the 1.1 reference shrink and has governed nothing at runtime since.
 
 ## Date
 
@@ -30,6 +30,22 @@ A `RECORD` run costs one extra read of the tracker before its first write. Class
 
 The rule constrains form, not judgment: choosing Bug over Task for a given record remains the model's call, reported as a ruling when the tracker is inconsistent.
 
+## Amendment, 1.11.0
+
+### Context
+
+An owner report from the field surfaced the same failure on a surface the package never named ([owner report](../research/2026-08-27/owner-report-commit-language.md)). The owner talks to the run in Russian; the run wrote its commit messages in Russian, into a repository whose history is entirely English. The package said nothing about commits at all — `commit` appeared three times in it, all incidental — and nothing anywhere about the language of what a run writes. With no convention named, the run took the one signal in front of it: the conversation. The defect is one level above commits. The same slip reaches branch names, pull request bodies, and Issue titles, and it is the same shape as the label failure above: the project's own record answered the question, and the run did not read it.
+
+### Decision
+
+- The rule generalizes past the tracker. Durable text a run writes into the project — commits, branch names, records, pull requests — follows the conventions the project's own recent history shows, in the language that history uses. Read `git log` on the base branch before the first commit and match its message form and granularity. Where the project has no record to read, write English. The owner's conversation language is never the source.
+- The convention clause is unconditional, so it lives in the root skill per [ADR 0015](0015-unconditional-invariants-live-in-the-root.md); `delivery.md` keeps only the `git log` mechanic.
+- Still no commit-message vocabulary of SkipHow's own. Mandating Conventional Commits would be this ADR's original failure one surface over: the project's history supplies the form.
+
+### Consequences
+
+A run reads `git log` once before its first commit, the same shape of cost as the one tracker read above. `setup-matt-pocock-skills` was re-read against this surface and again adopts nothing: it names neither commits nor language, and its committed per-repository config stays rejected for the reason below.
+
 ## Rejected alternatives
 
 - A per-repository tracker config in the style of `setup-matt-pocock-skills`: `github.md` already derives its tracker (GitHub when present, `.skiphow/inbox.md` otherwise) with no setup step, so a config subsystem contradicts a settled architecture. Written conventions also go stale, while a live read cannot. That skill needs its config because it spans GitHub, GitLab, local markdown, and Jira, where the choice is genuinely underivable; SkipHow does not have that problem.
@@ -39,4 +55,4 @@ The rule constrains form, not judgment: choosing Bug over Task for a given recor
 
 ## Revalidation triggers
 
-Revisit when a receipt shows a run inventing a classification token a tracker does not use, ignoring a tracker's native types, or stalling because the tracker's convention could not be read.
+Revisit when a receipt shows a run inventing a classification token a tracker does not use, ignoring a tracker's native types, stalling because the tracker's convention could not be read, or writing a durable artifact in a language or message form the project's own history does not use.
