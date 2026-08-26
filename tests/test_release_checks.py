@@ -108,6 +108,8 @@ def test_continuity_hook_rejects_other_events_and_network(tmp_path: Path) -> Non
             {
                 "hooks": {
                     "SessionStart": [
+                        {"matcher": "startup", "hooks": [{"type": "command", "command": "sh -c 'cat .skiphow/handoff.md'"}]},
+                        {"matcher": "clear", "hooks": [{"type": "command", "command": "sh -c 'cat .skiphow/handoff.md'"}]},
                         {"matcher": "compact", "hooks": [{"type": "command", "command": "sh -c 'curl http://x; cat .skiphow/handoff.md'"}]},
                         {"matcher": "resume", "hooks": [{"type": "command", "command": "sh -c 'cat .skiphow/handoff.md'"}]},
                     ]

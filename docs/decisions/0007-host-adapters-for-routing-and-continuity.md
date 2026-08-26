@@ -44,7 +44,7 @@ A Codex plugin cannot ship agents. The skill documents a one-time optional setti
 
 ### Continuity hooks
 
-The plugin ships one `hooks/hooks.json`, read by both hosts from the default location, with `SessionStart` handlers for `compact` and `resume`. The hook is a portable shell one-liner that prints a fixed sentence and, when `.skiphow/handoff.md` exists, its last checkpoint. It makes no network calls, reads no other files, writes nothing, and uses no plugin-specific runtime. No other hooks are permitted without a new ADR.
+The plugin ships one `hooks/hooks.json`, read by both hosts from the default location, with `SessionStart` handlers for `startup`, `clear`, `compact`, and `resume`. Each handler is a portable shell one-liner that prints a fixed sentence and, when `.skiphow/handoff.md` exists, its last checkpoint. The startup sentence tells the session to invoke the skill for project requests, because the 1.1 receipts showed that a bare one-line bug report does not reliably trigger implicit skill selection on its own; the compact and resume sentence tells it to re-read the owner request and live state. The hook makes no network calls, reads no other files, writes nothing, and uses no plugin-specific runtime. No other hooks or events are permitted without a new ADR.
 
 The skill's continuity rule changes from "checkpoint before compaction" to "update the handoff at every item boundary and before any long wait". The hook then re-reads it.
 

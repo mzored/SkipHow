@@ -67,7 +67,7 @@ AGENT_ROLES = {"scout": "haiku", "builder": "sonnet", "reviewer": "opus"}
 AGENT_MODELS = frozenset({"haiku", "sonnet", "opus", "inherit"})
 AGENT_EFFORTS = frozenset({"low", "medium", "high"})
 AGENT_FIELDS = frozenset({"name", "description", "model", "effort", "tools", "isolation", "maxTurns"})
-CONTINUITY_MATCHERS = frozenset({"compact", "resume"})
+CONTINUITY_MATCHERS = frozenset({"startup", "clear", "compact", "resume"})
 
 
 def managed_env_path() -> Path:
@@ -474,7 +474,7 @@ def validate_continuity_hook(path: Path = PLUGIN_ROOT / "hooks/hooks.json") -> l
         matcher = group.get("matcher") if isinstance(group, dict) else None
         handlers = group.get("hooks") if isinstance(group, dict) else None
         if matcher not in CONTINUITY_MATCHERS or not isinstance(handlers, list) or len(handlers) != 1:
-            errors.append(f"{relative} may only match compact and resume with one handler each")
+            errors.append(f"{relative} may only match startup, clear, compact, and resume with one handler each")
             continue
         matchers.add(matcher)
         handler = handlers[0]
@@ -487,7 +487,7 @@ def validate_continuity_hook(path: Path = PLUGIN_ROOT / "hooks/hooks.json") -> l
         if any(token in command for token in forbidden):
             errors.append(f"{relative} handler must not write, fetch, or run programs")
     if matchers != CONTINUITY_MATCHERS:
-        errors.append(f"{relative} must match both compact and resume")
+        errors.append(f"{relative} must match startup, clear, compact, and resume")
     other = [p for p in path.parent.rglob("*") if p.is_file() and p != path]
     if other:
         errors.append("plugin hooks/ may contain only hooks.json")

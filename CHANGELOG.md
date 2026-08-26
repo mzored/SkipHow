@@ -9,7 +9,7 @@ SkipHow 1.1 makes model routing and compaction continuity real, cuts the policy 
 ### Added
 
 - Three role adapters for Claude Code under `plugins/skiphow/agents/`: `scout` (haiku, low effort, read-only), `builder` (sonnet, isolated worktree), `reviewer` (opus, high effort, read-only plus checks). Shared policy names roles only; family aliases live in the adapter (ADR 0007).
-- One read-only `SessionStart` continuity hook (`plugins/skiphow/hooks/hooks.json`, matching `compact` and `resume`) that prints the latest `.skiphow/handoff.md` checkpoint back into a compacted or resumed session on both hosts.
+- One read-only `SessionStart` hook (`plugins/skiphow/hooks/hooks.json`) that, at startup, tells the session to use the skill for project requests and, after `compact` or `resume`, prints the latest `.skiphow/handoff.md` checkpoint back into context. Both hosts read it from the default location.
 - A Codex routing path: the `[agents]` settings and the `.codex/agents/<role>.toml` files SkipHow writes on request, since Codex plugins cannot ship agents.
 - Batch markers: `RECORD` labels the Issues it creates from one dump with `skiphow-batch:<date>` so "finish today's batch end to end" needs no Issue numbers.
 - A five-heading completion report (Result, Evidence, Rulings and findings, Saved follow-ups, Limits) and an eight-line handoff checkpoint.

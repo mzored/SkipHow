@@ -9,7 +9,7 @@ plugins/skiphow/
   skills/skiphow/SKILL.md        the owner contract, loaded on every request (under 600 words)
   skills/skiphow/references/     policy loaded only when the work needs it (about 4,000 words)
   agents/                        Claude Code role adapters: scout, builder, reviewer
-  hooks/hooks.json               one read-only SessionStart hook for compaction and resume
+  hooks/hooks.json               one read-only SessionStart hook (startup, compaction, resume)
 ```
 
 Codex and Claude Code load the same skill. There is no SkipHow process, database, scheduler, or provider bridge; the host owns sessions, subagents, worktrees, permissions, and compaction ([ADR 0002](decisions/0002-host-native-execution.md)).
@@ -44,7 +44,7 @@ On Claude Code the plugin ships the three roles as agent definitions using the f
 
 ## Continuity
 
-The model cannot see compaction coming, so SkipHow does not ask it to prepare for one. Instead the root appends an eight-line checkpoint to `.skiphow/handoff.md` at every item boundary and before any long wait. After compaction or resume, the plugin's only hook prints a reminder and the last 40 lines of that file into the new context. The hook reads one file, writes nothing, and makes no network calls. A checkpoint is a reconstruction aid; authority is always re-derived from the owner's fresh words.
+The model cannot see compaction coming, so SkipHow does not ask it to prepare for one. Instead the root appends an eight-line checkpoint to `.skiphow/handoff.md` at every item boundary and before any long wait. After compaction or resume, the plugin's only hook prints a reminder and the last 40 lines of that file into the new context; at startup the same hook tells the session to use the skill for project requests and shows any unfinished work. The hook reads one file, writes nothing, and makes no network calls. A checkpoint is a reconstruction aid; authority is always re-derived from the owner's fresh words.
 
 ## GitHub lifecycle
 

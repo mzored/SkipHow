@@ -1,7 +1,27 @@
 {
-  "description": "SkipHow continuity: after compaction or resume, point the session at the owner request, live Git and GitHub state, and the latest handoff checkpoint.",
+  "description": "SkipHow continuity: at startup, point the session at the skiphow skill; after compaction or resume, point it at the owner request, live Git and GitHub state, and the latest handoff checkpoint.",
   "hooks": {
     "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh -c 'printf \"%s\\n\" \"SkipHow is installed. For any request about this project (a bug, a fix, a feature, ideas to save, research, review, or tracked work), invoke the skiphow skill before acting. If .skiphow/handoff.md exists, unfinished work is described there and its latest checkpoint follows.\"; if [ -f .skiphow/handoff.md ]; then tail -n 40 .skiphow/handoff.md; fi; exit 0'",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh -c 'printf \"%s\\n\" \"SkipHow is installed. For any request about this project (a bug, a fix, a feature, ideas to save, research, review, or tracked work), invoke the skiphow skill before acting. If .skiphow/handoff.md exists, unfinished work is described there and its latest checkpoint follows.\"; if [ -f .skiphow/handoff.md ]; then tail -n 40 .skiphow/handoff.md; fi; exit 0'",
+            "timeout": 10
+          }
+        ]
+      },
       {
         "matcher": "compact",
         "hooks": [

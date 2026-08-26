@@ -220,7 +220,7 @@ def test_continuity_hook_is_the_only_hook() -> None:
     payload = json_object("plugins/skiphow/hooks/hooks.json")
     assert set(payload["hooks"]) == {"SessionStart"}
     groups = payload["hooks"]["SessionStart"]
-    assert {group["matcher"] for group in groups} == {"compact", "resume"}
+    assert {group["matcher"] for group in groups} == {"startup", "clear", "compact", "resume"}
     for group in groups:
         (handler,) = group["hooks"]
         assert handler["type"] == "command"
