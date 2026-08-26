@@ -172,7 +172,11 @@ def test_named_contracts_stay_in_lazy_references() -> None:
     assert {"NEW", "UPDATE", "DUPLICATE", "RELATED", "NEEDS_RESEARCH", "DISMISSED"} <= intake
     assert {"FAST", "STANDARD", "DEEP", "UNVERIFIED", "BLOCKED"} <= code_tokens(routing)
     assert {"scout", "builder", "reviewer"} <= set(re.findall(r"`(\w+)`", routing))
-    assert {"RESOLVED", "PERSISTED", "DUPLICATE", "DISMISSED"} <= review
+    # Review findings carry the skill's four tags. A second findings vocabulary in a
+    # reference contradicts the root contract, which is how `PERSISTED` reached a report.
+    tags = code_tokens(read("plugins/skiphow/skills/skiphow/SKILL.md"))
+    assert {"TRACKED", "SAVED", "UNSAVED", "DISMISSED"} <= tags
+    assert not review & {"RESOLVED", "PERSISTED"}
     for relative in ("long-work.md", "github.md", "delivery.md"):
         assert {"BLOCKED", "UNVERIFIED"} & code_tokens(read(f"plugins/skiphow/skills/skiphow/references/{relative}"))
 

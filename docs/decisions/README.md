@@ -20,3 +20,4 @@ An accepted decision stays in place until a later ADR replaces it. Correct factu
 | [0012](0012-per-spawn-effort-and-portable-timestamps.md) | Codex effort per spawn, no role files; portable timestamp rule | Accepted |
 | [0013](0013-read-only-requests-save-nothing.md) | Read-only requests report findings `UNSAVED`; records need a granting request | Accepted |
 | [0014](0014-conform-to-the-tracker-classification.md) | Conform to the tracker's classification, do not configure it | Accepted |
+| [0015](0015-unconditional-invariants-live-in-the-root.md) | Unconditional invariants live in the root skill | Accepted |

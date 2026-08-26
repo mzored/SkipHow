@@ -55,7 +55,7 @@ AGENT_MODELS = frozenset({"haiku", "sonnet", "opus", "inherit"})
 AGENT_EFFORTS = frozenset({"low", "medium", "high"})
 AGENT_FIELDS = frozenset({"name", "description", "model", "effort", "tools", "isolation", "maxTurns"})
 CONTINUITY_MATCHERS = frozenset({"startup", "clear", "compact", "resume"})
-ROOT_SKILL_LIMITS = {"bytes": 5000, "words": 600}
+ROOT_SKILL_LIMITS = {"bytes": 6000, "words": 850}
 REFERENCE_LIMITS = {"total_words": 4000, "file_words": 600}
 
 
@@ -476,7 +476,12 @@ def validate_continuity_hook(path: Path = PLUGIN_ROOT / "hooks/hooks.json") -> l
 
 
 def validate_budget() -> list[str]:
-    """Keep the always-loaded skill and each lazy reference within fixed word budgets."""
+    """Bound the always-loaded skill and each lazy reference.
+
+    These budgets catch unbounded growth; they are not a target to compress toward.
+    The root carries what must apply on every request, so when a budget binds, the
+    question is whether the rule belongs in the root, not which words to shave.
+    """
     errors: list[str] = []
     root_text = CANONICAL_SKILL.read_text(encoding="utf-8")
     measured = {"bytes": len(root_text.encode("utf-8")), "words": len(root_text.split())}

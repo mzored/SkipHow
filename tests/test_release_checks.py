@@ -61,17 +61,26 @@ def test_local_package_and_document_checks_pass() -> None:
 
 
 def test_budget_reports_measured_and_allowed_values(tmp_path: Path) -> None:
+    # Derive the numbers from the accepted shape; the test asserts the report, not the budget.
+    root_limit = check.ROOT_SKILL_LIMITS["words"]
+    file_limit = check.REFERENCE_LIMITS["file_words"]
     skill = tmp_path / "SKILL.md"
-    skill.write_text("word " * 601, encoding="utf-8")
+    skill.write_text("word " * (root_limit + 1), encoding="utf-8")
     (tmp_path / "references").mkdir()
-    (tmp_path / "references/big.md").write_text("word " * 601, encoding="utf-8")
+    (tmp_path / "references/big.md").write_text("word " * (file_limit + 1), encoding="utf-8")
     with (
         patch.object(check, "CANONICAL_SKILL", skill),
         patch.object(check, "SKILL_ROOT", tmp_path),
     ):
         errors = check.validate_budget()
-    assert any("root skill words exceed the limit: 601 > 600" in error for error in errors)
-    assert any("big.md words exceed the limit: 601 > 600" in error for error in errors)
+    assert any(
+        f"root skill words exceed the limit: {root_limit + 1} > {root_limit}" in error
+        for error in errors
+    )
+    assert any(
+        f"big.md words exceed the limit: {file_limit + 1} > {file_limit}" in error
+        for error in errors
+    )
 
 
 def test_agent_adapters_reject_versioned_ids_and_extra_roles(tmp_path: Path) -> None:
