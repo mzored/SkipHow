@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Accepted, amended by [0014](0014-conform-to-the-tracker-classification.md)
 
 ## Date
 

@@ -12,7 +12,7 @@ Append evidence in comments or marked sections. Never rewrite the owner's text. 
 
 ## Batches
 
-When `RECORD` creates several Issues from one owner dump, label each with `skiphow-batch:<YYYY-MM-DD>` (or the closest equivalent the repository allows) and report the marker. "Finish today's batch end to end" then selects exactly those Issues without listing numbers.
+When `RECORD` creates several Issues from one owner dump, label each with `skiphow-batch:<YYYY-MM-DD>` (or the closest equivalent the repository allows) and report the marker. "Finish today's batch end to end" then selects exactly those Issues without listing numbers. That marker is SkipHow's own bookkeeping: it does not classify the work, and a label is never a second workflow engine. Classify and relate Issues the way the repository already does, through its native item types, parents, sub-issues, and dependencies.
 
 ## Deliver
 

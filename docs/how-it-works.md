@@ -28,7 +28,7 @@ A clear bounded request is finished in the session with no Issue, branch, plan, 
 
 ## From a dump to a backlog
 
-`RECORD` splits a dump into atomic bugs, ideas, questions, and risks, searches the tracker for duplicates, and gives each record a type, a disposition, and a proposed priority with its reason. With GitHub it creates or updates Issues and labels the batch `skiphow-batch:<date>`; without GitHub it appends to `.skiphow/inbox.md`. The owner reorders; nobody writes tickets.
+`RECORD` splits a dump into atomic bugs, ideas, questions, and risks, searches the tracker for duplicates, and gives each record a type, a disposition, and a proposed priority with its reason. It reads how the tracker already classifies work and matches that, rather than inventing a taxonomy of its own. With GitHub it creates or updates Issues and labels the batch `skiphow-batch:<date>` — a marker for selecting the batch later, not a classification; without GitHub it appends to `.skiphow/inbox.md`. The owner reorders; nobody writes tickets.
 
 ## Long work
 

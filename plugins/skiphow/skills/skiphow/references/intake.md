@@ -4,7 +4,9 @@ Use this reference for `RECORD`. Intake turns raw owner input into useful record
 
 ## Preserve, split, reconcile
 
-Keep the original wording, who supplied it, when, and any source link. Split mixed input into atomic bugs, ideas, questions, risks, or observations. Inspect enough project and tracker context to make each record actionable, mark unsupported conclusions as assumptions, and give each record a type and a proposed priority with its reason (user impact, risk, cost), so the owner reorders a batch instead of writing tickets.
+Keep the original wording, who supplied it, when, and any source link. Split mixed input into atomic bugs, ideas, questions, risks, or observations. Inspect enough project and tracker context to make each record actionable, mark unsupported conclusions as assumptions, and give each record a type and a proposed priority with its reason (user impact, risk, cost), so the owner reorders a batch instead of writing tickets. The type describes the record; when a tracker owns it, express it the way that tracker already expresses it.
+
+Read how the tracker already classifies work before writing to it: its native item types, labels, templates, and required fields. Match what its recent items actually use, and where they disagree follow the newest consistent convention and report the choice as a ruling. Never invent a classification the tracker does not already use.
 
 Search the tracker for the same behavior and outcome before creating anything; similar wording alone is not a duplicate. Give each signal one disposition: `NEW`, `UPDATE` (adds evidence or scope to an existing item), `DUPLICATE` (links and explains the match), `RELATED` (separate work with shared context), `NEEDS_RESEARCH` (a material unknown), or `DISMISSED` (evidence shows it false or obsolete). Merge signals only when they share the outcome and the acceptance evidence.
 
@@ -22,6 +24,7 @@ Without GitHub, append one block per signal to `.skiphow/inbox.md`. Do not creat
 - Source: <person, request, file, or URL>
 - Original: <source wording when it fits on one line>
 - Normalized: <actionable work item>
+- Type: <bug, idea, question, risk, or observation>
 - Disposition: <NEW | UPDATE | DUPLICATE | RELATED | NEEDS_RESEARCH | DISMISSED>
 - Priority: <proposed priority and its reason>
 - Links: <canonical IDs or None>

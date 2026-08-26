@@ -2,6 +2,21 @@
 
 All notable changes to this project appear in this file.
 
+## 1.7.0 (2026-08-26)
+
+SkipHow 1.7 makes `RECORD` conform to the tracker's own classification instead of inventing one.
+
+### Changed
+
+- `intake.md` ordered "give each record a type" without saying what a type is or where it lands, and the only concrete tracker write the package named anywhere was a label. Dogfooding 1.6.1 on a project whose 237 Issues classify work with native GitHub issue types (175 typed: Bug 69, Feature 48, Task 45, Epic 13), a `RECORD` run created five Issues with `--label bug`. Now: read how the tracker already classifies work — native item types, labels, templates, required fields — match what recent items use, follow the newest consistent convention where they disagree and report it as a ruling, and never invent a classification the tracker does not already use. The convention is read live, not configured per repository ([ADR 0014](docs/decisions/0014-conform-to-the-tracker-classification.md)).
+- `github.md` says the `skiphow-batch:<date>` marker is SkipHow's own bookkeeping, does not classify the work, and that a label is never a second workflow engine. This restores step 4 of ADR 0004, which was compressed out of the shipped reference in the 1.1 shrink and had governed nothing at runtime since.
+- The `.skiphow/inbox.md` block carries a `Type:` field, so the no-tracker path can record the type the contract already required. README, guide, and the design page no longer read as though a record's type is a label.
+
+### Verification status
+
+- Deterministic checks pass (34 tests). Claude and Codex package validation pass; Claude isolated install passes, Codex isolated install is `UNVERIFIED`.
+- Runtime behavior is `UNVERIFIED`: no receipt has yet shown a `RECORD` run matching a tracker's native item types. It needs a real run on a project whose tracker uses them, and a second on a labels-only tracker to show the rule derives rather than hardcodes.
+
 ## 1.6.1 (2026-08-26)
 
 SkipHow 1.6.1 resolves one contradiction in the authority contract: a read-only request no longer authorizes saving a finding.

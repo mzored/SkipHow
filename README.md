@@ -23,7 +23,7 @@ Product owners and solo founders who know what they want and do not want to turn
 Between "I know what is wrong" and "it is fixed and merged" sit a few dozen technical decisions nobody asked you to make. SkipHow makes them. The daily rhythm has three moves, and each one is optional:
 
 1. Talk it through. "What is causing the checkout timeouts?" Nothing changes.
-2. Save it. Paste a dump of bugs, ideas, and observations. SkipHow splits it into atomic records, checks the tracker for duplicates, gives each one a type and a proposed priority with the reason, and saves them as GitHub Issues labelled with the day's batch. Without GitHub, it writes them to `.skiphow/inbox.md`.
+2. Save it. Paste a dump of bugs, ideas, and observations. SkipHow splits it into atomic records, checks the tracker for duplicates, gives each one a proposed priority with the reason and a type in whatever form the tracker already uses, and saves them as GitHub Issues carrying the day's batch label. Without GitHub, it writes them to `.skiphow/inbox.md`.
 3. Finish it. "Finish today's batch end to end." One root agent works the queue in priority order, delegates bounded pieces to subagents in their own worktrees when that pays off, merges what passes the checks, closes the Issues, deletes its own merged branches, and reports.
 
 A small request skips all of that. "The totals overlap on small screens, fix it" is done in the session, with no Issue, branch, plan, or subagent.
