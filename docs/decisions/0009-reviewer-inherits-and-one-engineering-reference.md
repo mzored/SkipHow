@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted in 1.2.0. Amends [ADR 0007](0007-host-adapters-for-routing-and-continuity.md) (reviewer tier) and [ADR 0006](0006-host-native-campaign-and-engineering-policy.md) (method layout). [ADR 0008](0008-receipts-over-a-live-harness.md) stands.
+Accepted in 1.2.0. Amended by [ADR 0015](0015-unconditional-invariants-live-in-the-root.md) on the root budget. Amends [ADR 0007](0007-host-adapters-for-routing-and-continuity.md) (reviewer tier) and [ADR 0006](0006-host-native-campaign-and-engineering-policy.md) (method layout). [ADR 0008](0008-receipts-over-a-live-harness.md) stands.
 
 ## Date
 

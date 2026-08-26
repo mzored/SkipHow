@@ -6,7 +6,7 @@ SkipHow is one skill plus two small host adapters. This page is the design in ab
 
 ```text
 plugins/skiphow/
-  skills/skiphow/SKILL.md        the owner contract, loaded on every request (under 600 words)
+  skills/skiphow/SKILL.md        the owner contract, loaded on every request (about 700 words)
   skills/skiphow/references/     eight policy files loaded only when the work needs them (about 3,500 words)
   agents/                        Claude Code role adapters: scout, builder, reviewer
   hooks/hooks.json               one read-only SessionStart hook (startup and clear; compaction and resume)

@@ -2,6 +2,28 @@
 
 All notable changes to this project appear in this file.
 
+## 1.8.0 (2026-08-26)
+
+SkipHow 1.8 puts the rules that must always apply into the skill that always loads.
+
+### Changed
+
+- The first audit of real sessions in other repositories found that a reference which does not load does not govern: references loaded three times against roughly twelve applicable triggers. In the two sessions that never loaded `github.md`, none of seven Issue-create commands carried the required `skiphow:<id>` marker; in the one that loaded it, the marker was present. Two sessions merged a task branch into a shared branch, pushed, and deleted it on requests that said only "fix this systematically", because the prohibition lived only in `github.md` ([field audit](docs/research/2026-08-26/field-audit-2026-08-26.md), [ADR 0015](docs/decisions/0015-unconditional-invariants-live-in-the-root.md)).
+- The root skill now states the merge boundary negatively: "complete end to end" adds merge, push to a shared branch, branch deletion, and cleanup, and nothing else grants those — not "fix", not the repository's usual flow, not an Issue, not an existing branch. It also says that a rule which did not load did not stop applying, and that the reference list is read before the act it governs.
+- `TRACKED` now means a record that existed before the run and `SAVED` means the run created it; both carry a link, and `Saved follow-ups` repeats each record with its link. All five report headings appear even when an answer is none. Every delegation names its role. The privacy rule names records and public output rather than prompts, because a brief to a local delegate needs the working directory and 3 of 3 sessions broke the old wording with no leak.
+- `engineering.md` no longer defines review dispositions of its own, removing the second findings vocabulary that let a run report `PERSISTED`, a tag ADR 0013 had recorded as undefined while a shipped reference defined it.
+- The root budget is 850 words and 6,000 bytes, up from 600 and 5,000, and `scripts/check.py` states that the budget bounds drift rather than being a target to compress toward. The old number was self-imposed, not a host limit; measured against one real session's 77.1 million cache reads, the root's roughly 800 tokens are not the cost the budget assumed. Compressing to fit it had already cost ADR 0004 its step 4 for six releases.
+
+### Added
+
+- A contributor-only `dogfood` skill under `.claude/skills/` audits real sessions from other repositories against the package bytes each session ran. It does not ship with the plugin.
+
+### Verification status
+
+- Deterministic checks pass (34 tests). Claude and Codex package validation pass; Claude isolated install passes, Codex isolated install is `UNVERIFIED`.
+- The 1.7.0 tracker-classification rule has its first field receipt: a session at 1.7.0 read the tracker's own labels and Issues, then created its Issue with the tracker's native type. One session, on a tracker that uses native types; the labels-only case stays `UNVERIFIED`.
+- Every 1.8.0 behavior change is `UNVERIFIED`. Each needs a receipt from a real run: a delivery request that stops short of merging, a run whose report keeps an empty heading, and a session that loads `github.md` before its first write.
+
 ## 1.7.0 (2026-08-26)
 
 SkipHow 1.7 makes `RECORD` conform to the tracker's own classification instead of inventing one.
