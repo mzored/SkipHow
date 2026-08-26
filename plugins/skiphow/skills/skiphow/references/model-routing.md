@@ -1,25 +1,27 @@
 # Model routing
 
-Choose models by the work they must do. Keep model names out of shared policy because hosts and catalogs change.
+The root agent runs on the model the owner chose for the session. Delegates get the model their job needs. Shared policy names roles and tiers, never a provider's model IDs; host adapters resolve them.
 
-## Separate the decisions
+## Three roles
 
-Decide task type, execution shape, capability tier, and reasoning effort separately. Do not call another model merely to route the task.
+| Role | Tier | Work | Boundary |
+| --- | --- | --- | --- |
+| `scout` | `FAST` | Bounded search, inventory, duplicate checks, log and test-output extraction, fact checks with a direct answer | Read-only |
+| `builder` | `STANDARD` | Implementation, tests, and docs for one owned scope | Isolated worktree, no remote writes |
+| `reviewer` | `DEEP` | Planning an epic, unknown causes, architecture, security, build-versus-reuse judgment, independent review | Read-only plus running checks |
 
-Use these semantic tiers:
+Mutation starts at `STANDARD`. Use `scout` only when the answer is narrow and easy to check; a cheap model on an ambiguous task spends more turns than it saves in tokens. Use `reviewer` for security changes, public contracts, large integrations, weak verification, or a repeated failure; ordinary changes need self-review and tests, not a panel.
 
-- `FAST` handles bounded read-only search, inventory, extraction, log scanning, and fact checks with clear outputs.
-- `STANDARD` handles normal implementation, debugging, tests, and documentation.
-- `DEEP` handles product shaping, architecture, security, an unknown cause, build-versus-reuse research, integration across contracts or systems, and independent high-risk review. Treat authentication, data boundaries, and public-contract changes as material.
+## Delegate deliberately
 
-The root agent and final integrator inherit the model selected by the user or host. For an independent subagent, the root agent maps a tier only from current capability, cost, or latency metadata exposed by the host. It then selects the concrete route when spawning the subagent. Do not infer capability or price from a model name. If the host exposes no trustworthy mapping data or no per-agent choice, inherit the current model and treat model selection and claimed savings as `UNVERIFIED`.
+Delegate only when isolation or parallelism pays for the transfer. Work that fits the current context stays in it. Every delegation names its role; nothing inherits by omission. Give the delegate a brief (objective, inputs, owned scope, what to return) and accept a summary back, never a transcript. Delegates never hold credentials or perform remote writes.
 
-Use `FAST` only for work that is narrow, independent, and easy to check. Do not assign ordinary code changes to a cheap model by default. Keep a mutable task on one tier until a checkpoint.
+After a second failure with the same cause, raise the role one tier or review the premise. After one more failure, stop and report `BLOCKED`.
 
-Reasoning effort is not a model tier. Start with the host's normal effort. Record the effective model and effort when the host reports them; a substituted or inherited route is not proof of the requested tier. Retry a transient tool or service failure on the same route. After one substantive verification failure, allow one corrective attempt at the same tier. Promote only after a repeated reasoning failure or direct evidence that the current model lacks the required capability. A promotion counts only when the effective model or effort changes. Reclassify the task at a checkpoint if new security or architecture risk changes the work itself. Do not lower the tier midway through mutable work.
+## Hosts
 
-Use independent `DEEP` review for security changes, public contracts, large integrations, weak verification, or repeated failure. Ordinary changes need self-review and relevant tests, not a mandatory panel.
+Claude Code: the plugin ships `scout`, `builder`, and `reviewer` under `agents/`; invoke them as `skiphow:<role>`. If the host substitutes a model, treat the route as inherited and say so.
 
-After one correction and one effective promoted or independent review attempt fail on the same premise, record `BLOCKED`. Do not loop at `DEEP` or repeat a promotion that resolves to the same effective route.
+Codex: plugins cannot ship agents, so delegates inherit the parent model and effort unless the owner configured `[agents]` or the project has `.codex/agents/<role>.toml`. Write those files only when the owner asks; set `model_reasoning_effort` per role (`low`, default, `high`) and leave `model` unset unless the owner named one.
 
-Measure the full cost of a verified result. Include root context, delegated work, handoffs, retries, and review. Do not claim lower cost or faster delivery until paired evaluations preserve outcome quality.
+Record the effective model when the host reports it. Cost or speed claims stay `UNVERIFIED` until paired runs show them.

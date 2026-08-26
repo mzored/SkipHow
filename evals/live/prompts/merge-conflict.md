@@ -1,1 +1,0 @@
-Use SkipHow to resolve `ours.json` and `theirs.json` against `base.json` under the policy in `request.md`. Preserve every input file and write only `merged.json`. The result must contain the chosen customer message, diagnostic level, and complete feature list as a JSON object.

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 from pathlib import Path
 import sys
 from unittest.mock import patch
@@ -69,7 +70,55 @@ def test_local_package_and_document_checks_pass() -> None:
     assert check.validate_version() == []
     assert check.validate_runtime_removal() == []
     assert check.model_id_scan() == []
+    assert check.validate_agents() == []
+    assert check.validate_continuity_hook() == []
     assert check.validate_plugin_static() == []
+
+
+def test_agent_adapters_reject_versioned_ids_and_extra_roles(tmp_path: Path) -> None:
+    agents = tmp_path / "agents"
+    agents.mkdir()
+    for role, model in (("scout", "haiku"), ("builder", "sonnet"), ("reviewer", "opus")):
+        extra = "isolation: worktree\n" if role == "builder" else ""
+        (agents / f"{role}.md").write_text(
+            f"---\nname: {role}\ndescription: x\nmodel: {model}\n{extra}---\nbody\n", encoding="utf-8"
+        )
+    assert check.validate_agents(agents) == []
+    (agents / "scout.md").write_text(
+        "---\nname: scout\ndescription: x\nmodel: claude-haiku-4-5-20251001\n---\nbody\n", encoding="utf-8"
+    )
+    errors = check.validate_agents(agents)
+    assert any("family alias" in error for error in errors)
+    (agents / "extra.md").write_text("---\nname: extra\ndescription: x\n---\nbody\n", encoding="utf-8")
+    assert any("exactly scout, builder, reviewer" in error for error in check.validate_agents(agents))
+
+
+def test_continuity_hook_rejects_other_events_and_network(tmp_path: Path) -> None:
+    hooks = tmp_path / "hooks"
+    hooks.mkdir()
+    path = hooks / "hooks.json"
+    path.write_text(
+        json.dumps({"hooks": {"PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": "sh -c 'true'"}]}]}}),
+        encoding="utf-8",
+    )
+    with patch.object(check, "PLUGIN_ROOT", tmp_path):
+        assert any("only SessionStart" in error for error in check.validate_continuity_hook(path))
+    path.write_text(
+        json.dumps(
+            {
+                "hooks": {
+                    "SessionStart": [
+                        {"matcher": "compact", "hooks": [{"type": "command", "command": "sh -c 'curl http://x; cat .skiphow/handoff.md'"}]},
+                        {"matcher": "resume", "hooks": [{"type": "command", "command": "sh -c 'cat .skiphow/handoff.md'"}]},
+                    ]
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    with patch.object(check, "PLUGIN_ROOT", tmp_path):
+        errors = check.validate_continuity_hook(path)
+    assert any("must not write, fetch, or run programs" in error for error in errors)
 
 
 def test_plugin_change_requires_a_version_bump() -> None:
@@ -78,7 +127,7 @@ def test_plugin_change_requires_a_version_bump() -> None:
         "checked",
         side_effect=[
             (True, "plugins/skiphow/skills/skiphow/SKILL.md\n"),
-            (True, "1.0.1\n"),
+            (True, (check.ROOT / "VERSION").read_text(encoding="utf-8")),
         ],
     ):
         assert check.validate_release_version_change("base") == [
@@ -97,11 +146,11 @@ def test_plugin_version_cannot_move_backward() -> None:
         "checked",
         side_effect=[
             (True, "plugins/skiphow/skills/skiphow/SKILL.md\n"),
-            (True, "1.1.0\n"),
+            (True, "9.0.0\n"),
         ],
     ):
         assert check.validate_release_version_change("base") == [
-            "plugin version must increase from 1.1.0 to a later stable version"
+            "plugin version must increase from 9.0.0 to a later stable version"
         ]
 
 

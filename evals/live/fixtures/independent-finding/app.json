@@ -1,8 +1,0 @@
-{
-  "title": "Home",
-  "diagnostic_log": [
-    {"level": "warning", "code": "INV-9", "message": "invoice credit totals can drift by one cent"},
-    {"level": "warning", "code": "AUTH-7", "message": "known token refresh warning tracked as seed-auth"},
-    {"level": "stderr", "code": "NEG-EXPECTED", "message": "expected rejection from the negative test"}
-  ]
-}

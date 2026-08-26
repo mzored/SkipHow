@@ -1,9 +1,0 @@
-{
-  "public_profile": {
-    "email_source": "signup_email",
-    "withdrawn_users": "hidden"
-  },
-  "private_profile": {
-    "email_source": "current_email"
-  }
-}

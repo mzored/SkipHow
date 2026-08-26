@@ -4,7 +4,8 @@
 
 | Version | Supported |
 | --- | --- |
-| 1.0.x | Yes |
+| 1.1.x | Yes |
+| 1.0.x | No |
 | 0.9.x | No |
 | Earlier versions | No |
 
@@ -20,4 +21,4 @@ If private reporting is unavailable, contact the maintainer through the [GitHub 
 
 The maintainer will acknowledge a valid report, investigate it, and coordinate a fix before disclosure when practical.
 
-Read the [trust guide](docs/trust.md) and [threat model](docs/threat-model.md) for the boundary between SkipHow policy and host enforcement.
+Read [how it works](docs/how-it-works.md) for the boundary between SkipHow policy and host enforcement.

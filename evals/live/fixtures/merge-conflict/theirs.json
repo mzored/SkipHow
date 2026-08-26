@@ -1,5 +1,0 @@
-{
-  "message": "Welcome",
-  "log_level": "debug",
-  "features": ["core", "audit"]
-}

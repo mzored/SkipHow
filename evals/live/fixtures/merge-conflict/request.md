@@ -1,1 +1,0 @@
-Resolve the two branch versions from the common base. Customer-facing copy from `ours.json` wins. Diagnostics and feature additions from `theirs.json` win. Preserve independent changes from both branches.

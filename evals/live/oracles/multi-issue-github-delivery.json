@@ -1,7 +1,0 @@
-{
-  "assertions": [
-    {"id": "github-lifecycle", "collector": "github_state", "snapshot": "github-state.json"},
-    {"id": "clean-local-state", "collector": "git_state", "clean": true, "one_worktree": true},
-    {"id": "usage", "collector": "provider_usage", "required": false}
-  ]
-}

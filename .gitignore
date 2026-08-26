@@ -2,10 +2,6 @@ __pycache__/
 *.py[cod]
 .venv/
 .pytest_cache/
-build/
 *.egg-info/
 evals/live/config.local*.json
 evals/live/results/
-.skiphow/runs/
-.skiphow/intake/
-# GitHub E2E state and receipts must stay outside the candidate repository.

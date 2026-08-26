@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Accepted. Amended by [ADR 0007](0007-host-adapters-for-routing-and-continuity.md): the package may ship one read-only `SessionStart` continuity hook and three role adapters; it still ships no runtime.
 
 ## Date
 

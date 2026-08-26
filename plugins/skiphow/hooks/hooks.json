@@ -1,0 +1,27 @@
+{
+  "description": "SkipHow continuity: after compaction or resume, point the session at the owner request, live Git and GitHub state, and the latest handoff checkpoint.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh -c 'printf \"%s\\n\" \"SkipHow: this session was compacted or resumed. Re-read the owner request, then live Git and GitHub state, before acting. If .skiphow/handoff.md exists, its latest checkpoint follows.\"; if [ -f .skiphow/handoff.md ]; then tail -n 40 .skiphow/handoff.md; fi; exit 0'",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh -c 'printf \"%s\\n\" \"SkipHow: this session was compacted or resumed. Re-read the owner request, then live Git and GitHub state, before acting. If .skiphow/handoff.md exists, its latest checkpoint follows.\"; if [ -f .skiphow/handoff.md ]; then tail -n 40 .skiphow/handoff.md; fi; exit 0'",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

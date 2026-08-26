@@ -2,12 +2,38 @@
 
 All notable changes to this project appear in this file.
 
-## Unreleased
+## 1.1.0 (2026-08-26)
+
+SkipHow 1.1 makes model routing and compaction continuity real, cuts the policy to intent plus invariants, and removes the harness and documentation that did not earn their keep.
+
+### Added
+
+- Three role adapters for Claude Code under `plugins/skiphow/agents/`: `scout` (haiku, low effort, read-only), `builder` (sonnet, isolated worktree), `reviewer` (opus, high effort, read-only plus checks). Shared policy names roles only; family aliases live in the adapter (ADR 0007).
+- One read-only `SessionStart` continuity hook (`plugins/skiphow/hooks/hooks.json`, matching `compact` and `resume`) that prints the latest `.skiphow/handoff.md` checkpoint back into a compacted or resumed session on both hosts.
+- A Codex routing path: the `[agents]` settings and the `.codex/agents/<role>.toml` files SkipHow writes on request, since Codex plugins cannot ship agents.
+- Batch markers: `RECORD` labels the Issues it creates from one dump with `skiphow-batch:<date>` so "finish today's batch end to end" needs no Issue numbers.
+- A five-heading completion report (Result, Evidence, Rulings and findings, Saved follow-ups, Limits) and an eight-line handoff checkpoint.
+- A tag-driven release workflow that reruns the checks and publishes the GitHub release from the matching changelog section.
+- Deterministic checks for the agents (exact roles, family aliases only, no versioned IDs) and the hook (exactly one, read-only, no network), plus a references word budget.
 
 ### Changed
 
-- Rewrote the README around the owner's daily flow and the reasons SkipHow exists.
-- Added the 2026-08-26 system review, host routing and continuity research, prior-art mechanics, the 1.1 brief, and proposed ADR 0007. Documentation only; the packaged skill is unchanged.
+- Rewrote the skill and every reference for a strong model: root under 600 words, references about 4,000 words in total (from about 6,000). The 23-field checkpoint, 15-line worker packet, `CIRCUIT_BROKEN` lanes, compare-and-delete prose, and the 13-step GitHub lifecycle are replaced by invariants: fixed queue, one root integrates, four reasons to stop, two same-cause retries, re-read live state before merge, delete only owned merged branches.
+- Reuse before building now triggers on any new module or feature, searches by domain concept, and reports where it looked.
+- Continuity changed from "checkpoint before compaction" (which the model cannot see coming) to "checkpoint at every item boundary and before long waits", surfaced by the hook.
+- Tests check structure (routes, references, agents, hook, formats, versions, pins) instead of exact sentences.
+- Documentation consolidated into an owner guide and a design page; the README leads with the daily flow. ADR 0002, 0003, and 0006 are amended by ADR 0007; ADR 0005 is superseded by ADR 0008.
+
+### Removed
+
+- The opt-in live evaluation harness (`evals/live`, its fixtures, oracles, tests, and `docs/evals.md`). It produced no receipt in four releases; behavior is now proven by written receipts (ADR 0008).
+- `docs/getting-started.md`, `user-guide.md`, `architecture.md`, `trust.md`, `threat-model.md`, `intake.md`, `github-lifecycle.md`, and `model-routing.md`, folded into `docs/guide.md` and `docs/how-it-works.md`.
+- Runner-era leftovers and stale ignore rules.
+
+### Verification status
+
+- Deterministic repository checks, both host package validations, and isolated installs pass on the tagged commit.
+- Receipts for this release are listed in `docs/research/2026-08-26/README.md`. Anything not covered there is `UNVERIFIED`.
 
 ## 1.0.1 (2026-08-26)
 
