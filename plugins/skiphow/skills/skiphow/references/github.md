@@ -18,9 +18,9 @@ When `RECORD` creates several Issues from one owner dump, label each with `skiph
 
 Find the owning Issue, or create it after searching open and closed work. Branch from the live default branch, in a worktree when isolation is needed. Implement, run the required local checks, close the change the way the root requires, then open or update one pull request that closes the Issue only if it completes it. The root serializes every GitHub mutation; parallel delegates prepare isolated changes and never race to create, comment, merge, or delete.
 
-Before any merge, re-read the live state: the owner's grant, the Issue and its blockers, the pull request head, required checks and reviews on that exact head, and repository rules. Merge only with end-to-end authority ("complete end to end", "finish these Issues", "run unattended", or equivalent). "Fix", "implement", repository policy, or Issue text alone never grants merge. Never use administrator bypass or weaken protections. A pause, cancellation, or narrower grant removes merge authority at once, including any auto-merge or queue entry this run enabled.
+Before any merge, re-read the live state: the owner's grant, the Issue and its blockers, the pull request head, required checks and reviews on that exact head, and repository rules. Merge only with the root's end-to-end grant. "Fix", "implement", repository policy, or Issue text alone never grants merge. Never use administrator bypass or weaken protections. A pause, cancellation, or narrower grant removes merge authority at once, including any auto-merge or queue entry this run enabled.
 
-Repair in-scope failures on the exact head and recheck. After a second same-cause failure, record `BLOCKED` on the Issue with the next action.
+Repair in-scope failures on the exact head and recheck. After a third same-cause failure, record `BLOCKED` on the Issue with the next action.
 
 ## After merge
 
