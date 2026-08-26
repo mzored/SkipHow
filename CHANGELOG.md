@@ -2,6 +2,29 @@
 
 All notable changes to this project appear in this file.
 
+## 1.3.0 (2026-08-26)
+
+SkipHow 1.3 halves the continuity hook, records the first Codex receipts, and removes a historical guard from the checks.
+
+### Changed
+
+- `hooks/hooks.json` has two `SessionStart` groups (`startup|clear` and `compact|resume`) instead of four byte-duplicated ones. Both hosts document matcher lists, and both groups were observed firing on Claude Code (ADR 0010).
+- The compaction and resume hook line now also says to delete `.skiphow/handoff.md` once every selected item is done, because two continuity runs kept a finished handoff.
+- The queue for long work may come from `.skiphow/inbox.md` when the project has no tracker, so "save it" and "finish it" both work offline.
+- `references/decision.md` lost its record template and acceptance ceremony; it keeps the invariants (recommend with the tradeoff, reconcile before superseding a durable decision, record boundary changes).
+- The Codex plugin's example prompts match the daily flow shown in the README.
+- The README is shorter and says which claims have receipts.
+
+### Removed
+
+- The retired-runtime path guard in `scripts/check.py` and its test; the plugin top-level check already rejects unexpected entries.
+- The exact dependency pin list duplicated in a test; the test now checks that every requirement is pinned.
+
+### Verification status
+
+- Deterministic repository checks, Claude Code package validation and isolated install, and the pinned Codex package validator pass on the tagged commit. The Codex isolated install stays `UNVERIFIED` on the release machine because its managed policy rejects local marketplaces.
+- Receipts for this release (`docs/research/2026-08-26/v1.3-receipts.md`) cover, on Codex with the exact candidate loaded from the project skills directory: a small bug fixed in session and a brain dump saved to the inbox with priorities and duplicate detection; and on Claude Code: continuity across an observed compaction with both hook groups firing, and a large request delivered end to end on GitHub (Issue, PR merged on the read head, branch deleted). Codex delegation, an epic split into several Issues, and auto-compaction under a large context remain `UNVERIFIED`.
+
 ## 1.2.0 (2026-08-26)
 
 SkipHow 1.2 makes the reviewer follow the owner's own model, turns a brain dump into a prioritized backlog, and cuts the policy and its checks further.

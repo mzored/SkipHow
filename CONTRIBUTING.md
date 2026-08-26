@@ -25,7 +25,7 @@ python scripts/check.py --pytest tests/test_repository.py -q
 - Keep Codex and Claude manifests pointed at the same `skills/` directory.
 - Bump `VERSION` whenever `plugins/skiphow/` changes. Claude Code uses the manifest version as its update key.
 - Update research and an ADR when evidence changes architecture, the product contract, security policy, or model routing.
-- Do not add a runner, daemon, task database, provider adapter, model catalog, telemetry, or personal configuration without an accepted product decision. The only permitted hook is the continuity hook in `plugins/skiphow/hooks/hooks.json` (ADR 0007); the only agents are the three role adapters in `plugins/skiphow/agents/`.
+- Do not add a runner, daemon, task database, provider adapter, model catalog, telemetry, or personal configuration without an accepted product decision. The only permitted hook is the continuity hook in `plugins/skiphow/hooks/hooks.json` (ADR 0007 and 0010); the only agents are the three role adapters in `plugins/skiphow/agents/`.
 - Write direct English prose. Use active voice, sentence-case headings, straight quotes, and concrete claims.
 
 ## Verify a pull request

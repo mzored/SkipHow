@@ -35,14 +35,6 @@ REQUIRED_REFERENCES = frozenset(
         "model-routing.md",
     }
 )
-REMOVED_RUNTIME_PATHS = (
-    ROOT / "src/skiphow",
-    ROOT / "schemas",
-    ROOT / "pyproject.toml",
-    ROOT / "plugins/skiphow/scripts",
-    ROOT / "adapters/claude",
-    ROOT / ".claude-plugin/plugin.json",
-)
 PERSONAL_PATH = re.compile(
     r"(?:/(?:Users|home)/[^/\s]+/|"
     + "/"
@@ -369,15 +361,6 @@ def validate_release_version_change(base: str | None) -> list[str]:
     return []
 
 
-def validate_runtime_removal() -> list[str]:
-    """Prevent the retired runner and policy copies from returning unnoticed."""
-    return [
-        f"retired runtime path still exists: {path.relative_to(ROOT)}"
-        for path in REMOVED_RUNTIME_PATHS
-        if path.is_file()
-        or (path.is_dir() and any(item.is_file() for item in path.rglob("*")))
-    ]
-
 
 def model_id_scan(paths: Iterable[Path] | None = None) -> list[str]:
     """Keep provider model IDs out of portable skill policy."""
@@ -466,14 +449,15 @@ def validate_continuity_hook(path: Path = PLUGIN_ROOT / "hooks/hooks.json") -> l
     if not isinstance(hooks, dict) or set(hooks) != {"SessionStart"}:
         return [f"{relative} must declare only SessionStart hooks"]
     errors: list[str] = []
-    matchers: set[str] = set()
+    matchers: list[str] = []
     for group in hooks["SessionStart"]:
-        matcher = group.get("matcher") if isinstance(group, dict) else None
+        matcher = group.get("matcher", "") if isinstance(group, dict) else ""
         handlers = group.get("hooks") if isinstance(group, dict) else None
-        if matcher not in CONTINUITY_MATCHERS or not isinstance(handlers, list) or len(handlers) != 1:
-            errors.append(f"{relative} may only match startup, clear, compact, and resume with one handler each")
+        sources = [item.strip() for item in re.split(r"[|,]", str(matcher)) if item.strip()]
+        if not sources or not set(sources) <= CONTINUITY_MATCHERS or not isinstance(handlers, list) or len(handlers) != 1:
+            errors.append(f"{relative} may only match startup, clear, compact, and resume with one handler per group")
             continue
-        matchers.add(matcher)
+        matchers.extend(sources)
         handler = handlers[0]
         command = handler.get("command", "") if isinstance(handler, dict) else ""
         if handler.get("type") != "command" or not command.startswith("sh -c "):
@@ -483,8 +467,8 @@ def validate_continuity_hook(path: Path = PLUGIN_ROOT / "hooks/hooks.json") -> l
         forbidden = ("curl", "wget", "http", ">", "rm ", "mv ", "git ", "python", "node", "$(", "`")
         if any(token in command for token in forbidden):
             errors.append(f"{relative} handler must not write, fetch, or run programs")
-    if matchers != CONTINUITY_MATCHERS:
-        errors.append(f"{relative} must match startup, clear, compact, and resume")
+    if sorted(matchers) != sorted(CONTINUITY_MATCHERS):
+        errors.append(f"{relative} must match startup, clear, compact, and resume exactly once each")
     other = [p for p in path.parent.rglob("*") if p.is_file() and p != path]
     if other:
         errors.append("plugin hooks/ may contain only hooks.json")
@@ -636,7 +620,6 @@ def offline_checks(base: str | None = None) -> list[str]:
         + validate_markdown_links()
         + portability_scan()
         + validate_version()
-        + validate_runtime_removal()
         + validate_plugin_static()
         + validate_budget()
         + validate_release_version_change(base)

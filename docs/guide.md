@@ -30,6 +30,8 @@ Three moves, each optional:
 
 A small request ("the totals overlap on small screens, fix it") skips all of that and is done in the session.
 
+Without GitHub, "save it" appends to `.skiphow/inbox.md` and "finish the inbox end to end" works those records the same way, committing per item.
+
 ## What your words authorize
 
 | You say | SkipHow may |
