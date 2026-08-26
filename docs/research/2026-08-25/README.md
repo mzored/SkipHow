@@ -18,4 +18,4 @@ The review applies to repository commit `a6d34a25614bc0723517032af617b0782158df4
 
 Facts that depend on a host, provider, GitHub API, or upstream project can expire. Each topic lists its own revalidation triggers. Update only the affected topic, then add or replace an ADR if the decision changes.
 
-The accepted decisions are indexed in [Architecture decisions](../../decisions/README.md). The target design for Issue #15 is in [Architecture](../../architecture.md).
+The accepted decisions are indexed in [Architecture decisions](../../decisions/README.md). The target design for Issue #15 is now described in [How it works](../../how-it-works.md).

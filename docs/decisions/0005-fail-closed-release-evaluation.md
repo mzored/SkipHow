@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Superseded by [ADR 0008](0008-receipts-over-a-live-harness.md) for the evaluation mechanism. The claims policy (deterministic checks prove the package, missing evidence is `UNVERIFIED`) stands.
 
 ## Date
 
@@ -53,7 +53,7 @@ The versioned fixture and collectors still define the missing evidence. Keeping 
 ## Evidence
 
 - [Release-readiness audit](../research/2026-08-25/release-readiness-audit.md)
-- [Evaluation policy](../evals.md)
+- Evaluation policy (formerly `docs/evals.md`, removed with the harness in 1.1.0; see [ADR 0008](0008-receipts-over-a-live-harness.md))
 - [Codex plugin documentation](https://developers.openai.com/codex/plugins.md)
 - [Claude Code plugin documentation](https://code.claude.com/docs/en/plugins)
 - [Claude Code sandbox documentation](https://code.claude.com/docs/en/sandboxing)

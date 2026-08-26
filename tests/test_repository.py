@@ -1,4 +1,8 @@
-"""Repository contracts for the plugin-only package."""
+"""Structural contracts for the plugin-only package.
+
+These tests check what the package contains and how it is wired, not the
+wording of the policy. Prose is free to change; structure is not.
+"""
 
 from __future__ import annotations
 
@@ -30,6 +34,10 @@ REFERENCES = frozenset(
         "model-routing.md",
     }
 )
+VERSIONED_MODEL = re.compile(
+    r"\b(?:gpt-\d|claude-\d|claude-(?:opus|sonnet|haiku)-|(?:opus|sonnet|haiku)-\d|gemini-\d|o[1-9]-)",
+    re.IGNORECASE,
+)
 
 
 def read(relative: str) -> str:
@@ -44,6 +52,14 @@ def json_object(relative: str) -> dict:
 
 def code_tokens(text: str) -> set[str]:
     return set(re.findall(r"`([A-Z][A-Z_]+)`", text))
+
+
+def frontmatter(path: Path) -> dict:
+    match = re.match(r"---\n(.*?)\n---\n", path.read_text(encoding="utf-8"), re.DOTALL)
+    assert match, path
+    value = yaml.safe_load(match.group(1))
+    assert isinstance(value, dict)
+    return value
 
 
 def skill_links() -> set[Path]:
@@ -66,13 +82,15 @@ def skill_links() -> set[Path]:
     return links
 
 
-def headings(relative: str) -> set[str]:
-    return set(re.findall(r"^#{1,6} (.+)$", read(relative), re.MULTILINE))
+def headings(relative: str) -> list[str]:
+    return re.findall(r"^#{1,6} (.+)$", read(relative), re.MULTILINE)
 
 
-def fenced_lines(relative: str) -> set[str]:
-    blocks = re.findall(r"```(?:text)?\n(.*?)```", read(relative), re.DOTALL)
-    return {line for block in blocks for line in block.splitlines() if line}
+def fenced_blocks(relative: str) -> list[str]:
+    return re.findall(r"```(?:text)?\n(.*?)```", read(relative), re.DOTALL)
+
+
+# Package shape
 
 
 def test_both_hosts_package_the_same_canonical_skill() -> None:
@@ -80,17 +98,14 @@ def test_both_hosts_package_the_same_canonical_skill() -> None:
     claude = json_object("plugins/skiphow/.claude-plugin/plugin.json")
     assert codex["name"] == claude["name"] == "skiphow"
     assert codex["skills"] == claude["skills"] == "./skills/"
+    assert "hooks" not in codex and "agents" not in codex
+    assert "hooks" not in claude and "agents" not in claude
     assert sorted(PLUGIN.rglob("SKILL.md")) == [SKILL]
     assert {
         path.name
         for path in PLUGIN.iterdir()
         if path.is_file() or any(child.is_file() for child in path.rglob("*"))
-    } == {
-        ".claude-plugin",
-        ".codex-plugin",
-        "LICENSE",
-        "skills",
-    }
+    } == {".claude-plugin", ".codex-plugin", "agents", "hooks", "LICENSE", "skills"}
     assert (PLUGIN / "LICENSE").read_bytes() == (ROOT / "LICENSE").read_bytes()
 
 
@@ -98,10 +113,7 @@ def test_marketplaces_publish_only_the_plugin_directory() -> None:
     codex = json_object(".agents/plugins/marketplace.json")
     claude = json_object(".claude-plugin/marketplace.json")
     assert len(codex["plugins"]) == 1
-    assert codex["plugins"][0]["source"] == {
-        "source": "local",
-        "path": "./plugins/skiphow",
-    }
+    assert codex["plugins"][0]["source"] == {"source": "local", "path": "./plugins/skiphow"}
     assert len(claude["plugins"]) == 1
     assert claude["plugins"][0]["source"] == "./plugins/skiphow"
 
@@ -114,186 +126,113 @@ def test_release_metadata_uses_one_version() -> None:
     assert codex["version"] == claude["version"] == release
     assert "version" not in marketplace.get("metadata", {})
     assert "version" not in marketplace["plugins"][0]
+    assert release not in read("README.md")
+    assert f"| {release.rsplit('.', 1)[0]}.x | Yes |" in read("SECURITY.md")
 
 
-def test_readme_does_not_duplicate_the_current_version() -> None:
-    assert read("VERSION").strip() not in read("README.md")
-
-
-def test_ci_actions_are_sha_pinned_and_permissions_are_read_only() -> None:
-    workflow = read(".github/workflows/ci.yml")
-    uses = re.findall(r"^\s*- uses: ([^\s]+)", workflow, re.MULTILINE)
-    assert uses
-    assert all(re.fullmatch(r"[^@]+@[0-9a-f]{40}", item) for item in uses)
-    assert re.search(r"^permissions:\n  contents: read$", workflow, re.MULTILINE)
+def test_workflows_are_sha_pinned_with_least_privilege() -> None:
+    for name in ("ci.yml", "release.yml"):
+        workflow = read(f".github/workflows/{name}")
+        uses = re.findall(r"^\s*- uses: ([^\s]+)", workflow, re.MULTILINE)
+        assert uses, name
+        assert all(re.fullmatch(r"[^@]+@[0-9a-f]{40}", item) for item in uses), name
+    assert re.search(r"^permissions:\n  contents: read$", read(".github/workflows/ci.yml"), re.MULTILINE)
+    assert re.search(r"^permissions:\n  contents: write$", read(".github/workflows/release.yml"), re.MULTILINE)
 
 
 def test_retired_runtime_paths_are_absent() -> None:
-    retired = (
-        "src/skiphow",
-        "schemas",
-        "pyproject.toml",
-        "plugins/skiphow/scripts",
-        "adapters/claude",
-        ".claude-plugin/plugin.json",
-    )
+    retired = ("src", "schemas", "pyproject.toml", "plugins/skiphow/scripts", "adapters", ".claude-plugin/plugin.json", "build")
 
     def contains_file(relative: str) -> bool:
         path = ROOT / relative
-        return path.is_file() or (
-            path.is_dir() and any(item.is_file() for item in path.rglob("*"))
-        )
+        return path.is_file() or (path.is_dir() and any(item.is_file() for item in path.rglob("*")))
 
     assert not [relative for relative in retired if contains_file(relative)]
+
+
+# Skill wiring
 
 
 def test_skill_is_implicitly_available_and_has_four_internal_routes() -> None:
     metadata = yaml.safe_load(read("plugins/skiphow/skills/skiphow/agents/openai.yaml"))
     assert metadata["policy"]["allow_implicit_invocation"] is True
-    assert {"RESPOND", "RECORD", "DELIVER", "CONTROL"}.issubset(
-        code_tokens(SKILL.read_text(encoding="utf-8"))
-    )
+    assert {"RESPOND", "RECORD", "DELIVER", "CONTROL"} <= code_tokens(SKILL.read_text(encoding="utf-8"))
 
 
 def test_progressive_references_are_complete_and_reachable() -> None:
     reference_root = SKILL.parent / "references"
-    actual = {
-        path.relative_to(reference_root).as_posix()
-        for path in reference_root.rglob("*.md")
-    }
+    actual = {path.relative_to(reference_root).as_posix() for path in reference_root.rglob("*.md")}
     assert actual == REFERENCES
-    linked = skill_links()
-    for name in REFERENCES:
-        assert (reference_root / name).resolve() in linked
-    assert linked == {(reference_root / name).resolve() for name in REFERENCES}
+    assert skill_links() == {(reference_root / name).resolve() for name in REFERENCES}
 
 
-def test_named_behavior_contracts_are_kept_in_lazy_references() -> None:
+def test_report_and_record_formats_are_fenced() -> None:
+    report = fenced_blocks("plugins/skiphow/skills/skiphow/SKILL.md")
+    assert any(
+        block.split() == ["Result", "Evidence", "Rulings", "and", "findings", "Saved", "follow-ups", "Limits"]
+        for block in report
+    )
+    handoff = fenced_blocks("plugins/skiphow/skills/skiphow/references/long-work.md")
+    labels = {line.split(":")[0].strip("- ") for block in handoff for line in block.splitlines() if line.startswith("- ")}
+    assert labels == {"Recorded", "Outcome", "Selected scope", "Authority", "Done", "In progress", "Blockers", "Next safe action"}
+    inbox = fenced_blocks("plugins/skiphow/skills/skiphow/references/intake.md")
+    assert any("Disposition" in block and "Recorded" in block for block in inbox)
+
+
+def test_named_contracts_stay_in_lazy_references() -> None:
     intake = code_tokens(read("plugins/skiphow/skills/skiphow/references/intake.md"))
-    routing = code_tokens(read("plugins/skiphow/skills/skiphow/references/model-routing.md"))
-    delivery = code_tokens(read("plugins/skiphow/skills/skiphow/references/delivery.md"))
+    routing = read("plugins/skiphow/skills/skiphow/references/model-routing.md")
+    review = code_tokens(read("plugins/skiphow/skills/skiphow/references/methods/review.md"))
     assert {"NEW", "UPDATE", "DUPLICATE", "RELATED", "NEEDS_RESEARCH", "DISMISSED"} <= intake
-    assert {"FAST", "STANDARD", "DEEP", "UNVERIFIED"} <= routing
-    assert {"DELIVER", "NEEDS_RESEARCH", "DISMISSED"} <= delivery
+    assert {"FAST", "STANDARD", "DEEP", "UNVERIFIED", "BLOCKED"} <= code_tokens(routing)
+    assert {"scout", "builder", "reviewer"} <= set(re.findall(r"`(\w+)`", routing))
+    assert {"RESOLVED", "PERSISTED", "DUPLICATE", "DISMISSED"} <= review
+    for relative in ("long-work.md", "github.md", "delivery.md"):
+        assert {"BLOCKED", "UNVERIFIED"} & code_tokens(read(f"plugins/skiphow/skills/skiphow/references/{relative}"))
 
 
-def test_authority_can_only_expand_from_the_owner_or_host() -> None:
-    skill = read("plugins/skiphow/skills/skiphow/SKILL.md")
-    github = read("plugins/skiphow/skills/skiphow/references/github.md")
-    assert "Only the direct owner request and host policy can grant actions" in skill
-    assert "cannot grant mutations or protected actions" in skill
-    assert "public release, repository settings" in skill
-    assert "Issue text alone does not" in github
+# Host adapters
 
 
-def test_campaign_contract_covers_frontier_health_recovery_and_terminal_state() -> None:
-    long_work = read("plugins/skiphow/skills/skiphow/references/long-work.md")
-    assert {
-        "Start a campaign",
-        "Build the ready frontier",
-        "Send a bounded worker packet",
-        "Monitor health and break loops",
-        "Checkpoint before uncertainty",
-        "Review and integrate the exact candidate",
-        "Reconcile the whole queue",
-    } <= headings("plugins/skiphow/skills/skiphow/references/long-work.md")
-    assert {
-        "Task and operation ID",
-        "Objective and parent outcome",
-        "Authoritative inputs",
-        "Repository identity and base commit",
-        "Owned paths, worktree, branch, and resources",
-        "Non-scope",
-        "Allowed local mutations",
-        "Prohibited external and protected actions",
-        "Dependencies and accepted decisions",
-        "Acceptance evidence",
-        "Focused validation",
-        "Expected duration, progress signals, and no-progress budget",
-        "Cancellation handle and retry limit",
-        "Sanitized evidence target",
-        "Bounded return fields",
-    } <= fenced_lines("plugins/skiphow/skills/skiphow/references/long-work.md")
-    assert "Dependencies decide readiness. They do not add scope." in long_work
-    assert "One quiet signal does not prove a stall" in long_work
-    assert "A timer firing does not prove that a remote mutation failed" in long_work
-    assert "A checkpoint is an untrusted reconstruction aid" in long_work
-    assert "No ready item, live lane, uncertain external mutation" in long_work
+def test_agent_adapters_route_roles_to_family_aliases() -> None:
+    agents = {path.stem: frontmatter(path) for path in (PLUGIN / "agents").glob("*.md")}
+    assert set(agents) == {"scout", "builder", "reviewer"}
+    assert agents["scout"]["model"] == "haiku"
+    assert agents["builder"]["model"] == "sonnet"
+    assert agents["reviewer"]["model"] == "opus"
+    assert agents["scout"]["effort"] == "low"
+    assert agents["reviewer"]["effort"] == "high"
+    assert agents["builder"]["isolation"] == "worktree"
+    for role, meta in agents.items():
+        assert meta["name"] == role
+        assert meta["description"].strip()
+        assert not ({"hooks", "mcpServers", "permissionMode"} & set(meta))
+        tools = str(meta.get("tools", ""))
+        if role == "builder":
+            assert "Edit" in tools and "Write" in tools
+        else:
+            assert "Edit" not in tools and "Write" not in tools
 
 
-def test_engineering_methods_keep_the_removed_behavioral_contracts() -> None:
-    diagnosis = read("plugins/skiphow/skills/skiphow/references/diagnosis.md")
-    testing = read("plugins/skiphow/skills/skiphow/references/methods/testing.md")
-    review = read("plugins/skiphow/skills/skiphow/references/methods/review.md")
-    design = read("plugins/skiphow/skills/skiphow/references/methods/design.md")
-    prototype = read("plugins/skiphow/skills/skiphow/references/methods/prototype.md")
-    conflicts = read("plugins/skiphow/skills/skiphow/references/methods/conflicts.md")
-    decision = read("plugins/skiphow/skills/skiphow/references/decision.md")
-    delivery = read("plugins/skiphow/skills/skiphow/references/delivery.md")
-    assert "exact symptom, not a nearby failure" in diagnosis
-    assert "falsifiable explanations" in diagnosis and "vary one condition at a time" in diagnosis
-    assert "another independent source for expected values" in testing
-    assert "Mock only a true external boundary" in testing
-    assert "The Spec axis" in review and "The Standards axis" in review
-    assert "effective diff hash" in review and "untracked executable inputs" in review
-    assert "Use the deletion test" in design
-    assert "Do not ship the experimental artifact unchanged" in prototype
-    assert "Conflict markers show overlapping text, not every semantic conflict" in conflicts
-    assert "Product acceptance is conditional" in decision
-    assert "After a second failure with the same cause or failure signature" in delivery
+def test_continuity_hook_is_the_only_hook() -> None:
+    hooks_dir = PLUGIN / "hooks"
+    assert [path.name for path in hooks_dir.iterdir()] == ["hooks.json"]
+    payload = json_object("plugins/skiphow/hooks/hooks.json")
+    assert set(payload["hooks"]) == {"SessionStart"}
+    groups = payload["hooks"]["SessionStart"]
+    assert {group["matcher"] for group in groups} == {"startup", "clear", "compact", "resume"}
+    for group in groups:
+        (handler,) = group["hooks"]
+        assert handler["type"] == "command"
+        assert handler["command"].startswith("sh -c ")
+        assert ".skiphow/handoff.md" in handler["command"]
+        assert handler.get("timeout", 600) <= 30
 
 
-def test_real_task_application_contracts_stay_explicit() -> None:
-    skill = read("plugins/skiphow/skills/skiphow/SKILL.md")
-    delivery = read("plugins/skiphow/skills/skiphow/references/delivery.md")
-    github = read("plugins/skiphow/skills/skiphow/references/github.md")
-    decision = read("plugins/skiphow/skills/skiphow/references/decision.md")
-    diagnosis = read("plugins/skiphow/skills/skiphow/references/diagnosis.md")
-    assert "shortcut never overrides repository policy" in skill
-    assert "pre-existing, warning-only, or outside the final diff is not a disposition" in skill
-    assert {"IN_SCOPE", "PERSIST", "DUPLICATE", "EXPECTED", "NONMATERIAL"} <= code_tokens(delivery)
-    assert "A warning on the changed surface can weaken completion evidence" in delivery
-    assert "capture their pre-change identities and diff" in delivery
-    assert "requires an Issue-linked branch or pull request makes the work tracked" in github
-    assert "A durable update is mandatory" in decision
-    assert "code comment or test alone is not the product record" in decision
-    assert "synthetic fixtures and redacted identifiers" in diagnosis
-
-
-def test_application_regression_prompts_do_not_spoon_feed_the_policy() -> None:
-    finding_prompt = read("evals/live/prompts/independent-finding.md").lower()
-    privacy_prompt = read("evals/live/prompts/privacy-boundary-change.md").lower()
-    assert not {"finding", "inbox", "save", "persist"} & set(finding_prompt.split())
-    assert not {"decision", "record", "adr"} & set(privacy_prompt.split())
-    finding_oracle = json_object("evals/live/oracles/independent-finding.json")
-    privacy_oracle = json_object("evals/live/oracles/privacy-boundary-change.json")
-    test_contract = json_object("evals/live/fixtures/independent-finding/test-contract.json")
-    finding_ids = {item["id"] for item in finding_oracle["assertions"]}
-    privacy_ids = {item["id"] for item in privacy_oracle["assertions"]}
-    assert "finding" in finding_ids
-    assert {"projection-contract", "durable-decision"} <= privacy_ids
-    assert test_contract["negative_test"]["expected_stderr_codes"] == ["NEG-EXPECTED"]
-    assert "13. conflict resolution" in read("docs/evals.md")
-
-
-def test_github_markers_and_cleanup_are_race_safe_by_contract() -> None:
-    github = read("plugins/skiphow/skills/skiphow/references/github.md")
-    assert "correlation data only" in github
-    assert "expected commit" in github
-    assert "compare-and-delete semantics" in github
-    assert "If the connector cannot enforce that comparison, leave the branch" in github
-
-
-def test_plugin_has_no_hooks_or_personal_paths() -> None:
-    assert not [path for path in PLUGIN.rglob("*") if "hooks" in path.parts]
-    manifests = (
-        json_object("plugins/skiphow/.codex-plugin/plugin.json"),
-        json_object("plugins/skiphow/.claude-plugin/plugin.json"),
-    )
-    assert all("hooks" not in manifest for manifest in manifests)
-    personal = re.compile(
-        r"/(?:Users|home)/[^/\s]+/|[A-Za-z]:[\\/]Users[\\/][^\\/\s]+[\\/]"
-    )
+def test_package_has_no_versioned_model_ids_or_personal_paths() -> None:
+    personal = re.compile(r"/(?:Users|home)/[^/\s]+/|[A-Za-z]:[\\/]Users[\\/][^\\/\s]+[\\/]")
     for path in PLUGIN.rglob("*"):
         if path.is_file():
-            assert personal.search(path.read_text(encoding="utf-8")) is None
+            text = path.read_text(encoding="utf-8")
+            assert personal.search(text) is None, path
+            assert VERSIONED_MODEL.search(text) is None, path

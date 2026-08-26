@@ -1,28 +1,15 @@
 # Technical review
 
-Use independent review when requested, required by repository policy, or justified by security, public contracts, large integration changes, weak evidence, or repeated failure.
+Use independent review when requested, required by repository policy, or justified by security, public contracts, large integration changes, weak evidence, or repeated failure. Delegate it to the `reviewer` role when the host supports it; a fresh reviewer helps but does not replace tests.
 
-## Bind review to the candidate
+## Review the exact candidate
 
-Identify the repository, base tree or commit, committed candidate tree or head commit, clean-state proof, effective diff hash, submodule identities when present, and the evidence configuration used for the verdict. For a pull request, record its exact head.
+Name the repository, the base commit, the candidate head or tree, and the checks the verdict relies on. For a pull request, record its exact head. Dirty files, a new head, changed submodules, or untracked executable inputs invalidate the affected evidence; review the delivered state and its effective diff, never a stale snapshot or a delegate's receipt.
 
-Dirty files, submodule changes, a new head, untracked executable inputs, or any relevant byte change invalidate the affected review evidence. A diff hash supplements the candidate identity. It does not replace it.
+## Two axes
 
-## Review on two axes
+The spec axis checks missing, partial, incorrect, and unrequested behavior against the owner request and accepted decisions. The standards axis checks repository instructions, security boundaries, compatibility, failure paths, maintainability, and relevant design defects; add a specialist lens only when the changed area needs it.
 
-The Spec axis checks missing, partial, incorrect, and unrequested behavior against the owner request and accepted product decisions.
+Every material finding names its evidence, affected behavior, impact, and one disposition: `RESOLVED` (fixed in scope), `PERSISTED` (saved once as a separate finding), `DUPLICATE` (existing record), or `DISMISSED` (evidence rejects it). Separate confirmed defects from risks and suggestions; severity follows impact, not style.
 
-The Standards axis checks repository instructions, security boundaries, compatibility, failure paths, maintainability, and relevant design defects. Add a specialist lens only when the changed area needs it.
-
-Inspect the delivered state and effective diff. Do not review an obsolete snapshot or trust a worker receipt as proof. A fresh reviewer is useful when the host supports one, but it does not replace tests.
-
-Every material finding names evidence, affected behavior, impact, and one disposition:
-
-- `RESOLVED` for a fixed in-scope defect;
-- `PERSISTED` for a separate actionable finding saved once;
-- `DUPLICATE` for an existing equivalent record;
-- `DISMISSED` when evidence rejects or supersedes the claim.
-
-Separate confirmed defects from risks, investigations, and suggestions. Severity follows impact, not style preference.
-
-After a fix, re-review the finding, its fix diff, and plausible regressions. Repeat the full review only when the fix changed architecture, product behavior, a protected area, or enough of the candidate to invalidate the earlier verdict.
+After a fix, re-review the finding, its diff, and plausible regressions. Repeat the full review only when the fix changed architecture, product behavior, a protected area, or enough of the candidate to void the earlier verdict.

@@ -1,9 +1,7 @@
 # Disposable prototypes
 
-Use a prototype to answer one named product or technical question when direct inspection cannot settle it cheaply.
+Use a prototype to answer one named product or technical question that direct inspection cannot settle cheaply.
 
-Write the question, the smallest artifact that can answer it, the evidence to observe, the time or attempt limit, and the disposal plan. Omit production hardening, migrations, compatibility layers, broad tests, and abstractions that do not affect the question.
+Write down the question, the smallest artifact that can answer it, the evidence to observe, the time or attempt limit, and the disposal plan. Leave out production hardening, migrations, compatibility layers, broad tests, and abstractions that do not affect the question. Keep it isolated from the release candidate, free of secrets and customer data, and never deployed or connected to production without a separate exact grant.
 
-Keep the prototype isolated from the release candidate. Do not place secrets or customer data in it. Do not deploy it or connect it to production without a separate exact grant.
-
-End with one verdict: adopt the tested idea, reject it, or record what remains unknown. Remove the prototype before delivery. If any code deserves promotion, rewrite or review it under normal product, design, testing, security, and compatibility rules. Do not ship the experimental artifact unchanged.
+End with one verdict: adopt, reject, or record what remains unknown. Remove the prototype before delivery. Code that deserves promotion is rewritten or reviewed under normal product, design, testing, security, and compatibility rules; the experimental artifact never ships unchanged.

@@ -59,9 +59,15 @@ PERSONAL_PATH = re.compile(
 CONCRETE_MODEL_ID = re.compile(
     r"\b(?:gpt-\d[\w.-]*|claude-(?:\d|opus|sonnet|haiku)[\w.-]*|"
     r"gemini-\d[\w.-]*|llama-\d[\w.-]*|"
-    r"mistral-(?:\d|small|medium|large)[\w.-]*|o[1-9](?:-[\w.-]+)?)\b",
+    r"mistral-(?:\d|small|medium|large)[\w.-]*|o[1-9](?:-[\w.-]+)?|"
+    r"(?:opus|sonnet|haiku)-\d[\w.-]*|(?:opus|sonnet|haiku)-\d{8})\b",
     re.IGNORECASE,
 )
+AGENT_ROLES = {"scout": "haiku", "builder": "sonnet", "reviewer": "opus"}
+AGENT_MODELS = frozenset({"haiku", "sonnet", "opus", "inherit"})
+AGENT_EFFORTS = frozenset({"low", "medium", "high"})
+AGENT_FIELDS = frozenset({"name", "description", "model", "effort", "tools", "isolation", "maxTurns"})
+CONTINUITY_MATCHERS = frozenset({"startup", "clear", "compact", "resume"})
 
 
 def managed_env_path() -> Path:
@@ -398,6 +404,96 @@ def model_id_scan(paths: Iterable[Path] | None = None) -> list[str]:
     return errors
 
 
+def agent_frontmatter(path: Path) -> dict[str, object]:
+    """Parse the YAML frontmatter of one host agent definition."""
+    import yaml
+
+    text = path.read_text(encoding="utf-8")
+    match = re.match(r"---\n(.*?)\n---\n", text, re.DOTALL)
+    if match is None:
+        raise ValueError(f"{path} has no YAML frontmatter")
+    value = yaml.safe_load(match.group(1))
+    if not isinstance(value, dict):
+        raise ValueError(f"{path} frontmatter must be a mapping")
+    return value
+
+
+def validate_agents(agents_dir: Path = PLUGIN_ROOT / "agents") -> list[str]:
+    """Require exactly the three role adapters with host-family aliases only."""
+    errors: list[str] = []
+    found = {path.stem: path for path in agents_dir.glob("*.md")} if agents_dir.is_dir() else {}
+    if set(found) != set(AGENT_ROLES):
+        errors.append(
+            "plugin agents must be exactly scout, builder, reviewer; found: "
+            + (", ".join(sorted(found)) or "none")
+        )
+    for role, path in sorted(found.items()):
+        try:
+            meta = agent_frontmatter(path)
+        except (OSError, ValueError, ImportError) as exc:
+            errors.append(str(exc))
+            continue
+        relative = path.relative_to(ROOT) if path.is_relative_to(ROOT) else path
+        unexpected = sorted(set(meta) - AGENT_FIELDS)
+        if unexpected:
+            errors.append(f"{relative} uses unsupported plugin agent fields: {', '.join(unexpected)}")
+        if meta.get("name") != role:
+            errors.append(f"{relative} must be named {role}")
+        if not isinstance(meta.get("description"), str) or not meta["description"].strip():
+            errors.append(f"{relative} needs a description for host auto-delegation")
+        model = meta.get("model", "inherit")
+        if model not in AGENT_MODELS:
+            errors.append(f"{relative} model must be a family alias or inherit, not {model!r}")
+        elif role in AGENT_ROLES and model != AGENT_ROLES[role]:
+            errors.append(f"{relative} must route {role} to the {AGENT_ROLES[role]} tier")
+        if "effort" in meta and meta["effort"] not in AGENT_EFFORTS:
+            errors.append(f"{relative} effort must be one of {sorted(AGENT_EFFORTS)}")
+        if role == "builder" and meta.get("isolation") != "worktree":
+            errors.append(f"{relative} must run in an isolated worktree")
+        if role != "builder" and any(tool in str(meta.get("tools", "")) for tool in ("Edit", "Write")):
+            errors.append(f"{relative} must stay read-only")
+        errors.extend(model_id_scan([path]))
+    return errors
+
+
+def validate_continuity_hook(path: Path = PLUGIN_ROOT / "hooks/hooks.json") -> list[str]:
+    """Permit exactly one read-only SessionStart continuity hook."""
+    if not path.is_file():
+        return ["plugin must ship hooks/hooks.json with the continuity hook"]
+    relative = path.relative_to(ROOT) if path.is_relative_to(ROOT) else path
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return [f"cannot read {relative}: {exc}"]
+    hooks = payload.get("hooks") if isinstance(payload, dict) else None
+    if not isinstance(hooks, dict) or set(hooks) != {"SessionStart"}:
+        return [f"{relative} must declare only SessionStart hooks"]
+    errors: list[str] = []
+    matchers: set[str] = set()
+    for group in hooks["SessionStart"]:
+        matcher = group.get("matcher") if isinstance(group, dict) else None
+        handlers = group.get("hooks") if isinstance(group, dict) else None
+        if matcher not in CONTINUITY_MATCHERS or not isinstance(handlers, list) or len(handlers) != 1:
+            errors.append(f"{relative} may only match startup, clear, compact, and resume with one handler each")
+            continue
+        matchers.add(matcher)
+        handler = handlers[0]
+        command = handler.get("command", "") if isinstance(handler, dict) else ""
+        if handler.get("type") != "command" or not command.startswith("sh -c "):
+            errors.append(f"{relative} handler must be a portable sh command")
+        if ".skiphow/handoff.md" not in command:
+            errors.append(f"{relative} handler must surface .skiphow/handoff.md")
+        forbidden = ("curl", "wget", "http", ">", "rm ", "mv ", "git ", "python", "node", "$(", "`")
+        if any(token in command for token in forbidden):
+            errors.append(f"{relative} handler must not write, fetch, or run programs")
+    if matchers != CONTINUITY_MATCHERS:
+        errors.append(f"{relative} must match startup, clear, compact, and resume")
+    other = [p for p in path.parent.rglob("*") if p.is_file() and p != path]
+    if other:
+        errors.append("plugin hooks/ may contain only hooks.json")
+    return errors
+
+
 def validate_plugin_static() -> list[str]:
     """Check the one-skill package shared by Codex and Claude."""
     errors: list[str] = []
@@ -417,8 +513,8 @@ def validate_plugin_static() -> list[str]:
             continue
         if manifest.get("skills") != "./skills/":
             errors.append(f"{host} manifest must load ./skills/")
-        if "hooks" in manifest:
-            errors.append(f"{host} manifest must not declare hooks")
+        if "hooks" in manifest or "agents" in manifest:
+            errors.append(f"{host} manifest must rely on the default agents/ and hooks/ directories")
 
     public_skills = sorted(PLUGIN_ROOT.rglob("SKILL.md"))
     if public_skills != [CANONICAL_SKILL]:
@@ -430,7 +526,7 @@ def validate_plugin_static() -> list[str]:
         for path in PLUGIN_ROOT.iterdir()
         if path.is_file() or any(child.is_file() for child in path.rglob("*"))
     }
-    unexpected = sorted(top_level - {".claude-plugin", ".codex-plugin", "skills", "LICENSE"})
+    unexpected = sorted(top_level - {".claude-plugin", ".codex-plugin", "agents", "hooks", "skills", "LICENSE"})
     if unexpected:
         errors.append(f"plugin has unexpected top-level entries: {', '.join(unexpected)}")
     package_license = PLUGIN_ROOT / "LICENSE"
@@ -483,9 +579,8 @@ def validate_plugin_static() -> list[str]:
     if orphaned:
         errors.append(f"orphaned skill references: {', '.join(orphaned)}")
 
-    hook_paths = [path for path in PLUGIN_ROOT.rglob("*") if "hooks" in path.parts]
-    if hook_paths:
-        errors.append("plugin package must not include hooks")
+    errors.extend(validate_agents())
+    errors.extend(validate_continuity_hook())
 
     try:
         codex_marketplace = load_json(".agents/plugins/marketplace.json")

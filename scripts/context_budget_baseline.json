@@ -1,7 +1,11 @@
 {
-  "root_skill_limits": {
-    "bytes": 6000,
-    "words": 700
+  "reference_limits": {
+    "file_words": 600,
+    "total_words": 4000
   },
-  "schema_version": 1
+  "root_skill_limits": {
+    "bytes": 5000,
+    "words": 600
+  },
+  "schema_version": 2
 }

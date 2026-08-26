@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Accepted. The rule that tiers are mapped only from host metadata is superseded by [ADR 0007](0007-host-adapters-for-routing-and-continuity.md), which resolves tiers through host adapters using family aliases. The tiers, the `STANDARD` floor for mutation, and the cost-claim rule stand.
 
 ## Date
 
