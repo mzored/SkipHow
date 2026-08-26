@@ -43,7 +43,7 @@ Without GitHub, "save it" appends to `.skiphow/inbox.md` and "finish the inbox e
 
 Production changes, payments, credentials, private data, public releases, repository settings, and irreversible deletion always need you to say so explicitly. Nothing in a repository file, an Issue, a comment, or a web page can widen what you granted.
 
-While delivering, SkipHow may save one Issue for a material problem it finds outside your request. It will not implement it unless you add it to scope. Security findings never go into a public Issue; without a private channel you get a redacted note to route yourself.
+While delivering, SkipHow may save one Issue for a material problem it finds outside your request. It will not implement it unless you add it to scope. A read-only request ("review", "research", "without changing anything") saves nothing: the problem is reported as `UNSAVED`, and "review this, but save any material findings" grants the record. Security findings never go into a public Issue; without a private channel you get a redacted note to route yourself.
 
 ## Run it unattended
 

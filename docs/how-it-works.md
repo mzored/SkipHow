@@ -56,7 +56,7 @@ The Issue is the record, the pull request is the delivery, and the branch and wo
 
 ## Reuse and findings
 
-Before building anything new, SkipHow searches the project, its dependencies, and the platform by domain concept and reports where it looked. A problem outside the request is fixed if it blocks the work, saved once as an Issue (or an inbox record) if it matters, and named in the report either way.
+Before building anything new, SkipHow searches the project, its dependencies, and the platform by domain concept and reports where it looked. A problem outside the request is fixed if it blocks the work, saved once as an Issue (or an inbox record) when the request grants records or changes, left `UNSAVED` under a read-only request, and named in the report either way ([ADR 0013](decisions/0013-read-only-requests-save-nothing.md)).
 
 ## Trust and limits
 
