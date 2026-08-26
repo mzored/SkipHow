@@ -22,7 +22,7 @@ SkipHow 1.2 makes the reviewer follow the owner's own model, turns a brain dump 
 
 ### Verification status
 
-- Deterministic repository checks, Claude Code package validation, and the isolated Claude Code install pass on the tagged commit. Codex validation and install are `UNVERIFIED` on the release machine (validator fetched only in CI; managed install policy).
+- Deterministic repository checks, package validation in both hosts (the Codex validator pinned in CI, run locally too), and the isolated Claude Code install pass on the tagged commit. The Codex isolated install is `UNVERIFIED` on the release machine because its managed policy blocks local marketplace sources.
 - Receipts for this release (`docs/research/2026-08-26/v1.2-receipts.md`) cover, on Claude Code: a small bug fixed in session, a normal feature, reuse of a pinned dependency, a brain dump turned into six prioritized Issues, a six-Issue batch finished end to end with four merged pull requests and cleanup, handoff and resume, the compaction hook, and two `builder` delegations on the standard tier in isolated worktrees. Codex, auto-compaction under a large context, and protected batch repositories are `UNVERIFIED`.
 
 ## 1.1.0 (2026-08-26)
