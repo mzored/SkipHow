@@ -156,7 +156,12 @@ def _created_repository(root: Path) -> bool:
 
 def _codex_policy_block(output: str) -> bool:
     lowered = output.lower()
-    return "allowed source" in lowered or "source is not allowed" in lowered
+    # Both halves are required. "requirements.toml" alone matched an ordinary parse
+    # error; the denial language alone would match an unrelated refusal. The observed
+    # message is: marketplace source `...` is not allowed by requirements from
+    # /etc/codex/requirements.toml
+    refused = "not allowed" in lowered or "allowed source" in lowered
+    return refused and ("requirements.toml" in lowered or "source policy" in lowered)
 
 
 def isolated_install(

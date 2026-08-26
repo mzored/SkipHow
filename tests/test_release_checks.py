@@ -344,10 +344,20 @@ def test_skip_install_cannot_satisfy_a_required_install() -> None:
 
 
 def test_only_a_source_policy_denial_is_downgraded() -> None:
-    """Any output naming requirements.toml used to be read as a policy block."""
+    """Any output naming requirements.toml used to be read as a policy block.
+
+    The first string is the message a machine with a managed Codex policy actually
+    prints; narrowing this match without it turned that machine's `UNVERIFIED` into
+    a release-blocking `FAIL`.
+    """
+    observed = (
+        "Error: marketplace source `/tmp/skiphow-codex-install-x/marketplace` is not "
+        "allowed by requirements from /etc/codex/requirements.toml"
+    )
+    assert hosts._codex_policy_block(observed)
     assert hosts._codex_policy_block("blocked by allowed source policy")
-    assert hosts._codex_policy_block("source is not allowed")
     assert not hosts._codex_policy_block("failed to parse /etc/codex/requirements.toml")
+    assert not hosts._codex_policy_block("network unreachable")
 
 
 def test_file_enumeration_falls_back_without_git(tmp_path: Path) -> None:
