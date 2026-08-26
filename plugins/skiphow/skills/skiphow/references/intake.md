@@ -18,7 +18,7 @@ Without GitHub, append one block per signal to `.skiphow/inbox.md`. Do not creat
 
 ```text
 ## <stable-id>
-- Recorded: <RFC 3339 UTC timestamp>
+- Recorded: <output of `date -u +%Y-%m-%dT%H:%M:%SZ`, or `unknown` when no clock is available>
 - Source: <person, request, file, or URL>
 - Original: <source wording when it fits on one line>
 - Normalized: <actionable work item>

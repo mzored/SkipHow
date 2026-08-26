@@ -22,6 +22,6 @@ After a second failure with the same cause, raise the role one tier or review th
 
 Claude Code: the plugin ships `scout`, `builder`, and `reviewer` under `agents/`; invoke them as `skiphow:<role>`. The reviewer runs on the session model, so escalation ends at the model the owner chose. If the host substitutes a model, treat the route as inherited and say so.
 
-Codex: plugins cannot ship agents, so delegates inherit the parent model and effort unless the project has `.codex/agents/<role>.toml` or the owner configured `[agents]`. When the owner asks for routing, copy the three files from this skill's `codex-agents/` directory into `.codex/agents/`; they set `model_reasoning_effort` per role (`low` for `scout`, default for `builder`, `high` for `reviewer`) and leave `model` unset, so the tiers are effort and sandbox on the owner's model, never a model name. Spawn them by name.
+Codex: there are no family aliases and plugins cannot ship agents, so every delegate runs on the session model; the tiers collapse to role, sandbox, and reasoning effort on that one model. When the owner asks for routing, copy the three files from this skill's `codex-agents/` directory into `.codex/agents/` (read-only `scout` at low effort, workspace-write `builder`, read-only `reviewer` at high effort, `model` unset) and spawn them by name. Without them, delegates inherit the parent's effort and sandbox too.
 
 Record the effective model when the host reports it. Cost or speed claims stay `UNVERIFIED` until paired runs show them.

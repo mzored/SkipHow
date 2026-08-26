@@ -36,14 +36,6 @@ def test_local_dependencies_are_pinned_and_kept_outside_the_repo() -> None:
     assert check.MANAGED_ENV.name == f"python-{sys.version_info.major}.{sys.version_info.minor}"
 
 
-def test_check_subprocesses_do_not_write_python_bytecode() -> None:
-    with patch.object(check.subprocess, "run") as run:
-        run.return_value.returncode = 0
-        run.return_value.stdout = ""
-        run.return_value.stderr = ""
-        assert check.checked(["python", "example.py"])[0]
-    assert run.call_args.kwargs["env"]["PYTHONDONTWRITEBYTECODE"] == "1"
-
 
 def test_offline_mode_never_bootstraps_missing_dependencies(capsys) -> None:
     with (

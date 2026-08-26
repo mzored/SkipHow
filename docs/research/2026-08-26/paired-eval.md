@@ -28,6 +28,21 @@ A small paired comparison on 2026-08-26, one run per arm per task, same host and
 - Lifecycle. With the skill every run ended with the five headings and named its limits; without it, reports were shorter and skipped what was not verified.
 - Findings. The planted shipping-rate mismatch is only met by tasks that read `shipping.py`; see the [1.4 receipts](v1.4-receipts.md) for the findings runs.
 
+## Second experiment: current skill against a reduced-procedure variant (1.5.0)
+
+Same three tasks, one run per arm, on the 1.4.0 skill and a variant whose only change is the `DELIVER` line: "a clear bounded change you can finish and verify directly needs no reference; otherwise read delivery".
+
+| Task | Arm | Turns | Cost | Seconds | Loaded | Outcome |
+| --- | --- | --- | --- | --- | --- | --- |
+| Small bug | current | 6 | $0.46 | 22 | nothing | fix, 4 passed |
+| | variant | 6 | $0.41 | 21 | nothing | fix, 5 passed, one `DISMISSED` finding with a reason |
+| FREESHIP feature | current | 7 | $0.60 | 44 | delivery, intake | 8 passed, two findings `SAVED` as intake blocks |
+| | variant | 7 | $0.49 | 33 | nothing | 6 passed, two findings `SAVED` in one loosely formatted block |
+| Retry feature | current | 10 | $0.90 | 81 | delivery | `tenacity`, 4xx fail fast, 8 passed |
+| | variant | 11 | $0.71 | 56 | nothing | `tenacity`, 4xx fail fast, 7 passed |
+
+Correctness and the findings invariant held in both arms; the variant cost 10 to 20 percent less and was faster on two of three. The one regression was inbox format when no reference loaded, fixed by making the root rule say "after reading intake"; two runs on that final wording wrote two intake blocks each with clock timestamps at $0.54 and $0.61. The bare host baseline for the small bug remains $0.29 and 4 turns; the remaining gap is the skill invocation and its 600 words, which the design keeps.
+
 ## What this cannot show
 
 Sample size is one per cell. Cost differences of a few tens of cents are within run-to-run variance (the three small-bug runs with the skill spanned $0.40 to $0.43; the two retry runs spanned $0.65 to $0.67). Token counts are folded into cost by the host. No task here needs delegation, so routing cost is not measured; the 1.1 and 1.2 receipts record delegated runs but have no baseline arm. Codex reports no dollar cost, so no Codex pairing was attempted.

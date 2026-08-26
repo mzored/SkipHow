@@ -2,6 +2,23 @@
 
 All notable changes to this project appear in this file.
 
+## 1.5.0 (2026-08-26)
+
+SkipHow 1.5 drops the delivery reference for bounded changes, records real timestamps, and says what Codex routing is.
+
+### Changed
+
+- `DELIVER`: a clear bounded change you can finish and verify directly loads no reference; `delivery.md` loads otherwise. In a paired experiment on three small tasks the reduced variant matched the current skill on correctness and findings and cost 10 to 20 percent less; two verification runs on the final wording held the findings tag, the intake block, and the timestamps (`paired-eval.md`, 1.5 receipts).
+- Inbox and handoff `Recorded` lines take the output of `date -u +%Y-%m-%dT%H:%M:%SZ`, or `unknown` when no clock is available, instead of a format hint the model filled in by hand. Three runs wrote clock values inside the run's real window.
+- Findings saved to the inbox are one block per finding, written after reading `intake.md`.
+- Codex routing is described as what it is: every delegate runs on the session model; the shipped role files set sandbox and reasoning effort per role. Observed: `builder` at the session's effort, `scout` at low effort, `reviewer` at high effort, all on the session model. The reference, the design page, ADR 0011, and the README now agree.
+- README: the process comparison is framed as a hypothesis, the paired numbers are stated with their limits, and the Codex line no longer implies capability tiers.
+
+### Verification status
+
+- Deterministic checks, Claude Code validation and isolated install, and the pinned Codex validator pass on the tagged commit; the Codex isolated install stays `UNVERIFIED` on the release machine.
+- Receipts: `docs/research/2026-08-26/v1.5-receipts.md` and the updated `paired-eval.md`.
+
 ## 1.4.0 (2026-08-26)
 
 SkipHow 1.4 makes out-of-scope findings an invariant instead of a judgment, ships Codex role files, and separates contributor rules from runtime policy.
