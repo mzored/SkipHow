@@ -36,10 +36,10 @@ REQUIRED_REFERENCES = frozenset(
     }
 )
 PERSONAL_PATH = re.compile(
-    r"(?:/(?:[Uu]sers|[Hh]ome)/[^/\s]+/?|"
+    r"(?:(?<![\w.])/(?:Users|home)/[^/\s]+/?|"
     + "/"
     + "root/"
-    + r"|[A-Za-z]:[\\/]+[Uu]sers[\\/]+[^\\/\s]+[\\/]?"
+    + r"|[A-Za-z]:[\\/]+(?i:users)[\\/]+[^\\/\s]+[\\/]?"
     + r"|~/\.(?:codex|claude)(?:/|\b)|\$(?:\{)?HOME(?:\})?[\\/]"
     + r"|%USERPROFILE%[\\/])"
 )
@@ -71,7 +71,7 @@ PACKAGE_FILES = frozenset(
     | {f"skills/skiphow/references/{name}" for name in REQUIRED_REFERENCES}
 )
 HOOK_COMMAND = re.compile(
-    r"""^sh -c 'printf "%s\\n" "[^"$`\\]+"; """
+    r"""^sh -c 'printf "%s\\n" "[^"'$`\\]+"; """
     r"""if \[ -f \.skiphow/handoff\.md \]; then tail -n \d{1,3} \.skiphow/handoff\.md; fi; exit 0'$"""
 )
 ROOT_SKILL_LIMITS = {"bytes": 7000, "words": 1000}

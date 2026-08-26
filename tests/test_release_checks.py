@@ -6,6 +6,7 @@ import importlib.util
 import json
 from pathlib import Path
 import re
+import shutil
 import sys
 from unittest.mock import patch
 
@@ -188,8 +189,19 @@ def test_portable_policy_rejects_provider_model_ids(tmp_path: Path) -> None:
     assert "gpt-5.6-example" in errors[0]
 
 
-def test_portability_scan_includes_untracked_package_files(tmp_path: Path) -> None:
-    """The scan reaches a new, unstaged file -- proven without touching the package."""
+def test_file_enumeration_asks_git_for_untracked_files() -> None:
+    """The scan can only see a new file if the enumerator asks Git for one."""
+    with patch.object(check.subprocess, "run") as run:
+        run.return_value = check.subprocess.CompletedProcess(["git"], 0, b"", b"")
+        list(check.repository_files())
+    command = run.call_args.args[0]
+    assert command[:2] == ["git", "ls-files"]
+    assert {"--others", "--exclude-standard", "--cached"} <= set(command)
+    assert run.call_args.kwargs["timeout"]
+
+
+def test_portability_scan_flags_a_personal_path_in_a_package_file(tmp_path: Path) -> None:
+    """The scan reports a file the enumerator yields -- proven off the real package."""
     plugin = tmp_path / "plugins/skiphow"
     plugin.mkdir(parents=True)
     untracked = plugin / "personal-path.txt"
@@ -226,24 +238,29 @@ def test_model_scan_covers_every_shipped_file_and_current_families(tmp_path: Pat
         candidate = tmp_path / "policy.md"
         candidate.write_text(f"Use {identifier}.\n", encoding="utf-8")
         assert check.model_id_scan([candidate]) != [], identifier
-    scanned = {
-        path.relative_to(check.PLUGIN_ROOT).as_posix()
-        for path in check.PLUGIN_ROOT.rglob("*")
-        if path.is_file()
-    }
-    assert scanned == set(check.PACKAGE_FILES)
+    # Default mode, over a manifest -- the file kind the old candidate list skipped.
+    package = tmp_path / "skiphow"
+    (package / ".codex-plugin").mkdir(parents=True)
+    (package / ".codex-plugin/plugin.json").write_text(
+        '{"model": "claude-fable-5"}\n', encoding="utf-8"
+    )
+    with patch.object(check, "PLUGIN_ROOT", package):
+        errors = check.model_id_scan()
+    assert any("claude-fable-5" in error for error in errors)
 
 
 def test_package_shape_rejects_an_extra_shipped_file(tmp_path: Path) -> None:
     """The old check named directories, so any extra file inside one passed."""
-    assert "agents/scout.md" in check.PACKAGE_FILES
-    assert "agents/extra.txt" not in check.PACKAGE_FILES
-    shipped = {
-        path.relative_to(check.PLUGIN_ROOT).as_posix()
-        for path in check.PLUGIN_ROOT.rglob("*")
-        if path.is_file() or path.is_symlink()
-    }
-    assert shipped == set(check.PACKAGE_FILES)
+    package = tmp_path / "skiphow"
+    shutil.copytree(check.PLUGIN_ROOT, package)
+    (package / "agents/extra.txt").write_text("x\n", encoding="utf-8")
+    with (
+        patch.object(check, "PLUGIN_ROOT", package),
+        patch.object(check, "SKILL_ROOT", package / "skills/skiphow"),
+        patch.object(check, "CANONICAL_SKILL", package / "skills/skiphow/SKILL.md"),
+    ):
+        errors = check.validate_plugin_static()
+    assert any("agents/extra.txt" in error for error in errors)
 
 
 def test_changelog_must_lead_with_the_released_version() -> None:
@@ -253,6 +270,38 @@ def test_changelog_must_lead_with_the_released_version() -> None:
     dated = re.findall(r"^## (\S+) \(\d{4}-\d{2}-\d{2}\)$", changelog, re.MULTILINE)
     assert dated[0] == release
     assert check.validate_version() == []
+
+
+def test_hook_shape_rejects_a_quote_breakout() -> None:
+    """A single quote in the message closes the outer `sh -c '...'`.
+
+    The shape excluded `"`, `$`, backtick and backslash but not `'`, so a message
+    could end the quoting and run a program the denylist never named.
+    """
+    breakout = (
+        "sh -c 'printf \"%s\\n\" \"' ; touch f; echo '\"; "
+        "if [ -f .skiphow/handoff.md ]; then tail -n 40 .skiphow/handoff.md; fi; exit 0'"
+    )
+    assert check.HOOK_COMMAND.fullmatch(breakout) is None
+    real = json.loads((check.PLUGIN_ROOT / "hooks/hooks.json").read_text(encoding="utf-8"))
+    for group in real["hooks"]["SessionStart"]:
+        assert check.HOOK_COMMAND.fullmatch(group["hooks"][0]["command"])
+
+
+def test_personal_path_scan_leaves_web_routes_alone() -> None:
+    """Dropping the required trailing separator reached into URLs.
+
+    A `/users/` route in a documented URL is not a home directory, and the gate
+    scans public documentation, so a false positive blocks a release for nothing.
+    """
+    for innocent in (
+        "https://example.com/Users/profile",
+        "https://example.test/users/alice",
+        "GET /users/me",
+    ):
+        assert check.PERSONAL_PATH.search(innocent) is None, innocent
+    for personal in ("see /" + "Users/person", "/" + "home/person", "C:\\USERS\\person\\x"):
+        assert check.PERSONAL_PATH.search(personal), personal
 
 
 def test_run_summary_refuses_evidence_it_cannot_read(tmp_path: Path) -> None:
@@ -266,6 +315,23 @@ def test_run_summary_refuses_evidence_it_cannot_read(tmp_path: Path) -> None:
     unfinished.write_text('{"type": "assistant", "message": {"model": "m", "content": []}}\n', encoding="utf-8")
     with pytest.raises(summary.TranscriptError):
         summary.summarize(unfinished)
+    # `isinstance(False, int)` is True, so a boolean metric used to render as zero.
+    boolean = tmp_path / "boolean.jsonl"
+    boolean.write_text('{"type": "result", "num_turns": false}\n', encoding="utf-8")
+    with pytest.raises(summary.TranscriptError):
+        summary.summarize(boolean)
+    # A streaming-input run emits one cumulative result per turn; the last one wins.
+    multi = tmp_path / "multi.jsonl"
+    multi.write_text(
+        '{"type": "result", "num_turns": 2, "total_cost_usd": 0.1, "duration_ms": 1000}\n'
+        '{"type": "result", "num_turns": 5, "total_cost_usd": 0.3, "duration_ms": 4000}\n',
+        encoding="utf-8",
+    )
+    assert summary.summarize(multi)["turns"] == 5
+    # A metric the host never reported stays absent rather than becoming a zero.
+    partial = tmp_path / "partial.jsonl"
+    partial.write_text('{"type": "result", "num_turns": 3}\n', encoding="utf-8")
+    assert summary.summarize(partial)["cost_usd"] is None
     assert summary.main([]) == 2
 
 

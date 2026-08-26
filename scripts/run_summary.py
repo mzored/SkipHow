@@ -45,19 +45,25 @@ def summarize(path: Path) -> dict[str, object]:
                 if block["name"] == "Agent":
                     delegations[inputs.get("subagent_type", "inherit")] += 1
         elif event.get("type") == "result":
-            if result is not None:
-                raise TranscriptError(f"{path}: more than one terminal result event")
+            # A streaming-input run emits one cumulative result per turn; the last wins.
             result = event
     if result is None:
         raise TranscriptError(f"{path}: no terminal result event; the run did not finish")
     for field in ("num_turns", "total_cost_usd", "duration_ms"):
-        if not isinstance(result.get(field), (int, float)):
-            raise TranscriptError(f"{path}: result event has no numeric {field}")
+        value = result.get(field)
+        if field in result and (isinstance(value, bool) or not isinstance(value, (int, float))):
+            raise TranscriptError(f"{path}: result event has a non-numeric {field}")
+
+    def measured(field: str, scale: float = 1.0, digits: int | None = 2) -> float | int | None:
+        # A field the host did not report stays absent. Reporting it as zero is how a
+        # truncated run became a plausible receipt in the first place.
+        return None if field not in result else round(result[field] / scale, digits)
+
     return {
         "file": str(path),
-        "turns": result["num_turns"],
-        "cost_usd": round(result["total_cost_usd"], 2),
-        "seconds": round(result["duration_ms"] / 1000),
+        "turns": result.get("num_turns"),
+        "cost_usd": measured("total_cost_usd"),
+        "seconds": measured("duration_ms", 1000, None),
         "tool_calls": sum(tools.values()),
         "skill": skill,
         "delegations": dict(delegations),

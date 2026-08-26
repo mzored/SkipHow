@@ -64,7 +64,7 @@ The bet follows Anthropic's advice to [start with the simplest workflow that wor
 | --- | --- | --- |
 | Entry | Commands, phases, personas | One request in plain language |
 | Planning | A spec or plan document per change | Only for large work, and then as GitHub Issues |
-| Authority | Approval gates | Your words; four reasons to stop, otherwise a recorded ruling |
+| Authority | Approval gates | Your words; five reasons to stop, otherwise a recorded ruling |
 | State | Framework files and databases | Git, GitHub, and one checkpoint file |
 | Models | Named model IDs | Three roles; on Claude Code a fast scout, a standard builder, and a reviewer on your session model; on Codex the same roles on your session model with their own reasoning effort; a widened review goes to the other installed CLI |
 | Size | Dozens of agents and commands | One skill of about 980 words plus about 3,900 words loaded on demand |
