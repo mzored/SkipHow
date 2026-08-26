@@ -24,7 +24,7 @@ After a second failure with the same cause, stop retrying unchanged. Add the sma
 
 ## Findings
 
-A problem outside the request is fixed if it blocks the outcome, creates immediate safety risk, or cannot be separated; otherwise, when material, saved once after a duplicate search through [intake](intake.md). A warning on the changed surface can weaken a green claim; triage it before claiming success. Do not save benign expected output, and do not implement or reprioritize a saved finding.
+A problem outside the request is fixed if it blocks the outcome, creates immediate safety risk, or cannot be separated; otherwise it is already tracked, saved once after a duplicate search through [intake](intake.md), or dismissed with its reason. A warning on the changed surface can weaken a green claim; triage it before claiming success. Do not save benign expected output, and do not implement or reprioritize a saved finding.
 
 ## Finish
 

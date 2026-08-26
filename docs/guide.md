@@ -65,7 +65,7 @@ codex exec --sandbox workspace-write --approve-for-me \
   "Finish today's batch end to end. Merge what passes."
 ```
 
-`exec` runs non-interactively. `--sandbox workspace-write` allows edits inside the project only. `--approve-for-me` routes approval requests through automatic review instead of stopping. Codex has no dollar cap for `exec`; bound the run by scope instead.
+`exec` runs non-interactively. `--sandbox workspace-write` allows edits inside the project only; in that sandbox Codex could not write `.git/index.lock` on the release machine, so a run that must commit needs `danger-full-access` or a commit from you afterwards. `--approve-for-me` routes approval requests through automatic review instead of stopping. Codex has no dollar cap for `exec`; bound the run by scope instead. Say "set up SkipHow routing for Codex" once per project and SkipHow copies its three role files into `.codex/agents/` so delegates get a role and an effort level.
 
 If the host cannot run in the background, resume, or isolate work, SkipHow finishes a safe subset, writes a handoff, and reports the rest as `UNVERIFIED` rather than pretending.
 

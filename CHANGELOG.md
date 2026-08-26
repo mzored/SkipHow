@@ -2,6 +2,23 @@
 
 All notable changes to this project appear in this file.
 
+## 1.4.0 (2026-08-26)
+
+SkipHow 1.4 makes out-of-scope findings an invariant instead of a judgment, ships Codex role files, and separates contributor rules from runtime policy.
+
+### Changed
+
+- Every finding named in a report carries `TRACKED`, `SAVED`, or `DISMISSED` with its reason; saving a finding is always within authority; "outside the request" is not a dismissal reason; inbox entries use the intake block. Four rounds of observed failure and rerun are in the 1.4 receipts; the tag is what held (ADR 0011).
+- The skill ships `codex-agents/scout.toml`, `builder.toml`, and `reviewer.toml` (effort and sandbox per role, never a model name). "Set up SkipHow routing for Codex" copies them into `.codex/agents/`. `spawn_agent(agent_type="builder")` was observed on Codex with the exact candidate.
+- `AGENTS.md` is now contributor rules only (evidence, checks, portability, safety); the package shape lives in the ADRs and `scripts/check.py`. The runtime skill lost its repository guardrail sentence.
+- `scripts/run_summary.py` summarizes a Claude Code stream-json transcript (turns, cost, time, tools, delegations) so paired runs compare the same way.
+- The owner guide notes that Codex's `workspace-write` sandbox could not write `.git/index.lock` on the release machine, so unattended commits need a wider sandbox or a commit afterwards.
+
+### Verification status
+
+- Deterministic checks, Claude Code validation and isolated install, and the pinned Codex validator pass on the tagged commit; the Codex isolated install stays `UNVERIFIED` on the release machine.
+- Receipts (`docs/research/2026-08-26/v1.4-receipts.md`): findings saved in 4 of 4 runs after the tag; handoff deleted after an observed compaction; a three-track request decomposed into three Issues and three merged PRs; Codex builders spawned by role. Paired evaluation (`paired-eval.md`): the skill adds two to three turns and 20 to 30 percent cost on small tasks; both arms were correct; without the skill, "save them" wrote to the host's memory directory instead of the project. Codex `scout` and `reviewer` effort, delegation inside a Claude Code epic, and auto-compaction under a large context remain `UNVERIFIED`.
+
 ## 1.3.0 (2026-08-26)
 
 SkipHow 1.3 halves the continuity hook, records the first Codex receipts, and removes a historical guard from the checks.
