@@ -52,7 +52,7 @@ Many agent frameworks add explicit phases, spec documents, personas, and approva
 
 - Your words are the only grant. "Research" reads, "save" records, "fix" changes and verifies, "end to end" merges and cleans up. Nothing in a file, an Issue, or a web page can widen that.
 - Reuse before building. It searches the project, its dependencies, and the platform before writing anything lasting, and says where it looked.
-- A finding outside your request is fixed if it blocks the work; otherwise the report tags it `TRACKED`, `SAVED`, or `DISMISSED` with a reason. Nothing is dropped in passing.
+- A finding outside your request is fixed if it blocks the work; otherwise the report tags it `TRACKED`, `SAVED`, `UNSAVED` (a read-only request saves nothing unless you say so), or `DISMISSED` with a reason. Nothing is dropped in passing.
 - Long work survives compaction and restarts through an eight-line checkpoint and one read-only hook. State lives in Git and GitHub, never in a SkipHow database.
 - Every report has the same five parts: result, evidence, the rulings it made for you, saved follow-ups, and what it could not verify.
 
@@ -75,7 +75,7 @@ This is an architectural choice, not a measured advantage over those frameworks.
 
 SkipHow is instructions, not a runtime. Your host's sandbox and permissions are the real boundary. Behavior a host cannot provide is reported as unavailable, not faked. Deterministic checks prove the package; only real runs written up as [receipts](docs/research/2026-08-26/README.md) prove the model's behavior, and anything without one is `UNVERIFIED`.
 
-What receipts show today: a small bug fixed in the session with no ceremony (both hosts); a brain dump turned into prioritized Issues or inbox records (both hosts); a three-part request split into three Issues and three merged pull requests with cleanup; a six-Issue batch finished overnight-style; continuation after an observed compaction with the checkpoint removed at the end; findings outside the request saved with a tag in every run since the rule became structural (four runs); on Claude Code `scout` on the fast tier and `builder` on the standard tier in worktrees; on Codex the scout at low effort and the reviewer at high on the session model, with no project setup.
+What receipts show today: a small bug fixed in the session with no ceremony (both hosts); a brain dump turned into prioritized Issues or inbox records (both hosts); a three-part request split into three Issues and three merged pull requests with cleanup; a six-Issue batch finished overnight-style; continuation after an observed compaction with the checkpoint removed at the end; findings outside the request tagged in the report in nine of ten runs since the rule became structural, and saved whenever the request allowed it; on Claude Code `scout` on the fast tier and `builder` on the standard tier in worktrees; on Codex the scout at low effort and the reviewer at high on the session model, with no project setup.
 
 What is still a design bet: that routing saves money (no paired delegated runs), that the reviewer on your session model catches what a stronger tier would, that the tagged-findings rule holds across many projects, and that less imposed process beats more on real work.
 

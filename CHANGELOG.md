@@ -2,6 +2,19 @@
 
 All notable changes to this project appear in this file.
 
+## 1.6.1 (2026-08-26)
+
+SkipHow 1.6.1 resolves one contradiction in the authority contract: a read-only request no longer authorizes saving a finding.
+
+### Changed
+
+- The root skill said saving a finding met along the way "is always within authority" while also making review, research, and diagnosis read-only, and ADR 0004 grants the finding record only with "fix" or "implement". Two Codex runs given "without changing anything" resolved the conflict by writing nothing and inventing a `PERSISTED` tag. Now: `DELIVER` and `RECORD` grant one record per material finding; a read-only request reports the finding as `UNSAVED` with a note that the owner can ask to save it; "review this, but save any material findings" grants the record. The guide, design page, README, and ADR 0013 say the same.
+- README no longer claims findings were saved in every run; it states nine of ten tagged and saved whenever the request allowed.
+
+### Verification status
+
+- Deterministic checks and host validation as for 1.6.0; receipts appended to `docs/research/2026-08-26/v1.6-receipts.md`.
+
 ## 1.6.0 (2026-08-26)
 
 SkipHow 1.6 makes Codex routing zero-config, frees the timestamp rule from one shell command, and removes documentation drift left by 1.4 and 1.5.

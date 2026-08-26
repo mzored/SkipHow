@@ -16,5 +16,6 @@ An accepted decision stays in place until a later ADR replaces it. Correct factu
 | [0008](0008-receipts-over-a-live-harness.md) | Prove model behavior with receipts, not a live harness | Accepted |
 | [0009](0009-reviewer-inherits-and-one-engineering-reference.md) | Reviewer inherits the session model; one engineering reference | Accepted |
 | [0010](0010-two-matcher-hook-and-codex-project-loading.md) | One hook with two matcher groups; Codex evidence through project-level loading | Accepted, amended by 0011 |
-| [0011](0011-findings-tag-codex-role-files-neutral-repo-instructions.md) | Tagged findings, shipped Codex role files, neutral repository instructions | Accepted, amended by 0012 |
+| [0011](0011-findings-tag-codex-role-files-neutral-repo-instructions.md) | Tagged findings, shipped Codex role files, neutral repository instructions | Accepted, amended by 0012 and 0013 |
 | [0012](0012-per-spawn-effort-and-portable-timestamps.md) | Codex effort per spawn, no role files; portable timestamp rule | Accepted |
+| [0013](0013-read-only-requests-save-nothing.md) | Read-only requests report findings `UNSAVED`; records need a granting request | Accepted |
