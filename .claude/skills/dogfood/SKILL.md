@@ -25,9 +25,14 @@ The owner's words grant the work, exactly as they do in the product:
 - "audit and record" — also write the receipt described under Report.
 - "audit and fix" — also change the package, but only when the change is covered by an existing ADR's
   revalidation trigger or is purely editorial, such as removing a contradiction an ADR already settled.
-  Anything that would need a new ADR stops at the proposal: a wording change to the contract is a material
-  product decision and it belongs to the owner. Bump `VERSION` and add the changelog section when
-  `plugins/skiphow/` changes; never push a tag. The release stays the owner's three steps.
+  Any other wording change to the contract stops at the proposal: it is a material product decision and it
+  belongs to the owner. Bump `VERSION` and add the changelog section when `plugins/skiphow/` changes; never
+  push a tag. The release stays the owner's three steps.
+
+Approval is not the same as a new ADR. The changelog section and the receipt are the record a policy edit
+gets; record proportionately, and amend the ADR that already owns the question rather than opening a
+competing one. Write a new ADR only for a decision that is expensive to reverse, or that rejects an
+alternative a future contributor would otherwise propose again.
 
 ## Find the sessions
 
