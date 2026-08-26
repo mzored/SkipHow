@@ -207,6 +207,31 @@ def test_agent_adapters_route_roles_to_family_aliases() -> None:
             assert "Edit" not in tools and "Write" not in tools
 
 
+def test_cross_host_review_names_both_directions() -> None:
+    """The escalated review lands on the other host, and both directions ship.
+
+    One direction silently dropped would leave half the owners on a same-model
+    reviewer with no signal that the rung is missing. The two effort renderings
+    are the one `DEEP` level spelled in each host's own syntax; the reviewer
+    adapter itself stays on `inherit`, so this is the only place they appear.
+    """
+    routing = read("plugins/skiphow/skills/skiphow/references/model-routing.md")
+    assert "codex review" in routing
+    assert "claude -p" in routing
+    assert "--effort high" in routing
+    assert 'model_reasoning_effort="high"' in routing
+    # Each direction declares its own boundary flag. They are not equally strong
+    # -- Codex sandboxes the pass, plan mode only bounds the model's tools -- so
+    # dropping either one leaves that direction's boundary unstated.
+    assert 'sandbox_mode="read-only"' in routing
+    assert "--permission-mode plan" in routing
+    assert "Edit" not in routing and "Write" not in routing
+    # The trigger stays where the review widens; the mechanics stay here.
+    engineering = read("plugins/skiphow/skills/skiphow/references/engineering.md")
+    assert "model-routing.md" in engineering
+    assert "codex" not in engineering.lower()
+
+
 def test_continuity_hook_is_the_only_hook() -> None:
     hooks_dir = PLUGIN / "hooks"
     assert [path.name for path in hooks_dir.iterdir()] == ["hooks.json"]
