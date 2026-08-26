@@ -5,7 +5,7 @@ This directory records the second audit of real SkipHow sessions run in other re
 | Topic | What it records |
 | --- | --- |
 | [Owner report](owner-report-commit-language.md) | A run writing Russian commit messages into an English-history repository, and what the 1.10.0 package said about commits: nothing |
-| [Field audit](field-audit-2026-08-27.md) | A live eight-delegate session judged against 1.7.0: the first field proof that agent definitions resolve subagent models, the delegation rules that reached no run, a decomposed run with no handoff, and a version the owner believed was in use and was not |
+| [Field audit](field-audit-2026-08-27.md) | An eleven-delegate session judged against 1.7.0, read live and again after it finished: the first field proof that agent definitions resolve subagent models, the delegation rules that reached no run, a decomposed run with no handoff, a version the owner believed was in use and was not, and what automatic compaction actually costs — the threshold it fires at, and why the counter a run can see does not measure it |
 | [1.13 receipts](v1.13-receipts.md) | Five external reviews of the standing package run at once — what each lane found, which findings were confirmed against primary sources or by planting the defect, and the six that were rejected on inspection |
 | [1.12 receipts](v1.12-receipts.md) | What `codex review` and headless `claude` actually accept, the 1.12.0 candidate reviewed through the cross-host rung it adds, and the unequal boundary the two hosts give that pass — Codex sandboxes it, plan mode does not stop the reviewed repository's own hooks |
 
