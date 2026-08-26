@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted. Amended by [ADR 0007](0007-host-adapters-for-routing-and-continuity.md): the checkpoint is written at item boundaries and before long waits rather than "before compaction", and a host hook surfaces it after compaction or resume.
+Accepted. Amended by [ADR 0007](0007-host-adapters-for-routing-and-continuity.md): the checkpoint is written at item boundaries and before long waits rather than "before compaction", and a host hook surfaces it after compaction or resume. Amended by [ADR 0009](0009-reviewer-inherits-and-one-engineering-reference.md): the engineering methods are one reference, not a router over five files.
 
 ## Date
 

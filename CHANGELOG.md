@@ -2,6 +2,29 @@
 
 All notable changes to this project appear in this file.
 
+## 1.2.0 (2026-08-26)
+
+SkipHow 1.2 makes the reviewer follow the owner's own model, turns a brain dump into a prioritized backlog, and cuts the policy and its checks further.
+
+### Changed
+
+- The `reviewer` adapter inherits the session model instead of pinning `opus`. The 1.1 receipt showed the root on a stronger model than its reviewer; the deepest tier is now always the model the owner chose, on every provider and model generation (ADR 0009).
+- `RECORD` gives every record a type and a proposed priority with its reason, and reports the proposed order. "Finish today's batch" works the batch in that order. An epic given as one request is split into bounded Issues first.
+- The five engineering method files and their router are one `references/engineering.md` holding only the invariants (exact-candidate review, a bug test that fails before the fix, prototypes never ship unchanged, conflicts are never resolved by picking a side). The references are eight files and about 3,450 words, from thirteen files and about 4,300.
+- The root deletes `.skiphow/handoff.md` when every selected item is disposed, so a finished queue no longer greets every new session.
+- The word budget check is one function in `scripts/check.py` with fixed limits (root under 600 words, references under 4,000 in total and 600 per file).
+
+### Removed
+
+- `references/methods/` and `references/engineering.md` as a router.
+- `scripts/context_budget.py`, its baseline file, and its tests.
+- Stale ignore rules for the harness removed in 1.1.0.
+
+### Verification status
+
+- Deterministic repository checks, package validation in both hosts (the Codex validator pinned in CI, run locally too), and the isolated Claude Code install pass on the tagged commit. The Codex isolated install is `UNVERIFIED` on the release machine because its managed policy blocks local marketplace sources.
+- Receipts for this release (`docs/research/2026-08-26/v1.2-receipts.md`) cover, on Claude Code: a small bug fixed in session, a normal feature, reuse of a pinned dependency, a brain dump turned into six prioritized Issues, a six-Issue batch finished end to end with four merged pull requests and cleanup, handoff and resume, the compaction hook, and two `builder` delegations on the standard tier in isolated worktrees. Codex, auto-compaction under a large context, and protected batch repositories are `UNVERIFIED`.
+
 ## 1.1.0 (2026-08-26)
 
 SkipHow 1.1 makes model routing and compaction continuity real, cuts the policy to intent plus invariants, and removes the harness and documentation that did not earn their keep.

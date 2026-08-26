@@ -14,4 +14,4 @@ Minimize the case one input, caller, configuration value, or step at a time, re-
 
 ## Repair the cause
 
-Add a check that fails for the original defect before the fix when a stable seam exists (read [testing](methods/testing.md) if the seam is unclear). Repair at the narrowest stable boundary and preserve compatibility unless the owner authorized a contract change. Rerun the minimal case, the original reproduction, focused tests, and nearby failure paths. Remove instrumentation and disposable harnesses. If the evidence proves only a mitigation, say so and record the unresolved cause.
+Add a check that fails for the original defect before the fix when a stable seam exists (read [engineering methods](engineering.md) if the seam is unclear). Repair at the narrowest stable boundary and preserve compatibility unless the owner authorized a contract change. Rerun the minimal case, the original reproduction, focused tests, and nearby failure paths. Remove instrumentation and disposable harnesses. If the evidence proves only a mitigation, say so and record the unresolved cause.

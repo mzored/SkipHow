@@ -32,11 +32,6 @@ REQUIRED_REFERENCES = frozenset(
         "github.md",
         "intake.md",
         "long-work.md",
-        "methods/conflicts.md",
-        "methods/design.md",
-        "methods/prototype.md",
-        "methods/review.md",
-        "methods/testing.md",
         "model-routing.md",
     }
 )
@@ -63,11 +58,13 @@ CONCRETE_MODEL_ID = re.compile(
     r"(?:opus|sonnet|haiku)-\d[\w.-]*|(?:opus|sonnet|haiku)-\d{8})\b",
     re.IGNORECASE,
 )
-AGENT_ROLES = {"scout": "haiku", "builder": "sonnet", "reviewer": "opus"}
+AGENT_ROLES = {"scout": "haiku", "builder": "sonnet", "reviewer": "inherit"}
 AGENT_MODELS = frozenset({"haiku", "sonnet", "opus", "inherit"})
 AGENT_EFFORTS = frozenset({"low", "medium", "high"})
 AGENT_FIELDS = frozenset({"name", "description", "model", "effort", "tools", "isolation", "maxTurns"})
 CONTINUITY_MATCHERS = frozenset({"startup", "clear", "compact", "resume"})
+ROOT_SKILL_LIMITS = {"bytes": 5000, "words": 600}
+REFERENCE_LIMITS = {"total_words": 4000, "file_words": 600}
 
 
 def managed_env_path() -> Path:
@@ -494,6 +491,26 @@ def validate_continuity_hook(path: Path = PLUGIN_ROOT / "hooks/hooks.json") -> l
     return errors
 
 
+def validate_budget() -> list[str]:
+    """Keep the always-loaded skill and each lazy reference within fixed word budgets."""
+    errors: list[str] = []
+    root_text = CANONICAL_SKILL.read_text(encoding="utf-8")
+    measured = {"bytes": len(root_text.encode("utf-8")), "words": len(root_text.split())}
+    for unit, limit in ROOT_SKILL_LIMITS.items():
+        if measured[unit] > limit:
+            errors.append(f"root skill {unit} exceed the limit: {measured[unit]} > {limit}")
+    words = {
+        path.relative_to(SKILL_ROOT / "references").as_posix(): len(path.read_text(encoding="utf-8").split())
+        for path in sorted((SKILL_ROOT / "references").rglob("*.md"))
+    }
+    if sum(words.values()) > REFERENCE_LIMITS["total_words"]:
+        errors.append(f"references words exceed the limit: {sum(words.values())} > {REFERENCE_LIMITS['total_words']}")
+    for name, count in words.items():
+        if count > REFERENCE_LIMITS["file_words"]:
+            errors.append(f"reference {name} words exceed the limit: {count} > {REFERENCE_LIMITS['file_words']}")
+    return errors
+
+
 def validate_plugin_static() -> list[str]:
     """Check the one-skill package shared by Codex and Claude."""
     errors: list[str] = []
@@ -621,10 +638,10 @@ def offline_checks(base: str | None = None) -> list[str]:
         + validate_version()
         + validate_runtime_removal()
         + validate_plugin_static()
+        + validate_budget()
         + validate_release_version_change(base)
     )
     commands = [
-        [sys.executable, "scripts/context_budget.py", "--check"],
         [sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider"],
     ]
     for command in commands:

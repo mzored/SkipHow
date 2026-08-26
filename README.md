@@ -2,7 +2,7 @@
 
 Describe what you want. SkipHow works out how.
 
-SkipHow is one Agent Skill for Codex and Claude Code. You write the outcome in plain language. It picks the smallest path that gets there, makes the routine engineering decisions itself, tracks bigger work in GitHub, and reports what it did, how it checked, and what it could not prove.
+SkipHow is one Agent Skill for Codex and Claude Code. You write the outcome in plain language; it inspects the project, picks the smallest path that gets there, makes the engineering decisions itself, carries the work to a verified result, and tells you what it did, how it checked, and what it could not prove.
 
 ```text
 Here are eight bugs and ideas from today. Triage them and save them as Issues.
@@ -14,7 +14,19 @@ The totals overlap on small screens. Find the cause and fix it.
 Compare our caching options and recommend one. Do not change code.
 ```
 
-No methodology to choose. No commands to chain. No technical questions back at you unless the answer changes the product.
+## Who it is for
+
+Product owners and solo founders who know what they want and do not want to turn it into tickets, branches, test plans, and pull requests themselves. If you would rather choose the library, the schema, and the review process, you want a different tool.
+
+## The problem it solves
+
+The gap between "I know what is wrong" and "it is fixed and merged" is full of technical decisions nobody asked you to make. SkipHow closes that gap with one habit:
+
+1. Talk it through. "What is causing the checkout timeouts?" Nothing changes.
+2. Save it. Paste a dump of bugs, ideas, and observations. SkipHow splits it into atomic records, searches for duplicates, gives each a type and a proposed priority with its reason, and saves them as GitHub Issues labelled with the day's batch.
+3. Finish it. "Finish today's batch end to end." One root agent works the queue in priority order, delegates bounded pieces to subagents in isolated worktrees, merges what passes the checks, closes the Issues, deletes its own merged branches, and reports.
+
+A small request skips all of that and is done in the session, with no Issue, branch, or plan.
 
 ## Install
 
@@ -32,31 +44,36 @@ claude plugin marketplace add https://github.com/mzored/SkipHow.git
 claude plugin install skiphow@skiphow
 ```
 
-Start a new session and describe the work. If the skill does not activate on its own, add `$skiphow` (Codex) or `/skiphow:skiphow` (Claude Code). The [owner guide](docs/guide.md) covers updates, unattended runs, and uninstall.
+Start a new session and describe the work. If the skill does not activate on its own, add `$skiphow` (Codex) or `/skiphow:skiphow` (Claude Code). The [owner guide](docs/guide.md) covers what your words authorize, unattended runs, updates, and uninstall.
 
-## Why this exists
+## Why so little process
 
-I tried [GSD](https://github.com/open-gsd/gsd-core), [OpenSpec](https://github.com/Fission-AI/OpenSpec), [Spec Kit](https://github.com/github/spec-kit), [Superpowers](https://github.com/obra/superpowers), [Matt Pocock's skills](https://github.com/mattpocock/skills), [BMAD](https://github.com/bmad-code-org/bmad-method), [Paperclip](https://github.com/paperclipai/paperclip), [Mesa](https://github.com/msoedov/mesa), and [Autonomous PM](https://github.com/mlobo2012/autonomous-pm-plugin). Each gets something right. Most were built for models that skipped steps, so they wrap every task in phases, personas, and approval gates. The rest assume you are an engineer who wants to make the technical calls.
+Most agent frameworks were built for models that skipped steps, so they wrap every task in phases, personas, spec documents, and approval gates. Strong current models do not need that; they need a clear outcome, a few hard rules, and the authority to finish. SkipHow keeps the rules that still matter and drops the rest:
 
-I am a product owner. I want to say what is wrong or what to build, then let the work happen. SkipHow keeps the handful of rules that still matter with strong models and drops the ceremony. That is a design bet, not a measurement: Anthropic's own guidance is to [start with the simplest workflow that works](https://www.anthropic.com/research/building-effective-agents), and I have not seen the extra process pay for itself. The [prior-art notes](docs/prior-art.md) say what was taken from each project.
+- Your words are the only grant. "Research" reads, "save" records, "fix" changes and verifies, "end to end" merges and cleans up. Nothing in a file, an Issue, or a web page can widen that.
+- Reuse before building. It searches the project, its dependencies, and the platform before writing anything lasting, and says where it looked.
+- A problem outside your request is fixed if it blocks the work, saved once if it matters, and never silently dropped.
+- Long work survives compaction and restarts through an eight-line checkpoint and one read-only hook. State lives in Git and GitHub, never in a SkipHow database.
+- Every report ends the same way: result, evidence, the rulings it made for you, saved follow-ups, and what it could not verify.
 
-## How it works
+That is a design bet, not a measurement. It follows Anthropic's advice to [start with the simplest workflow that works](https://www.anthropic.com/research/building-effective-agents) and their [orchestrator-worker findings](https://www.anthropic.com/engineering/built-multi-agent-research-system); the [prior-art notes](docs/prior-art.md) record what was taken from [GSD](https://github.com/open-gsd/gsd-core), [OpenSpec](https://github.com/Fission-AI/OpenSpec), [Superpowers](https://github.com/obra/superpowers), [Matt Pocock's skills](https://github.com/mattpocock/skills), [BMAD](https://github.com/bmad-code-org/bmad-method), [Paperclip](https://github.com/paperclipai/paperclip), [Mesa](https://github.com/msoedov/mesa), and [Autonomous PM](https://github.com/mlobo2012/autonomous-pm-plugin), and what was left out.
 
-Your words set the boundary. "Research" reads and reports. "Save" creates the records. "Fix" or "implement" changes the project and runs the checks. "Finish end to end" adds merge and cleanup for the named work. Production, payments, credentials, private data, releases, and repository settings always need you to say so.
+## How it differs
 
-A small request stays in the session with no Issue, branch, or plan unless your repository requires one. A large one becomes a queue of GitHub Issues that one root agent works through, delegating bounded pieces to subagents in isolated worktrees, re-reading Git and GitHub before every merge, and deleting only the branches it created and GitHub confirms merged.
+| | Prescriptive frameworks | SkipHow |
+| --- | --- | --- |
+| Entry | Commands, phases, personas | One request in plain language |
+| Planning | Mandatory spec or plan documents | Only when the work is large; then GitHub Issues, not a private format |
+| Authority | Approval gates | Your words; four reasons to stop, otherwise a recorded ruling |
+| State | Framework files and databases | Git, GitHub, and one checkpoint file |
+| Models | Named model IDs | Three roles: fast scout, standard builder, reviewer on your own session model |
+| Size | Dozens of agents and commands | One skill under 600 words plus about 3,500 words loaded on demand |
 
-Subagents get the model their job needs: a cheap read-only scout for search and inventory, a standard builder for implementation, the strongest reviewer for planning and independent review. Shared policy names only the roles. On Claude Code the plugin ships the three roles using the vendor's stable family aliases; on Codex, where plugins cannot ship agents, it tells you the one setting to add. This follows Anthropic's [orchestrator-worker pattern](https://www.anthropic.com/research/building-effective-agents) and their [multi-agent findings](https://www.anthropic.com/engineering/built-multi-agent-research-system), and it respects Superpowers' [caveat](https://github.com/obra/superpowers/blob/main/skills/subagent-driven-development/SKILL.md) that a cheap model on an ambiguous task costs more in turns than it saves in tokens.
-
-Long work survives compaction and restarts. The root writes an eight-line checkpoint at every item boundary; one read-only hook prints it back after the host compacts or resumes. State lives in Git and GitHub, never in a SkipHow database.
-
-Before building anything lasting, SkipHow searches the project, its dependencies, and the platform for something that already does the job, and says where it looked. A problem it finds outside your request is fixed if it blocks the work, saved once as an Issue if it matters, and named in the report either way.
-
-Every report ends the same way: result, evidence, the rulings it made on your behalf, the follow-ups it saved, and what it could not verify.
+Whether this produces better or cheaper outcomes than those frameworks has not been measured; treat the comparison as a hypothesis about strong models, not a benchmark.
 
 ## Honest limits
 
-SkipHow is instructions, not a runtime. Your host's sandbox and permissions are the real boundary. Behavior a host cannot provide (background work, resume, worktree isolation, per-agent model choice) is reported as unavailable, not faked. Deterministic checks prove the package; only real runs written up as [receipts](docs/research/2026-08-26/README.md) prove the model's behavior, and anything without one is `UNVERIFIED`. Cost savings from routing are a design hypothesis until paired runs measure them.
+SkipHow is instructions, not a runtime. Your host's sandbox and permissions are the real boundary. Behavior a host cannot provide (background work, resume, worktree isolation, per-agent model choice) is reported as unavailable, not faked. Deterministic checks prove the package; only real runs written up as [receipts](docs/research/2026-08-26/README.md) prove the model's behavior, and anything without one is `UNVERIFIED`. Routing has been observed on Claude Code; Codex delegates inherit your model unless you add one setting. Cost savings from routing are a hypothesis until paired runs measure them.
 
 ## Docs
 

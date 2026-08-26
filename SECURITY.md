@@ -4,9 +4,9 @@
 
 | Version | Supported |
 | --- | --- |
-| 1.1.x | Yes |
+| 1.2.x | Yes |
+| 1.1.x | No |
 | 1.0.x | No |
-| 0.9.x | No |
 | Earlier versions | No |
 
 Security support covers the packaged SkipHow skill, its host manifests, marketplace metadata, release checks, and documented GitHub delivery policy. Codex, Claude Code, GitHub, Git, operating systems, and third-party services keep their own security policies.

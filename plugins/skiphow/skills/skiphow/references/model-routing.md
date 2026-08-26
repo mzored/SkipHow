@@ -20,7 +20,7 @@ After a second failure with the same cause, raise the role one tier or review th
 
 ## Hosts
 
-Claude Code: the plugin ships `scout`, `builder`, and `reviewer` under `agents/`; invoke them as `skiphow:<role>`. If the host substitutes a model, treat the route as inherited and say so.
+Claude Code: the plugin ships `scout`, `builder`, and `reviewer` under `agents/`; invoke them as `skiphow:<role>`. The reviewer runs on the session model, so escalation ends at the model the owner chose. If the host substitutes a model, treat the route as inherited and say so.
 
 Codex: plugins cannot ship agents, so delegates inherit the parent model and effort unless the owner configured `[agents]` or the project has `.codex/agents/<role>.toml`. Write those files only when the owner asks; set `model_reasoning_effort` per role (`low`, default, `high`) and leave `model` unset unless the owner named one.
 
