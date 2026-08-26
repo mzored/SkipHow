@@ -36,18 +36,20 @@ REQUIRED_REFERENCES = frozenset(
     }
 )
 PERSONAL_PATH = re.compile(
-    r"(?:/(?:Users|home)/[^/\s]+/|"
+    r"(?:(?<![\w.])/(?:Users|home)/[^/\s]+/?|"
     + "/"
     + "root/"
-    + r"|[A-Za-z]:[\\/]+Users[\\/]+[^\\/\s]+[\\/]"
+    + r"|[A-Za-z]:[\\/]+(?i:users)[\\/]+[^\\/\s]+[\\/]?"
     + r"|~/\.(?:codex|claude)(?:/|\b)|\$(?:\{)?HOME(?:\})?[\\/]"
     + r"|%USERPROFILE%[\\/])"
 )
 CONCRETE_MODEL_ID = re.compile(
-    r"\b(?:gpt-\d[\w.-]*|claude-(?:\d|opus|sonnet|haiku)[\w.-]*|"
-    r"gemini-\d[\w.-]*|llama-\d[\w.-]*|"
-    r"mistral-(?:\d|small|medium|large)[\w.-]*|o[1-9](?:-[\w.-]+)?|"
-    r"(?:opus|sonnet|haiku)-\d[\w.-]*|(?:opus|sonnet|haiku)-\d{8})\b",
+    # A provider name, any number of family words, then a version component. Naming the
+    # families instead would age: `claude-fable-5` and `claude-future-5` both slipped past
+    # an enumerated list, and the invariant is no versioned ID at all.
+    r"\b(?:(?:claude|gpt|gemini|llama|mistral|grok|qwen|deepseek)(?:-[a-z]+)*-?\d[\w.-]*|"
+    r"mistral-(?:small|medium|large)[\w.-]*|o[1-9](?:-[\w.-]+)?|"
+    r"(?:opus|sonnet|haiku|fable)-\d[\w.-]*)\b",
     re.IGNORECASE,
 )
 AGENT_ROLES = {"scout": "haiku", "builder": "sonnet", "reviewer": "inherit"}
@@ -55,6 +57,24 @@ AGENT_MODELS = frozenset({"haiku", "sonnet", "opus", "inherit"})
 AGENT_EFFORTS = frozenset({"low", "medium", "high"})
 AGENT_FIELDS = frozenset({"name", "description", "model", "effort", "tools", "isolation", "maxTurns"})
 CONTINUITY_MATCHERS = frozenset({"startup", "clear", "compact", "resume"})
+PACKAGE_FILES = frozenset(
+    {
+        "LICENSE",
+        ".claude-plugin/plugin.json",
+        ".codex-plugin/plugin.json",
+        "agents/builder.md",
+        "agents/reviewer.md",
+        "agents/scout.md",
+        "hooks/hooks.json",
+        "skills/skiphow/SKILL.md",
+        "skills/skiphow/agents/openai.yaml",
+    }
+    | {f"skills/skiphow/references/{name}" for name in REQUIRED_REFERENCES}
+)
+HOOK_COMMAND = re.compile(
+    r"""^sh -c 'printf "%s\\n" "[^"'$`\\]+"; """
+    r"""if \[ -f \.skiphow/handoff\.md \]; then tail -n \d{1,3} \.skiphow/handoff\.md; fi; exit 0'$"""
+)
 ROOT_SKILL_LIMITS = {"bytes": 7000, "words": 1000}
 REFERENCE_LIMITS = {"total_words": 4000, "file_words": 600}
 
@@ -182,20 +202,27 @@ def checked(
 
 def repository_files(suffixes: Iterable[str] | None = None) -> Iterable[Path]:
     """Yield tracked and new non-ignored files, with a fallback outside Git."""
-    result = subprocess.run(
-        ["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard"],
-        cwd=ROOT,
-        capture_output=True,
-        check=False,
-    )
-    if result.returncode == 0:
+    try:
+        result = subprocess.run(
+            ["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard"],
+            cwd=ROOT,
+            capture_output=True,
+            timeout=120,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        result = None
+    if result is not None and result.returncode == 0:
         paths = (ROOT / os.fsdecode(raw) for raw in result.stdout.split(b"\0") if raw)
     else:
         ignored = {".git", ".venv", ".pytest_cache", "__pycache__", "build"}
         paths = (
             path
             for path in ROOT.rglob("*")
-            if not any(part in ignored or part.endswith(".egg-info") for part in path.parts)
+            if not any(
+                part in ignored or part.endswith(".egg-info")
+                for part in path.relative_to(ROOT).parts
+            )
         )
     for path in paths:
         if path.is_file() and (suffixes is None or path.suffix.lower() in suffixes):
@@ -303,6 +330,13 @@ def load_json(relative: str) -> dict[str, object]:
 
 def validate_version() -> list[str]:
     """Keep release metadata aligned with the single VERSION file."""
+    try:
+        return _validate_version()
+    except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError) as exc:
+        return [f"cannot validate release metadata: {exc}"]
+
+
+def _validate_version() -> list[str]:
     release = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
     errors: list[str] = []
     if not re.fullmatch(r"(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)", release):
@@ -326,8 +360,11 @@ def validate_version() -> list[str]:
     if isinstance(metadata, dict) and "version" in metadata:
         errors.append("Claude marketplace must not keep a legacy duplicate version")
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
-    if not re.search(rf"^## {re.escape(release)} \(\d{{4}}-\d{{2}}-\d{{2}}\)$", changelog, re.MULTILINE):
-        errors.append(f"CHANGELOG.md has no {release} release heading")
+    released = re.findall(r"^## (\S+) \(\d{4}-\d{2}-\d{2}\)$", changelog, re.MULTILINE)
+    if not released:
+        errors.append("CHANGELOG.md has no dated release heading")
+    elif released[0] != release:
+        errors.append(f"CHANGELOG.md leads with {released[0]}, not the released {release}")
     if f"| {release.rsplit('.', 1)[0]}.x | Yes |" not in (
         ROOT / "SECURITY.md"
     ).read_text(encoding="utf-8"):
@@ -364,14 +401,17 @@ def validate_release_version_change(base: str | None) -> list[str]:
 
 def model_id_scan(paths: Iterable[Path] | None = None) -> list[str]:
     """Keep provider model IDs out of portable skill policy."""
-    candidates = list(paths) if paths is not None else [
-        CANONICAL_SKILL,
-        *sorted((SKILL_ROOT / "references").rglob("*.md")),
-    ]
+    candidates = (
+        list(paths)
+        if paths is not None
+        else [path for path in sorted(PLUGIN_ROOT.rglob("*")) if path.is_file()]
+    )
     errors: list[str] = []
     for path in candidates:
         try:
             content = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            continue
         except OSError as exc:
             errors.append(f"cannot scan model policy {path}: {exc}")
             continue
@@ -448,6 +488,8 @@ def validate_continuity_hook(path: Path = PLUGIN_ROOT / "hooks/hooks.json") -> l
     hooks = payload.get("hooks") if isinstance(payload, dict) else None
     if not isinstance(hooks, dict) or set(hooks) != {"SessionStart"}:
         return [f"{relative} must declare only SessionStart hooks"]
+    if not isinstance(hooks["SessionStart"], list) or not hooks["SessionStart"]:
+        return [f"{relative} must list its SessionStart groups"]
     errors: list[str] = []
     matchers: list[str] = []
     for group in hooks["SessionStart"]:
@@ -459,7 +501,11 @@ def validate_continuity_hook(path: Path = PLUGIN_ROOT / "hooks/hooks.json") -> l
             continue
         matchers.extend(sources)
         handler = handlers[0]
-        command = handler.get("command", "") if isinstance(handler, dict) else ""
+        if not isinstance(handler, dict):
+            errors.append(f"{relative} handler must be an object")
+            continue
+        command = handler.get("command", "")
+        command = command if isinstance(command, str) else ""
         if handler.get("type") != "command" or not command.startswith("sh -c "):
             errors.append(f"{relative} handler must be a portable sh command")
         if ".skiphow/handoff.md" not in command:
@@ -467,9 +513,13 @@ def validate_continuity_hook(path: Path = PLUGIN_ROOT / "hooks/hooks.json") -> l
         forbidden = ("curl", "wget", "http", ">", "rm ", "mv ", "git ", "python", "node", "$(", "`")
         if any(token in command for token in forbidden):
             errors.append(f"{relative} handler must not write, fetch, or run programs")
+        elif not HOOK_COMMAND.fullmatch(command):
+            # A denylist of program names cannot be complete; the accepted command is
+            # one fixed shape -- print a notice, then tail the checkpoint if it exists.
+            errors.append(f"{relative} handler must match the accepted read-only command shape")
     if sorted(matchers) != sorted(CONTINUITY_MATCHERS):
         errors.append(f"{relative} must match startup, clear, compact, and resume exactly once each")
-    other = [p for p in path.parent.rglob("*") if p.is_file() and p != path]
+    other = [item for item in path.parent.rglob("*") if item.is_file() and item != path]
     if other:
         errors.append("plugin hooks/ may contain only hooks.json")
     return errors
@@ -483,7 +533,10 @@ def validate_budget() -> list[str]:
     question is whether the rule belongs in the root, not which words to shave.
     """
     errors: list[str] = []
-    root_text = CANONICAL_SKILL.read_text(encoding="utf-8")
+    try:
+        root_text = CANONICAL_SKILL.read_text(encoding="utf-8")
+    except OSError as exc:
+        return [f"cannot measure the root skill: {exc}"]
     measured = {"bytes": len(root_text.encode("utf-8")), "words": len(root_text.split())}
     for unit, limit in ROOT_SKILL_LIMITS.items():
         if measured[unit] > limit:
@@ -527,14 +580,24 @@ def validate_plugin_static() -> list[str]:
         found = ", ".join(path.relative_to(PLUGIN_ROOT).as_posix() for path in public_skills)
         errors.append(f"plugin must contain one canonical SKILL.md, found: {found or 'none'}")
 
-    top_level = {
-        path.name
-        for path in PLUGIN_ROOT.iterdir()
-        if path.is_file() or any(child.is_file() for child in path.rglob("*"))
+    shipped = {
+        path.relative_to(PLUGIN_ROOT).as_posix()
+        for path in PLUGIN_ROOT.rglob("*")
+        if path.is_file() or path.is_symlink()
     }
-    unexpected = sorted(top_level - {".claude-plugin", ".codex-plugin", "agents", "hooks", "skills", "LICENSE"})
+    unexpected = sorted(shipped - PACKAGE_FILES)
     if unexpected:
-        errors.append(f"plugin has unexpected top-level entries: {', '.join(unexpected)}")
+        errors.append(f"plugin ships files outside the accepted shape: {', '.join(unexpected)}")
+    absent = sorted(PACKAGE_FILES - shipped)
+    if absent:
+        errors.append(f"plugin is missing accepted files: {', '.join(absent)}")
+    links = sorted(
+        path.relative_to(PLUGIN_ROOT).as_posix()
+        for path in PLUGIN_ROOT.rglob("*")
+        if path.is_symlink()
+    )
+    if links:
+        errors.append(f"plugin must ship regular files, not links: {', '.join(links)}")
     package_license = PLUGIN_ROOT / "LICENSE"
     if not package_license.is_file() or package_license.read_bytes() != (ROOT / "LICENSE").read_bytes():
         errors.append("plugin must include the repository MIT license")

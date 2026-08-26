@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted in 1.1.0. The adapters, the hook, and the deterministic checks below ship in that release. Amended by [ADR 0009](0009-reviewer-inherits-and-one-engineering-reference.md): the `reviewer` adapter inherits the session model instead of pinning `opus`.
+Accepted in 1.1.0. The adapters, the hook, and the deterministic checks below ship in that release. Amended by [ADR 0009](0009-reviewer-inherits-and-one-engineering-reference.md): the `reviewer` adapter inherits the session model instead of pinning `opus`. Amended by [ADR 0010](0010-two-matcher-hook-and-codex-project-loading.md) on the hook, and by [ADR 0012](0012-per-spawn-effort-and-portable-timestamps.md), which supersedes the Codex adapter paragraph below: no `[agents]` configuration and no project role files, effort per spawn instead.
 
 ## Date
 

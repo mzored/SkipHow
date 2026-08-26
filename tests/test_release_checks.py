@@ -6,6 +6,7 @@ import importlib.util
 import json
 from pathlib import Path
 import re
+import shutil
 import sys
 from unittest.mock import patch
 
@@ -60,8 +61,17 @@ def test_local_package_and_document_checks_pass() -> None:
     assert check.validate_budget() == []
 
 
+def test_budget_limits_are_the_accepted_ones() -> None:
+    """Pin the four accepted numbers, not whatever the module currently holds.
+
+    The fixtures below scale with the constants, so raising a limit tenfold used
+    to leave every budget test green.
+    """
+    assert check.ROOT_SKILL_LIMITS == {"bytes": 7000, "words": 1000}
+    assert check.REFERENCE_LIMITS == {"total_words": 4000, "file_words": 600}
+
+
 def test_budget_reports_measured_and_allowed_values(tmp_path: Path) -> None:
-    # Derive the numbers from the accepted shape; the test asserts the report, not the budget.
     root_limit = check.ROOT_SKILL_LIMITS["words"]
     file_limit = check.REFERENCE_LIMITS["file_words"]
     skill = tmp_path / "SKILL.md"
@@ -155,16 +165,19 @@ def test_non_plugin_change_does_not_require_a_version_bump() -> None:
 
 
 def test_plugin_version_cannot_move_backward() -> None:
+    current = (check.ROOT / "VERSION").read_text(encoding="utf-8").strip()
+    major, minor, patch_number = (int(part) for part in current.split("."))
+    ahead = f"{major + 1}.{minor}.{patch_number}"
     with patch.object(
         check,
         "checked",
         side_effect=[
             (True, "plugins/skiphow/skills/skiphow/SKILL.md\n"),
-            (True, "9.0.0\n"),
+            (True, f"{ahead}\n"),
         ],
     ):
         assert check.validate_release_version_change("base") == [
-            "plugin version must increase from 9.0.0 to a later stable version"
+            f"plugin version must increase from {ahead} to a later stable version"
         ]
 
 
@@ -176,13 +189,194 @@ def test_portable_policy_rejects_provider_model_ids(tmp_path: Path) -> None:
     assert "gpt-5.6-example" in errors[0]
 
 
-def test_portability_scan_includes_untracked_package_files() -> None:
-    untracked = check.PLUGIN_ROOT / "personal-path.txt"
+def test_file_enumeration_asks_git_for_untracked_files() -> None:
+    """The scan can only see a new file if the enumerator asks Git for one."""
+    with patch.object(check.subprocess, "run") as run:
+        run.return_value = check.subprocess.CompletedProcess(["git"], 0, b"", b"")
+        list(check.repository_files())
+    command = run.call_args.args[0]
+    assert command[:2] == ["git", "ls-files"]
+    assert {"--others", "--exclude-standard", "--cached"} <= set(command)
+    assert run.call_args.kwargs["timeout"]
+
+
+def test_portability_scan_flags_a_personal_path_in_a_package_file(tmp_path: Path) -> None:
+    """The scan reports a file the enumerator yields -- proven off the real package."""
+    plugin = tmp_path / "plugins/skiphow"
+    plugin.mkdir(parents=True)
+    untracked = plugin / "personal-path.txt"
     untracked.write_text("/" + "Users/person/secret\n", encoding="utf-8")
-    try:
-        assert any("personal-path.txt" in error for error in check.portability_scan())
-    finally:
-        untracked.unlink()
+    with (
+        patch.object(check, "ROOT", tmp_path),
+        patch.object(check, "PLUGIN_ROOT", plugin),
+        patch.object(check, "repository_files", return_value=[untracked]),
+    ):
+        errors = check.portability_scan()
+    assert any("personal-path.txt" in error for error in errors)
+
+
+def test_portability_scan_catches_a_home_path_with_no_trailing_separator(tmp_path: Path) -> None:
+    """`/Users/person` at the end of a sentence used to pass the scan."""
+    plugin = tmp_path / "plugins/skiphow"
+    plugin.mkdir(parents=True)
+    candidate = plugin / "note.md"
+    candidate.write_text("Run it from /" + "Users/person.\n", encoding="utf-8")
+    with (
+        patch.object(check, "ROOT", tmp_path),
+        patch.object(check, "PLUGIN_ROOT", plugin),
+        patch.object(check, "repository_files", return_value=[candidate]),
+    ):
+        assert check.portability_scan() != []
+
+
+def test_model_scan_covers_every_shipped_file_and_current_families(tmp_path: Path) -> None:
+    """The default scan read the prose only, and named no current Claude family.
+
+    A `claude-fable-5` in the Codex adapter or either manifest passed both gates.
+    """
+    # `claude-future-5` and `gemini-pro-3` name no family the pattern lists; the
+    # invariant is no versioned ID, so enumerating the families of the day is not enough.
+    for identifier in (
+        "claude-fable-5", "fable-5", "gpt-oss-120b", "grok-4", "qwen3-235b",
+        "claude-future-5", "gemini-pro-3", "mistral-large-2",
+    ):
+        candidate = tmp_path / "policy.md"
+        candidate.write_text(f"Use {identifier}.\n", encoding="utf-8")
+        assert check.model_id_scan([candidate]) != [], identifier
+    for innocent in ("claude-code", "Claude Code 2.1.246", "a fabled release", "the opus of work"):
+        candidate = tmp_path / "prose.md"
+        candidate.write_text(f"{innocent}\n", encoding="utf-8")
+        assert check.model_id_scan([candidate]) == [], innocent
+    # Default mode, over a manifest -- the file kind the old candidate list skipped.
+    package = tmp_path / "skiphow"
+    (package / ".codex-plugin").mkdir(parents=True)
+    (package / ".codex-plugin/plugin.json").write_text(
+        '{"model": "claude-fable-5"}\n', encoding="utf-8"
+    )
+    with patch.object(check, "PLUGIN_ROOT", package):
+        errors = check.model_id_scan()
+    assert any("claude-fable-5" in error for error in errors)
+
+
+def test_package_shape_rejects_an_extra_shipped_file(tmp_path: Path) -> None:
+    """The old check named directories, so any extra file inside one passed."""
+    package = tmp_path / "skiphow"
+    shutil.copytree(check.PLUGIN_ROOT, package)
+    (package / "agents/extra.txt").write_text("x\n", encoding="utf-8")
+    with (
+        patch.object(check, "PLUGIN_ROOT", package),
+        patch.object(check, "SKILL_ROOT", package / "skills/skiphow"),
+        patch.object(check, "CANONICAL_SKILL", package / "skills/skiphow/SKILL.md"),
+    ):
+        errors = check.validate_plugin_static()
+    assert any("agents/extra.txt" in error for error in errors)
+
+
+def test_changelog_must_lead_with_the_released_version() -> None:
+    """A newer section above the released one used to satisfy the heading search."""
+    changelog = (check.ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+    release = (check.ROOT / "VERSION").read_text(encoding="utf-8").strip()
+    dated = re.findall(r"^## (\S+) \(\d{4}-\d{2}-\d{2}\)$", changelog, re.MULTILINE)
+    assert dated[0] == release
+    assert check.validate_version() == []
+
+
+def test_hook_shape_rejects_a_quote_breakout() -> None:
+    """A single quote in the message closes the outer `sh -c '...'`.
+
+    The shape excluded `"`, `$`, backtick and backslash but not `'`, so a message
+    could end the quoting and run a program the denylist never named.
+    """
+    breakout = (
+        "sh -c 'printf \"%s\\n\" \"' ; touch f; echo '\"; "
+        "if [ -f .skiphow/handoff.md ]; then tail -n 40 .skiphow/handoff.md; fi; exit 0'"
+    )
+    assert check.HOOK_COMMAND.fullmatch(breakout) is None
+    real = json.loads((check.PLUGIN_ROOT / "hooks/hooks.json").read_text(encoding="utf-8"))
+    for group in real["hooks"]["SessionStart"]:
+        assert check.HOOK_COMMAND.fullmatch(group["hooks"][0]["command"])
+
+
+def test_personal_path_scan_leaves_web_routes_alone() -> None:
+    """Dropping the required trailing separator reached into URLs.
+
+    A `/users/` route in a documented URL is not a home directory, and the gate
+    scans public documentation, so a false positive blocks a release for nothing.
+    """
+    for innocent in (
+        "https://example.com/Users/profile",
+        "https://example.test/users/alice",
+        "GET /users/me",
+    ):
+        assert check.PERSONAL_PATH.search(innocent) is None, innocent
+    for personal in ("see /" + "Users/person", "/" + "home/person", "C:\\USERS\\person\\x"):
+        assert check.PERSONAL_PATH.search(personal), personal
+
+
+def test_run_summary_refuses_evidence_it_cannot_read(tmp_path: Path) -> None:
+    """A corrupt or unfinished transcript produced a plausible zero-cost summary."""
+    summary = load("skiphow_run_summary", "scripts/run_summary.py")
+    broken = tmp_path / "broken.jsonl"
+    broken.write_text("not json\n", encoding="utf-8")
+    with pytest.raises(summary.TranscriptError):
+        summary.summarize(broken)
+    unfinished = tmp_path / "unfinished.jsonl"
+    unfinished.write_text('{"type": "assistant", "message": {"model": "m", "content": []}}\n', encoding="utf-8")
+    with pytest.raises(summary.TranscriptError):
+        summary.summarize(unfinished)
+    # `isinstance(False, int)` is True, so a boolean metric used to render as zero.
+    boolean = tmp_path / "boolean.jsonl"
+    boolean.write_text('{"type": "result", "num_turns": false}\n', encoding="utf-8")
+    with pytest.raises(summary.TranscriptError):
+        summary.summarize(boolean)
+    # A streaming-input run emits one cumulative result per turn; the last one wins.
+    multi = tmp_path / "multi.jsonl"
+    multi.write_text(
+        '{"type": "result", "num_turns": 2, "total_cost_usd": 0.1, "duration_ms": 1000}\n'
+        '{"type": "result", "num_turns": 5, "total_cost_usd": 0.3, "duration_ms": 4000}\n',
+        encoding="utf-8",
+    )
+    assert summary.summarize(multi)["turns"] == 5
+    # A metric the host never reported stays absent rather than becoming a zero.
+    partial = tmp_path / "partial.jsonl"
+    partial.write_text('{"type": "result", "num_turns": 3}\n', encoding="utf-8")
+    assert summary.summarize(partial)["cost_usd"] is None
+    # `float("nan")` is an instance of float, and a negative count is not a count.
+    for impossible in ('{"type": "result", "num_turns": NaN}', '{"type": "result", "num_turns": -1}'):
+        broken_metric = tmp_path / "metric.jsonl"
+        broken_metric.write_text(impossible + "\n", encoding="utf-8")
+        with pytest.raises(summary.TranscriptError):
+            summary.summarize(broken_metric)
+    assert summary.main([]) == 2
+
+
+def test_skip_install_cannot_satisfy_a_required_install() -> None:
+    """`--skip-install` used to silently answer `--require-*-install` with exit 0."""
+    for required in ("--require-codex-install", "--require-claude-install"):
+        with pytest.raises(SystemExit) as raised:
+            hosts.main(["--skip-install", required])
+        assert raised.value.code == 2
+
+
+def test_only_a_source_policy_denial_is_downgraded() -> None:
+    """Any output naming requirements.toml used to be read as a policy block.
+
+    The first string is the message a machine with a managed Codex policy actually
+    prints; narrowing this match without it turned that machine's `UNVERIFIED` into
+    a release-blocking `FAIL`.
+    """
+    observed = (
+        "Error: marketplace source `/tmp/skiphow-codex-install-x/marketplace` is not "
+        "allowed by requirements from /etc/codex/requirements.toml"
+    )
+    assert hosts._codex_policy_block(observed)
+    assert hosts._codex_policy_block("blocked by allowed source policy")
+    assert not hosts._codex_policy_block("failed to parse /etc/codex/requirements.toml")
+    assert not hosts._codex_policy_block("network unreachable")
+    # An unrelated refusal beside a parse error is not a source-policy denial.
+    assert not hosts._codex_policy_block(
+        "network setting is not allowed; failed to parse /etc/codex/requirements.toml"
+    )
 
 
 def test_file_enumeration_falls_back_without_git(tmp_path: Path) -> None:

@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted, amended by [0014](0014-conform-to-the-tracker-classification.md)
+Accepted. Amended by [ADR 0014](0014-conform-to-the-tracker-classification.md), which restores and extends step 4 ("Do not use labels as a second workflow engine").
 
 ## Date
 

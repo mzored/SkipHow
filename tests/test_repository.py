@@ -6,6 +6,7 @@ wording of the policy. Prose is free to change; structure is not.
 
 from __future__ import annotations
 
+import importlib.util
 import json
 from pathlib import Path
 import re
@@ -29,10 +30,11 @@ REFERENCES = frozenset(
         "model-routing.md",
     }
 )
-VERSIONED_MODEL = re.compile(
-    r"\b(?:gpt-\d|claude-\d|claude-(?:opus|sonnet|haiku)-|(?:opus|sonnet|haiku)-\d|gemini-\d|o[1-9]-)",
-    re.IGNORECASE,
-)
+CHECK = importlib.util.spec_from_file_location("skiphow_check_shape", ROOT / "scripts/check.py")
+_MODULE = importlib.util.module_from_spec(CHECK)
+CHECK.loader.exec_module(_MODULE)
+VERSIONED_MODEL = _MODULE.CONCRETE_MODEL_ID
+PERSONAL_PATH = _MODULE.PERSONAL_PATH
 
 
 def read(relative: str) -> str:
@@ -125,14 +127,29 @@ def test_release_metadata_uses_one_version() -> None:
     assert f"| {release.rsplit('.', 1)[0]}.x | Yes |" in read("SECURITY.md")
 
 
+def every_uses(node: object) -> list[str]:
+    """Collect every `uses` value, including job-level reusable workflows."""
+    if isinstance(node, dict):
+        found = [node["uses"]] if isinstance(node.get("uses"), str) else []
+        return found + [item for value in node.values() for item in every_uses(value)]
+    if isinstance(node, list):
+        return [item for value in node for item in every_uses(value)]
+    return []
+
+
 def test_workflows_are_sha_pinned_with_least_privilege() -> None:
-    for name in ("ci.yml", "release.yml"):
-        workflow = read(f".github/workflows/{name}")
-        uses = re.findall(r"^\s*- uses: ([^\s]+)", workflow, re.MULTILINE)
+    """A job-level `uses` is a dependency too, and permissions is a whole mapping.
+
+    The step-level regex this replaced ignored reusable workflows, and the
+    permissions regex matched a prefix, so an added `id-token: write` stayed green.
+    """
+    for name, granted in (("ci.yml", "read"), ("release.yml", "write")):
+        workflow = yaml.safe_load(read(f".github/workflows/{name}"))
+        uses = every_uses(workflow)
         assert uses, name
-        assert all(re.fullmatch(r"[^@]+@[0-9a-f]{40}", item) for item in uses), name
-    assert re.search(r"^permissions:\n  contents: read$", read(".github/workflows/ci.yml"), re.MULTILINE)
-    assert re.search(r"^permissions:\n  contents: write$", read(".github/workflows/release.yml"), re.MULTILINE)
+        assert all(re.fullmatch(r"[^@]+@[0-9a-f]{40}", item) for item in uses), (name, uses)
+        assert workflow["permissions"] == {"contents": granted}, name
+        assert all("permissions" not in job for job in workflow["jobs"].values()), name
 
 
 
@@ -162,7 +179,16 @@ def test_report_and_record_formats_are_fenced() -> None:
     labels = {line.split(":")[0].strip("- ") for block in handoff for line in block.splitlines() if line.startswith("- ")}
     assert labels == {"Recorded", "Outcome", "Selected scope", "Authority", "Done", "In progress", "Blockers", "Next safe action"}
     inbox = fenced_blocks("plugins/skiphow/skills/skiphow/references/intake.md")
-    assert any("Disposition" in block and "Recorded" in block for block in inbox)
+    inbox_labels = {
+        line.split(":")[0].strip("- ")
+        for block in inbox
+        for line in block.splitlines()
+        if line.startswith("- ")
+    }
+    assert inbox_labels == {
+        "Recorded", "Source", "Original", "Normalized", "Type",
+        "Disposition", "Priority", "Links", "Evidence", "Assumptions", "Open questions",
+    }
 
 
 def test_named_contracts_stay_in_lazy_references() -> None:
@@ -200,11 +226,12 @@ def test_agent_adapters_route_roles_to_family_aliases() -> None:
         assert meta["name"] == role
         assert meta["description"].strip()
         assert not ({"hooks", "mcpServers", "permissionMode"} & set(meta))
-        tools = str(meta.get("tools", ""))
+        tools = {item.strip() for item in str(meta.get("tools", "")).split(",") if item.strip()}
+        assert tools
         if role == "builder":
-            assert "Edit" in tools and "Write" in tools
+            assert {"Edit", "Write"} <= tools
         else:
-            assert "Edit" not in tools and "Write" not in tools
+            assert not ({"Edit", "Write", "NotebookEdit"} & tools)
 
 
 def test_cross_host_review_names_both_directions() -> None:
@@ -216,20 +243,56 @@ def test_cross_host_review_names_both_directions() -> None:
     adapter itself stays on `inherit`, so this is the only place they appear.
     """
     routing = read("plugins/skiphow/skills/skiphow/references/model-routing.md")
-    assert "codex review" in routing
-    assert "claude -p" in routing
-    assert "--effort high" in routing
-    assert 'model_reasoning_effort="high"' in routing
+    bullets = {
+        line.split(":", 1)[0].removeprefix("- From ").strip(): line
+        for line in routing.splitlines()
+        if line.startswith("- From ")
+    }
+    assert set(bullets) == {"Claude Code", "Codex"}
+    # Each host names the *other* host's command. Asserting the two commands are
+    # present somewhere let a swap -- Claude asking Claude -- stay green.
+    assert "codex review" in bullets["Claude Code"]
+    assert "claude -p" in bullets["Codex"]
+    assert "claude -p" not in bullets["Claude Code"]
+    assert "codex review" not in bullets["Codex"]
     # Each direction declares its own boundary flag. They are not equally strong
     # -- Codex sandboxes the pass, plan mode only bounds the model's tools -- so
     # dropping either one leaves that direction's boundary unstated.
-    assert 'sandbox_mode="read-only"' in routing
-    assert "--permission-mode plan" in routing
-    assert "Edit" not in routing and "Write" not in routing
+    assert 'sandbox_mode="read-only"' in bullets["Claude Code"]
+    assert "--effort high" in bullets["Codex"]
+    assert "--permission-mode plan" in bullets["Codex"]
+    # Measured 2026-08-27: `claude --effort` warns and falls back on an unknown value,
+    # so the request is real. `codex -c model_reasoning_effort` is accepted for any
+    # value, including a bogus one, and the run stays at the host default -- so naming
+    # a level there would be a claim the tool does not honour.
+    assert "model_reasoning_effort" not in routing
+    # `--allowedTools` pre-approves rather than restricts, so it is never the boundary.
+    assert "--allowedTools" not in routing
     # The trigger stays where the review widens; the mechanics stay here.
     engineering = read("plugins/skiphow/skills/skiphow/references/engineering.md")
     assert "model-routing.md" in engineering
-    assert "codex" not in engineering.lower()
+    mechanics = ("codex review", "claude -p", "--effort", "model_reasoning_effort", "--permission-mode")
+    assert [token for token in mechanics if token in engineering] == []
+
+
+def test_every_adr_status_agrees_with_the_index() -> None:
+    """An ADR whose own Status omits its amendment reads as still in force.
+
+    Five ADRs disagreed with the index at once, in both directions, leaving
+    superseded Decisions -- Codex `[agents]` config, shipped role files -- looking
+    current to anyone who opened the file rather than the table.
+    """
+    index = read("docs/decisions/README.md")
+    rows = dict(re.findall(r"\| \[(\d{4})\]\([^)]+\) \| [^|]+ \| ([^|]+) \|", index))
+    decisions = sorted((ROOT / "docs/decisions").glob("0*.md"))
+    assert {path.name[:4] for path in decisions} == set(rows)
+    for path in decisions:
+        status = re.search(r"## Status\n\n(.+)", path.read_text(encoding="utf-8")).group(1)
+        amended = set()
+        for clause in re.split(r"(?<=[.])\s+", status):
+            if "Amended by" in clause or "Superseded by" in clause:
+                amended |= set(re.findall(r"ADR (\d{4})", clause))
+        assert amended == set(re.findall(r"\b(\d{4})\b", rows[path.name[:4]])), path.name
 
 
 def test_continuity_hook_is_the_only_hook() -> None:
@@ -249,9 +312,21 @@ def test_continuity_hook_is_the_only_hook() -> None:
 
 
 def test_package_has_no_versioned_model_ids_or_personal_paths() -> None:
-    personal = re.compile(r"/(?:Users|home)/[^/\s]+/|[A-Za-z]:[\\/]Users[\\/][^\\/\s]+[\\/]")
+    """Both scans are the release checker's own, over every shipped file.
+
+    A second, narrower regex here meant the suite could stay green on an ID the
+    release gate rejects, or on one neither pattern happened to name.
+    """
+    scanned = 0
     for path in PLUGIN.rglob("*"):
-        if path.is_file():
-            text = path.read_text(encoding="utf-8")
-            assert personal.search(text) is None, path
-            assert VERSIONED_MODEL.search(text) is None, path
+        if not path.is_file():
+            continue
+        text = path.read_text(encoding="utf-8")
+        scanned += 1
+        assert PERSONAL_PATH.search(text) is None, path
+        assert VERSIONED_MODEL.search(text) is None, path
+    assert scanned == len(_MODULE.PACKAGE_FILES)
+    for identifier in ("claude-fable-5", "fable-5", "gpt-oss-120b", "claude-opus-5", "o3"):
+        assert VERSIONED_MODEL.search(identifier), identifier
+    for personal in ("/Users/person", "C:\\users\\person\\x", "~/.claude"):
+        assert PERSONAL_PATH.search(personal), personal

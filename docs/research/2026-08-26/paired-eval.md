@@ -22,7 +22,7 @@ A small paired comparison on 2026-08-26, one run per arm per task, same host and
 
 ## Reading
 
-- Overhead. The skill adds two to three turns (loading the skill and one or two references) and 20 to 30 percent of cost on tasks this small. Elapsed time is within noise.
+- Overhead. The skill adds two to three turns (loading the skill and one or two references) and 12 to 45 percent of cost on the three tasks above ($0.29 to $0.42, $0.51 to $0.57, $0.51 to $0.65). Elapsed time is within noise.
 - Correctness. Both arms fixed the bug and both reused `tenacity`. The host baseline is not weak; on a strong model the reuse rule mostly confirms what the model does anyway.
 - Where the difference is. Without the skill, "save them" put the records somewhere the owner will never look for them (the host's memory directory for that checkout) and ended by asking the owner two questions. With the skill, the records are in the project with a disposition and a proposed order, and the report says what would need the owner's call. The retry policy differed in one of two runs (a 4xx allowlist), so that is not a stable signal.
 - Lifecycle. With the skill every run ended with the five headings and named its limits; without it, reports were shorter and skipped what was not verified.

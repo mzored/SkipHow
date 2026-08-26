@@ -1,6 +1,6 @@
 # Delivery
 
-Use this reference for `DELIVER`. Carry the authorized outcome through implementation and fresh verification.
+Use this reference for a `DELIVER` that is not a clear bounded change. Carry the authorized outcome through implementation and fresh verification.
 
 ## Ground the work
 
@@ -26,7 +26,7 @@ After a second failure with the same cause, stop retrying unchanged. Add the sma
 
 ## Findings
 
-A problem outside the request is fixed if it blocks the outcome, creates immediate safety risk, or cannot be separated; otherwise it is already tracked, saved once after a duplicate search through [intake](intake.md), or dismissed with its reason. A warning on the changed surface can weaken a green claim; triage it before claiming success. Do not save benign expected output, and do not implement or reprioritize a saved finding.
+A problem outside the request is fixed if it blocks the outcome or cannot be separated; otherwise it is already tracked, saved once after a duplicate search through [intake](intake.md), or dismissed with its reason. A warning on the changed surface can weaken a green claim; triage it before claiming success. Do not save benign expected output, and do not implement or reprioritize a saved finding.
 
 ## Finish
 

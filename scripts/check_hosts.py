@@ -156,7 +156,13 @@ def _created_repository(root: Path) -> bool:
 
 def _codex_policy_block(output: str) -> bool:
     lowered = output.lower()
-    return "requirements.toml" in lowered or "allowed source" in lowered or "source is not allowed" in lowered
+    # Both halves are required. "requirements.toml" alone matched an ordinary parse
+    # error; the denial language alone would match an unrelated refusal. The observed
+    # message is: marketplace source `...` is not allowed by requirements from
+    # /etc/codex/requirements.toml
+    refused = "not allowed" in lowered or "allowed source" in lowered
+    policy = "requirements.toml" in lowered or "source policy" in lowered
+    return refused and policy and ("marketplace source" in lowered or "allowed source" in lowered)
 
 
 def isolated_install(
@@ -240,6 +246,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="pre-provisioned plain local marketplace; defaults to a temporary snapshot",
     )
     args = parser.parse_args(argv)
+    if args.skip_install and (args.require_codex_install or args.require_claude_install):
+        parser.error("--skip-install cannot satisfy --require-codex-install or --require-claude-install")
 
     errors: list[str] = []
     codex = shutil.which("codex")
