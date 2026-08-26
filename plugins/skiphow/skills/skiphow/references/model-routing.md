@@ -14,7 +14,7 @@ Mutation starts at `STANDARD`. Use `scout` only when the answer is narrow and ea
 
 ## Delegate deliberately
 
-Delegate only when isolation or parallelism pays for the transfer. Work that fits the current context stays in it. Every delegation names its role; nothing inherits by omission. Give the delegate a brief (objective, inputs, owned scope, what to return) and accept a summary back, never a transcript. Delegates never hold credentials or perform remote writes.
+Delegate only when isolation or parallelism pays for the transfer. Work that fits the current context stays in it. Every delegation names its role; nothing inherits by omission. Give the delegate a brief (objective, inputs, owned scope, what to return) and accept a summary back, never a transcript.
 
 After a second failure with the same cause, raise the role one tier or review the premise. After one more failure, stop and report `BLOCKED`.
 

@@ -11,7 +11,7 @@ An accepted decision stays in place until a later ADR replaces it. Correct factu
 | [0003](0003-semantic-model-routing.md) | Route models by semantic capability | Accepted |
 | [0004](0004-github-lifecycle-and-authority.md) | Define GitHub lifecycle and authority | Accepted, amended by 0014 |
 | [0005](0005-fail-closed-release-evaluation.md) | Keep release evaluation repository-free and fail closed | Superseded by 0008 (claims policy stands) |
-| [0006](0006-host-native-campaign-and-engineering-policy.md) | Keep campaign and engineering policy host-native | Accepted, amended by 0009 |
+| [0006](0006-host-native-campaign-and-engineering-policy.md) | Keep campaign and engineering policy host-native | Accepted, amended by 0009 and 0016 |
 | [0007](0007-host-adapters-for-routing-and-continuity.md) | Resolve model tiers and session continuity in host adapters | Accepted, amended by 0009, 0010, and 0012 |
 | [0008](0008-receipts-over-a-live-harness.md) | Prove model behavior with receipts, not a live harness | Accepted |
 | [0009](0009-reviewer-inherits-and-one-engineering-reference.md) | Reviewer inherits the session model; one engineering reference | Accepted |
@@ -21,3 +21,4 @@ An accepted decision stays in place until a later ADR replaces it. Correct factu
 | [0013](0013-read-only-requests-save-nothing.md) | Read-only requests report findings `UNSAVED`; records need a granting request | Accepted |
 | [0014](0014-conform-to-the-tracker-classification.md) | Conform to the tracker's classification, do not configure it | Accepted |
 | [0015](0015-unconditional-invariants-live-in-the-root.md) | Unconditional invariants live in the root skill | Accepted |
+| [0016](0016-decomposition-needs-a-trigger-a-run-can-evaluate.md) | Decomposition needs a trigger a run can evaluate | Accepted |

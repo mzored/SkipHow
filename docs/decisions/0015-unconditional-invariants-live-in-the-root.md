@@ -88,6 +88,19 @@ queue, how to reduce a failing case, how to review a candidate. It no longer car
 - **Raise the budget without a stated purpose.** A number with no rationale is what produced this ADR; the
   check now carries the reason next to the constant.
 
+## Post-acceptance evidence
+
+The fourth session in the audit was re-read after it completed. It loaded `github.md`, held the merge
+prohibition in context, and merged, pushed, and skipped the pull request anyway, on a request whose owner
+turns carried no end-to-end words. That is this ADR's own second revalidation trigger, fired by the same
+receipt set that motivated it.
+
+It does not reverse the decision. A rule that never loads certainly governs nothing, and every measurement in
+Context stands. What it removes is the assumption that loading is sufficient: observance tracked the load in
+the marker measurement, and did not track it here. The consequence is narrower than a rewrite — the receipt
+1.8.0 needs for the merge boundary is a delivery run on a "fix this" request that stops at the branch and
+asks, not a run that merely loads the reference before its first write.
+
 ## Revalidation triggers
 
 Revisit when a receipt shows a run merging or pushing without an end-to-end grant on 1.8.0 or later, when a

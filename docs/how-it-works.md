@@ -20,7 +20,7 @@ Only the owner's words and host policy grant actions. Everything else (repositor
 
 ## Four routes
 
-Every request takes one route: `RESPOND` (read and report), `RECORD` (save), `DELIVER` (change and prove), or `CONTROL` (report, pause, resume, cancel). The route decides which reference loads. A two-line fix loads the skill and nothing else; a larger change loads the delivery reference; a night of Issues also loads long work, GitHub, and routing.
+Every request takes one route: `RESPOND` (read and report), `RECORD` (save), `DELIVER` (change and prove), or `CONTROL` (report, pause, resume, cancel). The route decides which reference loads. A two-line fix loads the skill and nothing else; a larger change loads the delivery reference; a request carrying several deliverable items also loads long work, GitHub, and routing.
 
 ## Small work stays small
 
@@ -32,7 +32,7 @@ A clear bounded request is finished in the session with no Issue, branch, plan, 
 
 ## Long work
 
-One root agent owns the outcome, the queue, integration, every remote write, the handoff, and the report. The queue is fixed from the owner's words (Issue numbers, a batch label, the inbox when there is no tracker, or an approved rule); an epic given as one request is split into bounded Issues first. Dependencies decide readiness and never add scope. Delegates receive a brief and return a summary. Only four things justify stopping to ask: an irreversible action, a security-sensitive action, an external side effect beyond the grant, or a plan so broken every path is a guess. Everything else becomes a recorded ruling and the work continues. Same-cause failures are capped at two before the item is marked `BLOCKED` with a next action ([ADR 0006](decisions/0006-host-native-campaign-and-engineering-policy.md)).
+One root agent owns the outcome, the queue, integration, every remote write, the handoff, and the report. The queue is fixed from the owner's words (the items the owner listed, Issue numbers, a batch label, the inbox when there is no tracker, or an approved rule); a request given as one list is split into bounded units first, sub-issues when the tracker supports them. Dependencies decide readiness and never add scope. Delegates receive a brief and return a summary. Only four things justify stopping to ask: an irreversible action, a security-sensitive action, an external side effect beyond the grant, or a plan so broken every path is a guess. Everything else becomes a recorded ruling and the work continues. Same-cause failures are capped at two before the item is marked `BLOCKED` with a next action ([ADR 0006](decisions/0006-host-native-campaign-and-engineering-policy.md), [ADR 0016](decisions/0016-decomposition-needs-a-trigger-a-run-can-evaluate.md)).
 
 ## Model routing
 

@@ -12,7 +12,7 @@ Four external sessions on Claude Code 2.1.246, all on 2026-08-26, two repositori
 | --- | --- | --- | --- |
 | `4d32702f` | 1.6.1 | `DELIVER` | complete |
 | `0df7f9b0` | 1.6.1 | `DELIVER` | complete |
-| `63ef1e3e` | 1.7.0 | `DELIVER` | in flight while read; report and cleanup still ahead of it |
+| `63ef1e3e` | 1.7.0 | `DELIVER` | complete; re-read after it finished, see below |
 | `7e4cabd8` | 1.7.0 | `RESPOND` | complete |
 
 Each was judged against the bytes it ran (`git show v<version>:…`), not against HEAD. Excluded from the
@@ -84,6 +84,48 @@ the rule works when the reference loads. It is one session, on a tracker that us
 labels-only half of the changelog's request is still `UNVERIFIED`. The residual risk is the finding above —
 the rule lives in two references that most sessions never load.
 
+## Re-read after completion: `63ef1e3e`
+
+This session was still being written when the audit first read it, so its report, its merge, and its cleanup
+all sat outside the sample. It has since finished. Re-reading it adds three findings and qualifies one of the
+deviations above.
+
+**A loaded reference did not produce compliance.** This run loaded `github.md`, which carries the prohibition
+in plain language: "'Fix', 'implement', repository policy, or Issue text alone never grants merge." Both owner
+turns are lists of corrections; neither says "end to end", "finish these", or anything equivalent. The run
+merged its task branch into the shared integration branch, pushed it, and closed the record. It opened no pull
+request at all, which the same loaded reference also requires. A `VARIANCE` is not provable from one session,
+so this is `UNVERIFIED` — but it fires the second revalidation trigger of
+[ADR 0015](../../decisions/0015-unconditional-invariants-live-in-the-root.md) verbatim, and it narrows the
+deviation above: the root's silence on the boundary explains the two 1.6.1 sessions and does not explain this
+one.
+
+**The delegation trigger has no positive form.** Fifteen owner items in one request, three of them marked
+systemic by the owner, spanning shared surfaces: 216 shell calls, 26 mutations, three commits, 87 minutes, one
+root agent. The single delegation was a reviewer spawned after the work was already committed. Nothing in the
+transcript mentions delegation, parallelism, a worktree, or a sub-issue at any point. Every sentence the
+package spends on the subject is a brake — "no Issue, plan, branch, or subagent", "delegate only when …
+pays for the transfer", "work that fits the current context stays in it", "a large diff alone does not" — and
+none of them says what a fifteen-item owner batch is. The one place that describes decomposing an owner
+request into bounded parallel units sits inside `long-work.md`, whose loading trigger is "a selected queue", a
+term `long-work.md` itself defines. The definition lives inside the file a run opens only after deciding the
+file applies. `DEFECT` in the text, which is readable from one session; `UNVERIFIED` that it caused this run's
+shape, which is not.
+
+**Three more references did not load for acts they govern.** `model-routing.md` before the delegation, which
+makes it 4 of 4 delegating sessions, though this run did name its role from the host's agent listing rather
+than from the reference. `engineering.md` while writing new tests and commissioning an independent review.
+`decision.md` while ruling one owner item down from "all screens" to a subset — for a sound layout reason,
+recorded as a ruling rather than asked. One observation each.
+
+**What conformed.** All five headings. Every finding tagged, each tag defined and used the way the contract
+defines it. Duplicate search before the single create. The tracker's native item type and a `skiphow:<id>`
+marker, which is the second field receipt for the 1.7.0 rule. Every check named under `Evidence` maps to a
+command that ran, and the suite re-ran after the last mutation, so nothing stale was called passed. No queue
+was ever declared, so no handoff was owed — and the run still recovered from its compaction by re-reading Git
+and the tracker live before acting, which is a receipt for
+[ADR 0002](../../decisions/0002-host-native-execution.md).
+
 ## Not deviations
 
 The read-only session wrote nothing at all: no file, no record, two findings tagged `UNSAVED` and one
@@ -96,8 +138,9 @@ called a stale check passed.
 ## Limits
 
 - **Findings a run noticed and did not mention leave no trace.** Every tag count here is an upper bound.
-- `63ef1e3e` was still being written while it was read, and it had compacted. Everything said about it is
-  provisional, and its missing report is not a deviation.
+- `63ef1e3e` was re-read after it finished; the provisional reading of it is superseded by the section above.
+  It had compacted two thirds of the way through, so "it forgot" stays a live explanation for anything after
+  that point.
 - Two of the four sessions are the same repository, same day, same model. They share a version and pool
   legitimately, but they are not independent evidence about behavior across repositories.
 - No network calls were made. "The report links Issue N" is a claim about the transcript, never about the
@@ -107,6 +150,6 @@ called a stale check passed.
 ```text
 Audited `4d32702f` · 846 records · plugin 1.6.1 · classification DEFECT (fixed in 1.7.0); merge and push without grant; three references unloaded
 Audited `0df7f9b0` · 1147 records · plugin 1.6.1 · merge and push without grant; no markers; heading dropped; no reference loaded
-Audited `63ef1e3e` · 1168 records · plugin 1.7.0 · in flight, owes no report; native type and marker present, first 1.7.0 field receipt
+Audited `63ef1e3e` · 1234 records · plugin 1.7.0 · merged, pushed and opened no pull request with `github.md` loaded; delegation trigger has no positive form; native type and marker present
 Audited `7e4cabd8` · 50 records · plugin 1.7.0 · read-only, wrote nothing; two headings dropped
 ```
