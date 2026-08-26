@@ -28,7 +28,7 @@ Both paths above run the reviewer on the session model, so it carries the priors
 
 The other host is available when its command resolves and a bounded auth check answers. Brief it with the exact candidate, say the reviewer is external, and ask for findings only; a skill installed there may still engage, so treat a reply that is not findings as a dropped pass.
 
-- From Claude Code: `codex review --strict-config -c sandbox_mode="read-only" -`, brief on stdin; its scope flags exclude a brief, so the brief carries the range; it honours no effort request.
+- From Claude Code: `codex review --strict-config -c sandbox_mode="read-only" -`, brief on stdin; its scope flags exclude a brief, so the brief carries the range.
 - From Codex: `claude -p - --effort high --permission-mode plan`, brief on stdin; plan mode bounds the model's tools, not the reviewed repository's own hooks.
 
 Treat the verdict as the in-host reviewer's. When the other host is absent or fails, the in-host `reviewer` takes the pass and Limits says the independent pass shared the session's model. Nothing is configured: availability is the switch, and the pass runs a tool the owner already installed, on this machine, under the authority the change already carries. The report names which host judged.
