@@ -1,6 +1,6 @@
 # Research from 2026-08-26
 
-This directory records the 1.0 release audit, the review that set the direction for 1.1, and the 1.1 to 1.6 receipts and the paired evaluations.
+This directory records the 1.0 release audit, the review that set the direction for 1.1, the 1.1 to 1.6 receipts and the paired evaluations, and the prior-art surveys behind those releases.
 
 | Topic | What it records |
 | --- | --- |
@@ -9,6 +9,7 @@ This directory records the 1.0 release audit, the review that set the direction 
 | [System review](system-review.md) | Critical review of 1.0.1 against the owner's brief: inert routing, continuity, policy density, brittle tests, doc duplication, hygiene |
 | [Host routing and continuity](host-routing-and-continuity.md) | Verified Claude Code and Codex facts on per-agent model and effort, plugin agents and hooks, compaction, and unattended launch |
 | [Prior-art mechanics](prior-art-mechanics.md) | Concrete mechanics from nine projects worth borrowing or leaving out |
+| [Parallel orchestration proposals](parallel-orchestration-proposals.md) | Two open external orchestrator proposals mapped against the shipped contract; nothing adopted, with the observation that would reopen each |
 | [1.1 brief](v1.1-brief.md) | The work order that 1.1.0 implemented |
 | [1.1 receipts](v1.1-receipts.md) | Real runs on the 1.1.0 candidate: routing, compaction continuity, small task, findings outside scope |
 | [1.2 receipts](v1.2-receipts.md) | Real runs on the 1.2.0 candidate: small task, feature, reuse, findings without GitHub, batch intake and end-to-end GitHub delivery, resume |

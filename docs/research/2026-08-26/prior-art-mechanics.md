@@ -5,6 +5,7 @@
 - Reviewed on 2026-08-26.
 - Method: primary files (README, SKILL.md, agent definitions, hooks, CLAUDE.md) were fetched for GSD, OpenSpec, Superpowers, Matt Pocock's skills, BMAD, and Paperclip. For Spec Kit, Mesa, and Autonomous PM only the root README was read, so their findings are README-level.
 - Purpose: the 2026-08-25 prior-art note recorded what to keep and leave out. This note records the concrete mechanics behind those choices so the next release can borrow them without re-reading nine repositories.
+- Scope: shipped code only. Orchestration proposals in Matt Pocock's issue tracker are covered separately in [parallel orchestration proposals](parallel-orchestration-proposals.md).
 
 ## Findings by concern
 
