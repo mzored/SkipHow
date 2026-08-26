@@ -26,7 +26,7 @@ Three moves, each optional:
 
 1. Talk it through. "What is causing the checkout timeouts?" or "Compare our two caching options." Nothing changes.
 2. Save it. Paste a dump of bugs, ideas, and observations and say "triage these and save them as Issues". SkipHow splits them, searches for duplicates, gives each a proposed priority with its reason and a type in whatever form your tracker already uses, creates or updates Issues, and labels the batch `skiphow-batch:<date>`. You reorder; you do not write tickets.
-3. Finish it. "Finish today's batch end to end" or "Finish Issues #41, #44, and #48 end to end. Merge what passes." One root agent works the queue in priority order, delegates bounded pieces, merges what passes its checks, closes the Issues, and deletes its own merged branches. A large feature given as one request is split into Issues first, then worked the same way.
+3. Finish it. "Finish today's batch end to end" or "Finish Issues #41, #44, and #48 end to end. Merge what passes." One root agent works the queue in priority order, delegates bounded pieces, merges what passes its checks, closes the Issues, and deletes its own merged branches. A large feature, or a list of separate items given as one request, is split into bounded units first, then worked the same way.
 
 A small request ("the totals overlap on small screens, fix it") skips all of that and is done in the session.
 

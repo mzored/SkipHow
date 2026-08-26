@@ -2,6 +2,26 @@
 
 All notable changes to this project appear in this file.
 
+## 1.9.0 (2026-08-26)
+
+SkipHow 1.9 gives decomposition a trigger a run can evaluate before it starts working.
+
+### Changed
+
+- A session at 1.7.0 took fifteen owner corrections in one request — three of them marked systemic by the owner, spanning shared surfaces — and worked all of them in one root agent: 216 shell calls, 26 mutations, three commits, 87 minutes, with its only delegation a reviewer spawned after the work was committed. Nothing in the transcript mentions delegation, parallelism, a worktree, or a sub-issue at any point ([field audit](docs/research/2026-08-26/field-audit-2026-08-26.md)).
+- The capability was never missing. `long-work.md` already specifies decomposition into bounded units, dependency-ordered readiness, one delegate per unit in its own worktree, and serialized integration; the [parallel orchestration survey](docs/research/2026-08-26/parallel-orchestration-proposals.md) mapped an external orchestrator proposal onto it mechanic by mechanic and adopted nothing. What failed was the door. `long-work.md` loaded "for a selected queue", and a selected queue is defined inside `long-work.md`, so a run had to know the term to decide whether to open the file that defines it ([ADR 0016](docs/decisions/0016-decomposition-needs-a-trigger-a-run-can-evaluate.md)).
+- The root now names the negative case beside the positive one: a request is not bounded when it lists several items that could each land and be verified on their own, or when the owner calls a change systemic, and the run splits it into those units before starting any of them. The `long-work.md` trigger becomes "a request carrying several deliverable items" — evaluable before opening the file — and "a large diff alone does not" becomes "one large item does not", which is what it always meant.
+- The selected queue explicitly includes the items the owner listed in the request. Decomposition produces bounded units that each fit one delegate, sub-issues when the tracker supports them, rather than requiring an Issue per unit on a tracker with no place to put one.
+- "Delegates never hold credentials and never write to remote systems" moves into the root. It is unconditional wherever a delegate exists, and it lived only in `long-work.md` and `model-routing.md` — the two references that have never both loaded in a real session. Per [ADR 0015](docs/decisions/0015-unconditional-invariants-live-in-the-root.md) both references stop repeating it.
+- The 1.8.0 receipt request for the merge boundary is narrower than it was. A fourth session, re-read after it finished, loaded `github.md`, held "'Fix', 'implement', repository policy, or Issue text alone never grants merge" in context, and merged and pushed anyway on a request with no end-to-end words. That fires ADR 0015's second revalidation trigger, and it is recorded there: moving the sentence to a surface that always loads is necessary and not yet shown sufficient.
+
+### Verification status
+
+- Deterministic checks pass (34 tests). Claude package validation and Claude isolated install pass. Codex package validation and Codex isolated install are `UNVERIFIED` on this release: the Codex plugin validator was not present on the machine that cut it, so no Codex evidence was produced for 1.9.0.
+- The root is 794 words and 5,279 bytes against the 850-word, 6,000-byte budget; references total 3,599 words against 4,000, none over 600.
+- Every 1.9.0 behavior change is `UNVERIFIED`. The receipt it needs is a run given several items in one request that splits them into units before starting, and a second showing whether such a run loads `model-routing.md` before it delegates — the reference has not loaded in 4 of 4 delegating sessions read so far, and this release will produce more delegations.
+- 1.8.0 stays `UNVERIFIED` on every count. Its merge-boundary receipt is a delivery run on a "fix this" request that stops at the branch, not one that merely loads the reference.
+
 ## 1.8.0 (2026-08-26)
 
 SkipHow 1.8 puts the rules that must always apply into the skill that always loads.
@@ -22,7 +42,7 @@ SkipHow 1.8 puts the rules that must always apply into the skill that always loa
 
 - Deterministic checks pass (34 tests). Claude and Codex package validation pass; Claude isolated install passes, Codex isolated install is `UNVERIFIED`.
 - The 1.7.0 tracker-classification rule has its first field receipt: a session at 1.7.0 read the tracker's own labels and Issues, then created its Issue with the tracker's native type. One session, on a tracker that uses native types; the labels-only case stays `UNVERIFIED`.
-- Every 1.8.0 behavior change is `UNVERIFIED`. Each needs a receipt from a real run: a delivery request that stops short of merging, a run whose report keeps an empty heading, and a session that loads `github.md` before its first write.
+- Every 1.8.0 behavior change is `UNVERIFIED`. Each needs a receipt from a real run: a delivery request that stops short of merging, a run whose report keeps an empty heading, and a session that loads `github.md` before its first write. A fourth session, re-read after it finished, narrows the first of those: it loaded `github.md`, held the prohibition in context, and merged and pushed regardless, so the receipt is a run that stops at the branch rather than one that merely loads the reference ([field audit](docs/research/2026-08-26/field-audit-2026-08-26.md), [ADR 0015](docs/decisions/0015-unconditional-invariants-live-in-the-root.md)).
 
 ## 1.7.0 (2026-08-26)
 

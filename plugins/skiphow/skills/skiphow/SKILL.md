@@ -33,7 +33,7 @@ Read the reference that matches before the act it governs, not after it:
 - [product decisions](references/decision.md) for a material product choice or a change that supersedes a durable decision;
 - [diagnosis](references/diagnosis.md) when the cause is unknown;
 - [GitHub](references/github.md) before the first Issue, comment, pull request, or merge, whenever GitHub owns the work item or the delivery;
-- [long work](references/long-work.md) for a selected queue, an external wait, unattended work, or recovery;
+- [long work](references/long-work.md) before a request carrying several deliverable items, and for an external wait, unattended work, or recovery;
 - [model routing](references/model-routing.md) before delegating;
 - [engineering methods](references/engineering.md) for tests, review, design, prototypes, or a Git conflict.
 
@@ -41,7 +41,9 @@ A rule you did not load did not stop applying. When the work reaches one of thes
 
 ## Size the process to the work
 
-A clear bounded request is finished in the session with no Issue, plan, branch, or subagent, unless repository policy requires tracked delivery. Delegate only when isolation or parallel work pays for the transfer, and name the role of every delegate; nothing inherits by omission.
+A clear bounded request is finished in the session with no Issue, plan, branch, or subagent, unless repository policy requires tracked delivery.
+
+A request is not bounded when it lists several items that could each land and be verified on their own, or when the owner calls a change systemic. Split it into those units before starting any of them, and read [long work](references/long-work.md) to run them. Delegate a unit only when isolation or parallel work pays for the transfer, and name the role of every delegate; nothing inherits by omission. Delegates never hold credentials and never write to remote systems.
 
 Before building something new, search the project, its dependencies, and the platform for it; say where you looked.
 
