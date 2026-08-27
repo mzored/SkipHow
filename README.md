@@ -69,7 +69,7 @@ The bet follows Anthropic's advice to [start with the simplest workflow that wor
 | Authority | Approval gates | Routine delivery is autonomous; staging, production, and unresolved product decisions stop for you |
 | State | Framework files and databases | Git, GitHub, and one checkpoint file |
 | Models | Named model IDs | Three roles; on Claude Code a fast scout, a standard builder, and a reviewer on your session model; on Codex the same roles on your session model with their own reasoning effort; a widened review goes to the other installed CLI |
-| Size | Dozens of agents and commands | One skill of about 1,300 words plus about 4,900 words loaded on demand |
+| Size | Dozens of agents and commands | One skill of about 1,300 words plus about 5,000 words loaded on demand |
 
 This is an architectural choice, not a measured advantage over those frameworks. What has been measured is SkipHow against the bare host on the same model ([paired evaluation](docs/research/2026-08-26/paired-eval.md), three tasks, one run each): on tasks under a dollar the skill cost two to three more turns and 12 to 45 percent more, both arms fixed the bug and reused the pinned library, and the difference was where things went. Without the skill, "triage these and save them" wrote four files into the host's memory directory outside the project; with it, they went into the project's inbox with a priority each.
 
@@ -80,6 +80,8 @@ SkipHow is instructions, not a runtime. Your host's sandbox and permissions are 
 What receipts show today: a small bug fixed in the session with no ceremony (both hosts); a brain dump turned into prioritized Issues or inbox records (both hosts); a three-part request split into three Issues and three merged pull requests with cleanup; a six-Issue batch finished overnight-style; continuation after an observed compaction with the checkpoint removed at the end; findings outside the request tagged in the report in nine of ten runs since the rule became structural, and saved whenever the request allowed it; on Claude Code `scout` on the fast tier and `builder` on the standard tier in worktrees; on Codex the scout at low effort and the reviewer at high on the session model, with no project setup. The new autonomous integration, drift recovery, and owner-turn re-sizing rules in 1.14 remain `UNVERIFIED` until real runs exercise them.
 
 What is still a design bet: that routing saves money (no paired delegated runs), that the reviewer on your session model catches what a stronger tier would, that the tagged-findings rule holds across many projects, and that less imposed process beats more on real work.
+
+A repository whose only integration branch is also its release or deployment branch has no affirmatively non-production merge target. SkipHow treats that merge as a staging, production, or unresolved rollout gate and asks at the exact candidate; autonomy resumes when the repository has a documented non-production integration branch.
 
 ## Docs
 

@@ -45,6 +45,8 @@ At the point of promotion into staging or production, SkipHow asks for your exac
 
 Worktrees, branches, ordinary commits, required Issues and pull requests, conflict resolution, review loops, merge into the non-production integration branch, and safe cleanup are engineering work. SkipHow performs them without asking. It stops a routine delivery question only for a material product choice evidence cannot settle or for staging or production approval.
 
+If the repository's only integration branch also releases or deploys, it has no proven non-production merge target. SkipHow therefore treats that merge as a rollout or production gate and asks once the exact source head, target head, and resulting tree are ready.
+
 While delivering, SkipHow may save one Issue for a material problem it finds outside your request. It will not implement it unless you add it to scope. A read-only request ("review", "research", "without changing anything") saves nothing: the problem is reported as `UNSAVED`, and "review this, but save any material findings" grants the record. Security findings never go into a public Issue; without a private channel you get a redacted note to route yourself.
 
 ## Run it unattended

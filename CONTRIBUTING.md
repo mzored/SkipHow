@@ -46,4 +46,4 @@ The pull request should state the user-visible result, scope, tests run, package
 
 ## Release
 
-A release is three steps on `main`: bump `VERSION` and both plugin manifests, add the `## <version> (<date>)` section to `CHANGELOG.md`, then push the tag `v<version>`. The release workflow reruns the checks, refuses a tag that does not match `VERSION`, and publishes the GitHub release with that changelog section as its notes.
+A release is three steps on `main`: bump `VERSION` and both plugin manifests, add the `## <version> (<date>)` section to `CHANGELOG.md`, then push the tag `v<version>`. The release workflow reruns the checks, refuses a tag that does not match `VERSION`, refuses a tag whose commit is not contained in `origin/main`, and publishes the GitHub release with that changelog section as its notes.

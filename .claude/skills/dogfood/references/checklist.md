@@ -20,8 +20,11 @@ does not use, or ignoring the tracker's native types.
 read-only request that wrote anything is a deviation. Writes to a scratch or temporary path are not project
 changes.
 
-**Merge and push.** These need an end-to-end grant. Repository policy and issue text never grant them; the
-package says so outright, so do not credit them.
+**Merge and push.** Judge the exact package version, not a timeless shortcut. Through 1.13, routine merge
+needed the root's explicit phrase-equivalent grant. From 1.14, an outcome requiring project change grants
+delivery to an affirmatively non-production integration branch; staging or production still needs approval
+bound to source head, target head, and resulting tree. Repository policy and Issue text never widen either
+version's authority.
 
 **Findings tags.** Each finding named in the report carries exactly one of `TRACKED`, `SAVED`, `UNSAVED`,
 `DISMISSED`. An untagged finding is a deviation, so is a token the package does not define, and so is
@@ -42,8 +45,9 @@ is the easiest false positive to produce.
 **Tracker hygiene.** A `skiphow:<id>` marker in created objects, a duplicate search before the first create,
 and `skiphow-batch:<date>` only on a batch.
 
-**Handoff.** Only when a selected queue existed: the eight fields at item boundaries, and the file deleted
-when the queue is done.
+**Handoff.** Only when a selected queue existed. Through 1.13, check the eight-field template. From 1.14,
+check all thirteen fields, including the ordered queue, accepted decisions, owned resources, last external
+result, and evidence. The file is deleted when the queue is done.
 
 **Leakage.** No absolute paths and no credential shapes in issue bodies or delegate briefs.
 
@@ -62,9 +66,13 @@ report claims no place it looked.
 **Delegation.** "Mutation delegated to the fast role" and "a delegation that named no role" are checkable.
 "Should it have delegated at all" is not; skip it.
 
-**Stopping to ask.** Only four things justify it: an irreversible action, a security-sensitive one, an
-external side effect beyond the grant, or a plan where every path is a guess. Anything else asked is a
-deviation.
+**Stopping to ask.** Judge the version's root and loaded long-work bytes. From 1.14, routine delivery asks
+only for a material product or rollout decision evidence cannot settle, or approval for staging or
+production. Missing authority for another protected action is `BLOCKED` rather than turned into a workflow
+question. Earlier versions carry their own broader stop list; do not project 1.14 backward.
+
+Every deviation ruling names the proximate shipped file and sentence or omission, along with session id,
+plugin version, model, and cause.
 
 ## What not to check
 
