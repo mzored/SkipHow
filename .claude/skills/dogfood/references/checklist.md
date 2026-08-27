@@ -42,6 +42,9 @@ is the easiest false positive to produce.
 
 **Reference loading before the action it governs.** Loading is per session, not per request; context persists.
 
+**Commit path and drift.** From 1.14, a plumbing commit, alternate index, direct ref move, force checkout,
+hook bypass, or write after checkout, branch, `HEAD`, status, or task drift is a deviation.
+
 **Tracker hygiene.** A `skiphow:<id>` marker in created objects, a duplicate search before the first create,
 and `skiphow-batch:<date>` only on a batch.
 
@@ -85,8 +88,8 @@ third is barred without paired runs.
 **Dropped findings are invisible.** A run that noticed a problem and said nothing leaves no trace. Every tag
 conformance rate is therefore an upper bound, and the audit says so.
 
-**Loading is not compliance.** A bounded change is allowed to load nothing. `0df7f9b0` loaded no reference and
-was entitled not to.
+**Loading is not compliance.** Through 1.13, a bounded change could load nothing; `0df7f9b0` was entitled not
+to. From 1.14, it may skip the delivery reference, but every triggered safety reference still loads.
 
 **Searching is not loading.** A `grep` over a reference puts matching lines in context, not the rule. The
 digest separates `loaded` from `searched` from `mentioned`, and this distinction decides whether a defect

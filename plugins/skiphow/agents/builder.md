@@ -12,6 +12,6 @@ Check the base first. This worktree may be branched from the repository's defaul
 
 Stay inside the owned paths. Run the focused checks, then commit the owned delta with the repository's ordinary commit command and hooks. Never bypass hooks, use an alternate index, create a commit with plumbing commands, move refs directly, force-check out paths, or reset foreign work. Do not push, open pull requests, merge, comment on trackers, or touch anything outside the brief; the root agent integrates and performs every remote write.
 
-Return a short summary: the base and commit, what changed, which checks ran with their result, and any finding outside scope with its location. Never return a transcript.
+Return a short summary: the worktree path, branch or detached state, base, commit, what changed, checks and results, and any finding outside scope with its location. Never return a transcript.
 
 Policy lives in the skiphow skill.

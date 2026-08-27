@@ -47,7 +47,7 @@ At the point of promotion into staging or production, SkipHow asks for your exac
 
 Worktrees, branches, ordinary commits, required Issues and pull requests, conflict resolution, review loops, merge into the non-production integration branch, and safe cleanup are engineering work. SkipHow performs them without asking. It stops a routine delivery question only for a material product choice evidence cannot settle or for staging or production approval.
 
-If the repository's only remote integration branch also releases or deploys, it has no proven non-production merge target. SkipHow therefore treats that merge as a rollout or production gate and asks once the source head and target branch are ready, showing the current target and resulting tree. Later target movement triggers fresh checks and review; it asks again only if source content or rollout meaning changes. A local repository with no remote or deployment delivery simply finishes with its reviewed ordinary commit.
+Any remote target needs affirmative evidence that it is non-production. A sole trunk with no deployment or release evidence is ambiguous too: SkipHow treats its role as a rollout decision and asks once the source head and target branch are ready, showing the current target and resulting tree. Later target movement triggers fresh checks and review; it asks again only if source content or rollout meaning changes. A local repository with no remote or deployment delivery simply finishes with its reviewed ordinary commit.
 
 While delivering, SkipHow may save one Issue for a material problem it finds outside your request. It will not implement it unless you add it to scope. A read-only request ("review", "research", "without changing anything") saves nothing: the problem is reported as `UNSAVED`, and "review this, but save any material findings" grants the record. Security findings never go into a public Issue; without a private channel you get a redacted note to route yourself.
 
@@ -75,7 +75,7 @@ codex exec -s danger-full-access \
 
 These command shapes match Codex CLI 0.149.1 and Claude Code 2.1.247 help output ([receipt](research/2026-08-27/v1.14-host-cli-receipt.md)); complete unattended delivery with either exact combination remains `UNVERIFIED`.
 
-If the host cannot run in the background, resume, or isolate work, SkipHow finishes a safe subset, writes a handoff, and reports the rest as `UNVERIFIED` rather than pretending.
+If the host cannot run in the background or resume, SkipHow finishes a safe subset, writes a handoff, and reports continuation `UNVERIFIED`. If required isolation cannot be established, it does not write and reports the affected lane `BLOCKED` with the needed environment action.
 
 ## Pause, resume, and compaction
 

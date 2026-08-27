@@ -81,7 +81,7 @@ What receipts show today: a small bug fixed in the session with no ceremony (bot
 
 What is still a design bet: that routing saves money (no paired delegated runs), that the reviewer on your session model catches what a stronger tier would, that the tagged-findings rule holds across many projects, and that less imposed process beats more on real work.
 
-A repository whose only remote integration branch is also its release or deployment branch has no affirmatively non-production merge target. SkipHow treats that merge as a staging, production, or unresolved rollout gate and asks at the exact candidate; autonomy resumes when the repository has a documented non-production integration branch. A local-only repository simply finishes with its reviewed ordinary commit.
+Every remote target needs affirmative evidence that it is non-production. A sole trunk is therefore a staging, production, or unresolved rollout gate when its role is undocumented, and SkipHow asks at the exact candidate; autonomy resumes when the repository has a documented non-production integration branch. A local-only repository simply finishes with its reviewed ordinary commit.
 
 ## Docs
 

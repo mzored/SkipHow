@@ -257,9 +257,13 @@ def test_autonomy_and_isolation_invariants_are_shipped() -> None:
         assert forbidden_escape in worktrees
     assert "before the first write and before the commit" in builder
     assert "ordinary commit command and hooks" in builder
+    assert "worktree path, branch or detached state, base, commit" in builder
     routing = read("plugins/skiphow/skills/skiphow/references/model-routing.md")
     assert "owned worktree and branch" in routing
     assert "each call's working directory" in routing
+    checklist = read(".claude/skills/dogfood/references/checklist.md")
+    assert "From 1.14, it may skip the delivery reference" in checklist
+    assert "plumbing commit, alternate index, direct ref move" in checklist
     package_text = "\n".join(path.read_text(encoding="utf-8") for path in PLUGIN.rglob("*") if path.is_file())
     assert not re.search(r"end[- ]to[- ]end", package_text, re.IGNORECASE)
 
