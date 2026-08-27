@@ -8,4 +8,4 @@ Use an expected value independent of the implementation. A test that repeats the
 
 Write the failing test first when it provides a useful red signal and the needed interface already exists. For exploratory work, legacy behavior, or a change with no honest test seam, establish the behavior first and add the durable check at the right level. Test-first is a tool, not a ceremony.
 
-Run the focused test and any broader suite the change can realistically affect. Confirm a regression test would have failed without the fix when that check is safe and practical. Keep tests that protect behavior; remove temporary harnesses and implementation-coupled checks.
+Run the focused test and any broader suite the change can realistically affect. Confirm a regression test would have failed without the fix when that check is safe and practical. Keep tests that protect behavior; remove only temporary harnesses and implementation-coupled checks owned by this work.

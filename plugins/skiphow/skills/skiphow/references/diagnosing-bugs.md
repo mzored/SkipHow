@@ -4,7 +4,7 @@ Start from the reported symptom. Inspect the real path that produces it and buil
 
 Confirm that the signal represents the owner's problem, then reduce noise around it. For intermittent failures, improve the reproduction rate or collect enough repeated evidence to compare hypotheses. For performance problems, measure a baseline before changing code.
 
-When the cause is ambiguous, write down competing explanations and the observation that would disprove each one. Test the cheapest high-value distinction first. Change one variable at a time. Add targeted instrumentation only when the requested outcome authorizes project changes, and remove it before finishing.
+When the cause is ambiguous, write down competing explanations and the observation that would disprove each one. Design the cheapest high-value observation so it isolates the competing explanation it tests. Add targeted instrumentation only when the requested outcome authorizes project changes, and remove it before finishing.
 
 When the requested outcome authorizes project changes, fix the cause rather than hiding the symptom. Add a regression test at an observable, stable interface when it would catch this failure and remain useful after refactoring. Do not force a shallow test when the project has no honest seam for it. For diagnosis-only work, leave the project unchanged and report the verified cause, evidence, and repair direction.
 

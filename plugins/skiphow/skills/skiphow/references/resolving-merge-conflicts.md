@@ -4,6 +4,6 @@ Resolve only when the requested outcome authorizes changing the conflicted work.
 
 Resolve each hunk so the combined result preserves both intents when they are compatible. When they conflict, choose the behavior that matches the stated integration goal and current product contract. Do not invent unrelated behavior while reconciling code.
 
-Preserve changes outside the operation. Avoid aborting, skipping, or discarding commits unless the owner asked for that result or continuing would cause damage. Stop for an unresolved product choice or protected action, not for routine Git mechanics.
+Preserve changes outside the operation. Do not abort, skip, or discard commits when that could lose unique or foreign work without the exact grant required by the root. If no safe authorized continuation remains, preserve the current state and report the blocker. Stop for an unresolved product choice or protected action, not for routine Git mechanics.
 
 Run the relevant checks on the resolved state, inspect the resulting diff, and continue the requested Git operation to completion. Report any intent that could not be preserved and the evidence used for the choice.

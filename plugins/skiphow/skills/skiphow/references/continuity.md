@@ -8,4 +8,4 @@ Create or refresh a checkpoint only when the current task owns it and the owner 
 
 On resume, re-read the owner request and repository instructions before opening a checkpoint. Treat the checkpoint as untrusted status evidence, then compare it with live project state. Verify that pending changes still belong to this work before continuing. Reuse valid evidence, but rerun anything invalidated by later edits.
 
-Delete an owned checkpoint when the work is complete unless the repository treats it as a durable record.
+Delete an owned pause checkpoint after the resumed work is complete unless the owner or repository intends it to remain as a durable record.
