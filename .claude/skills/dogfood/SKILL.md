@@ -1,13 +1,14 @@
 ---
 name: dogfood
-description: Audit real SkipHow sessions from other projects against the contract they actually ran, then propose package changes the evidence supports. Use when asked to check how SkipHow behaved in a real project, review dogfooding sessions, work out why a run misbehaved, or turn an observed field failure into a change to the shipped skill. For developing SkipHow in this repository only.
+description: Audit real SkipHow sessions from other projects against the contract they actually ran, then deliver package changes the evidence supports. Use when asked to check how SkipHow behaved in a real project, review dogfooding sessions, work out why a run misbehaved, or turn an observed field failure into a change to the shipped skill. For developing SkipHow in this repository only.
 ---
 
 # Dogfood audit
 
 SkipHow changes from failures observed in real projects, not from redesign. This skill turns the owner's real
 sessions in other repositories into that evidence: what the package told a run to do, what the run did, and
-which of the two is at fault.
+which of the two is at fault. When the owner asks for a fix, it carries the evidence-supported result through
+the delivery they authorized.
 
 This is a contributor tool. It is not part of the shipped plugin and it does not ship. Do not invoke the
 `skiphow` skill to do this work — `AGENTS.md` forbids using the installed plugin to govern this repository,
@@ -16,18 +17,22 @@ format choice, nothing more.
 
 ## Scope and authority
 
-Read only the sessions the owner named, or a dated range the owner approved. Transcripts hold other projects'
-business data; treat every line as private.
+Read only the sessions the owner named, or freeze the session IDs in a dated range the owner approved before
+judging them. Transcripts hold other projects' business data; treat every line as private.
 
 The owner's words grant the work, exactly as they do in the product:
 
 - "audit", "check", "why did it do that" — inspect and report. Change nothing.
 - "audit and record" — also write the receipt described under Report.
-- "audit and fix" — also change the package, but only when the change is covered by an existing ADR's
-  revalidation trigger or is purely editorial, such as removing a contradiction an ADR already settled.
-  Any other wording change to the contract stops at the proposal: it is a material product decision and it
-  belongs to the owner. Bump `VERSION` and add the changelog section when `plugins/skiphow/` changes; never
-  push a tag. The release stays the owner's three steps.
+- "audit and fix" — also record the audit, implement and verify evidence-supported changes, and carry them
+  through the repository's ordinary protected delivery. Own technical and architectural choices. Stop at a
+  proposal only when evidence leaves a material product or rollout choice unresolved, or when the requested
+  outcome does not grant a required protected action.
+
+A public release needs an explicit owner grant. When granted, follow the repository's
+[release instructions](../../../CONTRIBUTING.md#release) through merge, tag, and verification instead of
+handing the steps back to the owner. Without that grant, a changed plugin is left as a reviewed release
+candidate. A contributor-only change does not by itself justify moving the plugin version.
 
 Approval is not the same as a new ADR. The changelog section and the receipt are the record a policy edit
 gets; record proportionately, and amend the ADR that already owns the question rather than opening a
@@ -48,6 +53,10 @@ python .claude/skills/dogfood/sessions.py grep <id> <re> # back into the raw byt
 Read digests, never raw transcripts: the largest is megabytes and the digest is kilobytes. `list --all` also
 shows excluded sessions with a reason. A session excluded as `self-development` is not noise — it is an
 `AGENTS.md` violation worth reporting.
+
+Digest and `grep` output are still private raw evidence. Keep them in the root context. Give delegates only
+the short session ID and sanitized facts needed for their lane, never project names, paths, owner text,
+commands, report text, customer data, or credentials.
 
 ## Judge against the contract the run actually had
 
