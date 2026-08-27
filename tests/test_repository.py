@@ -286,13 +286,37 @@ def test_dogfood_auditor_tracks_shipped_references_and_git_escape_mutations() ->
         "git worktree remove /tmp/lane --force",
         "git --git-dir=.git --work-tree=/tmp/tree add .",
         "git symbolic-ref HEAD refs/heads/task",
+        "git checkout-index -f --all",
+        "git checkout-index --force -- src/",
+        "git -C /other/worktree commit -m change",
+        "git -C .. push",
+        "git -c core.hooksPath=/dev/null commit -m bypass",
         "git commit --no-verify -m bypass",
         "git commit-tree deadbeef",
     )
     for command in dangerous:
         assert DOGFOOD.MUTATION.search(command), command
-    for command in ("git status --short", "git diff --check", "git worktree list"):
+    for command in (
+        "git status --short",
+        "git diff --check",
+        "git worktree list",
+        "git symbolic-ref --short HEAD",
+        "git symbolic-ref -q HEAD",
+        "git symbolic-ref HEAD",
+        "git hash-object file",
+        "git tag --list",
+        "git --git-dir=.git status",
+    ):
         assert not DOGFOOD.MUTATION.search(command), command
+
+
+def test_dogfood_marks_references_absent_from_an_older_package() -> None:
+    body, source = DOGFOOD.package_reference("1.6.1", "worktrees")
+    assert body == ""
+    assert source == "absent_in_version"
+
+
+def test_shipped_package_has_no_magic_end_to_end_phrase() -> None:
     package_text = "\n".join(path.read_text(encoding="utf-8") for path in PLUGIN.rglob("*") if path.is_file())
     assert not re.search(r"end[- ]to[- ]end", package_text, re.IGNORECASE)
 

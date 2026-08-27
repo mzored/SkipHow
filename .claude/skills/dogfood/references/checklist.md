@@ -71,7 +71,8 @@ report claims no place it looked.
 
 **Identity drift before writes.** The digest does not contain read-only probe ordering. Use
 `sessions.py grep <id> 'git (status|rev-parse|worktree list|symbolic-ref)'` and compare raw timestamps with
-mutations and host-task events. From 1.14, writing after drift without re-establishing ownership is a deviation.
+the timestamped mutations in the digest and host-task events. From 1.14, writing after drift without
+re-establishing ownership is a deviation.
 
 **Stopping to ask.** Judge the version's root and loaded long-work bytes. From 1.14, routine delivery asks
 only for a material product or rollout decision evidence cannot settle, or approval for staging or

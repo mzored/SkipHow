@@ -21,7 +21,7 @@ SkipHow 1.14 removes the magic merge phrase and makes routine delivery autonomou
 
 ### Verification status
 
-- The focused repository suite passes 59 tests, the full deterministic check passes, both host package validators pass, and Claude isolated install passes. Codex isolated install is `UNVERIFIED` because the machine's managed policy rejects the local marketplace.
+- The focused repository suite passes 61 tests, the full deterministic check passes, both host package validators pass, and Claude isolated install passes. Codex isolated install is `UNVERIFIED` because the machine's managed policy rejects the local marketplace.
 - Independent read-only passes covered authority, Git safety, process, packaging, and exact committed candidates. Later exact-candidate passes caught additional contradictions after the initial ten-pass round; every confirmed finding was fixed and the resulting head was reviewed again before release.
 - Runtime observance of the new 1.14 rules remains `UNVERIFIED` until a real installed-plugin session exercises them.
 

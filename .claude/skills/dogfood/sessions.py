@@ -53,13 +53,14 @@ SEARCH_VERBS = {"grep", "rg", "ag", "ack", "find", "ls", "wc", "stat", "git", "d
 WRITE_VERBS = {"rm", "mv", "cp", "tee", "touch"}
 MUTATION = re.compile(
     r"\b((?:GIT_INDEX_FILE|GIT_DIR|GIT_WORK_TREE)\s*=\s*\S+"
-    r"|--(?:git-dir|work-tree)(?:=|\s+)\S+"
-    r"|git\s+(?:--(?:git-dir|work-tree)(?:=|\s+)\S+\s*)+"
-    r"|git(?:\s+--(?:git-dir|work-tree)(?:=|\s+)\S+)*\s+"
-    r"(?:commit(?:-tree)?|push|merge|rebase|reset|restore|tag|update-ref|update-index"
-    r"|symbolic-ref|hash-object|write-tree|branch\s+-[dD]"
+    r"|git(?:(?:\s+-[cC]\s+\S+)|(?:\s+--(?:git-dir|work-tree|exec-path)(?:=|\s+)\S+))*\s+"
+    r"(?:add|rm|mv|commit(?:-tree)?|push|merge|rebase|cherry-pick|revert|am|reset|restore"
+    r"|update-ref|update-index|write-tree"
+    r"|tag\s+(?!--list\b|-l\b)(?:\S+)|branch\s+-[dD]"
+    r"|symbolic-ref(?:\s+-\S+(?:\s+\S+)?)?\s+(?!-)\S+\s+\S+"
+    r"|hash-object\b[^\n;&|]*(?:\s-w\b|\s--write\b)"
     r"|checkout\s+(?:-f\b|--force\b)|switch\s+(?:-f\b|--force\b)"
-    r"|worktree\s+(?:add|remove)\b[^\n;&|]*(?:--force|-f)\b)"
+    r"|checkout-index\b[^\n;&|]*(?:\s-f\b|\s--force\b)|worktree\s+(?:add|remove)\b)"
     r"|gh\s+(?:issue|pr)\s+(?:create|edit|close|reopen|comment|delete|merge|ready|lock)"
     r"|gh\s+(?:release|repo)\s+(?:create|edit|delete|upload)"
     r"|gh\s+api\s+(?:-X\s*)?(?:POST|PATCH|PUT|DELETE)"
@@ -134,7 +135,29 @@ def package_reference(version: str, name: str) -> tuple[str, str]:
     """Read a reference as it shipped. Says which bytes it got, so a fallback is visible."""
     root = repository_root()
     relative = f"plugins/skiphow/skills/skiphow/references/{name}.md"
-    for ref, source in ((f"v{version}:{relative}", "tag"), (f"HEAD:{relative}", "HEAD")):
+    tag = f"v{version}"
+    try:
+        tagged = subprocess.run(
+            ["git", "show", f"{tag}:{relative}"],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if tagged.returncode == 0 and tagged.stdout.strip():
+            return tagged.stdout, "tag"
+        tag_exists = subprocess.run(
+            ["git", "rev-parse", "--verify", f"{tag}^{{commit}}"],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if tag_exists.returncode == 0:
+            return "", "absent_in_version"
+    except OSError:
+        pass
+    for ref, source in ((f"HEAD:{relative}", "HEAD"),):
         try:
             out = subprocess.run(
                 ["git", "show", ref], cwd=root, capture_output=True, text=True, check=False
@@ -247,7 +270,9 @@ def detect_references(path: Path, records: list[dict], version: str) -> dict[str
         probe_count = len(probes[name])
         hit = hits[name]
         action = verbs[name]
-        if probe_count and hit == probe_count:
+        if sources[name] == "absent_in_version":
+            verdict, confidence = "absent_in_version", "n/a"
+        elif probe_count and hit == probe_count:
             verdict, confidence = "loaded", "high"
         elif probe_count and hit:
             verdict, confidence = "partially_loaded", "medium"
@@ -413,7 +438,9 @@ def digest(path: Path, report_chars: int) -> dict:
                     }
                 )
             if name in WRITE_TOOLS:
-                mutations.append({"tool": name, "detail": data.get("file_path", "?")})
+                mutations.append(
+                    {"tool": name, "detail": data.get("file_path", "?"), "at": record.get("timestamp", "")}
+                )
             elif name == "Bash":
                 command = data.get("command", "")
                 hits = [" ".join(m.split()) for m in MUTATION.findall(command)]
@@ -427,6 +454,7 @@ def digest(path: Path, report_chars: int) -> dict:
                             "tool": "Bash",
                             "verb": verbs[:90],
                             "detail": " ".join(command.split())[:400],
+                            "at": record.get("timestamp", ""),
                         }
                     )
 
@@ -593,7 +621,7 @@ def render_digest(data: dict) -> str:
     ]
     for mutation in data["mutations"]:
         prefix = f"Bash [{mutation['verb']}]" if mutation["tool"] == "Bash" else mutation["tool"]
-        out.append(f"  {prefix} {mutation['detail']}")
+        out.append(f"  [{mutation.get('at', '')[:19]}] {prefix} {mutation['detail']}")
     if not data["mutations"]:
         out.append("  none")
     report = data["report"]
@@ -649,7 +677,11 @@ def main() -> None:
                 if not match:
                     continue
                 start = max(0, match.start() - args.chars // 2)
-                print(f"L{number}: ...{line[start : start + args.chars]}...")
+                try:
+                    at = (json.loads(line) or {}).get("timestamp", "")
+                except (json.JSONDecodeError, AttributeError):
+                    at = ""
+                print(f"L{number} [{at}]: ...{line[start : start + args.chars]}...")
                 shown += 1
                 if shown >= args.max:
                     print(f"(stopped at {args.max} matches)")
