@@ -7,15 +7,19 @@ and names the smaller 2.0 contract separately so retired workflow mechanics do n
 
 1. Freeze the session IDs the owner named or the approved date range.
 2. Read generated digests, not raw transcripts. Use bounded `sessions.py grep` only for a disputed event.
-3. Record plugin version, model, whether the session is still live or ends mid-tool, and whether context
-   compacted.
-4. Read the owner skill and any reference that actually entered that session's context from the matching
-   release tag.
-5. Grep ADR `## Revalidation triggers` first. A match is evidence the project already agreed to act on, not
+3. Keep every `sessions.py` output in the root context. Give delegates only manually sanitized facts, never
+   command output or session, project, path, owner, customer, or credential identifiers.
+4. Record the model and the observable terminal sequence, trailing unresolved call, and compaction evidence.
+   A static open sequence does not establish current liveness or the cause of an interruption.
+5. Use a plugin version or source tree only when transcript or preserved setup evidence identifies it. Read
+   the owner skill and any positively observed reference from that exact tag, cache, or tree. If those bytes
+   are unavailable, contract-body scoring is `UNVERIFIED`; never substitute HEAD.
+6. Grep ADR `## Revalidation triggers` first. A match is evidence the project already agreed to act on, not
    automatic proof of a package defect.
 
-A live or mid-tool session owes no final report. Compaction is a possible cause, not a pardon or a failure by
-itself. One deviation is never repeated model variance.
+A positively observed terminal state constrains report expectations. An open sequence or trailing unresolved
+call alone does not establish that a session is live or why it stopped. Compaction is a possible cause, not a
+pardon or a failure by itself. One deviation is never repeated model variance.
 
 ## The 2.0 contract
 
@@ -26,17 +30,17 @@ select, order, or chain the package's methods. The package exposes exactly one t
 may read one, several, or no focused Markdown references according to the request. A method is guidance, not
 a separately invoked capability or a mandatory stage.
 
-Do not fail a run because it did not load every method reference. Ask whether applicable specialized guidance
-materially improved the work without handing workflow choice to the owner. A missed reference may lower
-method quality, but critical authority, autonomy, preservation, and completion rules must remain available in
-the root. There is no required reference chain in 2.0.
+Do not fail a run merely because the transcript lacks positive body evidence for every method reference. Ask
+whether an applicable method was relevant and whether the observed work exposed a method-quality defect,
+without handing workflow choice to the owner. Critical authority, autonomy, preservation, and completion
+rules must remain available in the root. There is no required reference chain in 2.0.
 
 ### Authority
 
 Re-derive the grant at every owner turn:
 
-- questions, comparison, planning, diagnosis, review, and research are read-only;
-- a save request grants the requested record;
+- a request only to answer, compare, diagnose, review, research, plan, triage, or organize is read-only;
+- an outcome whose intended result is a durable record grants only that record;
 - a project-change request grants scoped edits, fresh verification, and an ordinary local commit of owned
   changes, unless the owner or repository asks to keep them uncommitted or a clean commit cannot avoid
   foreign changes;
@@ -72,9 +76,10 @@ not own. Isolation is required when repository policy or collision risk makes it
 mutation.
 
 Every claimed project result needs fresh evidence against the final changed state. A check before the last
-relevant edit is stale. Ordinary local mechanics, including the owned commit, should be complete without an
-owner workflow question. A blocker or unverified surface is reported with its effect instead of being called
-passed.
+relevant edit is stale. When the result is visual, inspect its rendered appearance before completion; if
+faithful rendering is unavailable, report appearance as unverified. Ordinary local mechanics, including the
+owned commit, should be complete without an owner workflow question. A blocker or unverified surface is
+reported with its effect instead of being called passed.
 
 Material findings are not silently discarded. In 2.0 they need no vocabulary token. A finding is fixed when
 it blocks or cannot safely separate from the requested result; otherwise it is reported, and persisted only
@@ -89,7 +94,8 @@ Apply these only to the versions named.
 
 ### Authority and delivery
 
-- Through 1.13, routine merge required the root's phrase-equivalent grant.
+- In 0.9, repository policy could grant automatic merge; otherwise merge required the root's grant.
+- From 1.0 through 1.13, routine merge required the root's phrase-equivalent grant.
 - From 1.14 through 1.x, a project-change outcome granted routine delivery to an affirmatively
   non-production integration target; staging and production still required approval bound to the source and
   target.
@@ -98,34 +104,43 @@ Apply these only to the versions named.
 
 ### Routes, references, and reports
 
-- Fixed `RESPOND`, `RECORD`, `DELIVER`, and `CONTROL` routes exist only through 1.x.
+- Fixed `RESPOND`, `RECORD`, `DELIVER`, and `CONTROL` routes exist from 0.9 through 1.x.
 - Through 1.13, reference loading is judged against the trigger in that version. In 1.14, every explicitly
   triggered safety reference still had to load even though a bounded change could skip `delivery.md`.
-- Through 1.13, the final report used five headings. From 1.14 through 1.x, it gave the result and evidence,
-  plus material findings, records, blockers, and unverified limits when any existed.
+- From 1.1 through 1.13, the final report used five headings. From 1.14 through 1.x, it gave the result and
+  evidence, plus material findings, records, blockers, and unverified limits when any existed.
 - From 2.0, use the result-first rule above and do not require references or empty ceremony.
 
-Loading is per session, and a delegate's context is not the root's. Searching a file is not the same as
-loading it. A rule that never entered context may expose a trigger or layout defect; it is not variance in the
-unloaded body.
+Context evidence is per session, and a delegate's context is not the root's. Complete exact-version reference
+  text in model-visible output proves the body was observed. Matching line values alone may be generic and do
+  not prove the body entered context. A structured host Read or Search records that action but does not by
+  itself prove the complete body appeared. Shell command semantics are not classified as reads, writes, or
+  loads; complete artifact text in model-visible output remains positive body evidence regardless of its
+  producer. Transcript absence never proves a reference stayed out of context. Without positive body evidence,
+  blame assigned to the reference wording remains `UNVERIFIED`.
 
 ### Findings and trackers
 
 - Findings tags `TRACKED`, `SAVED`, `UNSAVED`, and `DISMISSED` are required only by the 1.x versions that
   define them. A historical `SAVED` tag needs a matching write, and `TRACKED` needs a pre-existing linked
   record.
-- `skiphow:<id>` and batch markers, duplicate-search order, and the fixed local inbox block are historical
-  1.x mechanics only.
-- Across versions, created records follow the tracker's native classification. Read-only requests do not
-  acquire record authority merely because a problem was found.
+- Duplicate-search and local-inbox mechanics existed from 0.6 through 1.x. Apply only the exact mechanics
+  that the version under review defined.
+- `skiphow:<id>` and batch markers are historical 1.x mechanics that began in 1.1.
+- From 1.7 through 1.x, created records follow the tracker's native classification.
+- In 0.9 through 1.0, finding persistence was delivery-scoped. Versions 1.1 through 1.6.0 contained broader or
+  contradictory finding-save authority; apply the exact version text. From 1.6.1 through 1.x, a read-only
+  request did not gain record authority merely because a problem was found. From 2.0, use the authority section
+  above.
 
 ### Handoff and delegation
 
-- Judge the eight-field handoff template only through 1.13. In 1.14 through 1.x, a selected queue needed a
-  checkpoint from which another root could reconstruct authority, queue, candidate, evidence, blockers, and
-  next action.
-- Fixed `scout`, `builder`, and `reviewer` roles, role names in every brief, routing references, retry ladders,
-  mandatory closing review, and cross-host escalation are 1.x rules only.
+- Judge the eight-field handoff template only from 1.1 through 1.13. In 1.14 through 1.x, a selected queue
+  needed a checkpoint from which another root could reconstruct authority, queue, candidate, evidence,
+  blockers, and next action.
+- Fixed roles, brief fields, routing references, retry ladders, closing review, and cross-host escalation
+  changed at different points in 1.x. Apply each only when the exact package bytes under review define it;
+  fixed `scout`, `builder`, and `reviewer` files begin in 1.1.
 - From 2.0, use host-native continuation and delegation when they materially help. No fixed file, schema,
   role, or reviewer is proof by itself.
 
@@ -150,6 +165,10 @@ Count applicable sessions, not events inside one session. State `2 of 3`, not a 
 
 ## Evidence limits
 
+- `coverage` automatically rediscovers Claude project transcripts only. It accepts a full session ID or a
+  currently unique eight-character hexadecimal prefix, and requires an exact record count plus
+  order-insensitive plugin identity. An explicitly supplied flat Codex file needs a manual receipt and is not
+  evidence of complete Codex-desktop coverage.
 - A run can silently drop a finding, so finding conformance is always an upper bound.
 - A transcript's tracker links and remote states are claims until independently checked; the audit makes no
   network call merely to validate them.

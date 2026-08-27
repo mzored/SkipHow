@@ -6,9 +6,9 @@ description: Audit real SkipHow sessions from other projects against the contrac
 # Dogfood audit
 
 SkipHow changes from failures observed in real projects, not from redesign. This skill turns the owner's real
-sessions in other repositories into that evidence: what the package told a run to do, what the run did, and
-which of the two is at fault. When the owner asks for a fix, it carries the evidence-supported result through
-the delivery they authorized.
+sessions in other repositories into evidence: what the package told a run to do, what the run did, and whether
+the available record supports attribution or leaves it unverified. When the owner asks for a fix, it carries
+the evidence-supported result through the delivery they authorized.
 
 This is a contributor tool. It is not part of the shipped plugin and it does not ship. Do not invoke the
 `skiphow` skill to do this work — `AGENTS.md` forbids using the installed plugin to govern this repository,
@@ -24,8 +24,9 @@ The owner's words grant the work, exactly as they do in the product:
 
 - "audit", "check", "why did it do that" — inspect and report. Change nothing.
 - "audit and record" — also write the receipt described under Report.
-- "audit and fix" — also record the audit, implement and verify evidence-supported changes, and carry them
-  through the repository's ordinary protected delivery. Own technical and architectural choices. Stop at a
+- "audit and fix" — also record the audit, implement and verify evidence-supported changes, and make an
+  ordinary local commit when repository policy permits. Remote delivery still depends on the requested shared
+  outcome. Own technical and architectural choices. Stop at a
   proposal only when evidence leaves a material product or rollout choice unresolved, or when the requested
   outcome does not grant a required protected action.
 
@@ -41,37 +42,54 @@ alternative a future contributor would otherwise propose again.
 
 ## Find the sessions
 
-`sessions.py` locates and slices; it never judges.
+`sessions.py` locates Claude Code project transcripts, slices an explicitly supplied Claude or flat
+`codex exec --json` transcript, and mechanically classifies observable evidence. It does not discover Codex
+desktop rollout storage and it does not make a causal or conformance ruling.
 
 ```sh
-python .claude/skills/dogfood/sessions.py list           # external sessions, newest last
-python .claude/skills/dogfood/sessions.py coverage       # which ones the receipts already cover
+python .claude/skills/dogfood/sessions.py list --on 2026-08-27 # exact-day plus date-uncertain candidates
+python .claude/skills/dogfood/sessions.py coverage       # discovered Claude sessions covered by receipts
 python .claude/skills/dogfood/sessions.py digest <id>    # one session as reviewable evidence
 python .claude/skills/dogfood/sessions.py grep <id> <re> # back into the raw bytes, bounded
 ```
 
-Read digests, never raw transcripts: the largest is megabytes and the digest is kilobytes. `list --all` also
-shows excluded sessions with a reason. A session excluded as `self-development` is not noise — it is an
-`AGENTS.md` violation worth reporting.
+Read digests, not whole transcripts: the largest is megabytes and the digest is reviewable. Use bounded
+`grep` when the digest visibly reports truncated final text or an event remains disputed. `list` returns
+marker-bearing Claude candidates. `--on` selects candidates with a marker on that exact local calendar day
+and retains date-uncertain candidates whose undated or unreadable marker records prevent safe exclusion;
+`--since` is a lower bound with the same fail-closed treatment. Neither filter uses chat creation time. A
+path mention or quoted example is not proof of activation.
+`list --all` also shows neutral exclusions. A `self-development` match can be legitimate source inspection;
+check the correlated activation evidence before calling it an `AGENTS.md` violation.
 
-Digest and `grep` output are still private raw evidence. Keep them in the root context. Give delegates only
-the short session ID and sanitized facts needed for their lane, never project names, paths, owner text,
-commands, report text, customer data, or credentials.
+Every `sessions.py` output is private root evidence, including text or JSON from `list`, `list --all`,
+`coverage`, `digest`, and `grep`. Some of these expose project names or paths even when they do not show
+transcript text. Never paste command output into a delegate brief. Restate only the facts manually sanitized
+for that lane, without session IDs, project names, paths, owner text, commands, report text, customer data,
+or credentials.
 
 ## Judge against the contract the run actually had
 
-A session records the package version it ran. Judge it against those bytes, not against HEAD:
-`git show v<version>:plugins/skiphow/skills/skiphow/SKILL.md` and the same for any reference. Read
-[the checklist](references/checklist.md) for what to check and what each signal does and does not prove.
+Use an exact package version or source tree only when the transcript or preserved setup identifies it. For a
+released version, compare with `git show v<version>:plugins/skiphow/skills/skiphow/SKILL.md` and the same
+reference path. An unversioned project copy or missing tag/cache leaves contract-body scoring `UNVERIFIED`;
+never substitute HEAD. Read [the checklist](references/checklist.md) for what each observation proves.
 
-Four things must be settled before any check can fail:
+Four observations constrain any ruling:
 
-- **Is the session still running?** The digest flags a transcript that was written to minutes ago. A live
-  session owes nothing yet, and its missing report is not a deviation.
-- **Was the run interrupted?** A session that ends mid-tool never owed a report. The digest says so.
+- **What terminal state is present?** The digest reports a static host sequence. It can identify a completed,
+  failed, open, or unobserved sequence, and marks ambiguous lifecycle evidence or an incomplete readable
+  transcript as unverified instead of forcing a state. An open sequence does not prove the session is currently
+  running and does not by itself excuse a missing result.
+- **What is the last observable activity?** A trailing unresolved tool call proves only that no matching
+  terminal event appears later in the readable transcript; it does not prove why the run stopped.
 - **Did the context compact?** Then "it forgot" is a live innocent explanation.
-- **Did the rule that failed ever enter context?** The digest separates a reference that was read from one
-  that was only searched or named. A rule that never loaded cannot be blamed on the reference body.
+- **Did the rule that failed enter context?** `body_observed` means the complete tagged or cached reference
+  text appeared in model-visible tool output. Matching decoded line values are weaker and may be generic; they
+  do not establish that the body entered context. A structured host Read/Search/Write event says which
+  structured action was observed. Shell command semantics are not inferred; complete artifact text in
+  model-visible output can still be observed independently. Path evidence, missing output, and transcript
+  absence do not prove that a body entered or stayed out of context.
 
 ## Verdicts
 
@@ -93,8 +111,8 @@ governing sentence was byte-identical. Two deviations in one session are one obs
 ## From a defect to a proposal
 
 Root-cause the deviation to one sentence and say plainly what is wrong with it: missing, ambiguous,
-contradictory, miscued by the only worked example, or never loaded. Then pass three gates before the proposal
-exists.
+contradictory, miscued by the only worked example, or not shown to have entered context. Then pass three
+gates before the proposal exists.
 
 - Grep `## Rejected alternatives` across `docs/decisions/`. If the project already rejected this, either drop
   it or carry new evidence that the rejection reason no longer holds.
@@ -119,11 +137,14 @@ conformance is an upper bound.
 
 With a record granted, write `docs/research/<date>/field-audit-<date>.md` in the style of
 `real-task-application-audit.md` — no project names, no issue titles, no customer data, no absolute paths —
-and add its row to that directory's `README.md`. Include one line per session read, so the next audit can see
-its own coverage without a second ledger:
+and add its row to that directory's `README.md`. Include one line per session read. For a Claude session
+discovered by `list`, use its first eight hexadecimal characters only when that prefix is unique in the
+current discovery; otherwise use the full session ID. An explicitly supplied flat Codex transcript is not
+rediscovered by `coverage`, so name it manually in the receipt and do not claim automatic census coverage:
 
 ```text
-Audited `<8-char session>` · <records> records · plugin <version> · <one-line verdict>
+Audited `<unique 8-char prefix or full session ID>` · <records> records · plugin <version> · <one-line verdict>
 ```
 
-Then run `python scripts/check.py`. Its personal-path scan is what stops a transcript path reaching `docs/`.
+Review the note manually for private identifiers, then run `python scripts/check.py`. Its personal-path scan is
+a backstop for common home-directory forms, not a complete privacy guarantee.
