@@ -237,9 +237,11 @@ def test_autonomy_and_isolation_invariants_are_shipped() -> None:
     assert "other installed host" in root
     assert "ordinary integration or commit commands and hooks" in root
     assert "normal path" in root
-    assert "atomic preconditions reject source or target drift" in root
+    assert "ordinary fast-forward push" in root
+    assert "reject force or non-fast-forward updates" in root
     github = read("plugins/skiphow/skills/skiphow/references/github.md")
-    assert "Never enter a queue that can recompute the protected candidate" in github
+    assert "Do not create an Issue solely because a pull request is required" in github
+    assert "Delete the remote head only when this operation created it" in github
     for forbidden_escape in ("alternate index", "plumbing commands", "force-checking out", "bypassing hooks"):
         assert forbidden_escape in worktrees
     assert "before the first write and before the commit" in builder

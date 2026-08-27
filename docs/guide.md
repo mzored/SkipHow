@@ -45,7 +45,7 @@ At the point of promotion into staging or production, SkipHow asks for your exac
 
 Worktrees, branches, ordinary commits, required Issues and pull requests, conflict resolution, review loops, merge into the non-production integration branch, and safe cleanup are engineering work. SkipHow performs them without asking. It stops a routine delivery question only for a material product choice evidence cannot settle or for staging or production approval.
 
-If the repository's only integration branch also releases or deploys, it has no proven non-production merge target. SkipHow therefore treats that merge as a rollout or production gate and asks once the exact source head, target head, and resulting tree are ready.
+If the repository's only integration branch also releases or deploys, it has no proven non-production merge target. SkipHow therefore treats that merge as a rollout or production gate and asks once the source head and target branch are ready, showing the current target and resulting tree. Later target movement triggers fresh checks and review; it asks again only if source content or rollout meaning changes.
 
 While delivering, SkipHow may save one Issue for a material problem it finds outside your request. It will not implement it unless you add it to scope. A read-only request ("review", "research", "without changing anything") saves nothing: the problem is reported as `UNSAVED`, and "review this, but save any material findings" grants the record. Security findings never go into a public Issue; without a private channel you get a redacted note to route yourself.
 
@@ -65,11 +65,11 @@ claude -p "Fix today's batch and deliver what passes." --worktree \
 Codex:
 
 ```sh
-codex exec --dangerously-bypass-approvals-and-sandbox \
+codex exec -s danger-full-access \
   "Fix today's batch and deliver what passes."
 ```
 
-`exec` runs non-interactively. The bypass flag is intentionally dangerous and is suitable only inside an external disposable sandbox whose repository, credentials, and network scope you control; it is the current CLI's only explicit fully unattended mode that also permits Git metadata and worktree operations. Do not combine `danger-full-access` with `--approve-for-me`: the current CLI routes that option through `workspace-write`, which can block commits. For a supervised local run, omit the bypass and select the sandbox and approvals you trust. Codex has no dollar cap for `exec`; bound the run by scope instead. Delegates run on your session model; SkipHow spawns the scout at low reasoning effort and the reviewer at high, with nothing to set up.
+`exec` runs non-interactively. `danger-full-access` permits Git metadata and worktree operations and should be used only where the repository, credentials, and network scope are controlled; prefer a narrower sandbox when that repository can commit inside it. Do not add `--approve-for-me`: the current CLI routes that option through `workspace-write`, which can block commits. Codex has no dollar cap for `exec`; bound the run by scope instead. Delegates run on your session model; SkipHow spawns the scout at low reasoning effort and the reviewer at high, with nothing to set up.
 
 If the host cannot run in the background, resume, or isolate work, SkipHow finishes a safe subset, writes a handoff, and reports the rest as `UNVERIFIED` rather than pretending.
 

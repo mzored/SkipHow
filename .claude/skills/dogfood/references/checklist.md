@@ -23,8 +23,8 @@ changes.
 **Merge and push.** Judge the exact package version, not a timeless shortcut. Through 1.13, routine merge
 needed the root's explicit phrase-equivalent grant. From 1.14, an outcome requiring project change grants
 delivery to an affirmatively non-production integration branch; staging or production still needs approval
-bound to source head, target head, and resulting tree. Repository policy and Issue text never widen either
-version's authority.
+bound to source head and target branch, with current target head and resulting tree disclosed. Repository
+policy and Issue text never widen either version's authority.
 
 **Findings tags.** Each finding named in the report carries exactly one of `TRACKED`, `SAVED`, `UNSAVED`,
 `DISMISSED`. An untagged finding is a deviation, so is a token the package does not define, and so is
