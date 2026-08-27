@@ -6,15 +6,16 @@ by id and date only; no project names, Issue titles, or paths appear here.
 
 ## What was read
 
-Two external sessions on Claude Code 2.1.246, both on 2026-08-26, two repositories.
+Three external sessions on Claude Code 2.1.246, all on 2026-08-26.
 
 | Session | Plugin | Route | State |
 | --- | --- | --- | --- |
-| `7c5f12fa` | 1.7.0 | `DELIVER` | **live throughout the audit**; report, merge, and cleanup unscored |
+| `7c5f12fa` | 1.7.0 | `DELIVER` | complete; first read live, then re-read after completion |
 | `43408b2d` | 1.9.0 | `RESPOND` | complete |
+| `35775b1d` | 1.13.0 | `DELIVER` | complete |
 
-Each was judged against the bytes it ran, not against HEAD. The live session owes no report, so its report
-shape and finding tags were not checked; scoring them is the easiest false positive this audit can produce.
+Each was judged against the bytes it ran, not against HEAD. `7c5f12fa` owed no report when first read because
+it was live; the later re-read scores only what its completed transcript can prove.
 
 ## The owner was watching a version the run was not using
 
@@ -191,7 +192,7 @@ reachable. Every factual correction it made was verified against the files after
 including two errors of fact in the draft's own reading of the repository. First use of that rung on an audit
 rather than on a diff, and the first time it caught a wrong ruling rather than a code defect.
 
-## Limits
+## Limits for the first two sessions
 
 `7c5f12fa`'s report, merge, cleanup, and finding tags were outside the first pass and are supplied by the
 re-read above; the sections written before it stopped keep their live-snapshot counts. Findings a run noticed
@@ -201,3 +202,19 @@ services.
 
 Audited `7c5f12fa` · 1195 records · plugin 1.7.0 · re-read after it finished: merge and cleanup conformed, no report owed, handoff still unwritten
 Audited `43408b2d` · 265 records · plugin 1.9.0 · read-only, five headings, tags matched the records created
+
+## Follow-up delivery audit: shared-checkout completion was not safe completion
+
+Session `35775b1d` ran plugin 1.13.0 on model `claude-opus-5`, beginning with one UI request. Later owner turns added six independently landable or systemic items. The run kept one lane and loaded none of the repository, delivery, long-work, engineering, GitHub, or model-routing instructions that governed the resulting work. It did not read the target repository's root contributor instructions before changing files.
+
+The only review was a same-host `reviewer` pass over the original candidate. It found four real defects, which were fixed, but the fix received no second review. The other installed host was authenticated and exposed its review command, but no cross-host pass ran. The target repository required Issue-linked branches; no matching Issue or pull request was created.
+
+Another session changed and reset the shared checkout while this run was working. The run then force-restored files from the index, lost its own stylesheet change plus another lane's changes, recovered them from a patch, and eventually created the final corrective commit through a temporary index, `commit-tree`, and a direct ref update. An earlier platform-specific command failure also produced a temporary empty commit before the ref was rolled back. The final commit exists and contains the intended files, but required full repository checks were not run against that exact final candidate.
+
+`DEFECT`: the 1.13 root `SKILL.md` did not require repository instructions before mutation or re-size after each owner turn. `DEFECT`: the widened-review trigger lived only in `references/engineering.md` and `references/model-routing.md`, which the run did not load. `DEFECT`: the root required a commit but named neither checkout-identity guards nor the forbidden low-level completion paths, and no worktree reference existed. `NOT-A-DEFECT`: the agent can create commits; the unsafe environment and completion path made ordinary committing unreliable. `UNVERIFIED`: no 1.14 run yet proves the replacement worktree, integration, conflict, and review loop is followed.
+
+Audited `35775b1d` · 1413 records · plugin 1.13.0 · model `claude-opus-5` · owner-turn expansion bypassed long-work and repository policy; shared checkout collision corrupted delivery
+
+### Limits
+
+The follow-up audit read the completed transcript and local Git evidence. Target GitHub state and required-check results are the run's claims about themselves, not independently verified remote state. Package changes motivated by the session are not runtime proof; all new 1.14 behavior remains `UNVERIFIED` pending a real installed-plugin run.

@@ -20,7 +20,7 @@ Make the smallest coherent change that solves the whole request. Add or update e
 
 If touched files already hold unrelated changes, record their pre-change state and attribute your diff, checks, and claims to your delta only. Inspect the final diff, security boundaries, public contracts, failure paths, and cleanup. A value crossing from private or internal to public changes the data boundary; reconcile the owning durable decision (read [product decisions](decision.md)) before delivery.
 
-Name the exact candidate for the root's review: the base commit and the head or working tree it judged; read [engineering methods](engineering.md) for what that review owes and when a fix reopens it. Read `git log` on the base branch before the first commit and match the message form and granularity its recent history uses.
+Read `git log` on the base branch before the first commit and match the message form and granularity its recent history uses. Commit through the ordinary project path and hooks before closing review. Name the exact aggregate candidate for the root's review: target-base commit, source head, and resulting committed tree. Compare the committed tree with the tree checks and review judged; any hook, formatter, generator, target movement, or later integration that changes it invalidates applicable evidence and requires fresh affected checks and review. Read [engineering methods](engineering.md) for what that review owes and when a fix reopens it.
 
 After a second failure with the same cause, stop retrying unchanged. Add the smallest durable prevention within scope (a test, a lint rule, a check, a skill correction) or save one finding if that prevention is outside authority.
 

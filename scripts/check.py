@@ -33,6 +33,7 @@ REQUIRED_REFERENCES = frozenset(
         "intake.md",
         "long-work.md",
         "model-routing.md",
+        "worktrees.md",
     }
 )
 PERSONAL_PATH = re.compile(
@@ -75,8 +76,8 @@ HOOK_COMMAND = re.compile(
     r"""^sh -c 'printf "%s\\n" "[^"'$`\\]+"; """
     r"""if \[ -f \.skiphow/handoff\.md \]; then tail -n \d{1,3} \.skiphow/handoff\.md; fi; exit 0'$"""
 )
-ROOT_SKILL_LIMITS = {"bytes": 7000, "words": 1000}
-REFERENCE_LIMITS = {"total_words": 4000, "file_words": 600}
+ROOT_SKILL_LIMITS = {"bytes": 9500, "words": 1400}
+REFERENCE_LIMITS = {"total_words": 5200, "file_words": 750}
 
 
 def managed_env_path() -> Path:
@@ -517,6 +518,16 @@ def validate_continuity_hook(path: Path = PLUGIN_ROOT / "hooks/hooks.json") -> l
             # A denylist of program names cannot be complete; the accepted command is
             # one fixed shape -- print a notice, then tail the checkpoint if it exists.
             errors.append(f"{relative} handler must match the accepted read-only command shape")
+        if {"compact", "resume"} & set(sources):
+            anchors = (
+                "owner request", "repository instructions", "active host tasks", "live Git",
+                "GitHub", "checkout", "branch", "HEAD", "candidate",
+            )
+            missing = [anchor for anchor in anchors if anchor not in command]
+            if missing:
+                errors.append(
+                    f"{relative} compact/resume notice must require recovery of: {', '.join(missing)}"
+                )
     if sorted(matchers) != sorted(CONTINUITY_MATCHERS):
         errors.append(f"{relative} must match startup, clear, compact, and resume exactly once each")
     other = [item for item in path.parent.rglob("*") if item.is_file() and item != path]

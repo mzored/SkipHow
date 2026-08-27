@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted. Amended by [ADR 0014](0014-conform-to-the-tracker-classification.md), which restores and extends step 4 ("Do not use labels as a second workflow engine").
+Accepted. Amended by [ADR 0014](0014-conform-to-the-tracker-classification.md); its phrase-based routine merge boundary is superseded by [ADR 0017](0017-autonomous-routine-delivery-uses-owned-worktrees.md).
 
 ## Date
 
@@ -23,6 +23,8 @@ When a repository uses GitHub and the work is tracked, GitHub is the source of t
 A small direct task may stay untracked unless the user or repository policy requires an Issue or pull request. A repository requirement makes the work tracked before implementation; the proportional small-change shortcut cannot override it.
 
 Authority comes from the owner's request and host policy. Repository policy may narrow that authority. It cannot grant merge, cleanup, release, or another action that the owner and host did not grant.
+
+The following authority bullets record the 2026-08-25 boundary. Their phrase-based merge distinction is superseded by the 1.14.0 amendment below; the read-only, record, restriction, and protected-action boundaries remain current.
 
 - Read-only requests permit inspection and reporting, not remote writes.
 - "Save this" or "create Issues" permits the requested Issue creation or update after duplicate checks.
@@ -72,9 +74,19 @@ When GitHub is unavailable, explicit record requests append to `.skiphow/inbox.m
 
 Owners can inspect progress and resume work through GitHub without learning a SkipHow state format. Before handoff, the operation appends its scope, current authority and restrictions, accepted decisions, queue, exact GitHub and Git state, owned resources, last external result, evidence, blockers, and next safe action. Protected actions fail closed when trusted authority or ownership cannot be reconstructed.
 
-Unattended work can finish without a second merge confirmation, but only when the owner request and host policy grant that outcome and GitHub protections pass. Ordinary implementation stops at a ready pull request unless the owner request and host policy grant merge.
+This original consequence is superseded by the 1.14.0 amendment for routine integration: ordinary delivery no longer stops at a ready pull request, while staging and production promotion still require approval.
 
 Some repositories do not expose native Issue dependencies or merge queues. SkipHow uses the available GitHub state and reports unsupported behavior. It does not recreate those services locally.
+
+## Amendment, 1.14.0
+
+A completed external session at 1.13.0 showed that the phrase-based merge boundary produced the opposite of reliable autonomy. The run could create ordinary commits, but concurrent work changed its shared checkout; it lost and restored changes, then created the final commit through Git plumbing and a direct ref update to avoid the normal index and hooks. It also stopped short of the repository-required Issue and pull request lifecycle. The failure was not lack of a merge verb. It was lack of isolated ownership, exact-state guards, and an obligation to integrate each returned unit.
+
+The owner replaced the phrase-based boundary. A request to fix or implement now grants the routine technical workflow required to deliver that result: repository-required tracking, isolated worktree and branch, ordinary commits and hooks, pull request, conflict resolution, merge into the repository's non-production integration branch, Issue closure, and owned cleanup. The agent derives that workflow from repository instructions, live protections, recent delivery history, and the requested outcome. No particular wording is a capability token.
+
+Promotion into a repository-declared staging or production branch, including `main` when it is production, still asks for exact approval at the point of promotion. Material product choices evidence cannot settle also remain with the owner. Existing protected-action boundaries and the ban on administrator bypass stand.
+
+Every writing lane owns a worktree and branch. The root verifies checkout, branch, `HEAD`, status, and active tasks before mutations, commits, reviews, gates, and integration. Drift stops writes until the owned delta is moved to an isolated candidate. Every returned commit must be integrated into the root operation branch; conflict resolution preserves both intents when compatible, reruns checks for both, and re-reviews the integrated candidate. Direct ref movement, alternate indexes, plumbing commits, force checkout, and hook bypass cannot substitute for delivery evidence.
 
 ## Rejected alternatives
 
@@ -88,11 +100,11 @@ This slows small local fixes and contradicts proportional execution. Repository 
 
 ### Merge every successful implementation
 
-A green local check does not grant a remote merge and does not prove that the pull request head, reviews, or protections still match.
+A green local check alone does not prove that the pull request head, reviews, protections, or target branch still match. Routine merge follows only after those live gates pass; staging and production still require owner approval.
 
 ### Never merge automatically
 
-This would leave explicit unattended work unfinished even after the owner granted end-to-end delivery and all repository protections passed.
+The original decision rejected this only for explicit unattended authority. ADR 0017 supersedes that scope: passing routine delivery integrates autonomously, while staging and production retain approval.
 
 ### Use admin merge or change repository settings
 
@@ -111,6 +123,9 @@ A branch can contain unique work or belong to another person. Cleanup needs prov
 - [Live evaluation host contract](../research/2026-08-25/live-evaluation-hosts.md)
 - [Release 1.0 audit](../research/2026-08-26/release-1.0-audit.md)
 - [Real-task application audit](../research/2026-08-26/real-task-application-audit.md)
+- [Git worktree documentation](https://git-scm.com/docs/git-worktree), [Claude Code worktree documentation](https://code.claude.com/docs/en/worktrees), and [Superpowers worktree skill](https://github.com/obra/superpowers/blob/main/skills/using-git-worktrees/SKILL.md), read on 2026-08-27
+- [GitHub rulesets](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets), [pull request reviews](https://docs.github.com/en/pull-requests/reference/pull-request-reviews), and [merge queues](https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/merging-a-pull-request-with-a-merge-queue), read on 2026-08-27
+- [Resolving merge conflicts skill](https://github.com/mattpocock/skills/blob/main/skills/engineering/resolving-merge-conflicts/SKILL.md), adapted rather than copied on 2026-08-27
 
 ## Revalidation triggers
 

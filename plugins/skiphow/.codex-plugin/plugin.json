@@ -1,6 +1,6 @@
 {
   "name": "skiphow",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "description": "Handle product and project work from one owner request.",
   "author": {
     "name": "mzored",
@@ -25,7 +25,7 @@
     "capabilities": [],
     "defaultPrompt": [
       "Here are today's bugs and ideas. Triage them and save them as Issues.",
-      "Finish today's batch end to end. Merge what passes.",
+      "Fix today's batch and deliver what passes to the integration branch.",
       "The totals overlap on small screens. Find the cause and fix it."
     ]
   }

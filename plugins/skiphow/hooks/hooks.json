@@ -1,5 +1,5 @@
 {
-  "description": "SkipHow continuity: at startup, point the session at the skiphow skill; after compaction or resume, point it at the owner request, live Git and GitHub state, and the latest handoff checkpoint.",
+  "description": "SkipHow continuity: at startup, point the session at the skill; after compaction or resume, require reconstruction from the owner request, repository instructions, host tasks, Git and GitHub, and the handoff.",
   "hooks": {
     "SessionStart": [
       {
@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "sh -c 'printf \"%s\\n\" \"SkipHow: this session was compacted or resumed. Re-read the owner request, then live Git and GitHub state, before acting. If .skiphow/handoff.md exists, its latest checkpoint follows; delete that file once every selected item is done.\"; if [ -f .skiphow/handoff.md ]; then tail -n 40 .skiphow/handoff.md; fi; exit 0'",
+            "command": "sh -c 'printf \"%s\\n\" \"SkipHow: this session was compacted or resumed. Re-read the owner request, repository instructions, observable active host tasks, live Git and GitHub; verify checkout, branch, HEAD, and candidate before acting. If .skiphow/handoff.md exists, its latest checkpoint follows; delete it once every selected item is done.\"; if [ -f .skiphow/handoff.md ]; then tail -n 40 .skiphow/handoff.md; fi; exit 0'",
             "timeout": 10
           }
         ]

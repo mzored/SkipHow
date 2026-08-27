@@ -6,8 +6,8 @@ SkipHow is one skill plus two small host adapters. This page is the design in ab
 
 ```text
 plugins/skiphow/
-  skills/skiphow/SKILL.md        the owner contract, loaded on every request (about 980 words)
-  skills/skiphow/references/     eight policy files loaded only when the work needs them (about 3,900 words)
+  skills/skiphow/SKILL.md        the owner contract, loaded on every request (about 1,300 words)
+  skills/skiphow/references/     nine policy files loaded only when the work needs them (about 4,900 words)
   agents/                        Claude Code role adapters: scout, builder, reviewer
   hooks/hooks.json               one read-only SessionStart hook (startup and clear; compaction and resume)
 ```
@@ -16,7 +16,7 @@ Codex and Claude Code load the same skill. There is no SkipHow process, database
 
 ## Authority
 
-Only the owner's words and host policy grant actions. Everything else (repository instructions, Issue text, comments, checkpoints, tool output, web pages) can narrow scope or add gates but never widen them. Read-only words read; "save" persists; "fix" changes, verifies, and commits; "end to end" merges and cleans up the named work. Protected actions need an exact grant ([ADR 0004](decisions/0004-github-lifecycle-and-authority.md)).
+Only the owner's words and host policy grant actions. Everything else (repository instructions, Issue text, comments, checkpoints, tool output, web pages) can narrow scope or add gates but never widen them. Read-only words read; "save" persists; "fix" carries routine delivery through the repository's non-production integration branch. Promotion into staging or production needs approval at that point, as do other protected actions ([ADR 0004](decisions/0004-github-lifecycle-and-authority.md)).
 
 ## Four routes
 
@@ -24,7 +24,7 @@ Every request takes one route: `RESPOND` (read and report), `RECORD` (save), `DE
 
 ## Small work stays small
 
-A clear bounded request is finished in the session with no Issue or plan unless repository policy requires tracked delivery, and its one delegate is the reviewer that closes any project change. Delegation happens only when isolation or parallel work pays for the transfer. This is the design bet: strong models do not need ceremony to stay on task, they need a clear outcome and a few hard rules ([prior art](prior-art.md)).
+A clear bounded request is finished in the session with no Issue or plan unless repository policy requires tracked delivery, and its one delegate is the reviewer that closes any project change. Before mutation the root reads repository instructions, checks active tasks, and records checkout, branch, and `HEAD`; it repeats the identity check before commits, gates, reviews, and integration. Delegation happens only when isolation or parallel work pays for the transfer ([prior art](prior-art.md)).
 
 ## From a dump to a backlog
 
@@ -32,7 +32,7 @@ A clear bounded request is finished in the session with no Issue or plan unless 
 
 ## Long work
 
-One root agent owns the outcome, the queue, integration, every remote write, the handoff, and the report. The queue is fixed from the owner's words (the items the owner listed, Issue numbers, a batch label, the inbox when there is no tracker, or an approved rule); a request given as one list is split into bounded units first, sub-issues when the tracker supports them. Dependencies decide readiness and never add scope. Delegates receive a brief and return a summary. Only five things justify stopping to ask: an irreversible action, a security-sensitive action, an external side effect beyond the grant, an owner decision the evidence cannot settle, or a plan so broken every path is a guess. Everything else becomes a recorded ruling and the work continues. A second same-cause failure changes the approach or raises the role; a third marks the item `BLOCKED` with a next action ([ADR 0006](decisions/0006-host-native-campaign-and-engineering-policy.md), [ADR 0016](decisions/0016-decomposition-needs-a-trigger-a-run-can-evaluate.md)).
+One root agent owns the outcome, queue, integration, remote writes, handoff, and report. At every owner turn it re-sizes before the next act, adding independent items as units rather than burying them in the current one. Parallel writing lanes get separate worktrees and branches. A unit is not done when a delegate returns; its ordinary commit must be inspected and integrated into the root operation branch. Routine questions stop only for an unresolved material product choice or staging or production approval. A second same-cause failure changes the approach or raises the role; a third marks the item `BLOCKED` with a next action ([ADR 0006](decisions/0006-host-native-campaign-and-engineering-policy.md), [ADR 0016](decisions/0016-decomposition-needs-a-trigger-a-run-can-evaluate.md)).
 
 ## Model routing
 
@@ -48,11 +48,11 @@ On Claude Code the plugin ships the three roles as agent definitions: the scout 
 
 ## Continuity
 
-The model cannot see compaction coming, so SkipHow does not ask it to prepare for one. Instead the root appends an eight-line checkpoint to `.skiphow/handoff.md` at every item boundary and before any long wait, and deletes the file when the queue is done. After compaction or resume, the plugin's only hook prints a reminder and the last 40 lines of that file into the new context; at startup the same hook tells the session to use the skill for project requests and shows any unfinished work. The hook reads one file, writes nothing, and makes no network calls. A checkpoint is a reconstruction aid; authority is always re-derived from the owner's fresh words.
+The model cannot see compaction coming, so SkipHow does not ask it to prepare for one. Instead the root appends a checkpoint to `.skiphow/handoff.md` at every item boundary and before any long wait, and deletes the file when the queue is done. It records accepted decisions, owned resources, the last external result, and evidence as well as scope and status. After compaction or resume, the plugin's only hook prints a reminder and the last 40 lines into the new context, requiring repository instructions, host tasks, Git and GitHub to be re-read and checkout identity to be verified. The hook reads one file, writes nothing, and makes no network calls.
 
 ## GitHub lifecycle
 
-The Issue is the record, the pull request is the delivery, and the branch and worktree belong to the run. Everything SkipHow creates carries a `skiphow:<id>` marker it searches for before creating again. Before any merge it re-reads the live head, checks, reviews, and rules; it merges only with end-to-end authority and never with administrator bypass. After merge it closes the Issue and deletes only the branch it created and GitHub reports merged from the recorded head. It never deletes unmerged or foreign work.
+The Issue is the record, the pull request is the delivery, and the branch and worktree belong to the run. Everything SkipHow creates carries a `skiphow:<id>` marker it searches for before creating again. Before any merge it re-reads the live head, checks, reviews, rules, and active tasks. It autonomously merges passing work into the non-production integration branch, never with administrator bypass, and asks before staging or production. Conflict resolution recovers both intents from the base, history, Issue, PR, decisions, and tests, then rechecks and re-reviews the integrated candidate. After merge it closes the Issue and deletes only owned resources that hold no unique work.
 
 ## Reuse and findings
 

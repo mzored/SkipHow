@@ -2,6 +2,29 @@
 
 All notable changes to this project appear in this file.
 
+## 1.14.0 (2026-08-27)
+
+SkipHow 1.14 removes the magic merge phrase and makes routine delivery autonomous, isolated, and reviewable.
+
+### Changed
+
+- A fix request now carries its required technical workflow through the repository's non-production integration branch: required Issue, isolated worktree and branch, ordinary commit and hooks, pull request, checks, review, conflict resolution, merge, Issue closure, and owned cleanup. The agent derives the workflow from repository instructions and live state. No particular phrase grants a hidden mode. Promotion into staging or a production `main` still asks the owner at that point, and unresolved material product choices stay with the owner ([ADR 0004](docs/decisions/0004-github-lifecycle-and-authority.md)).
+- Each writing lane owns a worktree and branch. Checkout, branch, `HEAD`, status, and active tasks are checked before mutations, commits, review, gates, and integration. Drift stops writes until the owned delta is moved to an isolated candidate. Direct ref updates, plumbing commits, alternate indexes, force checkout, and hook bypass cannot manufacture completion. Every delegate commits through the repository's normal path, and a unit remains in progress until the root integrates that commit.
+- Conflict resolution is continuation work. It recovers both intents from the base, commits, Issue, pull request, decisions, and tests; preserves both when compatible; runs checks for both; completes the ordinary Git operation; and re-reviews the integrated candidate. It asks only when incompatible intent creates a material product choice.
+- The process is re-sized after every owner turn. Independent or systemic additions join an explicit queue instead of being absorbed into the initial bounded lane. The continuity reminder now requires repository instructions, active tasks, checkout, branch, and `HEAD` to be reconstructed after compaction or resume ([ADR 0016](docs/decisions/0016-decomposition-needs-a-trigger-a-run-can-evaluate.md)).
+- Security, public contracts, large integrations, weak evidence, and repeated failures name the other installed host directly in the always-loaded root. Fixes and conflict resolutions are judged again on the exact candidate before integration ([ADR 0009](docs/decisions/0009-reviewer-inherits-and-one-engineering-reference.md)).
+
+### Added
+
+- `references/worktrees.md` adapts the useful parts of Superpowers' worktree workflow and the merge-conflict skill to SkipHow's autonomous contract: detect existing isolation, prefer host-native worktrees, verify the base, preserve ownership on drift, integrate every unit, and clean up only durable owned work. It deliberately does not ask permission for worktree setup or treat every baseline failure as an owner decision.
+- The long-work checkpoint now records the ordered queue, accepted decisions, owned resources, the last external result, and evidence, matching ADR 0004 rather than omitting the state needed to resume safely.
+
+### Verification status
+
+- The focused repository suite passes 58 tests, the full deterministic check passes, both host package validators pass, and Claude isolated install passes. Codex isolated install is `UNVERIFIED` because the machine's managed policy rejects the local marketplace.
+- Ten independent read-only passes ran across three review rounds over authority, Git safety, process, and release packaging. Confirmed findings were fixed and re-reviewed; the final policy, Git, and release passes returned no findings.
+- Runtime observance of the new 1.14 rules remains `UNVERIFIED` until a real installed-plugin session exercises them.
+
 ## 1.13.0 (2026-08-27)
 
 SkipHow 1.13 is what five external reviews, run at once over different parts of the project, found in the package that shipped 1.12.

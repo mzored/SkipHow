@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted in 1.9.0, amended in 1.10.0 (see the amendment below). Amends [ADR 0006](0006-host-native-campaign-and-engineering-policy.md) by stating the
+Accepted in 1.9.0, amended in 1.10.0 and 1.14.0. Amends [ADR 0006](0006-host-native-campaign-and-engineering-policy.md) by stating the
 trigger it left unstated: 0006 defines how a campaign queue is run, never what makes a request one. Follows
 [ADR 0015](0015-unconditional-invariants-live-in-the-root.md) (unconditional rules live in the root). [ADR 0004](0004-github-lifecycle-and-authority.md) and
 [ADR 0003](0003-semantic-model-routing.md) stand.
@@ -97,6 +97,12 @@ conditional: which tier a job needs, the Codex spawn mechanics, and the effectiv
 
 This does not fix the loading trigger, and it is not meant to. It removes the two rules whose absence had a
 cost from the file that does not load.
+
+## Amendment, 1.14.0
+
+The trigger must run again after every owner turn, not only at session start. A 1.13.0 session began with one bounded UI request, then received six independent and systemic additions. It kept the original single-lane process, loaded neither `long-work.md` nor `model-routing.md`, and worked in a shared checkout. The initial classification was correct and became stale.
+
+The root now requires re-reading and re-sizing before the next act after every owner turn. Newly authorized, independently landable work joins an explicit queue; it does not disappear inside the current unit. `long-work.md` repeats the procedure at item boundaries and requires every returned commit to be integrated before the unit becomes done.
 
 ## Rejected alternatives
 

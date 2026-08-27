@@ -2,8 +2,7 @@
 
 ## Status
 
-Accepted in 1.8.0, amended in 1.10.0 (the root budget becomes 1,000 words and 7,000 bytes; see the amendment
-below). Amends [ADR 0009](0009-reviewer-inherits-and-one-engineering-reference.md) (root and
+Accepted in 1.8.0, amended in 1.10.0. Amended by [ADR 0017](0017-autonomous-routine-delivery-uses-owned-worktrees.md), which supersedes its phrase-based merge boundary and raises its budgets. Amends [ADR 0009](0009-reviewer-inherits-and-one-engineering-reference.md) (root and
 reference budgets) and [ADR 0011](0011-findings-tag-codex-role-files-neutral-repo-instructions.md) (the
 findings tags). Restores the merge boundary of [ADR 0004](0004-github-lifecycle-and-authority.md) to a
 surface that always loads. [ADR 0013](0013-read-only-requests-save-nothing.md) and
@@ -46,9 +45,9 @@ likely to be followed whole — and that argues for no filler, not for a particu
 - The root budget becomes 850 words and 6,000 bytes, and its purpose is stated in the check: it bounds drift,
   it is not a target to compress toward. When it binds, the question is whether a rule belongs in the root,
   never which words to shave. Reference budgets are unchanged at 600 words each and 4,000 in total.
-- The root states the merge boundary negatively: "Complete end to end" adds merge, push to a shared branch,
-  branch deletion, and cleanup, and nothing else grants those — not "fix", not the repository's usual flow,
-  not an Issue, not an existing branch.
+- Superseded in 1.14.0: the root originally made "Complete end to end" the phrase that added merge, push,
+  branch deletion, and cleanup. The 1.14.0 amendment replaces that token with semantic outcome authority,
+  autonomous routine integration, and explicit staging or production approval.
 - The reference list is a precondition, read before the act it governs rather than when convenient, and the
   root says that a rule which did not load did not stop applying: an impractical read is reported under
   Limits, not treated as absence.
@@ -89,6 +88,12 @@ current text happens to measure. Reference budgets are unchanged.
 The reasoning for the move itself belongs to
 [ADR 0016](0016-decomposition-needs-a-trigger-a-run-can-evaluate.md), which this amendment does not restate.
 
+## Amendment, 1.14.0
+
+The root budget bound again because four field failures require unconditional rules: read repository instructions and active tasks before mutation; re-size after every owner turn; widen qualifying review to the other installed host; and use ordinary commits and hooks while rejecting plumbing, alternate-index, force-checkout, and hook-bypass completion. The merge boundary also changed from a phrase token to autonomous routine delivery with explicit staging and production approval.
+
+The reviewed root limit becomes 1,400 words and 9,500 bytes. A ninth lazy reference, `worktrees.md`, carries isolation, drift recovery, and integration procedure. Reference limits become 5,200 words total and 750 per file. The purpose is unchanged: these are drift bounds, not compression targets. The root remains a single short contract, while conditional procedures stay lazy.
+
 ## Rejected alternatives
 
 - **Leave the budget at 600 and compress to fit.** This was tried first while making this change, and it
@@ -104,21 +109,19 @@ The reasoning for the move itself belongs to
 - **Raise the budget without a stated purpose.** A number with no rationale is what produced this ADR; the
   check now carries the reason next to the constant.
 
-## Post-acceptance evidence
+## Historical post-acceptance evidence for 1.8.0 through 1.13.0
 
 The fourth session in the audit was re-read after it completed. It loaded `github.md`, held the merge
 prohibition in context, and merged, pushed, and skipped the pull request anyway, on a request whose owner
 turns carried no end-to-end words. That is this ADR's own second revalidation trigger, fired by the same
 receipt set that motivated it.
 
-It does not reverse the decision. A rule that never loads certainly governs nothing, and every measurement in
-Context stands. What it removes is the assumption that loading is sufficient: observance tracked the load in
-the marker measurement, and did not track it here. The consequence is narrower than a rewrite — the receipt
-1.8.0 needs for the merge boundary is a delivery run on a "fix this" request that stops at the branch and
-asks, not a run that merely loads the reference before its first write.
+At the time it did not reverse the decision. ADR 0017 now supersedes the phrase boundary, while the measurement
+still supports this ADR's placement rule: a rule that never loads governs nothing, and loading alone is not
+sufficient. The former receipt request for a fix run that stopped at the branch is retired for 1.14 and later.
 
 ## Revalidation triggers
 
-Revisit when a receipt shows a run merging or pushing without an end-to-end grant on 1.8.0 or later, when a
-run that loaded a reference still breaks the rule the reference carries, when the root budget binds again at 1,000 words, or
+The 1.8.0 phrase-grant trigger is retired by the 1.14.0 amendment. Revisit when a run promotes into staging or production without approval, when a
+run that loaded a reference still breaks the rule the reference carries, when the root budget binds again at 1,400 words, or
 when a receipt shows the root's growth degrading behavior that 1.7.0 performed correctly.

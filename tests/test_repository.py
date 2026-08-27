@@ -1,7 +1,7 @@
 """Structural contracts for the plugin-only package.
 
-These tests check what the package contains and how it is wired, not the
-wording of the policy. Prose is free to change; structure is not.
+These tests check package shape and the few semantic invariants whose absence
+caused a field failure. Other prose remains free to change.
 """
 
 from __future__ import annotations
@@ -28,6 +28,7 @@ REFERENCES = frozenset(
         "intake.md",
         "long-work.md",
         "model-routing.md",
+        "worktrees.md",
     }
 )
 CHECK = importlib.util.spec_from_file_location("skiphow_check_shape", ROOT / "scripts/check.py")
@@ -152,6 +153,17 @@ def test_workflows_are_sha_pinned_with_least_privilege() -> None:
         assert all("permissions" not in job for job in workflow["jobs"].values()), name
 
 
+def test_release_refuses_a_tag_outside_main() -> None:
+    workflow = yaml.safe_load(read(".github/workflows/release.yml"))
+    steps = workflow["jobs"]["release"]["steps"]
+    guard = next(step for step in steps if step.get("name") == "Require the tag commit to be on main")
+    commands = [line.strip() for line in guard["run"].splitlines() if line.strip()]
+    assert commands == [
+        "git fetch --no-tags origin main",
+        'git merge-base --is-ancestor "${GITHUB_SHA}" origin/main',
+    ]
+
+
 
 # Skill wiring
 
@@ -177,7 +189,11 @@ def test_report_and_record_formats_are_fenced() -> None:
     )
     handoff = fenced_blocks("plugins/skiphow/skills/skiphow/references/long-work.md")
     labels = {line.split(":")[0].strip("- ") for block in handoff for line in block.splitlines() if line.startswith("- ")}
-    assert labels == {"Recorded", "Outcome", "Selected scope", "Authority", "Done", "In progress", "Blockers", "Next safe action"}
+    assert labels == {
+        "Recorded", "Outcome", "Selected scope", "Queue", "Authority", "Accepted decisions",
+        "Done", "In progress", "Owned resources", "Last external result", "Evidence",
+        "Blockers", "Next safe action",
+    }
     inbox = fenced_blocks("plugins/skiphow/skills/skiphow/references/intake.md")
     inbox_labels = {
         line.split(":")[0].strip("- ")
@@ -208,6 +224,27 @@ def test_named_contracts_stay_in_lazy_references() -> None:
     assert not review & {"RESOLVED", "PERSISTED"}
     for relative in ("long-work.md", "github.md", "delivery.md"):
         assert {"BLOCKED", "UNVERIFIED"} & code_tokens(read(f"plugins/skiphow/skills/skiphow/references/{relative}"))
+
+
+def test_autonomy_and_isolation_invariants_are_shipped() -> None:
+    root = read("plugins/skiphow/skills/skiphow/SKILL.md")
+    worktrees = read("plugins/skiphow/skills/skiphow/references/worktrees.md")
+    builder = read("plugins/skiphow/agents/builder.md")
+    assert "At every owner turn" in root
+    assert "not from a required phrase" in root
+    assert "non-production integration branch" in root
+    assert "staging or production branch" in root
+    assert "other installed host" in root
+    assert "ordinary integration or commit commands and hooks" in root
+    for forbidden_escape in ("alternate index", "plumbing commands", "force-checking out", "bypassing hooks"):
+        assert forbidden_escape in worktrees
+    assert "before the first write and before the commit" in builder
+    assert "ordinary commit command and hooks" in builder
+    routing = read("plugins/skiphow/skills/skiphow/references/model-routing.md")
+    assert "owned worktree and branch" in routing
+    assert "each call's working directory" in routing
+    package_text = "\n".join(path.read_text(encoding="utf-8") for path in PLUGIN.rglob("*") if path.is_file())
+    assert not re.search(r"end[- ]to[- ]end", package_text, re.IGNORECASE)
 
 
 # Host adapters
