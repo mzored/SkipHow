@@ -8,6 +8,6 @@ Build the smallest guided artifact the project can run easily. A script is usefu
 
 Present only the human actions the procedure needs. Sequence them when dependency or risk requires it; otherwise group safe independent actions. Explain what the person should see, and validate a result before relying on it. Open the exact current page when the environment supports it. Mask secret input, keep credentials out of logs and command history, and write them only to their intended secure destination.
 
-Before an irreversible, production, paid, or externally visible action, verify that the root's exact grant is already present. The wizard and completed setup steps do not grant that action, and the owner need not repeat a grant already given.
+Before an action the root classifies as protected, verify that its exact grant is already present. The wizard and completed setup steps do not grant that action, and the owner need not repeat a grant already given. An ordinary shared action already authorized by the requested outcome does not acquire another gate merely because a human-only step performs it.
 
 Make repeatable operations safe to rerun. Check script syntax and statically trace every captured value to its destination without executing human-only or protected steps. Include the guided artifact in the ordinary project commit only when it is an owned, reusable tool covered by the current grant; otherwise keep it outside the project or remove it after the procedure succeeds.
