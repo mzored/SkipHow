@@ -2,6 +2,20 @@
 
 All notable changes to this project appear in this file.
 
+## 1.14.2 (2026-08-27)
+
+SkipHow 1.14.2 recovers the useful part of an unmerged dogfood branch without importing its fixed workflow.
+
+### Changed
+
+- An evidence-supported dogfood fix now reaches implementation, verification, and ordinary protected delivery instead of stopping whenever no ADR revalidation trigger already exists. Technical and architectural choices stay with the agent; only an unresolved material product or rollout choice, or missing authority for a protected action, stops at a proposal. Public release still needs an explicit owner grant, and the run completes it when granted.
+- The dogfood auditor freezes the session IDs in an approved date range before judging them. Digest and bounded search output are explicitly private raw evidence: they stay with the root, while local delegates receive only the short session ID and sanitized facts needed for their lane.
+- The abandoned branch's route tables, mandatory decision slate, fixed three-round review loop, 123-line delivery reference, structural prose tests, and colliding ADR 0017 were not merged. Current repository and runtime policy already provide the needed delivery mechanics without copying them into the contributor skill.
+
+### Verification status
+
+- The focused repository suite, full deterministic check, both host package validators, and Claude isolated install pass. Codex isolated install remains `UNVERIFIED`. A local Codex scout and a separate local Codex reviewer examined the abandoned branch and release candidate; no Claude model or Claude reviewer ran. The published plugin behavior is unchanged from 1.14.1 because the recovered change belongs to the contributor-only dogfood skill.
+
 ## 1.14.1 (2026-08-27)
 
 SkipHow 1.14.1 keeps future policy changes aligned with the product's deliberately small, outcome-driven design.
