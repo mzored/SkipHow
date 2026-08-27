@@ -56,7 +56,7 @@ Many agent frameworks add explicit phases, spec documents, personas, and approva
 - Reuse before building. It searches the project, its dependencies, and the platform before writing anything lasting, and says where it looked.
 - A finding outside your request is fixed if it blocks the work; otherwise the report tags it `TRACKED`, `SAVED`, `UNSAVED` (a read-only request saves nothing unless you say so), or `DISMISSED` with a reason. Nothing is dropped in passing.
 - Long work survives an observed compaction and a Claude Code resume through one checkpoint and one read-only hook; recovery after a full Codex process restart is `UNVERIFIED`. State lives in Git and GitHub, never in a SkipHow database.
-- Every report has the same five parts: result, evidence, the rulings it made for you, saved follow-ups, and what it could not verify.
+- Every report states the result and its evidence, then includes decisions, findings, saved follow-ups, blockers, or unverified limits only when they matter.
 
 The bet follows Anthropic's advice to [start with the simplest workflow that works](https://www.anthropic.com/research/building-effective-agents). The [prior-art notes](docs/prior-art.md) record which ideas were taken from [GSD](https://github.com/open-gsd/gsd-core), [OpenSpec](https://github.com/Fission-AI/OpenSpec), [Superpowers](https://github.com/obra/superpowers), [Matt Pocock's skills](https://github.com/mattpocock/skills), [BMAD](https://github.com/bmad-code-org/bmad-method), [Paperclip](https://github.com/paperclipai/paperclip), [Mesa](https://github.com/msoedov/mesa), and [Autonomous PM](https://github.com/mlobo2012/autonomous-pm-plugin), and which were left out. Those projects have not been run side by side with SkipHow.
 

@@ -186,19 +186,7 @@ def test_progressive_references_are_complete_and_reachable() -> None:
     assert skill_links() == {(reference_root / name).resolve() for name in REFERENCES}
 
 
-def test_report_and_record_formats_are_fenced() -> None:
-    report = fenced_blocks("plugins/skiphow/skills/skiphow/SKILL.md")
-    assert any(
-        block.split() == ["Result", "Evidence", "Rulings", "and", "findings", "Saved", "follow-ups", "Limits"]
-        for block in report
-    )
-    handoff = fenced_blocks("plugins/skiphow/skills/skiphow/references/long-work.md")
-    labels = {line.split(":")[0].strip("- ") for block in handoff for line in block.splitlines() if line.startswith("- ")}
-    assert labels == {
-        "Recorded", "Outcome", "Selected scope", "Queue", "Authority", "Accepted decisions",
-        "Done", "In progress", "Owned resources", "Last external result", "Evidence",
-        "Blockers", "Next safe action",
-    }
+def test_inbox_record_format_is_fenced() -> None:
     inbox = fenced_blocks("plugins/skiphow/skills/skiphow/references/intake.md")
     inbox_labels = {
         line.split(":")[0].strip("- ")
@@ -235,24 +223,15 @@ def test_autonomy_and_isolation_invariants_are_shipped() -> None:
     root = read("plugins/skiphow/skills/skiphow/SKILL.md")
     worktrees = read("plugins/skiphow/skills/skiphow/references/worktrees.md")
     builder = read("plugins/skiphow/agents/builder.md")
-    assert "At every owner turn" in root
-    assert "not from a required phrase" in root
-    assert "non-production integration branch" in root
-    assert "staging or production branch" in root
-    assert "other installed host" in root
-    assert "ordinary integration or commit commands and hooks" in root
-    assert "ordinary fast-forward push" in root
-    assert "reject force or non-fast-forward updates" in root
-    assert "With no remote or deployment delivery, an ordinary local commit completes" in root
-    assert "A bounded change skips only [delivery]" in root
-    assert "Other triggers still load" in root
-    assert "Any other missing protected grant is `BLOCKED`" in root
+    for concept in (
+        "requested outcome", "non-production", "staging or production", "ordinary commit",
+        "reviewer", "BLOCKED",
+    ):
+        assert concept in root
     github = read("plugins/skiphow/skills/skiphow/references/github.md")
     assert "Do not create an Issue solely because a pull request is required" in github
-    assert "Delete the remote head only when this operation created it" in github
-    assert "Each independently landable unit has one root operation branch" in worktrees
-    assert "a blocked unit does not hold another" in worktrees
-    assert "If required isolation cannot be established, do not write" in worktrees
+    for concept in ("ownership", "drift", "hooks", "foreign"):
+        assert concept in worktrees.lower()
     guide = read("docs/guide.md")
     how = read("docs/how-it-works.md")
     assert "No particular verb unlocks a workflow" in guide
@@ -269,45 +248,66 @@ def test_autonomy_and_isolation_invariants_are_shipped() -> None:
     assert "each call's working directory" in routing
     checklist = read(".claude/skills/dogfood/references/checklist.md")
     assert "From 1.14, it may skip the delivery reference" in checklist
-    assert "plumbing commit, alternate index, direct ref move" in checklist
+    assert "identity transitions" in checklist
 
 
-def test_dogfood_auditor_tracks_shipped_references_and_git_escape_mutations() -> None:
+def test_dogfood_auditor_tracks_shipped_references_and_identity_transitions() -> None:
     assert set(DOGFOOD.REFERENCES) == {path.removesuffix(".md") for path in REFERENCES}
-    dangerous = (
-        "git update-ref refs/heads/task deadbeef",
-        "git hash-object -w file",
-        "git write-tree",
-        "GIT_INDEX_FILE=/tmp/index git update-index --add file",
-        "git checkout --force -- src/",
-        "git checkout -f",
-        "git switch --force main",
-        "git worktree add /tmp/lane branch --force",
-        "git worktree remove /tmp/lane --force",
-        "git --git-dir=.git --work-tree=/tmp/tree add .",
-        "git symbolic-ref HEAD refs/heads/task",
-        "git checkout-index -f --all",
-        "git checkout-index --force -- src/",
-        "git -C /other/worktree commit -m change",
-        "git -C .. push",
-        "git -c core.hooksPath=/dev/null commit -m bypass",
-        "git commit --no-verify -m bypass",
-        "git commit-tree deadbeef",
+    records = [
+        {"timestamp": "2026-08-27T10:00:00Z", "cwd": "/repo", "gitBranch": "main"},
+        {"timestamp": "2026-08-27T10:00:01Z"},
+        {"timestamp": "2026-08-27T10:00:02Z", "gitBranch": "task"},
+        {"timestamp": "2026-08-27T10:00:03Z", "cwd": "/tmp/repo-task"},
+    ]
+    assert DOGFOOD.identity_transitions(records) == [
+        {"at": "2026-08-27T10:00:00Z", "cwd": "/repo", "branch": "main"},
+        {"at": "2026-08-27T10:00:02Z", "cwd": "/repo", "branch": "task"},
+        {"at": "2026-08-27T10:00:03Z", "cwd": "/tmp/repo-task", "branch": "task"},
+    ]
+
+
+def test_dogfood_uses_the_actual_final_answer_without_requiring_headings(tmp_path: Path) -> None:
+    records = [
+        {
+            "type": "assistant",
+            "message": {"content": [{"type": "text", "text": "Result\nold\nEvidence\nstale"}]},
+        },
+        {
+            "type": "assistant",
+            "message": {"content": [{"type": "text", "text": "Fixed and verified with the full suite."}]},
+        },
+    ]
+    assert DOGFOOD.final_assistant_text(records) == "Fixed and verified with the full suite."
+    transcript = tmp_path / "session.jsonl"
+    transcript.write_text(
+        "\n".join(
+            json.dumps(record)
+            for record in [
+                {
+                    "type": "assistant",
+                    "timestamp": "2026-08-27T10:00:00Z",
+                    "message": {
+                        "content": [
+                            {"type": "tool_use", "name": "Edit", "input": {"file_path": "/repo/a.py"}}
+                        ]
+                    },
+                },
+                {
+                    "type": "assistant",
+                    "timestamp": "2026-08-27T10:00:01Z",
+                    "message": {
+                        "content": [
+                            {"type": "tool_use", "name": "Bash", "input": {"command": "git status"}}
+                        ]
+                    },
+                },
+            ]
+        ),
+        encoding="utf-8",
     )
-    for command in dangerous:
-        assert DOGFOOD.MUTATION.search(command), command
-    for command in (
-        "git status --short",
-        "git diff --check",
-        "git worktree list",
-        "git symbolic-ref --short HEAD",
-        "git symbolic-ref -q HEAD",
-        "git symbolic-ref HEAD",
-        "git hash-object file",
-        "git tag --list",
-        "git --git-dir=.git status",
-    ):
-        assert not DOGFOOD.MUTATION.search(command), command
+    assert DOGFOOD.digest(transcript, 100)["structured_writes"] == [
+        {"at": "2026-08-27T10:00:00Z", "tool": "Edit", "path": "/repo/a.py"}
+    ]
 
 
 def test_dogfood_marks_references_absent_from_an_older_package() -> None:

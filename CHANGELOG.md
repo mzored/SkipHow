@@ -13,6 +13,8 @@ SkipHow 1.14 removes the magic merge phrase and makes routine delivery autonomou
 - Conflict resolution is continuation work. It recovers both intents from the base, commits, Issue, pull request, decisions, and tests; preserves both when compatible; runs checks for both; completes the ordinary Git operation; and re-reviews the integrated candidate. It asks only when incompatible intent creates a material product choice.
 - The process is re-sized after every owner turn. Independent or systemic additions join an explicit queue instead of being absorbed into the initial bounded lane. The continuity reminder now requires repository instructions, active tasks, checkout, branch, and `HEAD` to be reconstructed after compaction or resume ([ADR 0016](docs/decisions/0016-decomposition-needs-a-trigger-a-run-can-evaluate.md)).
 - Security, public contracts, large integrations, weak evidence, and repeated failures name the other installed host directly in the always-loaded root. Fixes and conflict resolutions are judged again on the exact candidate before integration ([ADR 0009](docs/decisions/0009-reviewer-inherits-and-one-engineering-reference.md)).
+- The policy now states outcomes and safety boundaries instead of prescribing a form for every run. Completion reports no longer need five empty sections, checkpoints are judged by whether another root can resume without guessing, decomposition no longer assumes one delegate or sub-issue per unit, and retries have no arbitrary second/third-attempt ladder. The durable requirements remain: authority, ownership, ordinary commits and hooks, exact-candidate review, and verified delivery.
+- The dogfood helper stopped classifying an open-ended list of Git command spellings. It records timestamped checkout identity changes and supplies timestamped transcript search; the auditor judges the surrounding Git evidence against the versioned contract. This removes both false confidence and the maintenance loop where each new command spelling demanded another regex case.
 
 ### Added
 
@@ -21,7 +23,7 @@ SkipHow 1.14 removes the magic merge phrase and makes routine delivery autonomou
 
 ### Verification status
 
-- The focused repository suite passes 61 tests, the full deterministic check passes, both host package validators pass, and Claude isolated install passes. Codex isolated install is `UNVERIFIED` because the machine's managed policy rejects the local marketplace.
+- The focused repository suite passes 62 tests, the full deterministic check passes, both host package validators pass, and Claude isolated install passes. Codex isolated install is `UNVERIFIED` because the machine's managed policy rejects the local marketplace.
 - Independent read-only passes covered authority, Git safety, process, packaging, and exact committed candidates. Later exact-candidate passes caught additional contradictions after the initial ten-pass round; every confirmed finding was fixed and the resulting head was reviewed again before release.
 - Runtime observance of the new 1.14 rules remains `UNVERIFIED` until a real installed-plugin session exercises them.
 

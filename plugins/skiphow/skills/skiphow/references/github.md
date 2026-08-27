@@ -20,7 +20,7 @@ For selected tracked work, find the owning Issue or create it after searching op
 
 Before any merge, re-read the live state: the owner request and restrictions, any Issue and blockers, the pull request base, source and target heads, resulting tree, checks and reviews bound to them, and repository rules. Require the PR base to equal the inferred integration target. If the target moved, update the candidate and rerun invalidated checks and review. Routine delivery reaches an affirmatively non-production target without another question. Staging or production approval binds the source head and target branch; show the current target head and resulting tree. Pin the source with the host's atomic precondition, re-read the target immediately before merging, and verify the actual result. Target movement invalidates evidence but not approval when source content and rollout meaning stay unchanged; otherwise ask again. Never bypass or weaken protections. A pause, cancellation, or narrower grant removes merge authority at once, including any auto-merge or queue entry this run enabled.
 
-Repair in-scope failures on the exact head and recheck. After a third same-cause failure, record `BLOCKED` on the Issue with the next action.
+Repair in-scope failures on the exact head and recheck. Never repeat an unchanged attempt; record `BLOCKED` with the next action only after safe in-scope alternatives or a hard stop are exhausted.
 
 ## After merge
 

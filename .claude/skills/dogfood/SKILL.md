@@ -104,9 +104,9 @@ A defect already fixed at HEAD is not a change. It is a receipt request against 
 
 ## Report
 
-Report under `Result`, `Evidence`, `Rulings and findings`, `Saved follow-ups`, `Limits`. Limits always names
-the blind spot: a finding a run noticed and silently dropped leaves no trace, so tag conformance is an upper
-bound.
+Report the result and evidence. Include rulings, findings, saved follow-ups, and limits when they exist. The
+limits must name the blind spot: a finding a run noticed and silently dropped leaves no trace, so tag
+conformance is an upper bound.
 
 With a record granted, write `docs/research/<date>/field-audit-<date>.md` in the style of
 `real-task-application-audit.md` — no project names, no issue titles, no customer data, no absolute paths —

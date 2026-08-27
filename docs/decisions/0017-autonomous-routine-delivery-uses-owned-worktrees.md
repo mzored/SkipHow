@@ -39,6 +39,8 @@ The package gains `references/worktrees.md`. The root grows to carry rules that 
 
 Deterministic checks can prove package structure, forbidden phrase absence, continuity anchors, and release ancestry. They cannot prove that a model obeys the new workflow. Every runtime claim remains `UNVERIFIED` until an installed 1.14 session supplies a receipt.
 
+The contract states outcomes and non-negotiable safety boundaries, not a universal script. Reports and handoffs carry the evidence needed for completion or recovery without mandatory empty fields; decomposition and retry strategy stay with the agent. Contributor tooling likewise exposes timestamped facts instead of pretending an enumerated command grammar can decide whether Git usage was safe.
+
 ## Rejected alternatives
 
 ### Keep a magic phrase as the merge grant

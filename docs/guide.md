@@ -83,13 +83,7 @@ If the host cannot run in the background or resume, SkipHow finishes a safe subs
 
 ## Read the report
 
-Every completion report has five parts:
-
-- Result: what changed and where (commits, pull requests, Issues).
-- Evidence: the checks that ran and their outcome. A model saying "done" is not evidence.
-- Rulings and findings: the choices it made on your behalf and the problems it triaged.
-- Saved follow-ups: the Issues it created for things outside your request, or "none".
-- Limits: every `BLOCKED` or `UNVERIFIED` claim and the next action for each.
+Every completion report says what changed and gives the evidence, such as commits, pull requests, checks, and review. When relevant it also names choices made for you, tagged findings, saved follow-ups, and every `BLOCKED` or `UNVERIFIED` limit with its next action. SkipHow omits empty sections; a model saying "done" is not evidence.
 
 ## Where records live
 

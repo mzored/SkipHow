@@ -22,7 +22,7 @@ If touched files already hold unrelated changes, record their pre-change state a
 
 Read `git log` on the base branch before the first commit and match the message form and granularity its recent history uses. Commit through the ordinary project path and hooks before closing review. Name the exact aggregate candidate for the root's review: target-base commit, source head, and resulting committed tree. Compare the committed tree with the tree checks and review judged; any hook, formatter, generator, target movement, or later integration that changes it invalidates applicable evidence and requires fresh affected checks and review. Read [engineering methods](engineering.md) for what that review owes and when a fix reopens it.
 
-After a second failure with the same cause, stop retrying unchanged. Add the smallest durable prevention within scope (a test, a lint rule, a check, a skill correction) or save one finding if that prevention is outside authority.
+Do not repeat a failed attempt unchanged. Inspect the cause, change the approach, and add the smallest durable prevention within scope when the evidence supports one. Save a finding instead when prevention is outside authority.
 
 ## Findings
 
@@ -30,4 +30,4 @@ A problem outside the request is fixed if it blocks the outcome or cannot be sep
 
 ## Finish
 
-Recheck the request against the final state and report under the skill's headings: the result, fresh evidence, the rulings you made and findings you triaged, the follow-ups you saved (or that none were material), and every missing check or external blocker. Never call an unavailable or stale check passed.
+Recheck the request against the final state and report the result with fresh evidence. Include material rulings, findings, saved follow-ups, missing checks, and external blockers when they exist. Never call an unavailable or stale check passed.
