@@ -36,6 +36,7 @@ REFERENCES = (
     "intake",
     "long-work",
     "model-routing",
+    "worktrees",
 )
 HEADINGS = ("Result", "Evidence", "Rulings and findings", "Saved follow-ups", "Limits")
 HEADING_RE = re.compile(
@@ -50,17 +51,7 @@ FOREIGN_TAGS = ("PERSISTED", "RESOLVED", "IN_SCOPE", "EXPECTED", "NONMATERIAL")
 READ_VERBS = {"cat", "bat", "head", "tail", "awk", "less", "more", "nl", "cut", "strings", "xxd"}
 SEARCH_VERBS = {"grep", "rg", "ag", "ack", "find", "ls", "wc", "stat", "git", "diff"}
 WRITE_VERBS = {"rm", "mv", "cp", "tee", "touch"}
-MUTATION = re.compile(
-    r"\b(git\s+(?:commit|push|merge|rebase|reset|tag|branch\s+-[dD])"
-    r"|gh\s+(?:issue|pr)\s+(?:create|edit|close|reopen|comment|delete|merge|ready|lock)"
-    r"|gh\s+(?:release|repo)\s+(?:create|edit|delete|upload)"
-    r"|gh\s+api\s+(?:-X\s*)?(?:POST|PATCH|PUT|DELETE)"
-    r"|npm\s+publish|rm\s+-[rf]|sed\s+-i"
-    r"|>>?\s*(?!/dev/|&)[\w./~$-]+"
-    r"|tee\s+(?!-a\b)[\w./-]+)",
-    re.IGNORECASE,
-)
-WRITE_TOOLS = {"Edit", "Write", "NotebookEdit", "MultiEdit"}
+STRUCTURED_WRITE_TOOLS = {"Edit", "Write", "NotebookEdit", "MultiEdit"}
 AUDITED_RE = re.compile(r"Audited `([0-9a-f]{8})`")
 
 
@@ -126,7 +117,29 @@ def package_reference(version: str, name: str) -> tuple[str, str]:
     """Read a reference as it shipped. Says which bytes it got, so a fallback is visible."""
     root = repository_root()
     relative = f"plugins/skiphow/skills/skiphow/references/{name}.md"
-    for ref, source in ((f"v{version}:{relative}", "tag"), (f"HEAD:{relative}", "HEAD")):
+    tag = f"v{version}"
+    try:
+        tagged = subprocess.run(
+            ["git", "show", f"{tag}:{relative}"],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if tagged.returncode == 0 and tagged.stdout.strip():
+            return tagged.stdout, "tag"
+        tag_exists = subprocess.run(
+            ["git", "rev-parse", "--verify", f"{tag}^{{commit}}"],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if tag_exists.returncode == 0:
+            return "", "absent_in_version"
+    except OSError:
+        pass
+    for ref, source in ((f"HEAD:{relative}", "HEAD"),):
         try:
             out = subprocess.run(
                 ["git", "show", ref], cwd=root, capture_output=True, text=True, check=False
@@ -239,7 +252,9 @@ def detect_references(path: Path, records: list[dict], version: str) -> dict[str
         probe_count = len(probes[name])
         hit = hits[name]
         action = verbs[name]
-        if probe_count and hit == probe_count:
+        if sources[name] == "absent_in_version":
+            verdict, confidence = "absent_in_version", "n/a"
+        elif probe_count and hit == probe_count:
             verdict, confidence = "loaded", "high"
         elif probe_count and hit:
             verdict, confidence = "partially_loaded", "medium"
@@ -333,6 +348,27 @@ def select_reports(records: list[dict]) -> list[dict]:
     return found
 
 
+def final_assistant_text(records: list[dict]) -> str:
+    """Return what the root actually said last, independent of report formatting."""
+    trailing = [
+        text_of(record)
+        for record in records
+        if record.get("type") == "assistant"
+        and not record.get("isSidechain")
+        and text_of(record).strip()
+    ]
+    return trailing[-1] if trailing else ""
+
+
+def report_text(records: list[dict], versions: list[str]) -> str:
+    """Select the report according to the contract version that produced it."""
+    parsed = [tuple(int(part) for part in version.split(".")) for version in versions if version != "unknown"]
+    reports = select_reports(records)
+    if parsed and max(parsed) < (1, 14) and reports:
+        return reports[-1]["text"]
+    return final_assistant_text(records)
+
+
 def ended_mid_tool(records: list[dict]) -> bool:
     """True when the final tool call never received a result."""
     pending: set[str] = set()
@@ -355,6 +391,45 @@ def in_flight(path: Path, minutes: int = 15) -> bool:
         return False
 
 
+def checkout_root(cwd: str) -> str:
+    """Normalize a live path to its Git worktree root, retaining stale paths as given."""
+    if not cwd:
+        return ""
+    try:
+        result = subprocess.run(
+            ["git", "-C", cwd, "rev-parse", "--show-toplevel"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except OSError:
+        return os.path.normpath(cwd)
+    return os.path.realpath(result.stdout.strip()) if result.returncode == 0 else os.path.normpath(cwd)
+
+
+def identity_transitions(records: list[dict]) -> list[dict]:
+    """Return the observed checkout identity timeline without judging it."""
+    found: list[dict] = []
+    roots: dict[str, str] = {}
+    cwd = branch = ""
+    for record in records:
+        raw_cwd = record.get("cwd")
+        if raw_cwd and raw_cwd not in roots:
+            roots[raw_cwd] = checkout_root(raw_cwd)
+        next_cwd = roots[raw_cwd] if raw_cwd else cwd
+        next_branch = record.get("gitBranch") or branch
+        if (next_cwd, next_branch) != (cwd, branch) and (next_cwd or next_branch):
+            found.append(
+                {
+                    "at": record.get("timestamp", ""),
+                    "cwd": next_cwd or "unknown",
+                    "branch": next_branch or "unknown",
+                }
+            )
+        cwd, branch = next_cwd, next_branch
+    return found
+
+
 def digest(path: Path, report_chars: int) -> dict:
     records, broken = iter_records(path)
     if not records:
@@ -363,8 +438,8 @@ def digest(path: Path, report_chars: int) -> dict:
     tools: Counter[str] = Counter()
     models: Counter[str] = Counter()
     usage: Counter[str] = Counter()
-    mutations: list[dict] = []
     delegations: list[dict] = []
+    structured_writes: list[dict] = []
     stamps: list[str] = []
     injections = 0
     compaction = False
@@ -404,40 +479,20 @@ def digest(path: Path, report_chars: int) -> dict:
                         "task": (data.get("description") or "")[:80],
                     }
                 )
-            if name in WRITE_TOOLS:
-                mutations.append({"tool": name, "detail": data.get("file_path", "?")})
-            elif name == "Bash":
-                command = data.get("command", "")
-                hits = [" ".join(m.split()) for m in MUTATION.findall(command)]
-                if hits:
-                    tally = Counter(hits)
-                    verbs = ", ".join(
-                        verb if count == 1 else f"{verb} x{count}" for verb, count in tally.items()
-                    )
-                    mutations.append(
-                        {
-                            "tool": "Bash",
-                            "verb": verbs[:90],
-                            "detail": " ".join(command.split())[:400],
-                        }
-                    )
-
+            if name in STRUCTURED_WRITE_TOOLS:
+                structured_writes.append(
+                    {
+                        "at": record.get("timestamp", ""),
+                        "tool": name,
+                        "path": data.get("file_path") or data.get("notebook_path") or "unknown",
+                    }
+                )
     versions = sorted(set(VERSION_RE.findall(skill_text))) or ["unknown"]
     reports = select_reports(records)
-    selected = reports[-1]["text"] if reports else ""
-    if not reports:
-        # No report-shaped message: show how the session actually ended, so the
-        # reader can tell an abandoned run from one that answered off-format.
-        trailing = [
-            text_of(r)
-            for r in records
-            if r.get("type") == "assistant" and not r.get("isSidechain") and text_of(r).strip()
-        ]
-        selected = (
-            "(no report-shaped message found; last assistant text follows)\n\n" + trailing[-1]
-            if trailing
-            else "(no report-shaped message and no assistant text found)"
-        )
+    selected = report_text(records, versions)
+    selected_headings = {match.group(1) for match in HEADING_RE.finditer(selected)}
+    if not selected:
+        selected = "(no assistant text found)"
     return {
         "session": path.stem,
         "project": Path(cwd).name or "unknown",
@@ -453,7 +508,8 @@ def digest(path: Path, report_chars: int) -> dict:
         "references": detect_references(path, records, versions[0]),
         "tools": dict(tools.most_common()),
         "delegations": delegations,
-        "mutations": mutations,
+        "structured_writes": structured_writes,
+        "identity_changes": identity_transitions(records),
         "confounders": {
             "compaction": compaction,
             "reports_found": len(reports),
@@ -463,8 +519,8 @@ def digest(path: Path, report_chars: int) -> dict:
         },
         "usage": dict(usage),
         "report": {
-            "headings_present": [h for h in HEADINGS if h in (reports[-1]["headings"] if reports else [])],
-            "headings_missing": [h for h in HEADINGS if h not in (reports[-1]["headings"] if reports else [])],
+            "headings_present": [h for h in HEADINGS if h in selected_headings],
+            "headings_missing": [h for h in HEADINGS if h not in selected_headings],
             "tag_counts": {t: len(re.findall(rf"\b{t}\b", selected)) for t in FINDING_TAGS},
             "foreign_tags": {
                 t: n for t in FOREIGN_TAGS if (n := len(re.findall(rf"\b{t}\b", selected)))
@@ -581,12 +637,21 @@ def render_digest(data: dict) -> str:
         f"TOOLS        {data['tools']}",
         f"DELEGATIONS  {data['delegations'] or 'none'}",
         "",
-        f"MUTATIONS ({len(data['mutations'])})",
+        f"STRUCTURED WRITES ({len(data['structured_writes'])})",
     ]
-    for mutation in data["mutations"]:
-        prefix = f"Bash [{mutation['verb']}]" if mutation["tool"] == "Bash" else mutation["tool"]
-        out.append(f"  {prefix} {mutation['detail']}")
-    if not data["mutations"]:
+    for write in data["structured_writes"]:
+        out.append(f"  [{write['at'][:19]}] {write['tool']} {write['path']}")
+    if not data["structured_writes"]:
+        out.append("  none")
+    out += [
+        "",
+        f"IDENTITY CHANGES ({len(data['identity_changes'])})",
+    ]
+    for change in data["identity_changes"]:
+        out.append(
+            f"  [{change['at'][:19]}] cwd {change['cwd']}  branch {change['branch']}"
+        )
+    if not data["identity_changes"]:
         out.append("  none")
     report = data["report"]
     out += [
@@ -597,7 +662,7 @@ def render_digest(data: dict) -> str:
     ]
     if report["foreign_tags"]:
         out.append(f"       undefined tokens {report['foreign_tags']}")
-    out += ["", "REPORT TEXT", report["text"] or "(no report-shaped message found)"]
+    out += ["", "FINAL ASSISTANT TEXT", report["text"] or "(no assistant text found)"]
     return "\n".join(out)
 
 
@@ -641,7 +706,11 @@ def main() -> None:
                 if not match:
                     continue
                 start = max(0, match.start() - args.chars // 2)
-                print(f"L{number}: ...{line[start : start + args.chars]}...")
+                try:
+                    at = (json.loads(line) or {}).get("timestamp", "")
+                except (json.JSONDecodeError, AttributeError):
+                    at = ""
+                print(f"L{number} [{at}]: ...{line[start : start + args.chars]}...")
                 shown += 1
                 if shown >= args.max:
                     print(f"(stopped at {args.max} matches)")

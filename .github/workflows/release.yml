@@ -35,6 +35,10 @@ jobs:
       - name: Require the tag to match VERSION
         run: |
           test "v$(cat VERSION)" = "${GITHUB_REF_NAME}"
+      - name: Require the tag commit to be on main
+        run: |
+          git fetch --no-tags origin main
+          git merge-base --is-ancestor "${GITHUB_SHA}" origin/main
       - name: Extract release notes from CHANGELOG.md
         run: |
           awk -v version="$(cat VERSION)" '

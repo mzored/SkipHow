@@ -1,7 +1,7 @@
 """Structural contracts for the plugin-only package.
 
-These tests check what the package contains and how it is wired, not the
-wording of the policy. Prose is free to change; structure is not.
+These tests check package shape and the few semantic invariants whose absence
+caused a field failure. Other prose remains free to change.
 """
 
 from __future__ import annotations
@@ -28,6 +28,7 @@ REFERENCES = frozenset(
         "intake.md",
         "long-work.md",
         "model-routing.md",
+        "worktrees.md",
     }
 )
 CHECK = importlib.util.spec_from_file_location("skiphow_check_shape", ROOT / "scripts/check.py")
@@ -35,6 +36,11 @@ _MODULE = importlib.util.module_from_spec(CHECK)
 CHECK.loader.exec_module(_MODULE)
 VERSIONED_MODEL = _MODULE.CONCRETE_MODEL_ID
 PERSONAL_PATH = _MODULE.PERSONAL_PATH
+DOGFOOD_SPEC = importlib.util.spec_from_file_location(
+    "skiphow_dogfood_sessions", ROOT / ".claude/skills/dogfood/sessions.py"
+)
+DOGFOOD = importlib.util.module_from_spec(DOGFOOD_SPEC)
+DOGFOOD_SPEC.loader.exec_module(DOGFOOD)
 
 
 def read(relative: str) -> str:
@@ -152,6 +158,17 @@ def test_workflows_are_sha_pinned_with_least_privilege() -> None:
         assert all("permissions" not in job for job in workflow["jobs"].values()), name
 
 
+def test_release_refuses_a_tag_outside_main() -> None:
+    workflow = yaml.safe_load(read(".github/workflows/release.yml"))
+    steps = workflow["jobs"]["release"]["steps"]
+    guard = next(step for step in steps if step.get("name") == "Require the tag commit to be on main")
+    commands = [line.strip() for line in guard["run"].splitlines() if line.strip()]
+    assert commands == [
+        "git fetch --no-tags origin main",
+        'git merge-base --is-ancestor "${GITHUB_SHA}" origin/main',
+    ]
+
+
 
 # Skill wiring
 
@@ -169,15 +186,7 @@ def test_progressive_references_are_complete_and_reachable() -> None:
     assert skill_links() == {(reference_root / name).resolve() for name in REFERENCES}
 
 
-def test_report_and_record_formats_are_fenced() -> None:
-    report = fenced_blocks("plugins/skiphow/skills/skiphow/SKILL.md")
-    assert any(
-        block.split() == ["Result", "Evidence", "Rulings", "and", "findings", "Saved", "follow-ups", "Limits"]
-        for block in report
-    )
-    handoff = fenced_blocks("plugins/skiphow/skills/skiphow/references/long-work.md")
-    labels = {line.split(":")[0].strip("- ") for block in handoff for line in block.splitlines() if line.startswith("- ")}
-    assert labels == {"Recorded", "Outcome", "Selected scope", "Authority", "Done", "In progress", "Blockers", "Next safe action"}
+def test_inbox_record_format_is_fenced() -> None:
     inbox = fenced_blocks("plugins/skiphow/skills/skiphow/references/intake.md")
     inbox_labels = {
         line.split(":")[0].strip("- ")
@@ -208,6 +217,110 @@ def test_named_contracts_stay_in_lazy_references() -> None:
     assert not review & {"RESOLVED", "PERSISTED"}
     for relative in ("long-work.md", "github.md", "delivery.md"):
         assert {"BLOCKED", "UNVERIFIED"} & code_tokens(read(f"plugins/skiphow/skills/skiphow/references/{relative}"))
+
+
+def test_autonomy_and_isolation_invariants_are_shipped() -> None:
+    root = read("plugins/skiphow/skills/skiphow/SKILL.md")
+    worktrees = read("plugins/skiphow/skills/skiphow/references/worktrees.md")
+    builder = read("plugins/skiphow/agents/builder.md")
+    for concept in (
+        "requested outcome", "non-production", "staging or production", "ordinary commit",
+        "reviewer", "BLOCKED",
+    ):
+        assert concept in root
+    github = read("plugins/skiphow/skills/skiphow/references/github.md")
+    assert "Do not create an Issue solely because a pull request is required" in github
+    for concept in ("ownership", "drift", "hooks", "foreign"):
+        assert concept in worktrees.lower()
+    guide = read("docs/guide.md")
+    how = read("docs/how-it-works.md")
+    assert "No particular verb unlocks a workflow" in guide
+    assert "no special word unlocks a workflow" in how
+    assert "required pull request alone does not create one" in how
+    for forbidden_escape in ("alternate index", "plumbing commands", "force-checking out", "bypassing hooks"):
+        assert forbidden_escape in worktrees
+    assert "before the first write and before the commit" in builder
+    assert "ordinary commit command and hooks" in builder
+    assert "Recheck worktree, branch, `HEAD`, and status after the commit" in builder
+    assert "final worktree path, branch or detached state, `HEAD`, status, base, commit" in builder
+    routing = read("plugins/skiphow/skills/skiphow/references/model-routing.md")
+    assert "owned worktree and branch" in routing
+    assert "each call's working directory" in routing
+    checklist = read(".claude/skills/dogfood/references/checklist.md")
+    assert "From 1.14, it may skip the delivery reference" in checklist
+    assert "identity transitions" in checklist
+
+
+def test_dogfood_auditor_tracks_shipped_references_and_identity_transitions() -> None:
+    assert set(DOGFOOD.REFERENCES) == {path.removesuffix(".md") for path in REFERENCES}
+    records = [
+        {"timestamp": "2026-08-27T10:00:00Z", "cwd": "/repo", "gitBranch": "main"},
+        {"timestamp": "2026-08-27T10:00:01Z"},
+        {"timestamp": "2026-08-27T10:00:02Z", "gitBranch": "task"},
+        {"timestamp": "2026-08-27T10:00:03Z", "cwd": "/tmp/repo-task"},
+    ]
+    assert DOGFOOD.identity_transitions(records) == [
+        {"at": "2026-08-27T10:00:00Z", "cwd": "/repo", "branch": "main"},
+        {"at": "2026-08-27T10:00:02Z", "cwd": "/repo", "branch": "task"},
+        {"at": "2026-08-27T10:00:03Z", "cwd": "/tmp/repo-task", "branch": "task"},
+    ]
+
+
+def test_dogfood_uses_the_actual_final_answer_without_requiring_headings(tmp_path: Path) -> None:
+    records = [
+        {
+            "type": "assistant",
+            "message": {"content": [{"type": "text", "text": "Result\nold\nEvidence\nstale"}]},
+        },
+        {
+            "type": "assistant",
+            "message": {"content": [{"type": "text", "text": "Fixed and verified with the full suite."}]},
+        },
+    ]
+    assert DOGFOOD.final_assistant_text(records) == "Fixed and verified with the full suite."
+    assert DOGFOOD.report_text(records, ["1.13.0"]) == "Result\nold\nEvidence\nstale"
+    assert DOGFOOD.report_text(records, ["1.14.0"]) == "Fixed and verified with the full suite."
+    transcript = tmp_path / "session.jsonl"
+    transcript.write_text(
+        "\n".join(
+            json.dumps(record)
+            for record in [
+                {
+                    "type": "assistant",
+                    "timestamp": "2026-08-27T10:00:00Z",
+                    "message": {
+                        "content": [
+                            {"type": "tool_use", "name": "Edit", "input": {"file_path": "/repo/a.py"}}
+                        ]
+                    },
+                },
+                {
+                    "type": "assistant",
+                    "timestamp": "2026-08-27T10:00:01Z",
+                    "message": {
+                        "content": [
+                            {"type": "tool_use", "name": "Bash", "input": {"command": "git status"}}
+                        ]
+                    },
+                },
+            ]
+        ),
+        encoding="utf-8",
+    )
+    assert DOGFOOD.digest(transcript, 100)["structured_writes"] == [
+        {"at": "2026-08-27T10:00:00Z", "tool": "Edit", "path": "/repo/a.py"}
+    ]
+
+
+def test_dogfood_marks_references_absent_from_an_older_package() -> None:
+    body, source = DOGFOOD.package_reference("1.6.1", "worktrees")
+    assert body == ""
+    assert source == "absent_in_version"
+
+
+def test_shipped_package_has_no_magic_end_to_end_phrase() -> None:
+    package_text = "\n".join(path.read_text(encoding="utf-8") for path in PLUGIN.rglob("*") if path.is_file())
+    assert not re.search(r"end[- ]to[- ]end", package_text, re.IGNORECASE)
 
 
 # Host adapters

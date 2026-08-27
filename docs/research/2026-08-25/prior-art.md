@@ -1,6 +1,6 @@
 # Prior art review
 
-Reviewed on 2026-08-25 against SkipHow commit [`a6d34a25614bc0723517032af617b0782158df4d`](https://github.com/mzored/SkipHow/commit/a6d34a25614bc0723517032af617b0782158df4d).
+Reviewed on 2026-08-25 against SkipHow commit [`a6d34a25614bc0723517032af617b0782158df4d`](https://github.com/mzored/SkipHow/commit/a6d34a25614bc0723517032af617b0782158df4d). On 2026-08-27 the worktree and merge-conflict sources were re-read at the same pinned upstream commits for ADR 0017.
 
 This review answers a narrow question. Which ideas help an owner turn product intent into finished work without making every request follow a software development ceremony? It does not rank the projects or claim that SkipHow contains all of them.
 
@@ -75,6 +75,7 @@ Superpowers 6.3 has more useful restraint than older summaries suggest. It has i
 Keep these ideas:
 
 - isolate independent changes and reviews;
+- detect existing isolation, prefer host-owned worktrees, and verify a fallback location is ignored before creating it;
 - hand a reviewer the work product and acceptance criteria, not the author's reasoning transcript;
 - bound repair loops and return unresolved failures to the coordinator;
 - preserve a short durable record when work will cross context boundaries;
@@ -84,7 +85,7 @@ Do not make brainstorming, design approval, strict test-first development, or se
 
 SkipHow should use risk-based review and host-managed worktrees. Revisit stronger ceremony only when a behavioral eval shows a specific failure that the extra step prevents.
 
-Sources: [README](https://github.com/obra/superpowers/blob/b36e0829c6d0140e93cfef2ca599b1b07d4a7797/README.md), [skills](https://github.com/obra/superpowers/tree/b36e0829c6d0140e93cfef2ca599b1b07d4a7797/skills), [tests](https://github.com/obra/superpowers/tree/b36e0829c6d0140e93cfef2ca599b1b07d4a7797/tests), [release notes](https://github.com/obra/superpowers/blob/b36e0829c6d0140e93cfef2ca599b1b07d4a7797/RELEASE-NOTES.md).
+Sources: [README](https://github.com/obra/superpowers/blob/b36e0829c6d0140e93cfef2ca599b1b07d4a7797/README.md), [using Git worktrees](https://github.com/obra/superpowers/blob/b36e0829c6d0140e93cfef2ca599b1b07d4a7797/skills/using-git-worktrees/SKILL.md), [tests](https://github.com/obra/superpowers/tree/b36e0829c6d0140e93cfef2ca599b1b07d4a7797/tests), [MIT license](https://github.com/obra/superpowers/blob/b36e0829c6d0140e93cfef2ca599b1b07d4a7797/LICENSE).
 
 ## Matt Pocock skills
 
@@ -97,12 +98,13 @@ Keep these ideas:
 - reproduce an unknown bug before choosing a fix;
 - turn raw signals into separate, traceable work items;
 - preserve valid findings that do not belong in the current change.
+- recover both sides of a merge conflict from their intent and verify the combined behavior instead of mechanically choosing ours or theirs.
 
 Do not load the whole engineering library into ordinary requests. Do not ask an owner to choose a skill sequence. The collection does not provide the full GitHub lifecycle or unattended multi-issue execution that SkipHow needs.
 
 The audited collection contains model-specific examples but no portable end-to-end routing policy. SkipHow should keep `FAST`, `STANDARD`, and `DEEP` as semantic tiers and let each host resolve current models. Revisit the mapping only after paired outcome tests show that a different tier changes cost without lowering completion quality.
 
-Sources: [README](https://github.com/mattpocock/skills/blob/6654f6b60cd9d5be8b54c6fafe44346dabeb3b76/README.md), [skills](https://github.com/mattpocock/skills/tree/6654f6b60cd9d5be8b54c6fafe44346dabeb3b76/skills), [package manifest](https://github.com/mattpocock/skills/blob/6654f6b60cd9d5be8b54c6fafe44346dabeb3b76/package.json).
+Sources: [README](https://github.com/mattpocock/skills/blob/6654f6b60cd9d5be8b54c6fafe44346dabeb3b76/README.md), [resolving merge conflicts](https://github.com/mattpocock/skills/blob/6654f6b60cd9d5be8b54c6fafe44346dabeb3b76/skills/engineering/resolving-merge-conflicts/SKILL.md), [package manifest](https://github.com/mattpocock/skills/blob/6654f6b60cd9d5be8b54c6fafe44346dabeb3b76/package.json), [MIT license](https://github.com/mattpocock/skills/blob/6654f6b60cd9d5be8b54c6fafe44346dabeb3b76/LICENSE).
 
 ## BMAD
 

@@ -67,8 +67,8 @@ def test_budget_limits_are_the_accepted_ones() -> None:
     The fixtures below scale with the constants, so raising a limit tenfold used
     to leave every budget test green.
     """
-    assert check.ROOT_SKILL_LIMITS == {"bytes": 7000, "words": 1000}
-    assert check.REFERENCE_LIMITS == {"total_words": 4000, "file_words": 600}
+    assert check.ROOT_SKILL_LIMITS == {"bytes": 9500, "words": 1400}
+    assert check.REFERENCE_LIMITS == {"total_words": 5200, "file_words": 750}
 
 
 def test_budget_reports_measured_and_allowed_values(tmp_path: Path) -> None:
@@ -143,6 +143,26 @@ def test_continuity_hook_rejects_other_events_and_network(tmp_path: Path) -> Non
     )
     with patch.object(check, "PLUGIN_ROOT", tmp_path):
         assert any("exactly once each" in error for error in check.validate_continuity_hook(path))
+
+
+@pytest.mark.parametrize(
+    "anchor",
+    (
+        "owner request", "repository instructions", "active host tasks", "live Git",
+        "GitHub", "checkout", "branch", "HEAD", "candidate",
+    ),
+)
+def test_continuity_hook_requires_semantic_recovery_anchors(tmp_path: Path, anchor: str) -> None:
+    hooks = tmp_path / "hooks"
+    hooks.mkdir()
+    payload = json.loads((ROOT / "plugins/skiphow/hooks/hooks.json").read_text(encoding="utf-8"))
+    resume = payload["hooks"]["SessionStart"][1]["hooks"][0]
+    resume["command"] = resume["command"].replace(anchor, "removed", 1)
+    path = hooks / "hooks.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    with patch.object(check, "PLUGIN_ROOT", tmp_path):
+        errors = check.validate_continuity_hook(path)
+    assert any(anchor in error and "compact/resume notice must require recovery" in error for error in errors)
 
 
 def test_plugin_change_requires_a_version_bump() -> None:
