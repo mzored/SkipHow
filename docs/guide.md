@@ -47,13 +47,13 @@ At the point of promotion into staging or production, SkipHow asks for your exac
 
 Worktrees, branches, ordinary commits, required Issues and pull requests, conflict resolution, review loops, merge into the non-production integration branch, and safe cleanup are engineering work. SkipHow performs them without asking. It stops a routine delivery question only for a material product choice evidence cannot settle or for staging or production approval.
 
-If the repository's only integration branch also releases or deploys, it has no proven non-production merge target. SkipHow therefore treats that merge as a rollout or production gate and asks once the source head and target branch are ready, showing the current target and resulting tree. Later target movement triggers fresh checks and review; it asks again only if source content or rollout meaning changes.
+If the repository's only remote integration branch also releases or deploys, it has no proven non-production merge target. SkipHow therefore treats that merge as a rollout or production gate and asks once the source head and target branch are ready, showing the current target and resulting tree. Later target movement triggers fresh checks and review; it asks again only if source content or rollout meaning changes. A local repository with no remote or deployment delivery simply finishes with its reviewed ordinary commit.
 
 While delivering, SkipHow may save one Issue for a material problem it finds outside your request. It will not implement it unless you add it to scope. A read-only request ("review", "research", "without changing anything") saves nothing: the problem is reported as `UNSAVED`, and "review this, but save any material findings" grants the record. Security findings never go into a public Issue; without a private channel you get a redacted note to route yourself.
 
 ## Run it unattended
 
-Both hosts can run a request without a person at the keyboard. Host permissions and sandboxes still apply; SkipHow does not bypass them.
+Both hosts can run a request without a person at the keyboard. The host permission mode still applies. The Codex recipe below disables its filesystem sandbox, so use it only inside containment you control.
 
 Claude Code:
 
@@ -62,7 +62,7 @@ claude -p "Fix today's batch and deliver what passes." --worktree \
   --permission-mode auto --max-budget-usd 20
 ```
 
-`-p` runs headless and exits when done. `--worktree` gives the root native isolation before its first mutation; SkipHow still verifies and, when needed, updates the base to the inferred integration target. `--permission-mode auto` lets a classifier approve routine actions and still stops on risky ones. `--max-budget-usd` is a hard spending cap. Add `--max-turns <n>` for a turn cap. Pick the session model you want for planning and review; the reviewer runs on it, the builder on the standard tier, the scout on the fast one.
+`-p` is the CLI's non-interactive mode and `--worktree` requests native isolation; SkipHow verifies what the host actually created before writing. `--permission-mode auto` asks the host classifier to handle routine actions, and `--max-budget-usd` sets its spending cap. Pick the session model you want for planning and review; the reviewer runs on it, the builder on the standard tier, the scout on the fast one.
 
 Codex:
 
@@ -71,7 +71,9 @@ codex exec -s danger-full-access \
   "Fix today's batch and deliver what passes."
 ```
 
-`exec` runs non-interactively. `danger-full-access` permits Git metadata and worktree operations and should be used only where the repository, credentials, and network scope are controlled; prefer a narrower sandbox when that repository can commit inside it. Do not add `--approve-for-me`: the current CLI routes that option through `workspace-write`, which can block commits. Codex has no dollar cap for `exec`; bound the run by scope instead. Delegates run on your session model; SkipHow spawns the scout at low reasoning effort and the reviewer at high, with nothing to set up.
+`exec` is non-interactive. `danger-full-access` permits Git metadata and worktree operations but removes the filesystem sandbox; use it only where the repository, credentials, and network scope are externally controlled, and prefer `-s workspace-write --approve-for-me` when that sandbox can commit this repository. Codex has no dollar cap for `exec`; bound the run by scope instead. Delegates run on your session model; SkipHow spawns the scout at low reasoning effort and the reviewer at high.
+
+These command shapes match Codex CLI 0.149.1 and Claude Code 2.1.247 help output ([receipt](research/2026-08-27/v1.14-host-cli-receipt.md)); complete unattended delivery with either exact combination remains `UNVERIFIED`.
 
 If the host cannot run in the background, resume, or isolate work, SkipHow finishes a safe subset, writes a handoff, and reports the rest as `UNVERIFIED` rather than pretending.
 

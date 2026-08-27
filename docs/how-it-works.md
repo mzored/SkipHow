@@ -20,7 +20,7 @@ Only the owner's requested outcome and host policy grant actions; no special wor
 
 ## Four routes
 
-Every request takes one route: `RESPOND` (read and report), `RECORD` (save), `DELIVER` (change and prove), or `CONTROL` (report, pause, resume, cancel). The route decides which reference loads. A two-line fix loads the skill and nothing else; a larger change loads the delivery reference; a request carrying several deliverable items also loads long work, GitHub, and routing.
+Every request takes one route: `RESPOND` (read and report), `RECORD` (save), `DELIVER` (change and prove), or `CONTROL` (report, pause, resume, cancel). The route and live state decide which references load. A two-line fix skips delivery and long-work ceremony but still loads any triggered safety reference; a larger change loads delivery, and several deliverable items also load long work and routing.
 
 ## Small work stays small
 

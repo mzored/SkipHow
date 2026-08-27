@@ -236,16 +236,18 @@ def test_autonomy_and_isolation_invariants_are_shipped() -> None:
     assert "staging or production branch" in root
     assert "other installed host" in root
     assert "ordinary integration or commit commands and hooks" in root
-    assert "normal path" in root
     assert "ordinary fast-forward push" in root
     assert "reject force or non-fast-forward updates" in root
+    assert "With no remote or deployment delivery, an ordinary local commit completes" in root
+    assert "A bounded change skips only [delivery]" in root
+    assert "Other triggers still load" in root
     assert "Any other missing protected grant is `BLOCKED`" in root
     github = read("plugins/skiphow/skills/skiphow/references/github.md")
     assert "Do not create an Issue solely because a pull request is required" in github
     assert "Delete the remote head only when this operation created it" in github
-    worktrees = read("plugins/skiphow/skills/skiphow/references/worktrees.md")
     assert "Each independently landable unit has one root operation branch" in worktrees
     assert "a blocked unit does not hold another" in worktrees
+    assert "If required isolation cannot be established, do not write" in worktrees
     guide = read("docs/guide.md")
     how = read("docs/how-it-works.md")
     assert "No particular verb unlocks a workflow" in guide
