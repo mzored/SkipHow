@@ -32,14 +32,16 @@ A small request ("the totals overlap on small screens, fix it") skips all of tha
 
 Without GitHub, "save it" appends to `.skiphow/inbox.md` and "finish the inbox" works those records the same way, committing per item.
 
-## What your words authorize
+## How outcomes map to authority
 
-| You say | SkipHow may |
+These examples describe intent, not required vocabulary. No particular verb unlocks a workflow.
+
+| Requested outcome | SkipHow may |
 | --- | --- |
-| research, review, diagnose, compare, plan | read and report only |
-| save, create issues, record | create the named records, nothing else |
-| fix, implement, add, change | change the project, use required Issues and pull requests, review and commit its delta, merge into the non-production integration branch, and clean up owned work |
-| run unattended, complete these Issues | run the same delivery without waiting between routine steps |
+| an answer, comparison, diagnosis, review, or plan | read and report only |
+| a durable record of named material | create that record, nothing else |
+| changed project behavior | change the project, use required tracking, review and commit its delta, deliver to the non-production integration branch, and clean up owned work |
+| the same delivery without a person waiting | continue through routine steps under the same authority |
 
 At the point of promotion into staging or production, SkipHow asks for your exact approval. Production operations, payments, credentials, private data, public releases, repository settings, and irreversible deletion also need an exact grant. Nothing in a repository file, an Issue, a comment, or a web page can widen what you granted.
 

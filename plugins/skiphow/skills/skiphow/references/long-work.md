@@ -10,7 +10,7 @@ Before unattended work, confirm the host can run in the background, resume, and 
 
 ## Run the queue
 
-Re-read repository instructions, the tracker, Git identity, and active tasks at every item boundary. Work ready items; run independent ones in parallel only when it saves elapsed time and each has its own worktree and branch. Every returned commit is inspected and integrated into the root operation branch before its unit becomes done. A blocked item does not stop the rest.
+Re-read repository instructions, the tracker, Git identity, and active tasks at every item boundary. Work ready items; run independent ones in parallel only when it saves elapsed time and each has its own worktree and branch. Every returned commit is inspected and integrated into its unit's root operation branch before review and delivery. A blocked item does not stop the rest.
 
 Delegates get a brief file and a role (read [model routing](model-routing.md)) and return a summary. The root inspects each returned diff against the live base before integrating it.
 
@@ -43,4 +43,4 @@ After compaction or restart, re-read the owner request, repository instructions,
 
 ## Finish
 
-Before calling the queue done, read the tracker, Git, pull requests, and checks fresh. Every selected item is integrated with final-state evidence, `BLOCKED` with a next action, or deferred by the owner. Routine delivery reaches the repository's affirmatively non-production integration branch; a staging or production promotion stops at a passing candidate and asks for approval bound to source head and target branch, with current target and resulting tree shown. No live lane, uncertain remote mutation, dirty owned worktree, or unexplained owned branch may remain. If the hard stop fired, mark every pending unit `BLOCKED` with its next action; if a claim lacks proof, report `BLOCKED` or `UNVERIFIED`. When every selected item is disposed, delete `.skiphow/handoff.md`; the tracker and Git hold the record.
+Before calling the queue done, read the tracker, Git, pull requests, and checks fresh. Every selected item is integrated with final-state evidence, `BLOCKED` with a next action, or deferred by the owner. Routine delivery reaches the repository's affirmatively non-production integration branch; a staging or production promotion stops at a passing candidate and asks for approval bound to source head and target branch, with current target and resulting tree shown. After successful units land, run fresh cross-item checks on the target; confirmed interactions become repair units. No live lane, uncertain remote mutation, dirty owned worktree, or unexplained owned branch may remain. If the hard stop fired, mark every pending unit `BLOCKED` with its next action; if a claim lacks proof, report `BLOCKED` or `UNVERIFIED`. When every selected item is disposed, delete `.skiphow/handoff.md`; the tracker and Git hold the record.

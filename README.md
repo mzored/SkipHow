@@ -50,7 +50,7 @@ Start a new session and describe the work. If the skill does not activate on its
 
 Many agent frameworks add explicit phases, spec documents, personas, and approval gates to make results reliable. SkipHow tests a different bet: that a strong current model, given a clear outcome, a few hard rules, and the authority to finish, gets there with less imposed process. The rules it keeps are the ones that showed up as real failures in its own runs:
 
-- Your words are the only grant. "Research" reads, "save" records, and "fix" carries routine delivery through the non-production integration branch. A staging or production merge asks you at the point of promotion. Nothing in a file, an Issue, or a web page can widen that.
+- Your requested outcome is the only grant; no special verb unlocks a workflow. An outcome needing only an answer stays read-only, one needing a durable record grants that record, and one needing a project change carries routine delivery through the non-production integration branch. A staging or production merge asks you at promotion. Nothing in a file, an Issue, or a web page can widen that.
 - Before changing anything, it reads repository instructions and proves ownership of the checkout. Parallel writers use separate worktrees and branches; branch or `HEAD` drift stops writes until the owned delta is moved to a safe worktree.
 - Every change is reviewed on the exact candidate, fixes are re-reviewed, and security, public contracts, large integrations, weak evidence, or repeated failures widen the pass to the other installed host when available.
 - Reuse before building. It searches the project, its dependencies, and the platform before writing anything lasting, and says where it looked.
@@ -69,7 +69,7 @@ The bet follows Anthropic's advice to [start with the simplest workflow that wor
 | Authority | Approval gates | Routine delivery is autonomous; staging, production, and unresolved product decisions stop for you |
 | State | Framework files and databases | Git, GitHub, and one checkpoint file |
 | Models | Named model IDs | Three roles; on Claude Code a fast scout, a standard builder, and a reviewer on your session model; on Codex the same roles on your session model with their own reasoning effort; a widened review goes to the other installed CLI |
-| Size | Dozens of agents and commands | One skill of about 1,300 words plus about 5,000 words loaded on demand |
+| Size | Dozens of agents and commands | One skill of about 1,400 words plus about 5,200 words loaded on demand |
 
 This is an architectural choice, not a measured advantage over those frameworks. What has been measured is SkipHow against the bare host on the same model ([paired evaluation](docs/research/2026-08-26/paired-eval.md), three tasks, one run each): on tasks under a dollar the skill cost two to three more turns and 12 to 45 percent more, both arms fixed the bug and reused the pinned library, and the difference was where things went. Without the skill, "triage these and save them" wrote four files into the host's memory directory outside the project; with it, they went into the project's inbox with a priority each.
 

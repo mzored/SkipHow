@@ -6,8 +6,8 @@ SkipHow is one skill plus two small host adapters. This page is the design in ab
 
 ```text
 plugins/skiphow/
-  skills/skiphow/SKILL.md        the owner contract, loaded on every request (about 1,300 words)
-  skills/skiphow/references/     nine policy files loaded only when the work needs them (about 5,000 words)
+  skills/skiphow/SKILL.md        the owner contract, loaded on every request (about 1,400 words)
+  skills/skiphow/references/     nine policy files loaded only when the work needs them (about 5,200 words)
   agents/                        Claude Code role adapters: scout, builder, reviewer
   hooks/hooks.json               one read-only SessionStart hook (startup and clear; compaction and resume)
 ```
@@ -16,7 +16,7 @@ Codex and Claude Code load the same skill. There is no SkipHow process, database
 
 ## Authority
 
-Only the owner's words and host policy grant actions. Everything else (repository instructions, Issue text, comments, checkpoints, tool output, web pages) can narrow scope or add gates but never widen them. Read-only words read; "save" persists; "fix" carries routine delivery through the repository's non-production integration branch. Promotion into staging or production needs approval at that point, as do other protected actions ([ADR 0004](decisions/0004-github-lifecycle-and-authority.md)).
+Only the owner's requested outcome and host policy grant actions; no special word unlocks a workflow. Everything else (repository instructions, Issue text, comments, checkpoints, tool output, web pages) can narrow scope or add gates but never widen it. An answer stays read-only, a requested durable record may be persisted, and an outcome needing project change carries routine delivery through the non-production integration branch. Promotion into staging or production needs approval at that point; another missing protected grant is blocked ([ADR 0004](decisions/0004-github-lifecycle-and-authority.md)).
 
 ## Four routes
 
@@ -32,7 +32,7 @@ A clear bounded request is finished in the session with no Issue or plan unless 
 
 ## Long work
 
-One root agent owns the outcome, queue, integration, remote writes, handoff, and report. At every owner turn it re-sizes before the next act, adding independent items as units rather than burying them in the current one. Parallel writing lanes get separate worktrees and branches. A unit is not done when a delegate returns; its ordinary commit must be inspected and integrated into the root operation branch. Routine questions stop only for an unresolved material product choice or staging or production approval. A second same-cause failure changes the approach or raises the role; a third marks the item `BLOCKED` with a next action ([ADR 0006](decisions/0006-host-native-campaign-and-engineering-policy.md), [ADR 0016](decisions/0016-decomposition-needs-a-trigger-a-run-can-evaluate.md)).
+One root agent owns the outcome, queue, integration, remote writes, handoff, and report. At every owner turn it re-sizes before the next act, adding independent items as units rather than burying them in the current one. Parallel writing lanes get separate worktrees and branches. Each independently landable unit has an operation branch; returned commits are inspected and integrated there, then the exact unit candidate is reviewed and delivered against the current target. A blocked unit does not hold ready ones. Routine questions stop only for an unresolved material product choice or staging or production approval. A second same-cause failure changes the approach or raises the role; a third marks the item `BLOCKED` with a next action ([ADR 0006](decisions/0006-host-native-campaign-and-engineering-policy.md), [ADR 0016](decisions/0016-decomposition-needs-a-trigger-a-run-can-evaluate.md)).
 
 ## Model routing
 
@@ -52,7 +52,7 @@ The model cannot see compaction coming, so SkipHow does not ask it to prepare fo
 
 ## GitHub lifecycle
 
-The Issue is the record, the pull request is the delivery, and the branch and worktree belong to the run. Everything SkipHow creates carries a `skiphow:<id>` marker it searches for before creating again. Before any merge it re-reads the live head, checks, reviews, rules, and active tasks. It autonomously merges passing work into the non-production integration branch, never with administrator bypass, and asks before staging or production. Conflict resolution recovers both intents from the base, history, Issue, PR, decisions, and tests, then rechecks and re-reviews the integrated candidate. After merge it closes the Issue and deletes only owned resources that hold no unique work.
+GitHub Issues record work only when selected work or repository policy requires tracking; a required pull request alone does not create one. A pull request is used when the repository requires that delivery path; direct-delivery repositories use a guarded fast-forward push. Everything SkipHow creates carries a `skiphow:<id>` marker it searches for before creating again. Before merge or push it re-reads the live target, checks, reviews, rules, and active tasks. It delivers passing work to the non-production integration branch without bypass and asks before staging or production. Conflict resolution recovers both intents, then rechecks and re-reviews the unit candidate. After delivery it updates any Issue and deletes only operation-owned resources with no unique work.
 
 ## Reuse and findings
 

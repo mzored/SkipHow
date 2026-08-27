@@ -6,7 +6,7 @@ Use this reference when a choice changes product behavior, audience, scope, prio
 
 State the desired outcome and the smallest unresolved choice that blocks it. Inspect current behavior, history, prior decisions, user evidence, and current primary sources when facts may have changed. Separate verified facts from assumptions, and look for evidence that could disprove the preferred option before an expensive or hard-to-reverse commitment.
 
-Give a recommendation with its reason and the concrete tradeoff. Ask the owner only when evidence cannot settle a product choice or the action needs direct authority. If the owner need not decide now, take the safest reversible default and record the assumption. A read-only decision request does not authorize implementation.
+Give a recommendation with its reason and the concrete tradeoff. Ask only when evidence cannot settle a material product choice or for the root's staging or production approval. Another action that needs direct authority but lacks it is `BLOCKED`, not a workflow question. If the owner need not decide now, take the safest reversible default and record the assumption. A read-only decision request does not authorize implementation.
 
 An exact owner grant can supersede an accepted decision, including a privacy-sensitive disclosure, but never silently: find the owning decision or policy and reconcile the new direction against it before delivery.
 
