@@ -2,6 +2,18 @@
 
 All notable changes to this project appear in this file.
 
+## 1.14.1 (2026-08-27)
+
+SkipHow 1.14.1 keeps future policy changes aligned with the product's deliberately small, outcome-driven design.
+
+### Changed
+
+- Repository instructions now treat the README as the product brief and make the design test explicit: write outcomes, authority boundaries, and hard invariants while leaving routine engineering choices to capable agents. A single run may prove missing, ambiguous, or contradictory wording, but it does not justify a universal procedure. Contributors must prefer removing, clarifying, or moving policy before adding steps, roles, gates, dependencies, or persistent state.
+
+### Verification status
+
+- The deterministic repository check and both host package validators pass. Claude isolated install passes; Codex isolated install remains `UNVERIFIED`. The published plugin behavior is unchanged from 1.14.0; this patch changes contributor guidance and synchronizes release metadata.
+
 ## 1.14.0 (2026-08-27)
 
 SkipHow 1.14 removes the magic merge phrase and makes routine delivery autonomous, isolated, and reviewable.
