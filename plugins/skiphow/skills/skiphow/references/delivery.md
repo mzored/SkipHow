@@ -10,4 +10,4 @@ Write to a remote only because the requested result includes shared delivery. An
 
 Push, open or update the pull request, merge, or deliver to the named target as requested. Follow required protections and reviews. Never bypass a failed guard to manufacture delivery.
 
-Verify the remote state after the write. Report the shared result with its link or exact destination, plus any check, conflict, or approval that still blocks it.
+Verify the named destination after the write. A local marker, simulation, dry run, or successful script is not evidence that an external destination changed. Report the exact destination and label any simulation honestly, plus any check, conflict, or approval that still blocks the real delivery.

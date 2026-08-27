@@ -53,6 +53,8 @@ For a project change, make the smallest coherent edit and prove the requested be
 
 Scale process to the evidence, risk, uncertainty, and repository requirements. If something remains blocked or unverified, name it plainly and state its effect.
 
+Do not describe a local simulation, marker, dry run, or script result as an external effect. Claim production, publication, remote delivery, or another protected outcome only when the named destination itself verifies it.
+
 Do not silently drop a material problem discovered during the work. Fix it when it blocks the requested result or cannot be separated safely. Otherwise report it without expanding scope.
 
 Finish with the result first, followed by the evidence and only the material decisions, limits, or follow-up actions that still matter.
