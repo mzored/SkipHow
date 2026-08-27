@@ -236,6 +236,10 @@ def test_autonomy_and_isolation_invariants_are_shipped() -> None:
     assert "staging or production branch" in root
     assert "other installed host" in root
     assert "ordinary integration or commit commands and hooks" in root
+    assert "normal path" in root
+    assert "atomic preconditions reject source or target drift" in root
+    github = read("plugins/skiphow/skills/skiphow/references/github.md")
+    assert "Never enter a queue that can recompute the protected candidate" in github
     for forbidden_escape in ("alternate index", "plumbing commands", "force-checking out", "bypassing hooks"):
         assert forbidden_escape in worktrees
     assert "before the first write and before the commit" in builder
