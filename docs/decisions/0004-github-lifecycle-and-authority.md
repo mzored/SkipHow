@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted. Amended by [ADR 0014](0014-conform-to-the-tracker-classification.md); its phrase-based routine merge boundary is superseded by [ADR 0017](0017-autonomous-routine-delivery-uses-owned-worktrees.md).
+Partially superseded by [ADR 0018](0018-autonomous-kernel-and-independent-task-skills.md). Tracker-native
+records, read-only authority, protected actions, and preservation of unrelated work stand. The fixed GitHub
+lifecycle, operation markers, worktree procedure, and automatic remote integration do not.
 
 ## Date
 

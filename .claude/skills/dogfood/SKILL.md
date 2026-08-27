@@ -100,10 +100,10 @@ exists.
   it or carry new evidence that the rejection reason no longer holds.
 - Grep `## Revalidation triggers`. A match means the project already asked for this receipt, and the ADR must
   be amended alongside the skill.
-- Check the budgets in `scripts/check.py`, and read them as a drift guard rather than a target ([ADR
-  0015](../../../docs/decisions/0015-unconditional-invariants-live-in-the-root.md)). If a rule must hold on
-  every request it belongs in the root, and a binding budget is a reason to review the budget, not to shave
-  meaning out of a sentence. Trading words for a number is how ADR 0004 lost its step 4 for six releases.
+- Check the package boundary in [ADR 0015](../../../docs/decisions/0015-unconditional-invariants-live-in-the-root.md)
+  and [ADR 0018](../../../docs/decisions/0018-autonomous-kernel-and-independent-task-skills.md). If a rule must
+  hold on every request, it belongs in the root. A focused method may improve technique, but it must not carry
+  authority or completion policy that disappears when the method is not read.
 
 Prefer deleting a contradiction, then tightening a sentence, then moving it so it loads earlier. Adding is
 last: the 1.1 shrink quietly dropped a rule that then governed nothing for six releases, so say what a deleted

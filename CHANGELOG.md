@@ -2,6 +2,26 @@
 
 All notable changes to this project appear in this file.
 
+## 2.0.0 (2026-08-27)
+
+This is a local release candidate. It has not been published.
+
+### Breaking changes
+
+- SkipHow is now exactly one plain-language owner skill. Its thin root keeps authority, autonomy, scope, preservation, and completion in context; focused Markdown method references improve task-specific work without becoming separate skills, roles, or stages.
+- The universal runtime contract is reduced to product-owner authority, autonomous engineering judgment, preservation of unrelated work, proportional effort, protected-action boundaries, fresh verification, and honest reporting. Magic phrases, item and diff thresholds, fixed routes, word budgets, model tiers, standing scout/builder/reviewer roles, mandatory review or TDD, required worktrees or tickets, fixed finding tags and tracker schemas, and automatic remote workflow are removed.
+- A project change now defaults to a verified ordinary local commit containing only the owned delta. Requested records follow the save grant. Push, pull request, merge, or other ordinary remote code delivery occurs only when the requested outcome includes it and the target is clearly non-production. Staging, production, public release, payments, repository settings, access changes, material deletion or another hard-to-reverse action, wider disclosure, and creating, entering, rotating, or exposing credentials require the owner's own request to affirmatively name that protected action or destination. Broad completion or autonomy language and project procedures do not grant it; routine use of already-authorized credentials and project-private material does not require a new grant.
+- Package checks now validate exactly one top-level owner skill and every method or resource reachable from it, without pinning a method roster, agent adapters, or prose budgets. The continuity hook remains optional, read-only host support rather than a workflow engine; its startup/clear and compact/resume groups explicitly load or restore the owner kernel before project work.
+
+### Prior art
+
+- The 2.0 shape takes its focused-method direction from [Matt Pocock's skills](https://github.com/mattpocock/skills) and keeps attribution for any adapted MIT-licensed source. It deliberately does not import the upstream main flow wholesale: current upstream setup and orchestration still expose technical choices and ceremony that do not fit a nontechnical product owner, and open issues document the visible-outcome translation and unattended-completion seams.
+
+### Verification status
+
+- Four isolated Codex runs exercised the superseded multi-skill candidate `f1af015`. They covered one local change, two read-only requests, sibling-skill loading, and protected-boundary behavior. They do not verify the final single-skill layout or method selection, and their token usage is not a speed or cost claim.
+- Cross-host review found that Codex cannot hide enabled sibling skills and Agent Skills cannot require a leaf to load the owner kernel. The package was therefore collapsed to one skill before release. Deterministic checks and both host package validators pass. Claude isolated installation passes without starting a Claude model. Codex isolated plugin installation remains `UNVERIFIED` because this machine's managed source policy rejects the local marketplace. The four Codex behavior runs used byte-identical project-local bytes from the superseded candidate; final single-skill reference selection, Claude runtime, automatic activation, real UI work, remote delivery, and performance against a baseline remain `UNVERIFIED`.
+
 ## 1.14.2 (2026-08-27)
 
 SkipHow 1.14.2 recovers the useful part of an unmerged dogfood branch without importing its fixed workflow.

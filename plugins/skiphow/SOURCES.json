@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "repository": "https://github.com/mattpocock/skills",
+      "commit": "6654f6b60cd9d5be8b54c6fafe44346dabeb3b76",
+      "license": "MIT",
+      "copyright": "Copyright (c) 2026 Matt Pocock",
+      "adaptations": [
+        {
+          "skill": "skiphow",
+          "source_paths": [
+            "skills/engineering/code-review/SKILL.md",
+            "skills/engineering/codebase-design/DEEPENING.md",
+            "skills/engineering/codebase-design/DESIGN-IT-TWICE.md",
+            "skills/engineering/codebase-design/SKILL.md",
+            "skills/engineering/diagnosing-bugs/SKILL.md",
+            "skills/engineering/prototype/SKILL.md",
+            "skills/engineering/prototype/LOGIC.md",
+            "skills/engineering/prototype/UI.md",
+            "skills/engineering/research/SKILL.md",
+            "skills/engineering/resolving-merge-conflicts/SKILL.md",
+            "skills/engineering/tdd/SKILL.md",
+            "skills/engineering/tdd/tests.md",
+            "skills/engineering/tdd/mocking.md",
+            "skills/engineering/wizard/SKILL.md",
+            "skills/productivity/writing-for-agents/SKILL.md",
+            "skills/productivity/writing-for-agents/SKILL-MECHANICS.md"
+          ],
+          "files": [
+            "references/codebase-design.md",
+            "references/diagnosing-bugs.md",
+            "references/prototype.md",
+            "references/research.md",
+            "references/resolving-merge-conflicts.md",
+            "references/reviewing-changes.md",
+            "references/testing.md",
+            "references/wizard.md",
+            "references/writing-for-agents.md"
+          ]
+        }
+      ]
+    }
+  ]
+}

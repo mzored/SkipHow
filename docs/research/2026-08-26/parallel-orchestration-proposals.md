@@ -18,12 +18,12 @@ Issue 885 proposes `docs/agents/orchestration.md`, written by the setup skill, d
 
 | Mechanic in 787 | Where SkipHow already has it |
 | --- | --- |
-| Parent issue decomposed into child tickets | [long work](../../../plugins/skiphow/skills/skiphow/references/long-work.md): an epic is decomposed into bounded Issues, sub-issues when the tracker supports them, and that set is the queue |
+| Parent issue decomposed into child tickets | [1.14 long-work reference](https://github.com/mzored/SkipHow/blob/v1.14.2/plugins/skiphow/skills/skiphow/references/long-work.md): an epic is decomposed into bounded Issues, sub-issues when the tracker supports them, and that set is the queue |
 | Frontier of tickets with no open blockers | Same file: dependencies decide readiness, and they never add scope |
 | One subagent per ticket in its own worktree | Same file, plus the `builder` adapter, which carries `isolation: worktree` and no remote writes |
-| Sequential merge that keeps the branch green, frontier recomputed after each | [GitHub delivery](../../../plugins/skiphow/skills/skiphow/references/github.md): the root serializes every GitHub mutation, re-reads live state before any merge, and closes the Issue and anything that depended on it |
-| Owner sees state transitions, not transcripts | [model routing](../../../plugins/skiphow/skills/skiphow/references/model-routing.md): a delegate returns a summary, never a transcript |
-| Park a blocking question and keep the rest running | [long work](../../../plugins/skiphow/skills/skiphow/references/long-work.md): four reasons justify stopping to ask, anything else is a recorded ruling, and a repeated failure becomes `BLOCKED` with the exact next action while the queue continues |
+| Sequential merge that keeps the branch green, frontier recomputed after each | [1.14 GitHub reference](https://github.com/mzored/SkipHow/blob/v1.14.2/plugins/skiphow/skills/skiphow/references/github.md): the root serializes every GitHub mutation, re-reads live state before any merge, and closes the Issue and anything that depended on it |
+| Owner sees state transitions, not transcripts | [1.14 model-routing reference](https://github.com/mzored/SkipHow/blob/v1.14.2/plugins/skiphow/skills/skiphow/references/model-routing.md): a delegate returns a summary, never a transcript |
+| Park a blocking question and keep the rest running | [1.14 long-work reference](https://github.com/mzored/SkipHow/blob/v1.14.2/plugins/skiphow/skills/skiphow/references/long-work.md): four reasons justify stopping to ask, anything else is a recorded ruling, and a repeated failure becomes `BLOCKED` with the exact next action while the queue continues |
 | Reviewer checks the spec and the standards | The `reviewer` adapter judges the candidate against the owner request first and repository standards second |
 | Ask the owner once for run mode, model, and effort | Rejected in [ADR 0006](../../decisions/0006-host-native-campaign-and-engineering-policy.md): fixed universal timeouts and worker counts are diagnostics chosen from current host and task evidence, not portable product constants |
 | Orchestrator may add a missing blocking edge | Rejected in the same ADR: readiness and authorization answer different questions, and new work needs owner authority or the normal intake path |

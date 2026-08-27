@@ -2,10 +2,9 @@
 
 ## Status
 
-Accepted in 1.9.0, amended in 1.10.0 and 1.14.0. Amends [ADR 0006](0006-host-native-campaign-and-engineering-policy.md) by stating the
-trigger it left unstated: 0006 defines how a campaign queue is run, never what makes a request one. Follows
-[ADR 0015](0015-unconditional-invariants-live-in-the-root.md) (unconditional rules live in the root). [ADR 0004](0004-github-lifecycle-and-authority.md) and
-[ADR 0003](0003-semantic-model-routing.md) stand.
+Superseded by [ADR 0018](0018-autonomous-kernel-and-independent-task-skills.md). SkipHow 2.0 leaves
+decomposition to proportional agent judgment and repository requirements; no item wording, count, or
+"systemic" label selects a campaign protocol.
 
 ## Date
 

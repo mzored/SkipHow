@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted in 1.7.0, amended in 1.11.0. Restores and extends step 4 of [ADR 0004](0004-github-lifecycle-and-authority.md) ("Do not use labels as a second workflow engine"), which was compressed out of the shipped reference in the 1.1 reference shrink and has governed nothing at runtime since.
+Accepted as amended by [ADR 0018](0018-autonomous-kernel-and-independent-task-skills.md). A requested
+record still follows the tracker's native classification and project conventions without configuring a
+second workflow. The `skiphow-batch` marker and fixed inbox schema are historical 1.x mechanics.
 
 ## Date
 

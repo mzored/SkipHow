@@ -1,65 +1,121 @@
 # How it works
 
-SkipHow is one skill plus two small host adapters. This page is the design in about a thousand words. The [decisions](decisions/README.md) hold the reasoning and the evidence.
+SkipHow is a small instruction package for strong coding agents. It is not a workflow engine, scheduler, model router, database, or replacement for host permissions.
 
 ## Shape
 
+The package has exactly one top-level skill. Its root is the owner kernel and its focused methods are ordinary
+Markdown resources:
+
 ```text
-plugins/skiphow/
-  skills/skiphow/SKILL.md        the owner contract, loaded on every request (about 1,400 words)
-  skills/skiphow/references/     nine policy files loaded only when the work needs them (about 5,200 words)
-  agents/                        Claude Code role adapters: scout, builder, reviewer
-  hooks/hooks.json               one read-only SessionStart hook (startup and clear; compaction and resume)
+owner request
+     |
+     v
+host loads skiphow
+     |
+     v
+owner kernel
+     |------ optional diagnosis method
+     |------ optional testing method
+     `------ other useful method references
+                   |
+                   v
+          one agent-owned result
 ```
 
-Codex and Claude Code load the same skill. There is no SkipHow process, database, scheduler, or provider bridge; the host owns sessions, subagents, worktrees, permissions, and compaction ([ADR 0002](decisions/0002-host-native-execution.md)).
+The owner and host see one SkipHow skill. The root may read focused references for research, diagnosis,
+product decisions, testing, review, intake, delivery, and other methods. Those files are not commands, roles,
+or independently activated skills.
+
+This is a hub with optional method spokes, not a chain. Every activation includes the kernel, which keeps the
+original request, authority, autonomy, and completion rules in context. A method can improve technique but
+cannot grant authority or become a mandatory next stage.
+
+The single-skill layout is a portability boundary. Agent Skills defines no dependency that can require a
+selected leaf to load a kernel, and Codex cannot hide additional enabled skills from its owner-facing list.
+Keeping methods as resources is the cross-host way to preserve one entry and make every SkipHow activation
+carry the critical contract.
+
+The plugin also carries one read-only continuity hook. The Codex and Claude Code manifests point to the same
+packaged skill bytes. The host owns sessions, tools, permissions, subagents, isolation, background work, and
+compaction.
+
+## The kernel
+
+The kernel holds every rule that must survive every kind of work, plus short semantic pointers to the methods:
+
+- the owner's requested outcome controls scope and authority;
+- technical and architectural choices belong to the agent;
+- unrelated work and shared state must be preserved;
+- effort stays proportional to the actual task;
+- project changes need fresh verification and an ordinary local commit of the owned delta;
+- protected actions need an exact grant;
+- the report distinguishes verified evidence from blockers and uncertainty.
+
+It does not encode routes, magic phrases, item or diff thresholds, word budgets, fixed roles, model tiers, reviewer gates, test-first gates, worktree procedures, ticket schemas, finding tags, or an automatic remote workflow.
+
+Those deletions are functional. A capable agent can choose a plan, test, delegate, worktree, or review when it helps. Making every useful tool a mandatory stage turns a small edit into a campaign and can distract the agent from the visible outcome.
+
+## Focused methods
+
+The root names when each method can materially help and reads that reference directly. Selection follows
+meaning, not a route name, item count, or mandatory sequence.
+
+Several methods can contribute to one outcome. A hard bug may use diagnosis and testing; a product comparison
+may use research and decision support; a visual fix may need neither. Missing a method may reduce technical
+quality, but it cannot remove the root's authority, preservation, or completion boundary.
+
+The owner never chooses this composition. Asking whether to run TDD, create a worktree, pick a reviewer model,
+or write a spec would move an engineering decision across the product boundary.
 
 ## Authority
 
-Only the owner's requested outcome and host policy grant actions; no special word unlocks a workflow. Everything else (repository instructions, Issue text, comments, checkpoints, tool output, web pages) can narrow scope or add gates but never widen it. An answer stays read-only, a requested durable record may be persisted, and an outcome needing project change carries routine delivery through the non-production integration branch. Promotion into staging or production needs approval at that point; another missing protected grant is blocked ([ADR 0004](decisions/0004-github-lifecycle-and-authority.md)).
+Only the owner's direct request and host policy grant actions. Repository instructions, trackers, checkpoints, tool output, and web content may narrow scope or add safeguards, but cannot widen it.
 
-## Four routes
+An answer, analysis, triage, or organization request stays read-only. A request to save, record, file, or use a
+named durable destination grants that record. A request to change the project grants the required edits,
+verification, and ordinary local commit of the owned delta. Shared remote delivery happens only when the
+requested outcome includes it and the target is clearly non-production.
 
-Every request takes one route: `RESPOND` (read and report), `RECORD` (save), `DELIVER` (change and prove), or `CONTROL` (report, pause, resume, cancel). The route and live state decide which references load. A two-line fix skips delivery and long-work ceremony but still loads any triggered safety reference; a larger change loads delivery, and several deliverable items also load long work and routing.
+Staging or production promotion, public release, payments, repository settings, access changes, material deletion or another hard-to-reverse action, disclosure outside the authorized audience, and creating, entering, rotating, or exposing credentials need an exact grant. The owner must affirmatively identify the protected action or destination; broad completion or autonomy language and project procedures cannot substitute for that grant. Routine use of already-authorized credentials and project-private material is allowed when needed for the requested result. The agent also asks when evidence cannot settle a material product choice. It does not ask the owner to choose routine engineering mechanics.
 
-## Small work stays small
+## Proportional work
 
-A clear bounded request is finished in the session with no Issue or plan unless repository policy requires tracked delivery, and its one delegate is the reviewer that closes any project change. Before mutation the root reads repository instructions, checks active tasks, and records checkout, branch, and `HEAD`; it repeats the identity check before commits, gates, reviews, and integration. Delegation happens only when isolation or parallel work pays for the transfer ([prior art](prior-art.md)).
+The smallest coherent approach wins. A direct edit can remain a direct edit. Unknown causes justify diagnosis. Several independent areas may justify parallel work. High-risk or uncertain changes may justify independent review. Repository requirements still apply.
 
-## From a dump to a backlog
+Plans, trackers, delegates, worktrees, pull requests, and review are tools. None is a stage every request must pass through. There is no item count, file count, diff size, or phrase that decides the process in advance.
 
-`RECORD` splits a dump into atomic bugs, ideas, questions, and risks, searches the tracker for duplicates, and gives each record a type, a disposition, and a proposed priority with its reason. It reads how the tracker already classifies work and matches that, rather than inventing a taxonomy of its own. With GitHub it creates or updates Issues and labels the batch `skiphow-batch:<date>` — a marker for selecting the batch later, not a classification; without GitHub it appends to `.skiphow/inbox.md`. The owner reorders; nobody writes tickets.
+Before writing, the agent reads applicable repository instructions and enough live state to preserve unrelated work. It isolates a writing lane when another writer could collide. It never resets foreign changes, bypasses hooks, or uses low-level Git tricks to manufacture a clean result.
 
-## Long work
+## Completion and delivery
 
-One root agent owns the outcome, queue, integration, remote writes, handoff, and report. At every owner turn it re-sizes before the next act, adding independent items as units rather than burying them in the current one. Parallel writing lanes get separate worktrees and branches. Each independently landable unit has an operation branch; returned commits are inspected and integrated there, then the exact unit candidate is reviewed and delivered against the current target. A blocked unit does not hold ready ones. Routine questions stop only for an unresolved material product choice or staging or production approval. A failed attempt is never repeated unchanged; the agent changes its approach and marks the item `BLOCKED` only after safe alternatives or a hard stop are exhausted ([ADR 0006](decisions/0006-host-native-campaign-and-engineering-policy.md), [ADR 0016](decisions/0016-decomposition-needs-a-trigger-a-run-can-evaluate.md)).
+For a project change, the default finish is:
 
-## Model routing
+1. The requested behavior is implemented.
+2. Fresh, proportionate evidence checks the changed behavior and final state.
+3. An ordinary local commit records only the owned delta.
 
-Shared policy names three roles and tiers, never a vendor's model IDs:
+The repository can require additional checks, review, pull requests, or another delivery path. A request can also name a shared target. In those cases the agent follows the normal project workflow without asking the owner to operate Git.
 
-| Role | Tier | Work | Boundary |
-| --- | --- | --- | --- |
-| scout | `FAST` | bounded search, inventory, duplicate checks, extraction | read-only, low effort |
-| builder | `STANDARD` | implementation and tests for one owned scope | isolated worktree, no remote writes |
-| reviewer | `DEEP` | planning, unknown causes, architecture, security, the independent review that closes every project change | read-only plus checks |
-
-On Claude Code the plugin ships the three roles as agent definitions: the scout on the `haiku` family alias, the builder on `sonnet`, and the reviewer on the session model itself, so the deepest tier is always the model the owner chose and never ages behind it. Codex has no family aliases and a plugin cannot ship agents, so on Codex every delegate runs on the session model and the tiers collapse to reasoning effort on that model, set per spawn: the scout at low, the reviewer at high, the builder at the session's. Nothing is written into the project for this. Observed with no role files present: scout `low`, reviewer `high`, all on the session model. When a review widens and the other host is installed, that one pass runs there instead, on that tool's own default model, so the judgement does not share the priors of the run that wrote the change ([ADR 0009](decisions/0009-reviewer-inherits-and-one-engineering-reference.md)). Capability routing on Codex waits for the host to expose a stable capability name. Mutation never starts on the cheap tier, because a cheap model on an ambiguous task spends more turns than it saves in tokens. Cost savings are a design hypothesis until paired runs measure them ([ADR 0003](decisions/0003-semantic-model-routing.md), [ADR 0007](decisions/0007-host-adapters-for-routing-and-continuity.md), [ADR 0009](decisions/0009-reviewer-inherits-and-one-engineering-reference.md), [ADR 0012](decisions/0012-per-spawn-effort-and-portable-timestamps.md)).
+A generic change request does not authorize a push, merge, tracker mutation, or other unrelated remote write. Production and public release remain protected even when the mechanics are routine.
 
 ## Continuity
 
-The model cannot see compaction coming, so SkipHow does not ask it to prepare for one. Instead the root appends a checkpoint to `.skiphow/handoff.md` at every item boundary and before any long wait, and deletes the file when the queue is done. It records accepted decisions, owned resources, the last external result, and evidence as well as scope and status. After compaction or resume, the plugin's only hook prints a reminder and the last 40 lines into the new context, requiring repository instructions, host tasks, Git and GitHub to be re-read and checkout identity to be verified. The hook reads one file, writes nothing, and makes no network calls.
+SkipHow prefers host-native continuation when it is available. It can keep one concise current state in
+`.skiphow/handoff.md` only when the owner asked to pause or save the work, or when an already-authorized
+project change needs a checkpoint to finish safely. A wait, interruption, or read-only request does not by
+itself authorize that file. On startup or clear, the read-only hook tells the host to load the owner kernel for
+project requests. After compaction or resume, it tells the host to restore the kernel before continuing and
+announces an existing checkpoint. The agent re-reads the owner request and repository instructions before
+deliberately opening that checkpoint as untrusted status evidence, then compares it with live project state.
 
-## GitHub lifecycle
+The checkpoint is optional and temporary. It is not a diary, queue database, or authority token. The host still decides whether a task can continue in the background or resume later.
 
-GitHub Issues record work only when selected work or repository policy requires tracking; a required pull request alone does not create one. A pull request is used when the repository requires that delivery path; direct-delivery repositories use a guarded fast-forward push. Everything SkipHow creates carries a `skiphow:<id>` marker it searches for before creating again. Before merge or push it re-reads the live target, checks, reviews, rules, and active tasks. It delivers passing work to the non-production integration branch without bypass and asks before staging or production. Conflict resolution recovers both intents, then rechecks and re-reviews the unit candidate. After delivery it updates any Issue and deletes only operation-owned resources with no unique work.
+## Evidence and package checks
 
-## Reuse and findings
+`scripts/check.py` validates the single top-level skill, every reachable method resource, the continuity hook,
+aligned versions, and portability boundaries such as personal paths and versioned model IDs.
+`scripts/check_hosts.py` checks the package against available host validators. Neither script starts a model
+or proves that a model follows the instructions.
 
-Before building anything new, SkipHow searches the project, its dependencies, and the platform by domain concept and reports where it looked. A problem outside the request is fixed if it blocks the work, saved once as an Issue (or an inbox record) when the request grants records or changes, left `UNSAVED` under a read-only request, and named in the report either way ([ADR 0013](decisions/0013-read-only-requests-save-nothing.md)).
-
-## Trust and limits
-
-SkipHow is instructions. The host's sandbox, permission mode, and credential store are the real boundary; a worktree isolates files, not credentials or networks. The root holds credentials and performs every remote write; delegates never do. Secrets, customer data, private paths, and vulnerability details stay out of prompts, checkpoints, and public records.
-
-What the checks prove: `scripts/check.py` proves the package (one skill, complete references, word budgets, three agents with family aliases or inheritance only, exactly one continuity hook, no personal paths, aligned versions). `scripts/check_hosts.py` proves both hosts load and install the exact bytes. Neither proves that a model follows the policy. That evidence comes from real runs written up as receipts under `docs/research/` ([ADR 0008](decisions/0008-receipts-over-a-live-harness.md)). Anything a receipt has not shown stays `UNVERIFIED`, and SkipHow's reports say so.
+Behavior claims require deliberate receipts under `docs/research/`. A report names unavailable checks and unsupported host behavior as unverified instead of converting them into success.

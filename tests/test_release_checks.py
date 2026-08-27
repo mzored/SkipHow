@@ -55,60 +55,229 @@ def test_local_package_and_document_checks_pass() -> None:
     assert check.portability_scan() == []
     assert check.validate_version() == []
     assert check.model_id_scan() == []
-    assert check.validate_agents() == []
     assert check.validate_continuity_hook() == []
     assert check.validate_plugin_static() == []
-    assert check.validate_budget() == []
 
 
-def test_budget_limits_are_the_accepted_ones() -> None:
-    """Pin the four accepted numbers, not whatever the module currently holds.
+def write_skill(root: Path, name: str, *, description: str = "Handle a focused task.") -> Path:
+    skill = root / name
+    (skill / "agents").mkdir(parents=True)
+    (skill / "SKILL.md").write_text(
+        f"---\nname: {name}\ndescription: {description}\n---\n\n# {name}\n\nDo the task.\n",
+        encoding="utf-8",
+    )
+    (skill / "agents/openai.yaml").write_text(
+        "interface:\n"
+        f"  display_name: {name}\n"
+        "  short_description: Handle one focused project task\n"
+        f"  default_prompt: Use ${name} for this request.\n"
+        "policy:\n"
+        "  allow_implicit_invocation: true\n",
+        encoding="utf-8",
+    )
+    return skill
 
-    The fixtures below scale with the constants, so raising a limit tenfold used
-    to leave every budget test green.
-    """
-    assert check.ROOT_SKILL_LIMITS == {"bytes": 9500, "words": 1400}
-    assert check.REFERENCE_LIMITS == {"total_words": 5200, "file_words": 750}
+
+def test_each_top_level_skill_has_spec_metadata_and_may_ship_resources(tmp_path: Path) -> None:
+    skill = write_skill(tmp_path, "diagnosing-bugs")
+    for directory in ("references", "scripts", "assets"):
+        (skill / directory).mkdir()
+        (skill / directory / "resource.txt").write_text("resource\n", encoding="utf-8")
+    (skill / "examples").mkdir()
+    (skill / "examples/scenario.txt").write_text("example\n", encoding="utf-8")
+    (skill / "LICENSE.txt").write_text("local terms\n", encoding="utf-8")
+    assert check.validate_skill_directory(skill) == []
+
+    (skill / "SKILL.md").write_text(
+        "---\nname: wrong-name\ndescription: x\n---\n\nBody.\n", encoding="utf-8"
+    )
+    assert any("name must match its directory" in error for error in check.validate_skill_directory(skill))
 
 
-def test_budget_reports_measured_and_allowed_values(tmp_path: Path) -> None:
-    root_limit = check.ROOT_SKILL_LIMITS["words"]
-    file_limit = check.REFERENCE_LIMITS["file_words"]
-    skill = tmp_path / "SKILL.md"
-    skill.write_text("word " * (root_limit + 1), encoding="utf-8")
-    (tmp_path / "references").mkdir()
-    (tmp_path / "references/big.md").write_text("word " * (file_limit + 1), encoding="utf-8")
-    with (
-        patch.object(check, "CANONICAL_SKILL", skill),
-        patch.object(check, "SKILL_ROOT", tmp_path),
-    ):
-        errors = check.validate_budget()
-    assert any(
-        f"root skill words exceed the limit: {root_limit + 1} > {root_limit}" in error
-        for error in errors
+def test_openai_metadata_is_optional_but_cannot_disable_implicit_use(tmp_path: Path) -> None:
+    skill = write_skill(tmp_path, "diagnosing-bugs")
+    metadata_path = skill / "agents/openai.yaml"
+    metadata_path.unlink()
+    (skill / "agents/other-host.yaml").write_text("enabled: true\n", encoding="utf-8")
+    assert check.validate_skill_directory(skill) == []
+
+    metadata_path.write_text(
+        "policy:\n  allow_implicit_invocation: true\n",
+        encoding="utf-8",
+    )
+    assert check.validate_skill_directory(skill) == []
+
+    metadata_path.write_text(
+        "interface:\n"
+        "  display_name: Investigate product failures\n"
+        "  short_description: Handle one focused project task\n"
+        "  default_prompt: Investigate this failure.\n"
+        "policy:\n"
+        "  allow_implicit_invocation: false\n",
+        encoding="utf-8",
     )
     assert any(
-        f"big.md words exceed the limit: {file_limit + 1} > {file_limit}" in error
-        for error in errors
+        "must not disable implicit invocation" in error
+        for error in check.validate_skill_directory(skill)
     )
 
 
-def test_agent_adapters_reject_versioned_ids_and_extra_roles(tmp_path: Path) -> None:
-    agents = tmp_path / "agents"
-    agents.mkdir()
-    for role, model in (("scout", "haiku"), ("builder", "sonnet"), ("reviewer", "inherit")):
-        extra = "isolation: worktree\n" if role == "builder" else ""
-        (agents / f"{role}.md").write_text(
-            f"---\nname: {role}\ndescription: x\nmodel: {model}\n{extra}---\nbody\n", encoding="utf-8"
+@pytest.mark.parametrize(
+    ("extra_frontmatter", "expected"),
+    [
+        ("license:\n  - MIT\n", "license must be a nonempty string"),
+        ("license: null\n", "license must be a nonempty string"),
+        (f"compatibility: {'x' * 501}\n", "compatibility must be"),
+        ("metadata:\n  version: 2\n", "metadata must map strings to strings"),
+        ("allowed-tools:\n  - Bash\n", "allowed-tools must be a nonempty string"),
+        ("made-up-field: value\n", "unsupported Agent Skills fields"),
+    ],
+)
+def test_skill_frontmatter_rejects_invalid_optional_fields(
+    tmp_path: Path, extra_frontmatter: str, expected: str
+) -> None:
+    skill = write_skill(tmp_path, "research")
+    (skill / "SKILL.md").write_text(
+        "---\n"
+        "name: research\n"
+        "description: Research one uncertain question.\n"
+        f"{extra_frontmatter}"
+        "---\n\nBody.\n",
+        encoding="utf-8",
+    )
+    assert any(expected in error for error in check.validate_skill_directory(skill))
+
+
+def test_skill_frontmatter_accepts_valid_optional_fields(tmp_path: Path) -> None:
+    skill = write_skill(tmp_path, "research")
+    (skill / "SKILL.md").write_text(
+        "---\n"
+        "name: research\n"
+        "description: Research one uncertain question.\n"
+        "license: MIT\n"
+        "compatibility: Requires access to current primary sources.\n"
+        "metadata:\n"
+        "  author: example\n"
+        "allowed-tools: Read Bash\n"
+        "---\n\nBody.\n",
+        encoding="utf-8",
+    )
+    assert check.validate_skill_directory(skill) == []
+
+
+def test_skill_description_uses_the_agent_skills_metadata_limit(tmp_path: Path) -> None:
+    skill = write_skill(tmp_path, "research", description="x" * 1025)
+    errors = check.validate_skill_directory(skill)
+    assert any("at most 1024 characters" in error for error in errors)
+
+
+def test_plugin_markdown_links_cannot_escape_the_package(tmp_path: Path) -> None:
+    plugin = tmp_path / "skiphow"
+    skill = write_skill(plugin / "skills", "skiphow")
+    outside = tmp_path / "outside.md"
+    outside.write_text("outside\n", encoding="utf-8")
+    (skill / "SKILL.md").write_text(
+        "---\nname: skiphow\ndescription: Owner entry.\n---\n\n"
+        "[outside](../../../outside.md)\n",
+        encoding="utf-8",
+    )
+    with patch.object(check, "PLUGIN_ROOT", plugin):
+        errors = check.validate_plugin_links()
+    assert any("escapes package" in error for error in errors)
+
+
+def test_plugin_markdown_links_validate_image_destinations(tmp_path: Path) -> None:
+    plugin = tmp_path / "skiphow"
+    skill = write_skill(plugin / "skills", "skiphow")
+    (skill / "SKILL.md").write_text(
+        "---\nname: skiphow\ndescription: Owner entry.\n---\n\n"
+        "![missing preview](assets/missing.png)\n",
+        encoding="utf-8",
+    )
+    with patch.object(check, "PLUGIN_ROOT", plugin):
+        errors = check.validate_plugin_links()
+    assert any("missing.png" in error for error in errors)
+
+
+def test_markdown_references_must_be_reachable_from_their_skill(tmp_path: Path) -> None:
+    skill = write_skill(tmp_path, "research")
+    references = skill / "references"
+    (references / "nested").mkdir(parents=True)
+    (references / "first.md").write_text("[Details](nested/details.md)\n", encoding="utf-8")
+    (references / "nested/details.md").write_text("Details.\n", encoding="utf-8")
+    (skill / "SKILL.md").write_text(
+        "---\nname: research\ndescription: Research one uncertain question.\n---\n\n"
+        "Read [the method](references/first.md) when needed.\n",
+        encoding="utf-8",
+    )
+    assert check.validate_skill_directory(skill) == []
+
+    (references / "orphan.md").write_text("Unreachable.\n", encoding="utf-8")
+    errors = check.validate_skill_directory(skill)
+    assert any("unreachable Markdown reference: references/orphan.md" in error for error in errors)
+
+
+def test_adapted_source_manifest_validates_provenance_not_upstream_hashes(tmp_path: Path) -> None:
+    plugin = tmp_path / "skiphow"
+    skill = write_skill(plugin / "skills", "diagnosing-bugs")
+    commit = "a" * 40
+    repository = "https://example.test/upstream/skills"
+    provenance = "Adapted for this package"
+    (plugin / "THIRD_PARTY_NOTICES.md").write_text(
+        f"Source: {repository}\nCommit: {commit}\nLicense: MIT\n{provenance}\n\n"
+        f"{check.MIT_PERMISSION_PARAGRAPH}\n\n{check.MIT_WARRANTY_PARAGRAPH}\n",
+        encoding="utf-8",
+    )
+    manifest = {
+        "schema_version": 1,
+        "sources": [
+            {
+                "repository": repository,
+                "commit": commit,
+                "license": "MIT",
+                "provenance": provenance,
+                "adaptations": [
+                    {
+                        "skill": "diagnosing-bugs",
+                        "source_paths": ["skills/engineering/diagnosing-bugs/SKILL.md"],
+                        "files": ["SKILL.md"],
+                    }
+                ],
+            }
+        ],
+    }
+    (plugin / "SOURCES.json").write_text(json.dumps(manifest), encoding="utf-8")
+    with patch.object(check, "PLUGIN_ROOT", plugin):
+        assert check.validate_third_party_sources({"diagnosing-bugs"}) == []
+        (plugin / "THIRD_PARTY_NOTICES.md").write_text(
+            f"{repository}\n{commit}\nMIT\n{provenance}\n{check.MIT_PERMISSION_PARAGRAPH}\n",
+            encoding="utf-8",
         )
-    assert check.validate_agents(agents) == []
-    (agents / "scout.md").write_text(
-        "---\nname: scout\ndescription: x\nmodel: claude-haiku-4-5-20251001\n---\nbody\n", encoding="utf-8"
-    )
-    errors = check.validate_agents(agents)
-    assert any("family alias" in error for error in errors)
-    (agents / "extra.md").write_text("---\nname: extra\ndescription: x\n---\nbody\n", encoding="utf-8")
-    assert any("exactly scout, builder, reviewer" in error for error in check.validate_agents(agents))
+        errors = check.validate_third_party_sources({"diagnosing-bugs"})
+        assert any("canonical MIT warranty paragraph" in error for error in errors)
+
+        (plugin / "THIRD_PARTY_NOTICES.md").write_text(
+            f"{repository}\n{commit}\nMIT\n{check.MIT_PERMISSION_PARAGRAPH}\n"
+            f"{check.MIT_WARRANTY_PARAGRAPH}\n",
+            encoding="utf-8",
+        )
+        errors = check.validate_third_party_sources({"diagnosing-bugs"})
+        assert any("source provenance" in error for error in errors)
+
+        manifest["sources"][0]["commit"] = "moving-main"
+        (plugin / "SOURCES.json").write_text(json.dumps(manifest), encoding="utf-8")
+        errors = check.validate_third_party_sources({"diagnosing-bugs"})
+    assert any("40-character hexadecimal" in error for error in errors)
+
+
+def test_current_package_cannot_drop_third_party_provenance(tmp_path: Path) -> None:
+    package = tmp_path / "skiphow"
+    shutil.copytree(check.PLUGIN_ROOT, package)
+    (package / "SOURCES.json").unlink()
+    (package / "THIRD_PARTY_NOTICES.md").unlink()
+    with patch.object(check, "PLUGIN_ROOT", package):
+        errors = check.validate_plugin_static()
+    assert any("SOURCES.json" in error and "THIRD_PARTY_NOTICES.md" in error for error in errors)
 
 
 def test_continuity_hook_rejects_other_events_and_network(tmp_path: Path) -> None:
@@ -137,32 +306,27 @@ def test_continuity_hook_rejects_other_events_and_network(tmp_path: Path) -> Non
     with patch.object(check, "PLUGIN_ROOT", tmp_path):
         errors = check.validate_continuity_hook(path)
     assert any("must not write, fetch, or run programs" in error for error in errors)
+    mixed = json.loads(
+        (check.PLUGIN_ROOT / "hooks/hooks.json").read_text(encoding="utf-8")
+    )
+    mixed["hooks"]["SessionStart"][0]["matcher"] = "startup|compact"
+    mixed["hooks"]["SessionStart"][1]["matcher"] = "clear|resume"
+    path.write_text(json.dumps(mixed), encoding="utf-8")
+    with patch.object(check, "PLUGIN_ROOT", tmp_path):
+        errors = check.validate_continuity_hook(path)
+    assert any(
+        "exactly the startup|clear and compact|resume matcher groups" in error
+        for error in errors
+    )
     path.write_text(
         json.dumps({"hooks": {"SessionStart": [{"matcher": "startup|clear", "hooks": [{"type": "command", "command": "sh -c 'cat .skiphow/handoff.md'"}]}]}}),
         encoding="utf-8",
     )
     with patch.object(check, "PLUGIN_ROOT", tmp_path):
-        assert any("exactly once each" in error for error in check.validate_continuity_hook(path))
-
-
-@pytest.mark.parametrize(
-    "anchor",
-    (
-        "owner request", "repository instructions", "active host tasks", "live Git",
-        "GitHub", "checkout", "branch", "HEAD", "candidate",
-    ),
-)
-def test_continuity_hook_requires_semantic_recovery_anchors(tmp_path: Path, anchor: str) -> None:
-    hooks = tmp_path / "hooks"
-    hooks.mkdir()
-    payload = json.loads((ROOT / "plugins/skiphow/hooks/hooks.json").read_text(encoding="utf-8"))
-    resume = payload["hooks"]["SessionStart"][1]["hooks"][0]
-    resume["command"] = resume["command"].replace(anchor, "removed", 1)
-    path = hooks / "hooks.json"
-    path.write_text(json.dumps(payload), encoding="utf-8")
-    with patch.object(check, "PLUGIN_ROOT", tmp_path):
-        errors = check.validate_continuity_hook(path)
-    assert any(anchor in error and "compact/resume notice must require recovery" in error for error in errors)
+        assert any(
+            "exactly the startup|clear and compact|resume matcher groups" in error
+            for error in check.validate_continuity_hook(path)
+        )
 
 
 def test_plugin_change_requires_a_version_bump() -> None:
@@ -171,10 +335,57 @@ def test_plugin_change_requires_a_version_bump() -> None:
         "checked",
         side_effect=[
             (True, "plugins/skiphow/skills/skiphow/SKILL.md\n"),
+            (True, ""),
+            (True, ""),
             (True, (check.ROOT / "VERSION").read_text(encoding="utf-8")),
         ],
     ):
         assert check.validate_release_version_change("base") == [
+            "plugins/skiphow changed without a VERSION bump"
+        ]
+
+
+@pytest.mark.parametrize(
+    ("working_tree", "untracked"),
+    [
+        ("plugins/skiphow/skills/tracked/SKILL.md\n", ""),
+        ("", "plugins/skiphow/skills/untracked/SKILL.md\n"),
+    ],
+)
+def test_base_diff_cannot_hide_dirty_plugin_changes(
+    working_tree: str, untracked: str
+) -> None:
+    with patch.object(
+        check,
+        "checked",
+        side_effect=[
+            (True, "docs/release-notes.md\n"),
+            (True, working_tree),
+            (True, untracked),
+            (True, (check.ROOT / "VERSION").read_text(encoding="utf-8")),
+        ],
+    ) as checked:
+        assert check.validate_release_version_change("base") == [
+            "plugins/skiphow changed without a VERSION bump"
+        ]
+    assert [call.args[0] for call in checked.call_args_list[:3]] == [
+        ["git", "diff", "--name-only", "base...HEAD"],
+        ["git", "diff", "--name-only", "HEAD"],
+        ["git", "ls-files", "--others", "--exclude-standard"],
+    ]
+
+
+def test_working_tree_plugin_change_requires_a_version_bump_without_base() -> None:
+    with patch.object(
+        check,
+        "checked",
+        side_effect=[
+            (True, "plugins/skiphow/skills/new-skill/SKILL.md\n"),
+            (True, "plugins/skiphow/skills/untracked/SKILL.md\n"),
+            (True, (check.ROOT / "VERSION").read_text(encoding="utf-8")),
+        ],
+    ):
+        assert check.validate_release_version_change(None) == [
             "plugins/skiphow changed without a VERSION bump"
         ]
 
@@ -193,12 +404,30 @@ def test_plugin_version_cannot_move_backward() -> None:
         "checked",
         side_effect=[
             (True, "plugins/skiphow/skills/skiphow/SKILL.md\n"),
+            (True, ""),
+            (True, ""),
             (True, f"{ahead}\n"),
         ],
     ):
         assert check.validate_release_version_change("base") == [
             f"plugin version must increase from {ahead} to a later stable version"
         ]
+
+
+def test_diff_validation_checks_unstaged_staged_and_candidate_changes() -> None:
+    commands: list[list[str]] = []
+
+    def checked(command, **kwargs):
+        commands.append(list(command))
+        return True, ""
+
+    with patch.object(check, "checked", side_effect=checked):
+        assert check.validate_diff("origin/main") == []
+    assert commands == [
+        ["git", "diff", "--check"],
+        ["git", "diff", "--cached", "--check"],
+        ["git", "diff", "--check", "origin/main...HEAD"],
+    ]
 
 
 def test_portable_policy_rejects_provider_model_ids(tmp_path: Path) -> None:
@@ -279,17 +508,37 @@ def test_model_scan_covers_every_shipped_file_and_current_families(tmp_path: Pat
 
 
 def test_package_shape_rejects_an_extra_shipped_file(tmp_path: Path) -> None:
-    """The old check named directories, so any extra file inside one passed."""
+    """A universal agents directory is not part of the composable skill package."""
     package = tmp_path / "skiphow"
     shutil.copytree(check.PLUGIN_ROOT, package)
+    (package / "agents").mkdir(exist_ok=True)
     (package / "agents/extra.txt").write_text("x\n", encoding="utf-8")
-    with (
-        patch.object(check, "PLUGIN_ROOT", package),
-        patch.object(check, "SKILL_ROOT", package / "skills/skiphow"),
-        patch.object(check, "CANONICAL_SKILL", package / "skills/skiphow/SKILL.md"),
-    ):
+    with patch.object(check, "PLUGIN_ROOT", package):
         errors = check.validate_plugin_static()
     assert any("agents/extra.txt" in error for error in errors)
+
+
+def test_package_shape_rejects_a_nested_skill(tmp_path: Path) -> None:
+    package = tmp_path / "skiphow"
+    shutil.copytree(check.PLUGIN_ROOT, package)
+    nested = package / "skills/skiphow/references/nested/SKILL.md"
+    nested.parent.mkdir(parents=True, exist_ok=True)
+    nested.write_text(
+        "---\nname: nested\ndescription: Wrongly nested skill.\n---\n\nBody.\n",
+        encoding="utf-8",
+    )
+    with patch.object(check, "PLUGIN_ROOT", package):
+        errors = check.validate_plugin_static()
+    assert any("nested SKILL.md" in error for error in errors)
+
+
+def test_package_shape_rejects_a_second_owner_visible_skill(tmp_path: Path) -> None:
+    package = tmp_path / "skiphow"
+    shutil.copytree(check.PLUGIN_ROOT, package)
+    write_skill(package / "skills", "extra-entry")
+    with patch.object(check, "PLUGIN_ROOT", package):
+        errors = check.validate_plugin_static()
+    assert any("exactly one owner entry" in error for error in errors)
 
 
 def test_changelog_must_lead_with_the_released_version() -> None:
@@ -309,12 +558,16 @@ def test_hook_shape_rejects_a_quote_breakout() -> None:
     """
     breakout = (
         "sh -c 'printf \"%s\\n\" \"' ; touch f; echo '\"; "
-        "if [ -f .skiphow/handoff.md ]; then tail -n 40 .skiphow/handoff.md; fi; exit 0'"
+        "if [ -f .skiphow/handoff.md ]; then cat .skiphow/handoff.md; fi; exit 0'"
     )
     assert check.HOOK_COMMAND.fullmatch(breakout) is None
     real = json.loads((check.PLUGIN_ROOT / "hooks/hooks.json").read_text(encoding="utf-8"))
     for group in real["hooks"]["SessionStart"]:
-        assert check.HOOK_COMMAND.fullmatch(group["hooks"][0]["command"])
+        command = group["hooks"][0]["command"]
+        if {"compact", "resume"} & set(group["matcher"].split("|")):
+            assert check.HOOK_COMMAND.fullmatch(command)
+        else:
+            assert check.HOOK_NOTICE_COMMAND.fullmatch(command)
 
 
 def test_personal_path_scan_leaves_web_routes_alone() -> None:

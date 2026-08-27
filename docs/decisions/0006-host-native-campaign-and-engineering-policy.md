@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted. Amended by [ADR 0007](0007-host-adapters-for-routing-and-continuity.md): the checkpoint is written at item boundaries and before long waits rather than "before compaction", and a host hook surfaces it after compaction or resume. Amended by [ADR 0009](0009-reviewer-inherits-and-one-engineering-reference.md): the engineering methods are one reference, not a router over five files. Amended by [ADR 0016](0016-decomposition-needs-a-trigger-a-run-can-evaluate.md): a request carrying several deliverable items is what selects the queue, a condition 0006 never stated.
+Partially superseded by [ADR 0018](0018-autonomous-kernel-and-independent-task-skills.md). Host-native
+execution, continuity, and the rejection of a private runner stand. The fixed campaign protocol, queue,
+worker packet, mandatory review, checkpoint schema, and engineering reference router do not.
 
 ## Date
 

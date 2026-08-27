@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted. Amended by [ADR 0007](0007-host-adapters-for-routing-and-continuity.md): the package may ship one read-only `SessionStart` continuity hook and three role adapters; it still ships no runtime.
+Accepted as amended by [ADR 0018](0018-autonomous-kernel-and-independent-task-skills.md). Host-native
+execution, permissions, continuation, and the rejection of a private runtime stand. Fixed routes, required
+worktrees, and the three role adapters do not.
 
 ## Date
 

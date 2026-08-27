@@ -1,7 +1,7 @@
 {
   "name": "skiphow",
-  "version": "1.14.2",
-  "description": "Handle product and project work from one owner request.",
+  "version": "2.0.0",
+  "description": "Autonomous project work for nontechnical product owners.",
   "author": {
     "name": "mzored",
     "url": "https://github.com/mzored"
@@ -13,19 +13,19 @@
     "agent-skills",
     "claude-code",
     "codex",
-    "orchestration"
+    "autonomy"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "SkipHow",
     "shortDescription": "Project work from one owner request",
-    "longDescription": "Inspect the project, make routine product and engineering decisions, complete the authorized work, and verify the result. Add tracking or campaign coordination only when the work needs it.",
+    "longDescription": "Start from one plain-language owner request. SkipHow selects only the focused internal guidance that helps; technical decisions, authorized completion, and verification stay with the agent.",
     "developerName": "mzored",
     "category": "Developer Tools",
     "capabilities": [],
     "defaultPrompt": [
-      "Here are today's bugs and ideas. Triage them and save them as Issues.",
-      "Fix today's batch and deliver what passes to the integration branch.",
+      "Here are today's bugs and ideas. Organize and save them so we can prioritize tomorrow.",
+      "Fix the problems reported today and finish everything that is safe to finish locally.",
       "The totals overlap on small screens. Find the cause and fix it."
     ]
   }

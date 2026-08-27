@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted in 1.1.0. The adapters, the hook, and the deterministic checks below ship in that release. Amended by [ADR 0009](0009-reviewer-inherits-and-one-engineering-reference.md): the `reviewer` adapter inherits the session model instead of pinning `opus`. Amended by [ADR 0010](0010-two-matcher-hook-and-codex-project-loading.md) on the hook, and by [ADR 0012](0012-per-spawn-effort-and-portable-timestamps.md), which supersedes the Codex adapter paragraph below: no `[agents]` configuration and no project role files, effort per spawn instead. [ADR 0017](0017-autonomous-routine-delivery-uses-owned-worktrees.md) supersedes the fixed retry count and lets independent judgment, not only isolation or parallelism, justify delegation.
+Partially superseded by [ADR 0018](0018-autonomous-kernel-and-independent-task-skills.md). The host-native
+continuity hook and ban on versioned model IDs stand. Fixed roles, model-tier adapters, effort mappings,
+delegation retries, and checkpoint procedure do not.
 
 ## Date
 

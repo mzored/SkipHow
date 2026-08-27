@@ -2,7 +2,10 @@
 
 ## Status
 
-Accepted in 1.2.0, amended in 1.12.0 and 1.14.0. Amended by [ADR 0015](0015-unconditional-invariants-live-in-the-root.md) on the root budget. Amends [ADR 0007](0007-host-adapters-for-routing-and-continuity.md) (reviewer tier) and [ADR 0006](0006-host-native-campaign-and-engineering-policy.md) (method layout). [ADR 0008](0008-receipts-over-a-live-harness.md) stands.
+Superseded by [ADR 0018](0018-autonomous-kernel-and-independent-task-skills.md) for reviewer roles,
+cross-host review, model effort, and the old topology built around one engineering reference. Focused
+Markdown method references may improve task quality, but they do not route work or carry critical policy.
+Receipt-based evaluation under [ADR 0008](0008-receipts-over-a-live-harness.md) stands.
 
 ## Date
 

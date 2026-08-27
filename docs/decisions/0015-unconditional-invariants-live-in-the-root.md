@@ -2,11 +2,14 @@
 
 ## Status
 
-Accepted in 1.8.0, amended in 1.10.0. Amended by [ADR 0017](0017-autonomous-routine-delivery-uses-owned-worktrees.md), which supersedes its phrase-based merge boundary and raises its budgets. Amends [ADR 0009](0009-reviewer-inherits-and-one-engineering-reference.md) (root and
-reference budgets) and [ADR 0011](0011-findings-tag-codex-role-files-neutral-repo-instructions.md) (the
-findings tags). Restores the merge boundary of [ADR 0004](0004-github-lifecycle-and-authority.md) to a
-surface that always loads. [ADR 0013](0013-read-only-requests-save-nothing.md) and
-[ADR 0014](0014-conform-to-the-tracker-classification.md) stand.
+Partially superseded by [ADR 0018](0018-autonomous-kernel-and-independent-task-skills.md). Critical
+authority, autonomy, and completion invariants remain in the owner kernel. Fixed word and byte budgets,
+routes, mandatory reference-loading gates, findings tags, report headings, role names, and automatic delivery
+procedures do not. Focused Markdown references contain task methods only; they do not route work or carry
+critical policy.
+The read-only/save boundary from [ADR 0013](0013-read-only-requests-save-nothing.md) and tracker-native
+principle from [ADR 0014](0014-conform-to-the-tracker-classification.md) stand; their 1.x routes, tags,
+markers, and fixed schemas do not.
 
 ## Date
 

@@ -11,26 +11,12 @@ import json
 from pathlib import Path
 import re
 
-from markdown_it import MarkdownIt
 import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = ROOT / "plugins/skiphow"
 SKILL = PLUGIN / "skills/skiphow/SKILL.md"
-REFERENCES = frozenset(
-    {
-        "decision.md",
-        "delivery.md",
-        "diagnosis.md",
-        "engineering.md",
-        "github.md",
-        "intake.md",
-        "long-work.md",
-        "model-routing.md",
-        "worktrees.md",
-    }
-)
 CHECK = importlib.util.spec_from_file_location("skiphow_check_shape", ROOT / "scripts/check.py")
 _MODULE = importlib.util.module_from_spec(CHECK)
 CHECK.loader.exec_module(_MODULE)
@@ -53,10 +39,6 @@ def json_object(relative: str) -> dict:
     return value
 
 
-def code_tokens(text: str) -> set[str]:
-    return set(re.findall(r"`([A-Z][A-Z_]+)`", text))
-
-
 def frontmatter(path: Path) -> dict:
     match = re.match(r"---\n(.*?)\n---\n", path.read_text(encoding="utf-8"), re.DOTALL)
     assert match, path
@@ -65,50 +47,28 @@ def frontmatter(path: Path) -> dict:
     return value
 
 
-def skill_links() -> set[Path]:
-    links: set[Path] = set()
-    pending = [SKILL]
-    seen: set[Path] = set()
-    while pending:
-        source = pending.pop()
-        if source in seen:
-            continue
-        seen.add(source)
-        for token in MarkdownIt("commonmark").parse(source.read_text(encoding="utf-8")):
-            for child in token.children or ():
-                if child.type != "link_open" or not child.attrGet("href"):
-                    continue
-                candidate = (source.parent / child.attrGet("href")).resolve()
-                if candidate.suffix == ".md" and candidate.is_relative_to(SKILL.parent):
-                    links.add(candidate)
-                    pending.append(candidate)
-    return links
-
-
-def headings(relative: str) -> list[str]:
-    return re.findall(r"^#{1,6} (.+)$", read(relative), re.MULTILINE)
-
-
-def fenced_blocks(relative: str) -> list[str]:
-    return re.findall(r"```(?:text)?\n(.*?)```", read(relative), re.DOTALL)
-
-
 # Package shape
 
 
-def test_both_hosts_package_the_same_canonical_skill() -> None:
+def test_both_hosts_package_one_owner_skill_with_internal_methods() -> None:
     codex = json_object("plugins/skiphow/.codex-plugin/plugin.json")
     claude = json_object("plugins/skiphow/.claude-plugin/plugin.json")
     assert codex["name"] == claude["name"] == "skiphow"
     assert codex["skills"] == claude["skills"] == "./skills/"
     assert "hooks" not in codex and "agents" not in codex
     assert "hooks" not in claude and "agents" not in claude
-    assert sorted(PLUGIN.rglob("SKILL.md")) == [SKILL]
-    assert {
+    skill_dirs = sorted(path for path in (PLUGIN / "skills").iterdir() if path.is_dir())
+    assert skill_dirs == [PLUGIN / "skills/skiphow"]
+    assert set(PLUGIN.rglob("SKILL.md")) == {path / "SKILL.md" for path in skill_dirs}
+    assert not any(path.is_file() or path.is_symlink() for path in (PLUGIN / "agents").glob("**/*"))
+    shipped_top_level = {
         path.name
         for path in PLUGIN.iterdir()
-        if path.is_file() or any(child.is_file() for child in path.rglob("*"))
-    } == {".claude-plugin", ".codex-plugin", "agents", "hooks", "LICENSE", "skills"}
+        if path.is_file()
+        or path.is_symlink()
+        or any(child.is_file() or child.is_symlink() for child in path.rglob("*"))
+    }
+    assert shipped_top_level <= _MODULE.ALLOWED_PLUGIN_TOP_LEVEL
     assert (PLUGIN / "LICENSE").read_bytes() == (ROOT / "LICENSE").read_bytes()
 
 
@@ -173,86 +133,49 @@ def test_release_refuses_a_tag_outside_main() -> None:
 # Skill wiring
 
 
-def test_skill_is_implicitly_available_and_has_four_internal_routes() -> None:
-    metadata = yaml.safe_load(read("plugins/skiphow/skills/skiphow/agents/openai.yaml"))
-    assert metadata["policy"]["allow_implicit_invocation"] is True
-    assert {"RESPOND", "RECORD", "DELIVER", "CONTROL"} <= code_tokens(SKILL.read_text(encoding="utf-8"))
+def test_every_skill_has_valid_discovery_metadata() -> None:
+    skill_dirs = sorted(path for path in (PLUGIN / "skills").iterdir() if path.is_dir())
+    names: set[str] = set()
+    for directory in skill_dirs:
+        skill_file = directory / "SKILL.md"
+        metadata = frontmatter(skill_file)
+        assert metadata["name"] == directory.name
+        assert 0 < len(metadata["description"].strip()) <= 1024
+        assert metadata["name"] not in names
+        names.add(metadata["name"])
+        assert _MODULE.validate_skill_directory(directory) == []
+    assert "skiphow" in names
 
 
-def test_progressive_references_are_complete_and_reachable() -> None:
-    reference_root = SKILL.parent / "references"
-    actual = {path.relative_to(reference_root).as_posix() for path in reference_root.rglob("*.md")}
-    assert actual == REFERENCES
-    assert skill_links() == {(reference_root / name).resolve() for name in REFERENCES}
+def test_progressive_skill_resources_are_dynamic_and_links_resolve() -> None:
+    assert _MODULE.validate_plugin_links() == []
+    for skill_file in sorted((PLUGIN / "skills").glob("*/SKILL.md")):
+        assert _MODULE.validate_skill_markdown_reachability(skill_file.parent) == []
 
 
-def test_inbox_record_format_is_fenced() -> None:
-    inbox = fenced_blocks("plugins/skiphow/skills/skiphow/references/intake.md")
-    inbox_labels = {
-        line.split(":")[0].strip("- ")
-        for block in inbox
-        for line in block.splitlines()
-        if line.startswith("- ")
-    }
-    assert inbox_labels == {
-        "Recorded", "Source", "Original", "Normalized", "Type",
-        "Disposition", "Priority", "Links", "Evidence", "Assumptions", "Open questions",
-    }
+def test_package_validator_accepts_one_owner_skill_and_dynamic_resources() -> None:
+    assert _MODULE.validate_plugin_static() == []
+    discovered = {path.parent.name for path in (PLUGIN / "skills").glob("*/SKILL.md")}
+    assert discovered == {"skiphow"}
+    references = {path.name for path in (SKILL.parent / "references").glob("*.md")}
+    assert len(references) > 1
+    assert _MODULE.validate_skill_markdown_reachability(SKILL.parent) == []
 
 
-def test_named_contracts_stay_in_lazy_references() -> None:
-    intake = code_tokens(read("plugins/skiphow/skills/skiphow/references/intake.md"))
-    routing = read("plugins/skiphow/skills/skiphow/references/model-routing.md")
-    review = code_tokens(read("plugins/skiphow/skills/skiphow/references/engineering.md"))
-    assert {"NEW", "UPDATE", "DUPLICATE", "RELATED", "NEEDS_RESEARCH", "DISMISSED"} <= intake
-    # `BLOCKED` left this reference in 1.10.0 with the escalation ladder it belonged to.
-    # The ladder binds wherever a delegate exists, so it lives in the root now (ADR 0016).
-    assert {"FAST", "STANDARD", "DEEP", "UNVERIFIED"} <= code_tokens(routing)
-    assert "BLOCKED" not in code_tokens(routing)
-    assert {"scout", "builder", "reviewer"} <= set(re.findall(r"`(\w+)`", routing))
-    # Review findings carry the skill's four tags. A second findings vocabulary in a
-    # reference contradicts the root contract, which is how `PERSISTED` reached a report.
-    tags = code_tokens(read("plugins/skiphow/skills/skiphow/SKILL.md"))
-    assert {"TRACKED", "SAVED", "UNSAVED", "DISMISSED", "BLOCKED"} <= tags
-    assert not review & {"RESOLVED", "PERSISTED"}
-    for relative in ("long-work.md", "github.md", "delivery.md"):
-        assert {"BLOCKED", "UNVERIFIED"} & code_tokens(read(f"plugins/skiphow/skills/skiphow/references/{relative}"))
-
-
-def test_autonomy_and_isolation_invariants_are_shipped() -> None:
-    root = read("plugins/skiphow/skills/skiphow/SKILL.md")
-    worktrees = read("plugins/skiphow/skills/skiphow/references/worktrees.md")
-    builder = read("plugins/skiphow/agents/builder.md")
-    for concept in (
-        "requested outcome", "non-production", "staging or production", "ordinary commit",
-        "reviewer", "BLOCKED",
-    ):
-        assert concept in root
-    github = read("plugins/skiphow/skills/skiphow/references/github.md")
-    assert "Do not create an Issue solely because a pull request is required" in github
-    for concept in ("ownership", "drift", "hooks", "foreign"):
-        assert concept in worktrees.lower()
-    guide = read("docs/guide.md")
-    how = read("docs/how-it-works.md")
-    assert "No particular verb unlocks a workflow" in guide
-    assert "no special word unlocks a workflow" in how
-    assert "required pull request alone does not create one" in how
-    for forbidden_escape in ("alternate index", "plumbing commands", "force-checking out", "bypassing hooks"):
-        assert forbidden_escape in worktrees
-    assert "before the first write and before the commit" in builder
-    assert "ordinary commit command and hooks" in builder
-    assert "Recheck worktree, branch, `HEAD`, and status after the commit" in builder
-    assert "final worktree path, branch or detached state, `HEAD`, status, base, commit" in builder
-    routing = read("plugins/skiphow/skills/skiphow/references/model-routing.md")
-    assert "owned worktree and branch" in routing
-    assert "each call's working directory" in routing
-    checklist = read(".claude/skills/dogfood/references/checklist.md")
-    assert "From 1.14, it may skip the delivery reference" in checklist
-    assert "identity transitions" in checklist
+def test_adapted_skills_have_pinned_source_provenance() -> None:
+    sources = PLUGIN / "SOURCES.json"
+    notices = PLUGIN / "THIRD_PARTY_NOTICES.md"
+    assert sources.is_file() and notices.is_file()
+    skills = {path.parent.name for path in (PLUGIN / "skills").glob("*/SKILL.md")}
+    assert _MODULE.validate_third_party_sources(skills) == []
 
 
 def test_dogfood_auditor_tracks_shipped_references_and_identity_transitions() -> None:
-    assert set(DOGFOOD.REFERENCES) == {path.removesuffix(".md") for path in REFERENCES}
+    reference_root = SKILL.parent / "references"
+    current_references = {
+        path.stem for path in reference_root.glob("*.md")
+    } if reference_root.is_dir() else set()
+    assert set(DOGFOOD.REFERENCES) == current_references | set(DOGFOOD.LEGACY_REFERENCES)
     records = [
         {"timestamp": "2026-08-27T10:00:00Z", "cwd": "/repo", "gitBranch": "main"},
         {"timestamp": "2026-08-27T10:00:01Z"},
@@ -264,6 +187,598 @@ def test_dogfood_auditor_tracks_shipped_references_and_identity_transitions() ->
         {"at": "2026-08-27T10:00:02Z", "cwd": "/repo", "branch": "task"},
         {"at": "2026-08-27T10:00:03Z", "cwd": "/tmp/repo-task", "branch": "task"},
     ]
+
+
+def test_dogfood_observes_dynamic_top_level_skill_activation_and_reads() -> None:
+    records = [
+        {
+            "type": "assistant",
+            "message": {
+                "content": [
+                    {
+                        "type": "tool_use",
+                        "name": "Skill",
+                        "input": {"skill": "skiphow:future-specialist"},
+                    }
+                ]
+            },
+        },
+        {
+            "type": "assistant",
+            "message": {
+                "content": [
+                    {
+                        "type": "tool_use",
+                        "name": "Skill",
+                        "input": {"skill": "attributed-specialist"},
+                        "caller": {"attributionPlugin": "skiphow"},
+                    }
+                ]
+            },
+        },
+        {
+            "type": "user",
+            "message": {
+                "content": [
+                    {
+                        "type": "tool_result",
+                        "content": (
+                            "Base directory for this skill: "
+                            "/private/cache/plugins/cache/skiphow/skiphow/2.0.0/"
+                            "skills/future-specialist\n\n# Future specialist"
+                        ),
+                    }
+                ]
+            },
+        },
+        {
+            "type": "assistant",
+            "message": {
+                "content": [
+                    {
+                        "type": "tool_use",
+                        "name": "Read",
+                        "input": {
+                            "file_path": (
+                                "/private/cache/plugins/cache/skiphow/skiphow/2.0.0/"
+                                "skills/future-specialist/SKILL.md"
+                            )
+                        },
+                    },
+                    {
+                        "type": "tool_use",
+                        "name": "Read",
+                        "input": {
+                            "file_path": (
+                                "/private/project/.agents/skills/"
+                                "product-decisions/SKILL.md"
+                            )
+                        },
+                    },
+                    {
+                        "type": "tool_use",
+                        "name": "Bash",
+                        "input": {
+                            "command": (
+                                "sed -n '1,80p' /checkout/plugins/skiphow/skills/"
+                                "research/SKILL.md"
+                            )
+                        },
+                    },
+                    {
+                        "type": "tool_use",
+                        "name": "Bash",
+                        "input": {
+                            "command": (
+                                "rg -n hypothesis /private/project/.agents/skills/"
+                                "research/SKILL.md"
+                            )
+                        },
+                    },
+                ]
+            },
+        },
+    ]
+
+    assert DOGFOOD.detect_skills(records) == [
+        {
+            "name": "attributed-specialist",
+            "source": "plugin",
+            "version": "unknown",
+            "signals": {"activated": 1},
+        },
+        {
+            "name": "future-specialist",
+            "source": "plugin",
+            "version": "2.0.0",
+            "signals": {"activated": 1, "read": 1},
+        },
+        {
+            "name": "product-decisions",
+            "source": "project",
+            "version": "unknown",
+            "signals": {"read": 1},
+        },
+        {
+            "name": "research",
+            "source": "plugin",
+            "version": "unknown",
+            "signals": {"read": 1},
+        },
+        {
+            "name": "research",
+            "source": "project",
+            "version": "unknown",
+            "signals": {"searched": 1},
+        },
+    ]
+
+
+def test_dogfood_keeps_sidechains_and_neighboring_attribution_separate() -> None:
+    sidechain = {
+        "type": "user",
+        "isSidechain": True,
+        "message": {
+            "content": [
+                {
+                    "type": "tool_result",
+                    "content": (
+                        "Base directory for this skill: "
+                        "/cache/skiphow/skiphow/2.0.0/skills/skiphow"
+                    ),
+                }
+            ]
+        },
+    }
+    neighboring_calls = {
+        "type": "assistant",
+        "message": {
+            "content": [
+                {
+                    "type": "tool_use",
+                    "name": "Skill",
+                    "input": {"skill": "unattributed-skill"},
+                },
+                {
+                    "type": "tool_use",
+                    "name": "Skill",
+                    "input": {"skill": "attributed-skill"},
+                    "caller": {"attributionPlugin": "skiphow"},
+                },
+            ]
+        },
+    }
+
+    assert DOGFOOD.skill_injection_texts(sidechain) == []
+    assert DOGFOOD.detect_skills([sidechain, neighboring_calls]) == [
+        {
+            "name": "attributed-skill",
+            "source": "plugin",
+            "version": "unknown",
+            "signals": {"activated": 1},
+        }
+    ]
+
+
+def test_dogfood_keeps_unversioned_activation_separate_from_a_search() -> None:
+    records = [
+        {
+            "type": "assistant",
+            "message": {
+                "content": [
+                    {
+                        "type": "tool_use",
+                        "name": "Skill",
+                        "input": {"skill": "skiphow:research"},
+                    }
+                ]
+            },
+        },
+        {
+            "type": "item.completed",
+            "item": {
+                "id": "search-1",
+                "type": "command_execution",
+                "command": (
+                    "rg -n sources /cache/skiphow/skiphow/2.0.0/"
+                    "skills/research/SKILL.md"
+                ),
+                "status": "completed",
+                "exit_code": 0,
+            },
+        },
+    ]
+
+    assert DOGFOOD.detect_skills(records) == [
+        {
+            "name": "research",
+            "source": "plugin",
+            "version": "2.0.0",
+            "signals": {"searched": 1},
+        },
+        {
+            "name": "research",
+            "source": "plugin",
+            "version": "unknown",
+            "signals": {"activated": 1},
+        },
+    ]
+
+
+def test_dogfood_uses_a_versioned_codex_read_for_the_digest_version(
+    tmp_path: Path,
+) -> None:
+    records = [
+        {"type": "thread.started", "thread_id": "versioned-read"},
+        {"type": "turn.started"},
+        {
+            "type": "item.completed",
+            "item": {
+                "id": "read-1",
+                "type": "command_execution",
+                "command": (
+                    "sed -n '1,120p' /cache/skiphow/skiphow/2.0.0/"
+                    "skills/skiphow/SKILL.md"
+                ),
+                "status": "completed",
+                "exit_code": 0,
+            },
+        },
+        {"type": "turn.completed", "usage": {}},
+    ]
+    transcript = tmp_path / "versioned.jsonl"
+    transcript.write_text(
+        "\n".join(json.dumps(record) for record in records),
+        encoding="utf-8",
+    )
+
+    data = DOGFOOD.digest(transcript, 100)
+    assert data["plugin_versions"] == ["2.0.0"]
+    assert data["skills"] == [
+        {
+            "name": "skiphow",
+            "source": "plugin",
+            "version": "2.0.0",
+            "signals": {"read": 1},
+        }
+    ]
+
+
+def test_dogfood_does_not_treat_failed_codex_access_as_loaded_or_authored(
+    tmp_path: Path,
+) -> None:
+    records = [
+        {"type": "thread.started", "thread_id": "failed-access"},
+        {"type": "turn.started"},
+        {
+            "type": "item.started",
+            "item": {
+                "id": "read-1",
+                "type": "command_execution",
+                "command": (
+                    "sed -n '1,120p' /cache/skiphow/skiphow/2.0.0/"
+                    "skills/skiphow/SKILL.md"
+                ),
+                "status": "in_progress",
+            },
+        },
+        {
+            "type": "item.completed",
+            "item": {
+                "id": "read-1",
+                "type": "command_execution",
+                "command": (
+                    "sed -n '1,120p' /cache/skiphow/skiphow/2.0.0/"
+                    "skills/skiphow/SKILL.md"
+                ),
+                "status": "failed",
+                "exit_code": 1,
+            },
+        },
+        {
+            "type": "item.completed",
+            "item": {
+                "id": "write-1",
+                "type": "file_change",
+                "changes": [
+                    {
+                        "path": "/private/project/.agents/skills/testing/SKILL.md",
+                        "kind": "update",
+                    }
+                ],
+                "status": "failed",
+            },
+        },
+        {"type": "turn.failed", "error": {"message": "fixture failure"}},
+    ]
+    transcript = tmp_path / "failed-access.jsonl"
+    transcript.write_text(
+        "\n".join(json.dumps(record) for record in records),
+        encoding="utf-8",
+    )
+
+    data = DOGFOOD.digest(transcript, 100)
+    assert data["plugin_versions"] == ["unknown"]
+    assert data["skills"] == [
+        {
+            "name": "skiphow",
+            "source": "plugin",
+            "version": "2.0.0",
+            "signals": {"attempted": 1},
+        },
+        {
+            "name": "testing",
+            "source": "project",
+            "version": "unknown",
+            "signals": {"attempted": 1},
+        },
+    ]
+    assert data["command_results"] == {"failed:1": 1}
+    assert data["structured_writes"] == []
+    assert data["confounders"]["turn_failed"] is True
+    assert data["confounders"]["unfinished_turn"] is False
+    assert data["confounders"]["in_flight"] is False
+
+
+def test_dogfood_surfaces_mixed_plugin_versions_without_picking_reference_bytes(
+    tmp_path: Path,
+) -> None:
+    records = [
+        {"type": "thread.started", "thread_id": "mixed-versions"},
+        {"type": "turn.started"},
+        {
+            "type": "user",
+            "message": {
+                "content": [
+                    {
+                        "type": "tool_result",
+                        "content": (
+                            "Base directory for this skill: "
+                            "/cache/skiphow/skiphow/1.14.2/skills/skiphow"
+                        ),
+                    }
+                ]
+            },
+        },
+        {
+            "type": "item.completed",
+            "item": {
+                "id": "read-1",
+                "type": "command_execution",
+                "command": (
+                    "sed -n '1,120p' /cache/skiphow/skiphow/2.0.0/"
+                    "skills/skiphow/SKILL.md"
+                ),
+                "status": "completed",
+                "exit_code": 0,
+            },
+        },
+        {"type": "turn.completed", "usage": {}},
+    ]
+    transcript = tmp_path / "mixed.jsonl"
+    transcript.write_text(
+        "\n".join(json.dumps(record) for record in records),
+        encoding="utf-8",
+    )
+
+    data = DOGFOOD.digest(transcript, 100)
+    assert data["plugin_versions"] == ["1.14.2", "2.0.0"]
+    assert data["confounders"]["mixed_plugin_versions"] is True
+    assert {
+        (info["verdict"], info["probe_source"])
+        for info in data["references"].values()
+    } == {("unverified_mixed_version", "mixed_versions")}
+
+
+def test_dogfood_observes_codex_skill_reads_without_returning_private_paths(
+    tmp_path: Path,
+) -> None:
+    private_path = "/private/project/.agents/skills/skiphow/SKILL.md"
+    records = [
+        {"type": "thread.started", "thread_id": "codex-thread-id"},
+        {"type": "turn.started"},
+        {
+            "type": "item.started",
+            "item": {
+                "id": "item-1",
+                "type": "command_execution",
+                "command": f"sed -n '1,120p' {private_path}",
+                "status": "in_progress",
+            },
+        },
+        {
+            "type": "item.completed",
+            "item": {
+                "id": "item-1",
+                "type": "command_execution",
+                "command": f"sed -n '1,120p' {private_path}",
+                "status": "completed",
+                "exit_code": 0,
+            },
+        },
+        {
+            "type": "item.completed",
+            "item": {
+                "id": "item-2",
+                "type": "command_execution",
+                "command": (
+                    "sed -n '1,120p' .agents/skills/testing/SKILL.md && "
+                    "sed -n '1,120p' plugins/skiphow/skills/research/SKILL.md"
+                ),
+                "status": "completed",
+                "exit_code": 0,
+            },
+        },
+        {
+            "type": "item.completed",
+            "item": {
+                "id": "item-3",
+                "type": "file_change",
+                "changes": [
+                    {
+                        "path": "/private/project/.agents/skills/testing/SKILL.md",
+                        "kind": "update",
+                    }
+                ],
+                "status": "completed",
+            },
+        },
+        {
+            "type": "item.completed",
+            "item": {
+                "id": "item-4",
+                "type": "agent_message",
+                "text": "Codex final result",
+            },
+        },
+        {
+            "type": "turn.completed",
+            "usage": {"input_tokens": 100, "output_tokens": 20},
+        },
+    ]
+    transcript = tmp_path / "codex.jsonl"
+    transcript.write_text(
+        "\n".join(json.dumps(record) for record in records),
+        encoding="utf-8",
+    )
+
+    assert DOGFOOD.contains_marker(transcript)
+    assert DOGFOOD.detect_skills(records) == [
+        {
+            "name": "research",
+            "source": "plugin",
+            "version": "unknown",
+            "signals": {"read": 1},
+        },
+        {
+            "name": "skiphow",
+            "source": "project",
+            "version": "unknown",
+            "signals": {"read": 1},
+        },
+        {
+            "name": "testing",
+            "source": "project",
+            "version": "unknown",
+            "signals": {"read": 1, "authored": 1},
+        },
+    ]
+    data = DOGFOOD.digest(transcript, 100)
+    rendered = DOGFOOD.render_digest(data)
+    assert data["session"] == "codex-thread-id"
+    assert data["skills"] == DOGFOOD.detect_skills(records)
+    assert data["tools"] == {"command_execution": 2, "file_change": 1}
+    assert data["command_results"] == {"completed:0": 2}
+    assert data["usage"] == {"input_tokens": 100, "output_tokens": 20}
+    assert data["confounders"]["compaction"] == "unknown"
+    assert data["confounders"]["in_flight"] is False
+    assert data["confounders"]["unfinished_turn"] is False
+    assert data["confounders"]["turn_failed"] is False
+    assert data["report"]["text"] == "Codex final result"
+    assert data["structured_writes"] == [
+        {
+            "at": "",
+            "tool": "file_change",
+            "path": "/private/project/.agents/skills/testing/SKILL.md",
+        }
+    ]
+    assert private_path not in json.dumps(data)
+    assert private_path not in rendered
+    assert "SKILLS" in rendered
+    assert "\n  skiphow" in rendered
+
+
+def test_dogfood_marks_an_unfinished_codex_turn_in_flight(tmp_path: Path) -> None:
+    records = [
+        {"type": "thread.started", "thread_id": "unfinished"},
+        {"type": "turn.started"},
+        {
+            "type": "item.started",
+            "item": {
+                "id": "command-1",
+                "type": "command_execution",
+                "command": "git status --short",
+                "status": "in_progress",
+            },
+        },
+    ]
+    transcript = tmp_path / "unfinished.jsonl"
+    transcript.write_text(
+        "\n".join(json.dumps(record) for record in records),
+        encoding="utf-8",
+    )
+
+    data = DOGFOOD.digest(transcript, 100)
+    assert data["session"] == "unfinished"
+    assert data["confounders"]["in_flight"] is True
+    assert data["confounders"]["ended_mid_tool"] is True
+    assert data["confounders"]["unfinished_turn"] is True
+    assert data["confounders"]["turn_failed"] is False
+    assert data["confounders"]["compaction"] == "unknown"
+
+
+def test_dogfood_keeps_a_stale_interrupted_codex_turn_unfinished(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    records = [
+        {"type": "thread.started", "thread_id": "interrupted"},
+        {"type": "turn.started"},
+        {
+            "type": "item.completed",
+            "item": {
+                "id": "command-1",
+                "type": "command_execution",
+                "command": "git status --short",
+                "status": "completed",
+                "exit_code": 0,
+            },
+        },
+        {
+            "type": "item.completed",
+            "item": {
+                "id": "message-1",
+                "type": "agent_message",
+                "text": "Still working",
+            },
+        },
+    ]
+    transcript = tmp_path / "interrupted.jsonl"
+    transcript.write_text(
+        "\n".join(json.dumps(record) for record in records),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(
+        DOGFOOD.time,
+        "time",
+        lambda: transcript.stat().st_mtime + 16 * 60,
+    )
+
+    data = DOGFOOD.digest(transcript, 100)
+    assert data["confounders"]["in_flight"] is False
+    assert data["confounders"]["ended_mid_tool"] is False
+    assert data["confounders"]["unfinished_turn"] is True
+    assert data["confounders"]["turn_failed"] is False
+
+
+def test_dogfood_tracks_pending_codex_web_and_collaboration_tools() -> None:
+    for item_type in ("web_search", "collab_tool_call"):
+        records = [
+            {"type": "turn.started"},
+            {
+                "type": "item.started",
+                "item": {"id": f"{item_type}-1", "type": item_type},
+            },
+        ]
+        assert DOGFOOD.ended_mid_tool(records) is True
+
+        records.append(
+            {
+                "type": "item.completed",
+                "item": {"id": f"{item_type}-1", "type": item_type},
+            }
+        )
+        assert DOGFOOD.ended_mid_tool(records) is False
 
 
 def test_dogfood_uses_the_actual_final_answer_without_requiring_headings(tmp_path: Path) -> None:
@@ -318,74 +833,46 @@ def test_dogfood_marks_references_absent_from_an_older_package() -> None:
     assert source == "absent_in_version"
 
 
-def test_shipped_package_has_no_magic_end_to_end_phrase() -> None:
-    package_text = "\n".join(path.read_text(encoding="utf-8") for path in PLUGIN.rglob("*") if path.is_file())
-    assert not re.search(r"end[- ]to[- ]end", package_text, re.IGNORECASE)
+def test_dogfood_prefers_exact_version_cache_over_head(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    cached = (
+        tmp_path
+        / "plugins/cache/skiphow/skiphow/99.99.99"
+        / "skills/skiphow/references/testing.md"
+    )
+    cached.parent.mkdir(parents=True)
+    cached.write_text("exact cached contract", encoding="utf-8")
+    monkeypatch.setattr(DOGFOOD, "claude_home", lambda: tmp_path)
+
+    assert DOGFOOD.package_reference("99.99.99", "testing") == (
+        "exact cached contract",
+        "cache",
+    )
 
 
-# Host adapters
+def test_dogfood_downgrades_negative_evidence_from_nonexact_reference_bytes(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    body = (
+        "This sentence is intentionally long enough to provide a unique reference "
+        "fingerprint for the test."
+    )
+    transcript = tmp_path / "empty.jsonl"
+    transcript.write_text("{}\n", encoding="utf-8")
+    monkeypatch.setattr(DOGFOOD, "REFERENCES", ("future-reference",))
+    monkeypatch.setattr(
+        DOGFOOD,
+        "package_reference",
+        lambda version, name: (body, "HEAD"),
+    )
 
-
-def test_agent_adapters_route_roles_to_family_aliases() -> None:
-    agents = {path.stem: frontmatter(path) for path in (PLUGIN / "agents").glob("*.md")}
-    assert set(agents) == {"scout", "builder", "reviewer"}
-    assert agents["scout"]["model"] == "haiku"
-    assert agents["builder"]["model"] == "sonnet"
-    assert agents["reviewer"]["model"] == "inherit"
-    assert agents["scout"]["effort"] == "low"
-    assert "effort" not in agents["reviewer"]
-    assert agents["builder"]["isolation"] == "worktree"
-    for role, meta in agents.items():
-        assert meta["name"] == role
-        assert meta["description"].strip()
-        assert not ({"hooks", "mcpServers", "permissionMode"} & set(meta))
-        tools = {item.strip() for item in str(meta.get("tools", "")).split(",") if item.strip()}
-        assert tools
-        if role == "builder":
-            assert {"Edit", "Write"} <= tools
-        else:
-            assert not ({"Edit", "Write", "NotebookEdit"} & tools)
-
-
-def test_cross_host_review_names_both_directions() -> None:
-    """The escalated review lands on the other host, and both directions ship.
-
-    One direction silently dropped would leave half the owners on a same-model
-    reviewer with no signal that the rung is missing. The two effort renderings
-    are the one `DEEP` level spelled in each host's own syntax; the reviewer
-    adapter itself stays on `inherit`, so this is the only place they appear.
-    """
-    routing = read("plugins/skiphow/skills/skiphow/references/model-routing.md")
-    bullets = {
-        line.split(":", 1)[0].removeprefix("- From ").strip(): line
-        for line in routing.splitlines()
-        if line.startswith("- From ")
-    }
-    assert set(bullets) == {"Claude Code", "Codex"}
-    # Each host names the *other* host's command. Asserting the two commands are
-    # present somewhere let a swap -- Claude asking Claude -- stay green.
-    assert "codex review" in bullets["Claude Code"]
-    assert "claude -p" in bullets["Codex"]
-    assert "claude -p" not in bullets["Claude Code"]
-    assert "codex review" not in bullets["Codex"]
-    # Each direction declares its own boundary flag. They are not equally strong
-    # -- Codex sandboxes the pass, plan mode only bounds the model's tools -- so
-    # dropping either one leaves that direction's boundary unstated.
-    assert 'sandbox_mode="read-only"' in bullets["Claude Code"]
-    assert "--effort high" in bullets["Codex"]
-    assert "--permission-mode plan" in bullets["Codex"]
-    # Measured 2026-08-27: `claude --effort` warns and falls back on an unknown value,
-    # so the request is real. `codex -c model_reasoning_effort` is accepted for any
-    # value, including a bogus one, and the run stays at the host default -- so naming
-    # a level there would be a claim the tool does not honour.
-    assert "model_reasoning_effort" not in routing
-    # `--allowedTools` pre-approves rather than restricts, so it is never the boundary.
-    assert "--allowedTools" not in routing
-    # The trigger stays where the review widens; the mechanics stay here.
-    engineering = read("plugins/skiphow/skills/skiphow/references/engineering.md")
-    assert "model-routing.md" in engineering
-    mechanics = ("codex review", "claude -p", "--effort", "model_reasoning_effort", "--permission-mode")
-    assert [token for token in mechanics if token in engineering] == []
+    info = DOGFOOD.detect_references(transcript, [], "unknown")["future-reference"]
+    assert info["verdict"] == "not_loaded"
+    assert info["confidence"] == "medium"
+    assert info["probe_source"] == "HEAD"
 
 
 def test_every_adr_status_agrees_with_the_index() -> None:
@@ -403,7 +890,7 @@ def test_every_adr_status_agrees_with_the_index() -> None:
         status = re.search(r"## Status\n\n(.+)", path.read_text(encoding="utf-8")).group(1)
         amended = set()
         for clause in re.split(r"(?<=[.])\s+", status):
-            if "Amended by" in clause or "Superseded by" in clause:
+            if re.search(r"\b(?:amended|superseded) by\b", clause, re.IGNORECASE):
                 amended |= set(re.findall(r"ADR (\d{4})", clause))
         assert amended == set(re.findall(r"\b(\d{4})\b", rows[path.name[:4]])), path.name
 
@@ -414,13 +901,22 @@ def test_continuity_hook_is_the_only_hook() -> None:
     payload = json_object("plugins/skiphow/hooks/hooks.json")
     assert set(payload["hooks"]) == {"SessionStart"}
     groups = payload["hooks"]["SessionStart"]
+    assert len(groups) == 2
+    assert {
+        frozenset(group["matcher"].split("|")) for group in groups
+    } == _MODULE.CONTINUITY_GROUPS
     sources = [source for group in groups for source in group["matcher"].split("|")]
     assert sorted(sources) == ["clear", "compact", "resume", "startup"]
     for group in groups:
         (handler,) = group["hooks"]
         assert handler["type"] == "command"
         assert handler["command"].startswith("sh -c ")
-        assert ".skiphow/handoff.md" in handler["command"]
+        if {"compact", "resume"} & set(group["matcher"].split("|")):
+            assert _MODULE.HOOK_COMMAND.fullmatch(handler["command"])
+        else:
+            assert _MODULE.HOOK_NOTICE_COMMAND.fullmatch(handler["command"])
+        assert "cat " not in handler["command"]
+        assert "tail " not in handler["command"]
         assert handler.get("timeout", 600) <= 30
 
 
@@ -434,11 +930,14 @@ def test_package_has_no_versioned_model_ids_or_personal_paths() -> None:
     for path in PLUGIN.rglob("*"):
         if not path.is_file():
             continue
-        text = path.read_text(encoding="utf-8")
+        try:
+            text = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            continue
         scanned += 1
         assert PERSONAL_PATH.search(text) is None, path
         assert VERSIONED_MODEL.search(text) is None, path
-    assert scanned == len(_MODULE.PACKAGE_FILES)
+    assert scanned > 0
     for identifier in ("claude-fable-5", "fable-5", "gpt-oss-120b", "claude-opus-5", "o3"):
         assert VERSIONED_MODEL.search(identifier), identifier
     for personal in ("/Users/person", "C:\\users\\person\\x", "~/.claude"):

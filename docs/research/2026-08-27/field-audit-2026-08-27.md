@@ -218,3 +218,90 @@ Audited `35775b1d` · 1413 records · plugin 1.13.0 · model `claude-opus-5` · 
 ### Limits
 
 The follow-up audit read the completed transcript and local Git evidence. Target GitHub state and required-check results are the run's claims about themselves, not independently verified remote state. Package changes motivated by the session are not runtime proof; all new 1.14 behavior remains `UNVERIFIED` pending a real installed-plugin run.
+
+## Same-day audit: 1.14 repeated the workflow question it prohibited
+
+The owner then asked for the external SkipHow sessions available on 2026-08-27 to be checked. The set was
+frozen by date before judgment. Four sessions matched at that point; a fifth session started after the freeze
+and is not silently folded into these rulings.
+
+| Session | Plugin | Model | Snapshot state | Relevant shape |
+| --- | --- | --- | --- | --- |
+| `189724da` | 1.13.0 | `claude-opus-5` | complete; compacted | complex multi-part delivery |
+| `df29ce51` | 1.14.2 | `claude-opus-5` | closed; no compaction | bounded live-browser UI work |
+| `9d8005c5` | 1.14.2 | `claude-opus-5` | closed; no compaction | named UI session, later expanded by owner turns |
+| `c263bf24` | 1.14.2 | `claude-opus-5` | in flight; no compaction | production deployment |
+
+The two 1.14.2 UI sessions are the applicable pair for the routine-commit question, not paired performance
+runs. The exact root bytes were in context in both. They say a
+project-change request grants ordinary commits and routine delivery, say not to ask for those steps, and
+limit owner questions to promotion or a material product choice evidence cannot settle. Nevertheless, each
+run left routine authorized work uncommitted and asked the owner when to branch, batch, or commit it. Neither
+session compacted.
+
+`VARIANCE`, repeated **2 of 2 applicable sessions**. The governing language was explicit and byte-identical;
+the proximate cause is not a missing sentence in a reference. This also fires
+[ADR 0017](../../decisions/0017-autonomous-routine-delivery-uses-owned-worktrees.md)'s accepted revalidation
+trigger for a 1.14 run asking about routine delivery mechanics. The trigger is acted on in
+[ADR 0018](../../decisions/0018-autonomous-kernel-and-independent-task-skills.md), but not by adding another
+Git step: the existing step was already ignored.
+
+### What the named UI session does and does not prove
+
+The first named request was one small UI decision and presentation change. Work on that initial change began
+at about 09:57Z and the implementation, focused checks, and live visual pass were substantially complete by
+about 10:10Z, roughly twelve minutes. Later owner turns added six more items and expanded the session. Its
+total elapsed time therefore cannot be reported as the cost of the initial request.
+
+The session explicitly invoked an Impeccable live-UI workflow, used a live browser loop, and made 203 shell
+calls in the snapshot read for this audit. The other 1.14.2 UI session also explicitly invoked Impeccable and
+live iteration, included a long wait or poll, and made 103 shell calls. Those counts describe the sessions;
+they do not isolate SkipHow's contribution. There is no paired run without SkipHow, so the audit makes no
+speed, token, or cost claim. The supported finding is narrower and more important to the owner: after all
+that work, both sessions still handed routine commit mechanics back to them.
+
+The named session later closed with a result and substantial check evidence. Its final text still stated that
+all work was uncommitted. The routine question and incomplete local endpoint are therefore both scoreable;
+they are not inferred from a live missing report.
+
+### The other two sessions are not evidence for a universal fast path
+
+`189724da` ran 1.13.0 for a complex multi-part change, compacted, made 404 shell calls, and used eight
+delegations. It eventually reviewed and pushed to a non-production integration target after a later owner
+turn supplied the version's phrase-based authority. The 1.14 package had already removed that phrase token,
+so this older session cannot prove that current wording still needs one. Its scale also makes it a poor
+baseline for a bounded visual edit.
+
+`c263bf24` was an in-flight production deployment. It loaded the delivery, GitHub, long-work, and worktree
+references and used four reviewer delegations. Production work is explicitly protected and can justify more
+gates than a visual change. The missing model-routing load is one unfinished observation and remains
+`UNVERIFIED`; it is not evidence that the deployment overprocessed, and no report was owed while it was live.
+
+### Static policy had become its own workflow engine
+
+The field verdict above is variance, but a separate static comparison explains why reinforcing 1.14 would be
+the wrong response. Version 1.14.2 shipped one 1,348-word root, nine references totaling 5,090 words, three
+fixed delegate roles, four route names, mandatory review, model routing, worktree and integration procedure,
+findings tags, tracker markers, queue and handoff schemas, and exact report evidence.
+
+Its root-word ceiling was not imposed by Claude, Codex, the Agent Skills specification, or either plugin
+format. Repository history raised the local number from 600 in 1.2.0 to 850 in 1.8.0, 1,000 in 1.10.0, and
+1,400 in 1.14.0 as the policy grew. The corresponding artifact grew with it. This is a design constraint
+tracking accumulated text, not host evidence that those four numbers are useful.
+
+The result is not scored as a package `DEFECT` caused by the two sessions; their failed sentences were plain.
+It is the architecture the owner explicitly asked to replace, supported by the analogue and host research in
+[the 2.0 simplification note](runtime-policy-simplification.md). The new candidate remains `UNVERIFIED` until
+real installed-plugin receipts show the thinner owner skill and focused methods working.
+
+### Limits of this same-day pass
+
+The audit used generated digests and bounded transcript searches. It persisted no raw transcript, project
+name, issue title, customer data, or private target path. The production snapshot can gain records after this
+count. Tool calls and elapsed time are confounded by explicitly selected live-UI workflows and external
+waits. Findings a run noticed and never mentioned remain invisible.
+
+Audited `189724da` · 2200 records · plugin 1.13.0 · complete complex delivery; not comparable to a bounded 1.14 UI change
+Audited `df29ce51` · 551 records · plugin 1.14.2 · closed UI run; routine work left uncommitted and mechanics returned to owner
+Audited `9d8005c5` · 1093 records · plugin 1.14.2 · closed UI run; initial change about twelve minutes, later additions expanded it, final state explicitly uncommitted
+Audited `c263bf24` · 873 records · plugin 1.14.2 · live production snapshot; heavy procedure not scored as overprocessing

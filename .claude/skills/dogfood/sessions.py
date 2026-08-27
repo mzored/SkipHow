@@ -24,10 +24,47 @@ import time
 from collections import Counter
 from pathlib import Path
 
-MARKER = b'"attributionPlugin":"skiphow"'
+MARKERS = (
+    b'"attributionPlugin":"skiphow"',
+    b"plugins/skiphow/skills/skiphow/SKILL.md",
+    b".agents/skills/skiphow/SKILL.md",
+)
 SKILL_BODY = "Base directory for this skill:"
-VERSION_RE = re.compile(r"skiphow/skiphow/([0-9]+(?:\.[0-9]+)*)/skills")
-REFERENCES = (
+SKILL_NAME_PATTERN = r"[a-z0-9]+(?:-[a-z0-9]+)*"
+PLUGIN_VERSION_PATTERN = r"[0-9]+(?:\.[0-9]+)+(?:[-+][0-9A-Za-z.-]+)?"
+VERSION_RE = re.compile(
+    rf"skiphow[/\\]skiphow[/\\]({PLUGIN_VERSION_PATTERN})[/\\]skills"
+)
+BASE_DIRECTORY_RE = re.compile(rf"{re.escape(SKILL_BODY)}\s*([^\r\n]+)")
+NAMESPACED_SKILL_RE = re.compile(rf"^[/$]?skiphow:(?P<name>{SKILL_NAME_PATTERN})$")
+SKILL_PATH_RES = (
+    (
+        "plugin",
+        re.compile(
+            rf"(?:^|[/\\])skiphow[/\\]skiphow[/\\]"
+            rf"(?P<version>{PLUGIN_VERSION_PATTERN})[/\\]skills[/\\]"
+            rf"(?P<name>{SKILL_NAME_PATTERN})(?P<file>[/\\]SKILL\.md)?"
+            rf"(?=$|[/\\\s\"'`<>),;\]}}])"
+        ),
+    ),
+    (
+        "plugin",
+        re.compile(
+            rf"(?<![A-Za-z0-9_.-])plugins[/\\]skiphow[/\\]skills[/\\]"
+            rf"(?P<name>{SKILL_NAME_PATTERN})(?P<file>[/\\]SKILL\.md)?"
+            rf"(?=$|[/\\\s\"'`<>),;\]}}])"
+        ),
+    ),
+    (
+        "project",
+        re.compile(
+            rf"(?<![A-Za-z0-9_.-])\.agents[/\\]skills[/\\]"
+            rf"(?P<name>{SKILL_NAME_PATTERN})(?P<file>[/\\]SKILL\.md)?"
+            rf"(?=$|[/\\\s\"'`<>),;\]}}])"
+        ),
+    ),
+)
+LEGACY_REFERENCES = (
     "decision",
     "delivery",
     "diagnosis",
@@ -52,6 +89,23 @@ READ_VERBS = {"cat", "bat", "head", "tail", "awk", "less", "more", "nl", "cut", 
 SEARCH_VERBS = {"grep", "rg", "ag", "ack", "find", "ls", "wc", "stat", "git", "diff"}
 WRITE_VERBS = {"rm", "mv", "cp", "tee", "touch"}
 STRUCTURED_WRITE_TOOLS = {"Edit", "Write", "NotebookEdit", "MultiEdit"}
+CODEX_JSON_EVENT_TYPES = {
+    "thread.started",
+    "turn.started",
+    "turn.completed",
+    "turn.failed",
+    "item.started",
+    "item.updated",
+    "item.completed",
+    "error",
+}
+CODEX_STARTED_TOOL_TYPES = {
+    "command_execution",
+    "file_change",
+    "mcp_tool_call",
+    "collab_tool_call",
+    "web_search",
+}
 AUDITED_RE = re.compile(r"Audited `([0-9a-f]{8})`")
 
 
@@ -63,15 +117,27 @@ def repository_root() -> Path:
     return Path(__file__).resolve().parents[3]
 
 
+def reference_names() -> tuple[str, ...]:
+    """Return current reference names plus the retired 1.x audit surface."""
+    current = repository_root() / "plugins/skiphow/skills/skiphow/references"
+    shipped = {path.stem for path in current.glob("*.md")} if current.is_dir() else set()
+    return tuple(sorted(shipped | set(LEGACY_REFERENCES)))
+
+
+REFERENCES = reference_names()
+
+
 def contains_marker(path: Path) -> bool:
     """Scan for the attribution marker without holding the file in memory."""
     tail = b""
+    overlap = max(map(len, MARKERS))
     try:
         with path.open("rb") as handle:
             while chunk := handle.read(1 << 20):
-                if MARKER in tail + chunk:
+                window = tail + chunk
+                if any(marker in window for marker in MARKERS):
                     return True
-                tail = chunk[-len(MARKER) :]
+                tail = chunk[-overlap:]
     except OSError:
         return False
     return False
@@ -113,8 +179,198 @@ def text_of(record: dict) -> str:
     return "\n".join(b.get("text") or "" for b in blocks(record) if b.get("type") == "text")
 
 
+def nested_strings(value: object):
+    """Yield strings from one transcript value without retaining the enclosing payload."""
+    if isinstance(value, str):
+        yield value
+    elif isinstance(value, dict):
+        for child in value.values():
+            yield from nested_strings(child)
+    elif isinstance(value, list):
+        for child in value:
+            yield from nested_strings(child)
+
+
+def skill_injection_texts(record: dict) -> list[str]:
+    """Return injected skill bodies from text and tool-result blocks."""
+    if record.get("isSidechain"):
+        return []
+    found: list[str] = []
+    for block in blocks(record):
+        if block.get("type") == "text":
+            candidates = [block.get("text") or ""]
+        elif block.get("type") == "tool_result":
+            candidates = list(nested_strings(block.get("content")))
+        else:
+            continue
+        found.extend(text for text in candidates if SKILL_BODY in text)
+    return found
+
+
+def skill_paths(text: str, require_file: bool) -> list[dict[str, str]]:
+    """Recognize package and project skill paths without returning the private path."""
+    found: list[dict[str, str]] = []
+    seen: set[tuple[str, str, str]] = set()
+    for source, pattern in SKILL_PATH_RES:
+        for match in pattern.finditer(text):
+            if require_file and not match.group("file"):
+                continue
+            version = match.groupdict().get("version") or "unknown"
+            key = (match.group("name"), source, version)
+            if key in seen:
+                continue
+            seen.add(key)
+            found.append(
+                {
+                    "name": match.group("name"),
+                    "source": source,
+                    "version": version,
+                    "_needle": match.group(0),
+                }
+            )
+    return found
+
+
+def skiphow_attributed(value: object) -> bool:
+    """Find Claude's plugin attribution without assuming where the host nests it."""
+    if isinstance(value, dict):
+        if value.get("attributionPlugin") == "skiphow":
+            return True
+        return any(skiphow_attributed(child) for child in value.values())
+    if isinstance(value, list):
+        return any(skiphow_attributed(child) for child in value)
+    return False
+
+
+def detect_skills(records: list[dict]) -> list[dict]:
+    """Summarize observed top-level skill activation and file access.
+
+    The summary contains no raw path. Historical and future sibling names are
+    discovered from transcript evidence rather than a package roster.
+    """
+    evidence: dict[tuple[str, str, str], Counter[str]] = {}
+
+    def add(name: str, source: str, version: str, signal: str) -> None:
+        evidence.setdefault((name, source, version), Counter())[signal] += 1
+
+    for record in records:
+        for injected in skill_injection_texts(record):
+            for line in BASE_DIRECTORY_RE.findall(injected):
+                for hit in skill_paths(line, require_file=False):
+                    add(hit["name"], hit["source"], hit["version"], "activated")
+
+        item = record.get("item") if isinstance(record.get("item"), dict) else record
+        if (
+            item.get("type") == "command_execution"
+            and record.get("type") == "item.completed"
+        ):
+            command = item.get("command") or ""
+            if isinstance(command, list):
+                command = " ".join(str(part) for part in command)
+            succeeded = item.get("status") == "completed" and item.get("exit_code") in (None, 0)
+            command_hits: set[tuple[str, str, str, str]] = set()
+            for hit in skill_paths(command, require_file=True):
+                signal = (
+                    classify_command(command, hit["_needle"])
+                    if succeeded
+                    else "attempted"
+                )
+                command_hits.add(
+                    (hit["name"], hit["source"], hit["version"], signal)
+                )
+            for name, source, version, signal in command_hits:
+                add(name, source, version, signal)
+        elif item.get("type") == "file_change" and record.get("type") == "item.completed":
+            change_hits: set[tuple[str, str, str]] = set()
+            for change in item.get("changes") or []:
+                if not isinstance(change, dict):
+                    continue
+                path = change.get("path")
+                if not isinstance(path, str):
+                    continue
+                for hit in skill_paths(path, require_file=True):
+                    change_hits.add((hit["name"], hit["source"], hit["version"]))
+            signal = "authored" if item.get("status") == "completed" else "attempted"
+            for name, source, version in change_hits:
+                add(name, source, version, signal)
+
+        if record.get("type") != "assistant" or record.get("isSidechain"):
+            continue
+        for block in blocks(record):
+            if block.get("type") != "tool_use":
+                continue
+            tool = block.get("name") or "?"
+            data = block.get("input") or {}
+            if tool == "Skill":
+                invoked = data.get("skill") or data.get("name") or ""
+                match = NAMESPACED_SKILL_RE.fullmatch(invoked) if isinstance(invoked, str) else None
+                if match:
+                    add(match.group("name"), "plugin", "unknown", "activated")
+                elif (
+                    isinstance(invoked, str)
+                    and re.fullmatch(SKILL_NAME_PATTERN, invoked)
+                    and skiphow_attributed(block)
+                ):
+                    add(invoked, "plugin", "unknown", "activated")
+
+            block_hits: set[tuple[str, str, str, str]] = set()
+            for value in nested_strings(data):
+                for hit in skill_paths(value, require_file=True):
+                    if tool == "Read":
+                        signal = "read"
+                    elif tool == "Bash":
+                        signal = classify_command(data.get("command", ""), hit["_needle"])
+                    elif tool in {"Grep", "Glob"}:
+                        signal = "searched"
+                    elif tool in STRUCTURED_WRITE_TOOLS:
+                        signal = "authored"
+                    else:
+                        signal = "mentioned"
+                    block_hits.add((hit["name"], hit["source"], hit["version"], signal))
+            for name, source, version, signal in block_hits:
+                add(name, source, version, signal)
+
+    # A Skill call often precedes a versioned read or injected body. Attach its
+    # activation signal to that version when the evidence is unambiguous.
+    for (name, source, version), signals in list(evidence.items()):
+        if version != "unknown" or "activated" not in signals:
+            continue
+        known = [
+            other_signals
+            for (other_name, other_source, other_version), other_signals in evidence.items()
+            if other_name == name and other_source == source and other_version != "unknown"
+            and ({"activated", "read"} & set(other_signals))
+        ]
+        if len(known) == 1:
+            known[0]["activated"] = max(known[0]["activated"], signals["activated"])
+            del signals["activated"]
+        if not signals:
+            del evidence[(name, source, version)]
+
+    signal_order = {
+        name: index
+        for index, name in enumerate(
+            ("activated", "read", "searched", "authored", "attempted", "mentioned")
+        )
+    }
+    return [
+        {
+            "name": name,
+            "source": source,
+            "version": version,
+            "signals": {
+                signal: count
+                for signal, count in sorted(
+                    signals.items(), key=lambda item: (signal_order.get(item[0], 99), item[0])
+                )
+            },
+        }
+        for (name, source, version), signals in sorted(evidence.items())
+    ]
+
+
 def package_reference(version: str, name: str) -> tuple[str, str]:
-    """Read a reference as it shipped. Says which bytes it got, so a fallback is visible."""
+    """Read exact tagged or cached bytes before a visibly weaker HEAD fallback."""
     root = repository_root()
     relative = f"plugins/skiphow/skills/skiphow/references/{name}.md"
     tag = f"v{version}"
@@ -139,15 +395,6 @@ def package_reference(version: str, name: str) -> tuple[str, str]:
             return "", "absent_in_version"
     except OSError:
         pass
-    for ref, source in ((f"HEAD:{relative}", "HEAD"),):
-        try:
-            out = subprocess.run(
-                ["git", "show", ref], cwd=root, capture_output=True, text=True, check=False
-            )
-        except OSError:
-            break
-        if out.returncode == 0 and out.stdout.strip():
-            return out.stdout, source
     cached = (
         claude_home()
         / "plugins/cache/skiphow/skiphow"
@@ -158,7 +405,17 @@ def package_reference(version: str, name: str) -> tuple[str, str]:
     try:
         return cached.read_text(encoding="utf-8"), "cache"
     except OSError:
-        return "", "missing"
+        pass
+    for ref, source in ((f"HEAD:{relative}", "HEAD"),):
+        try:
+            out = subprocess.run(
+                ["git", "show", ref], cwd=root, capture_output=True, text=True, check=False
+            )
+        except OSError:
+            break
+        if out.returncode == 0 and out.stdout.strip():
+            return out.stdout, source
+    return "", "missing"
 
 
 def fingerprints(body: str, exclude: str) -> list[str]:
@@ -268,8 +525,12 @@ def detect_references(path: Path, records: list[dict], version: str) -> dict[str
             verdict, confidence = "mentioned", "low"
         else:
             verdict, confidence = "not_loaded", "high" if probe_count else "low"
-        # Probes taken from anything but the run's own tag are weaker evidence.
-        if sources[name] != "tag" and confidence == "high" and verdict != "not_loaded":
+        # Tagged and installed version caches identify the bytes the run had.
+        if (
+            sources[name] not in {"tag", "cache"}
+            and confidence == "high"
+            and verdict in {"loaded", "not_loaded"}
+        ):
             confidence = "medium"
         out[name] = {
             "verdict": verdict,
@@ -339,34 +600,74 @@ def select_reports(records: list[dict]) -> list[dict]:
     """A report is an assistant block carrying at least two of the five headings."""
     found: list[dict] = []
     for record in records:
-        if record.get("type") != "assistant" or record.get("isSidechain"):
+        text = assistant_text(record)
+        if not text:
             continue
-        text = text_of(record)
         names = {m.group(1) for m in HEADING_RE.finditer(text)}
         if len(names) >= 2:
             found.append({"at": record.get("timestamp", ""), "text": text, "headings": sorted(names)})
     return found
 
 
+def assistant_text(record: dict) -> str:
+    """Return one root assistant message from Claude or Codex JSONL."""
+    if record.get("type") == "assistant" and not record.get("isSidechain"):
+        return text_of(record)
+    item = record.get("item")
+    if (
+        record.get("type") == "item.completed"
+        and isinstance(item, dict)
+        and item.get("type") == "agent_message"
+        and isinstance(item.get("text"), str)
+    ):
+        return item["text"]
+    return ""
+
+
 def final_assistant_text(records: list[dict]) -> str:
     """Return what the root actually said last, independent of report formatting."""
-    trailing = [
-        text_of(record)
-        for record in records
-        if record.get("type") == "assistant"
-        and not record.get("isSidechain")
-        and text_of(record).strip()
-    ]
+    trailing = [text for record in records if (text := assistant_text(record)).strip()]
     return trailing[-1] if trailing else ""
 
 
 def report_text(records: list[dict], versions: list[str]) -> str:
     """Select the report according to the contract version that produced it."""
-    parsed = [tuple(int(part) for part in version.split(".")) for version in versions if version != "unknown"]
+    parsed = [
+        tuple(int(part) for part in match.group(0).split("."))
+        for version in versions
+        if (match := re.match(r"[0-9]+(?:\.[0-9]+)*", version))
+    ]
     reports = select_reports(records)
     if parsed and max(parsed) < (1, 14) and reports:
         return reports[-1]["text"]
     return final_assistant_text(records)
+
+
+def codex_turn_status(records: list[dict]) -> str:
+    """Return the final observed Codex turn state without using file age."""
+    last_started = max(
+        (index for index, record in enumerate(records) if record.get("type") == "turn.started"),
+        default=-1,
+    )
+    if last_started < 0:
+        return "not_observed"
+    terminal = [
+        (index, record["type"])
+        for index, record in enumerate(records)
+        if index > last_started and record.get("type") in {"turn.completed", "turn.failed"}
+    ]
+    if not terminal:
+        return "unfinished"
+    return "failed" if terminal[-1][1] == "turn.failed" else "completed"
+
+
+def compaction_status(records: list[dict]) -> bool | str:
+    """Report only observable compaction; Codex exec JSONL does not expose it."""
+    if any(record.get("isCompactSummary") or record.get("type") == "compacted" for record in records):
+        return True
+    if any(record.get("type") in CODEX_JSON_EVENT_TYPES for record in records):
+        return "unknown"
+    return False
 
 
 def ended_mid_tool(records: list[dict]) -> bool:
@@ -375,6 +676,14 @@ def ended_mid_tool(records: list[dict]) -> bool:
     for record in records:
         if record.get("isSidechain"):
             continue
+        item = record.get("item")
+        if isinstance(item, dict) and item.get("id"):
+            item_type = item.get("type")
+            if item_type in CODEX_STARTED_TOOL_TYPES:
+                if record.get("type") == "item.started":
+                    pending.add(item["id"])
+                elif record.get("type") in {"item.completed", "item.failed"}:
+                    pending.discard(item["id"])
         for block in blocks(record):
             if block.get("type") == "tool_use":
                 pending.add(block.get("id") or "")
@@ -383,8 +692,11 @@ def ended_mid_tool(records: list[dict]) -> bool:
     return bool(pending)
 
 
-def in_flight(path: Path, minutes: int = 15) -> bool:
+def in_flight(path: Path, records: list[dict] | None = None, minutes: int = 15) -> bool:
     """A session written to recently is probably still running."""
+    if records:
+        if codex_turn_status(records) in {"completed", "failed"}:
+            return False
     try:
         return (time.time() - path.stat().st_mtime) < minutes * 60
     except OSError:
@@ -436,13 +748,13 @@ def digest(path: Path, report_chars: int) -> dict:
         raise SystemExit(f"{path} holds no readable records")
 
     tools: Counter[str] = Counter()
+    command_results: Counter[str] = Counter()
     models: Counter[str] = Counter()
     usage: Counter[str] = Counter()
     delegations: list[dict] = []
     structured_writes: list[dict] = []
     stamps: list[str] = []
     injections = 0
-    compaction = False
     cwd = branch = host = ""
     skill_text = ""
 
@@ -452,12 +764,34 @@ def digest(path: Path, report_chars: int) -> dict:
         host = record.get("version") or host
         if record.get("timestamp"):
             stamps.append(record["timestamp"])
-        if record.get("isCompactSummary"):
-            compaction = True
-        text = text_of(record)
-        if SKILL_BODY in text:
+        if record.get("type") == "turn.completed":
+            for key, value in (record.get("usage") or {}).items():
+                if isinstance(value, int):
+                    usage[key] += value
+        item = record.get("item")
+        if record.get("type") == "item.completed" and isinstance(item, dict):
+            item_type = item.get("type")
+            if item_type in CODEX_STARTED_TOOL_TYPES:
+                tools[str(item_type)] += 1
+            if item_type == "file_change" and item.get("status") == "completed":
+                for change in item.get("changes") or []:
+                    if isinstance(change, dict):
+                        structured_writes.append(
+                            {
+                                "at": record.get("timestamp", ""),
+                                "tool": "file_change",
+                                "path": change.get("path") or "unknown",
+                            }
+                        )
+            elif item_type == "command_execution":
+                status = str(item.get("status") or "unknown")
+                exit_code = item.get("exit_code")
+                result = f"{status}:{exit_code}" if isinstance(exit_code, int) else status
+                command_results[result] += 1
+        injected = skill_injection_texts(record)
+        if injected:
             injections += 1
-            skill_text += text
+            skill_text += "\n".join(injected)
         if record.get("type") != "assistant" or record.get("isSidechain"):
             continue
         message = record.get("message") or {}
@@ -487,14 +821,45 @@ def digest(path: Path, report_chars: int) -> dict:
                         "path": data.get("file_path") or data.get("notebook_path") or "unknown",
                     }
                 )
-    versions = sorted(set(VERSION_RE.findall(skill_text))) or ["unknown"]
+    observed_skills = detect_skills(records)
+    injected_versions = set(VERSION_RE.findall(skill_text))
+    read_versions = {
+        skill["version"]
+        for skill in observed_skills
+        if skill["version"] != "unknown"
+        and ({"activated", "read"} & set(skill["signals"]))
+    }
+    versions = sorted(injected_versions | read_versions) or ["unknown"]
+    if len(versions) == 1:
+        reference_evidence = detect_references(path, records, versions[0])
+    else:
+        reference_evidence = {
+            name: {
+                "verdict": "unverified_mixed_version",
+                "confidence": "n/a",
+                "fingerprints": "unavailable",
+                "probe_source": "mixed_versions",
+                "commands": ["not_evaluated"],
+            }
+            for name in REFERENCES
+        }
+    turn_state = codex_turn_status(records)
     reports = select_reports(records)
     selected = report_text(records, versions)
     selected_headings = {match.group(1) for match in HEADING_RE.finditer(selected)}
     if not selected:
         selected = "(no assistant text found)"
     return {
-        "session": path.stem,
+        "session": next(
+            (
+                record["thread_id"]
+                for record in records
+                if record.get("type") == "thread.started"
+                and isinstance(record.get("thread_id"), str)
+                and record["thread_id"]
+            ),
+            path.stem,
+        ),
         "project": Path(cwd).name or "unknown",
         "branch": branch or "unknown",
         "host": host or "unknown",
@@ -505,17 +870,22 @@ def digest(path: Path, report_chars: int) -> dict:
         "skill_injections": injections,
         "models": dict(models),
         "owner_turns": owner_turns(records),
-        "references": detect_references(path, records, versions[0]),
+        "skills": observed_skills,
+        "references": reference_evidence,
         "tools": dict(tools.most_common()),
+        "command_results": dict(command_results),
         "delegations": delegations,
         "structured_writes": structured_writes,
         "identity_changes": identity_transitions(records),
         "confounders": {
-            "compaction": compaction,
+            "compaction": compaction_status(records),
             "reports_found": len(reports),
             "ended_mid_tool": ended_mid_tool(records),
+            "unfinished_turn": turn_state == "unfinished",
+            "turn_failed": turn_state == "failed",
+            "mixed_plugin_versions": len(versions) > 1,
             # A transcript still being appended to owes no report yet.
-            "in_flight": in_flight(path),
+            "in_flight": in_flight(path, records),
         },
         "usage": dict(usage),
         "report": {
@@ -555,7 +925,7 @@ def discover(home: Path, since: str | None) -> list[dict]:
         started = stamps[0] if stamps else ""
         if since and started[:10] and started[:10] < since:
             continue
-        body = "\n".join(t for r in records if SKILL_BODY in (t := text_of(r)))
+        body = "\n".join(text for record in records for text in skill_injection_texts(record))
         rows.append(
             {
                 "session": path.stem,
@@ -625,6 +995,17 @@ def render_digest(data: dict) -> str:
         out.append(f"  [{turn['at'][:19]} {turn['channel']}] {' '.join(turn['said'].split())[:600]}")
     if not data["owner_turns"]:
         out.append("  none captured")
+    out += ["", "SKILLS"]
+    for skill in data["skills"]:
+        signals = ",".join(
+            f"{name}:{count}" for name, count in skill["signals"].items()
+        )
+        out.append(
+            f"  {skill['name']:<24} source {skill['source']:<7} "
+            f"version {skill['version']:<12} signals {signals}"
+        )
+    if not data["skills"]:
+        out.append("  none observed")
     out += ["", "REFERENCES"]
     for name, info in data["references"].items():
         out.append(
@@ -635,6 +1016,7 @@ def render_digest(data: dict) -> str:
     out += [
         "",
         f"TOOLS        {data['tools']}",
+        f"COMMANDS     {data['command_results']}",
         f"DELEGATIONS  {data['delegations'] or 'none'}",
         "",
         f"STRUCTURED WRITES ({len(data['structured_writes'])})",
@@ -656,9 +1038,9 @@ def render_digest(data: dict) -> str:
     report = data["report"]
     out += [
         "",
-        f"REPORT headings present {report['headings_present']}",
-        f"       headings missing {report['headings_missing']}",
-        f"       finding tags     {report['tag_counts']}",
+        f"REPORT legacy headings observed {report['headings_present']}",
+        f"       legacy headings absent   {report['headings_missing']}",
+        f"       legacy finding tags      {report['tag_counts']}",
     ]
     if report["foreign_tags"]:
         out.append(f"       undefined tokens {report['foreign_tags']}")

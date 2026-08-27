@@ -2,7 +2,8 @@
 
 ## Status
 
-Accepted in 1.6.0. Amends [ADR 0011](0011-findings-tag-codex-role-files-neutral-repo-instructions.md) (Codex role files) and [ADR 0007](0007-host-adapters-for-routing-and-continuity.md) (Codex routing path).
+Superseded by [ADR 0018](0018-autonomous-kernel-and-independent-task-skills.md). SkipHow 2.0 does not
+prescribe per-spawn roles, effort, or a portable timestamp schema; hosts retain those mechanics.
 
 ## Date
 

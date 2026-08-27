@@ -4,7 +4,8 @@
 
 | Version | Supported |
 | --- | --- |
-| 1.14.x | Yes |
+| 2.0.x | Yes |
+| 1.14.x | No |
 | 1.13.x | No |
 | 1.12.x | No |
 | 1.11.x | No |
@@ -20,7 +21,7 @@
 | 1.0.x | No |
 | Earlier versions | No |
 
-Security support covers the packaged SkipHow skill, its host manifests, marketplace metadata, release checks, and documented GitHub delivery policy. Codex, Claude Code, GitHub, Git, operating systems, and third-party services keep their own security policies.
+Security support covers the packaged SkipHow owner skill and its reachable method references, host manifests, marketplace metadata, continuity hook, release checks, and documented authority boundaries. Codex, Claude Code, GitHub, Git, operating systems, and third-party services keep their own security policies.
 
 ## Report a vulnerability
 
