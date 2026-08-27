@@ -360,6 +360,15 @@ def final_assistant_text(records: list[dict]) -> str:
     return trailing[-1] if trailing else ""
 
 
+def report_text(records: list[dict], versions: list[str]) -> str:
+    """Select the report according to the contract version that produced it."""
+    parsed = [tuple(int(part) for part in version.split(".")) for version in versions if version != "unknown"]
+    reports = select_reports(records)
+    if parsed and max(parsed) < (1, 14) and reports:
+        return reports[-1]["text"]
+    return final_assistant_text(records)
+
+
 def ended_mid_tool(records: list[dict]) -> bool:
     """True when the final tool call never received a result."""
     pending: set[str] = set()
@@ -480,7 +489,7 @@ def digest(path: Path, report_chars: int) -> dict:
                 )
     versions = sorted(set(VERSION_RE.findall(skill_text))) or ["unknown"]
     reports = select_reports(records)
-    selected = final_assistant_text(records)
+    selected = report_text(records, versions)
     selected_headings = {match.group(1) for match in HEADING_RE.finditer(selected)}
     if not selected:
         selected = "(no assistant text found)"

@@ -278,6 +278,8 @@ def test_dogfood_uses_the_actual_final_answer_without_requiring_headings(tmp_pat
         },
     ]
     assert DOGFOOD.final_assistant_text(records) == "Fixed and verified with the full suite."
+    assert DOGFOOD.report_text(records, ["1.13.0"]) == "Result\nold\nEvidence\nstale"
+    assert DOGFOOD.report_text(records, ["1.14.0"]) == "Fixed and verified with the full suite."
     transcript = tmp_path / "session.jsonl"
     transcript.write_text(
         "\n".join(
