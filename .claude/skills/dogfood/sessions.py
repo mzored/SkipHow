@@ -36,6 +36,7 @@ REFERENCES = (
     "intake",
     "long-work",
     "model-routing",
+    "worktrees",
 )
 HEADINGS = ("Result", "Evidence", "Rulings and findings", "Saved follow-ups", "Limits")
 HEADING_RE = re.compile(
@@ -51,7 +52,14 @@ READ_VERBS = {"cat", "bat", "head", "tail", "awk", "less", "more", "nl", "cut", 
 SEARCH_VERBS = {"grep", "rg", "ag", "ack", "find", "ls", "wc", "stat", "git", "diff"}
 WRITE_VERBS = {"rm", "mv", "cp", "tee", "touch"}
 MUTATION = re.compile(
-    r"\b(git\s+(?:commit|push|merge|rebase|reset|tag|branch\s+-[dD])"
+    r"\b((?:GIT_INDEX_FILE|GIT_DIR|GIT_WORK_TREE)\s*=\s*\S+"
+    r"|--(?:git-dir|work-tree)(?:=|\s+)\S+"
+    r"|git\s+(?:--(?:git-dir|work-tree)(?:=|\s+)\S+\s*)+"
+    r"|git(?:\s+--(?:git-dir|work-tree)(?:=|\s+)\S+)*\s+"
+    r"(?:commit(?:-tree)?|push|merge|rebase|reset|restore|tag|update-ref|update-index"
+    r"|symbolic-ref|hash-object|write-tree|branch\s+-[dD]"
+    r"|checkout\s+(?:-f\b|--force\b)|switch\s+(?:-f\b|--force\b)"
+    r"|worktree\s+(?:add|remove)\b[^\n;&|]*(?:--force|-f)\b)"
     r"|gh\s+(?:issue|pr)\s+(?:create|edit|close|reopen|comment|delete|merge|ready|lock)"
     r"|gh\s+(?:release|repo)\s+(?:create|edit|delete|upload)"
     r"|gh\s+api\s+(?:-X\s*)?(?:POST|PATCH|PUT|DELETE)"

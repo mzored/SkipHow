@@ -42,8 +42,8 @@ is the easiest false positive to produce.
 
 **Reference loading before the action it governs.** Loading is per session, not per request; context persists.
 
-**Commit path and drift.** From 1.14, a plumbing commit, alternate index, direct ref move, force checkout,
-hook bypass, or write after checkout, branch, `HEAD`, status, or task drift is a deviation.
+**Commit escape paths.** From 1.14, a plumbing commit, alternate index, direct ref move, force checkout,
+forced worktree operation, or hook bypass is a deviation.
 
 **Tracker hygiene.** A `skiphow:<id>` marker in created objects, a duplicate search before the first create,
 and `skiphow-batch:<date>` only on a batch.
@@ -68,6 +68,10 @@ report claims no place it looked.
 
 **Delegation.** "Mutation delegated to the fast role" and "a delegation that named no role" are checkable.
 "Should it have delegated at all" is not; skip it.
+
+**Identity drift before writes.** The digest does not contain read-only probe ordering. Use
+`sessions.py grep <id> 'git (status|rev-parse|worktree list|symbolic-ref)'` and compare raw timestamps with
+mutations and host-task events. From 1.14, writing after drift without re-establishing ownership is a deviation.
 
 **Stopping to ask.** Judge the version's root and loaded long-work bytes. From 1.14, routine delivery asks
 only for a material product or rollout decision evidence cannot settle, or approval for staging or

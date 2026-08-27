@@ -36,6 +36,11 @@ _MODULE = importlib.util.module_from_spec(CHECK)
 CHECK.loader.exec_module(_MODULE)
 VERSIONED_MODEL = _MODULE.CONCRETE_MODEL_ID
 PERSONAL_PATH = _MODULE.PERSONAL_PATH
+DOGFOOD_SPEC = importlib.util.spec_from_file_location(
+    "skiphow_dogfood_sessions", ROOT / ".claude/skills/dogfood/sessions.py"
+)
+DOGFOOD = importlib.util.module_from_spec(DOGFOOD_SPEC)
+DOGFOOD_SPEC.loader.exec_module(DOGFOOD)
 
 
 def read(relative: str) -> str:
@@ -257,13 +262,37 @@ def test_autonomy_and_isolation_invariants_are_shipped() -> None:
         assert forbidden_escape in worktrees
     assert "before the first write and before the commit" in builder
     assert "ordinary commit command and hooks" in builder
-    assert "worktree path, branch or detached state, base, commit" in builder
+    assert "Recheck worktree, branch, `HEAD`, and status after the commit" in builder
+    assert "final worktree path, branch or detached state, `HEAD`, status, base, commit" in builder
     routing = read("plugins/skiphow/skills/skiphow/references/model-routing.md")
     assert "owned worktree and branch" in routing
     assert "each call's working directory" in routing
     checklist = read(".claude/skills/dogfood/references/checklist.md")
     assert "From 1.14, it may skip the delivery reference" in checklist
     assert "plumbing commit, alternate index, direct ref move" in checklist
+
+
+def test_dogfood_auditor_tracks_shipped_references_and_git_escape_mutations() -> None:
+    assert set(DOGFOOD.REFERENCES) == {path.removesuffix(".md") for path in REFERENCES}
+    dangerous = (
+        "git update-ref refs/heads/task deadbeef",
+        "git hash-object -w file",
+        "git write-tree",
+        "GIT_INDEX_FILE=/tmp/index git update-index --add file",
+        "git checkout --force -- src/",
+        "git checkout -f",
+        "git switch --force main",
+        "git worktree add /tmp/lane branch --force",
+        "git worktree remove /tmp/lane --force",
+        "git --git-dir=.git --work-tree=/tmp/tree add .",
+        "git symbolic-ref HEAD refs/heads/task",
+        "git commit --no-verify -m bypass",
+        "git commit-tree deadbeef",
+    )
+    for command in dangerous:
+        assert DOGFOOD.MUTATION.search(command), command
+    for command in ("git status --short", "git diff --check", "git worktree list"):
+        assert not DOGFOOD.MUTATION.search(command), command
     package_text = "\n".join(path.read_text(encoding="utf-8") for path in PLUGIN.rglob("*") if path.is_file())
     assert not re.search(r"end[- ]to[- ]end", package_text, re.IGNORECASE)
 
