@@ -2,6 +2,19 @@
 
 All notable changes to SkipHow 2.x appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 2.2.1 (2026-08-28)
+
+### Fixed
+
+- Isolated checkouts land inside the project again. `delegation` now names where a worktree goes: the host's own mechanism first, then the location the repository already ignores, confirmed ignored before anything is created there, and a temporary directory only when the repository offers neither. A worktree beside the repository is never correct, because it escapes the project's ignore rules and cleanup and accumulates unnoticed.
+- The kernel carries the boundary in one sentence, because the 1.8.0 audit measured that a reference which does not load governs nothing. Version 1.x kept this rule only in a reference, and 2.0.0 removed that reference without replacing it, leaving no placement rule at all.
+- Removing an isolated checkout is never forced. A refusal is evidence that something still owns it.
+
+### Evidence
+
+- Deterministic checks and both host package validators passed.
+- Reported from the owner's machine: twenty worktrees belonging to three repositories had accumulated beside them, while all three repositories keep an ignored `.worktrees/` directory of their own. Attribution to a specific package version is `UNVERIFIED`; the missing rule is not.
+
 ## 2.2.0 (2026-08-28)
 
 ### Added
