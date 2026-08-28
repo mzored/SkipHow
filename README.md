@@ -50,6 +50,7 @@ You decide visible behavior, priority, cost, risk, privacy, and rollout. SkipHow
 - Remote delivery happens only when you ask for shared delivery.
 - Production, public releases, credentials, payments, access changes, and destructive actions need an explicit grant.
 - A problem found along the way is fixed, or recorded where your project tracks work, so the next session picks it up.
+- Large work is split into parts you can each see working, and independent parts can run at the same time.
 - Unrelated work stays untouched. Missing evidence stays `UNVERIFIED`.
 
 SkipHow is an instruction package, not a workflow engine. It ships one owner skill with a small kernel and focused internal methods. The host still controls permissions, tools, sessions, and credentials.

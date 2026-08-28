@@ -2,6 +2,40 @@
 
 All notable changes to SkipHow 2.x appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 2.3.0 (2026-08-28)
+
+### Added
+
+- `decomposition` is now its own method, with a trigger a run can evaluate before it starts: the parts of the work would land, be verified, or be reviewed separately. A unit is right-sized when one person can observe its behavior end to end, verify it alone, and review it in one pass. Units are cut through the layers, never along them, because a unit named for a schema, an endpoint, or a screen cannot be demonstrated alone and forces the whole result into one late review.
+- Splitting is judgment, not a stage. Work whose parts land, get verified, and get reviewed together stays one unit, so small work keeps completing without ceremony.
+- Mechanical changes with a wide blast radius are exempt from vertical slicing and sequenced expand, migrate, contract, so the project keeps working at every step.
+- A unit states its outcome and what would show it true, and does not prescribe files, names, or steps. Only genuine blocking edges are recorded; order presented as dependency is what serializes work that could run concurrently.
+- A decomposition is checked before it is acted on, against the original request and the records themselves, read back cold or by a delegate, because whoever drew the split is the worst judge of whether it holds.
+- Delegate briefs carry the outcome, its completion condition, the boundary the delegate works inside, and the instruction to return a blocking unknown rather than settle it alone. A rule not written into the brief does not reach the delegate.
+- A returned question is the orchestrator's to settle. It reaches the owner only under the kernel's existing bar, so many lanes do not become many interruptions.
+- Lanes that write at the same time need separate working trees, or they run one at a time.
+
+### Changed
+
+- The kernel now requires reconciling split work against the request before reporting: what finished with evidence, what is blocked, and what is deliberately left and on what ground. Reporting success while a part was never started is a false completion. Leaving a unit for later needs a reason the owner would accept, and preferring not to do it is not one.
+- `intake` reads the tracker as well as writing to it, and the kernel trigger now reaches work the project already has on record. Recorded work is reconciled against live project state; the agent settles what it can settle and raises only an unmade product decision or a part of the result no item covers.
+- A batch of observations is grouped by cause before it becomes records. Several reports with one cause are one unit of work; one report with several causes is several. The owner's own description stays in the record.
+- Deduplication is stated by repair rather than by wording: reports one fix resolves are merged, problems fixed separately stay separate even on the same screen.
+- Recording a decomposition follows the same authority as any other record. A request only to plan, compare, or advise returns the split in the answer and writes nothing.
+- `delegation` covers how units run; `decomposition` owns what they are and which edges genuinely block.
+
+### Fixed
+
+- `docs/evidence.md` stated that none of the 2.2.0 behavior was `UNVERIFIED`, which asserted the opposite of what it meant, and listed releases out of order.
+- `docs/guide.md` named only review and diagnose as recording nothing, while the kernel's read-only list is wider.
+- `THIRD_PARTY_NOTICES.md` omitted `delegation`, `project-setup`, and `technical-design` from the adapted references, and would have omitted the two added here.
+
+### Evidence
+
+- `python scripts/check.py` and `git diff --check` passed. Claude package validation and isolated install passed. Codex package validation is `UNVERIFIED` from a bare local invocation; CI runs it against the pinned validator on the pull request.
+- Two independent reviews of the staged change found the first draft's method reachable only through triggers that excluded the scenarios it was written for, a write obligation with no authority gate, a self-contradicting deduplication rule, and an escape hatch that authorized the false completion it forbade. All were corrected before release.
+- The runtime behavior is `UNVERIFIED`. No receipt yet shows large work split into independently verifiable units, concurrent lanes reconciling completely, or one cause producing one record.
+
 ## 2.2.1 (2026-08-28)
 
 ### Fixed

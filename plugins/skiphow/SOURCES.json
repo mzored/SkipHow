@@ -33,8 +33,10 @@
           ],
           "files": [
             "references/codebase-design.md",
+            "references/decomposition.md",
             "references/delegation.md",
             "references/diagnosing-bugs.md",
+            "references/intake.md",
             "references/project-setup.md",
             "references/prototype.md",
             "references/research.md",
