@@ -28,15 +28,18 @@
             "skills/engineering/to-tickets/SKILL.md",
             "skills/engineering/wizard/SKILL.md",
             "skills/in-progress/implement-spec/SKILL.md",
+            "skills/productivity/grilling/SKILL.md",
             "skills/productivity/writing-for-agents/SKILL-MECHANICS.md",
             "skills/productivity/writing-for-agents/SKILL.md"
           ],
           "files": [
+            "SKILL.md",
             "references/codebase-design.md",
             "references/decomposition.md",
             "references/delegation.md",
             "references/diagnosing-bugs.md",
             "references/intake.md",
+            "references/product-decisions.md",
             "references/project-setup.md",
             "references/prototype.md",
             "references/research.md",
