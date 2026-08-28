@@ -1,14 +1,20 @@
 # Delegation
 
-Use this when work will not fit one pass and its parts can advance independently.
+Use this to run work through delegates or across several units. [Decomposition](decomposition.md) settles what the units are; this is how they run.
 
-Shape the work as a graph, not a list. Establish which parts genuinely block others, then run the ready ones concurrently and reopen the set as each lands. Order alone is not a dependency; a part is blocked only when it needs another's result.
+Run the work as a graph, not a list. Take the blocking edges [decomposition](decomposition.md) established, or read them off work that arrived already split. A part is ready when nothing it needs is outstanding, whatever order you imagined for it. Start everything ready and reopen the set as each unit lands. Waiting for a whole tier to finish before opening the next one wastes most of the concurrency.
 
 Serialize parts that would change the same shared surface even when nothing else blocks them. Concurrent edits to one file, interface, schema, or migration cost more to reconcile than they save.
 
-Give each delegate a task narrow enough to finish and verify on its own, and point at context rather than copying it. Name the record, the prior change, or the file to read. Repeating context into every brief multiplies cost and lets briefs drift from the source.
+Give each delegate the outcome it owns, what would show that outcome true, the boundary it works inside — what it must not touch, and which authority it does not carry — and the instruction to come back with a blocking unknown instead of settling it alone. A delegate knows only what its brief says, so a rule you did not write into the brief does not reach it. A delegate that cannot state its own completion condition will invent one. Rules and the completion condition belong in the brief; the material they apply to is pointed at, not copied. Name the record, the prior change, or the file to read. Repeating context into every brief multiplies cost and lets briefs drift from the source.
 
-A delegate returns its result and evidence. Integrating the work, disposing of findings, and judging completion stay with the root request. Keep integration reviewable: bring each result back and confirm it against the current state rather than trusting a report.
+A returned question is yours to settle, not to forward. Answer it from the project, the records, or your own technical judgment. Carry it to the owner only under the same bar as any other question: a material product choice the available evidence cannot settle, a protected action, or something only a person can do. Fifteen lanes returning questions is not fifteen questions for the owner.
+
+A delegate returns its result and evidence. Integrating the work, disposing of findings, and judging completion stay with the root request. Keep integration reviewable: bring each result back and confirm it against the current state rather than trusting a report. Reviewing each unit as it lands is also what keeps review affordable, because the alternative is one pass over everything at the end.
+
+Track every unit you accepted through to a named end, and reconcile the set against the request rather than against your memory of the run. Leaving a unit for later needs a reason the owner would accept — it is blocked, it needs a decision only they can make, or its authority was never granted — plus a record carrying what the work already established. Preferring not to do it is not such a reason, and a unit quietly absorbed into another is not finished. This is the failure that grows with the number of units.
+
+Lanes that write at the same time need separate working trees. Concurrent delegates in one checkout read each other's half-finished edits, run checks against a state no unit owns, and make a commit of only owned changes impossible. Isolate them, or run them one at a time.
 
 Nothing here requires a branch, worktree, pull request, or review stage. Use those only when the request's authority and the repository's own conventions call for them.
 

@@ -69,7 +69,9 @@ Changing a project does not grant an unrelated push, pull request, or merge. Ask
 
 The first time a project needs to record something, SkipHow asks once where your tasks and findings should live and who may see them, then writes that choice into the project's own instructions. After that it uses the same place without asking again.
 
-That record is what lets a later session continue your work, and what stops a problem found along the way from disappearing when the conversation ends. A request only to review or diagnose still records nothing.
+Work with more than one result you could check separately is split into parts you can each see working, with only the genuine dependencies between them, and parts that do not block each other can run at the same time. When your request allows a change, that split is recorded where your tasks live and the report names what continues it, so you can start it now or in a later session. When you only asked for a plan, you get the split in the answer and nothing is written.
+
+That record is what lets a later session continue your work, and what stops a problem found along the way from disappearing when the conversation ends. A request only to answer, compare, diagnose, review, research, plan, triage, or organize still records nothing.
 
 ## Read the report
 

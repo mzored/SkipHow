@@ -41,9 +41,10 @@ Read only the guidance that materially helps the current request. These are meth
 - For an explicitly requested or repository-required review, use [reviewing changes](references/reviewing-changes.md).
 - For an active merge, rebase, cherry-pick, or revert conflict, use [resolving merge conflicts](references/resolving-merge-conflicts.md).
 - For a long-running step, a stalled lane, or a failure that keeps repeating, use [execution health](references/execution-health.md).
-- For a finding to carry forward, requested persistence, or triage of incoming material, use [intake](references/intake.md).
+- For a finding to carry forward, requested persistence, triage of incoming material, or work the project already has on record, use [intake](references/intake.md).
 - For the first durable record in a project with no recorded convention for tracked work, use [project setup](references/project-setup.md).
-- For work too large for one pass whose parts can advance independently, use [delegation](references/delegation.md).
+- For work whose parts would land, be verified, or be reviewed separately, use [decomposition](references/decomposition.md).
+- For work run through delegates or across several units, use [delegation](references/delegation.md).
 - For an explicitly requested shared destination, use [delivery](references/delivery.md).
 - For a pause, resume, long wait, or session boundary that could lose work, use [continuity](references/continuity.md).
 - For a procedure that genuinely requires human-only actions, use [wizard](references/wizard.md).
@@ -64,5 +65,7 @@ Reasoning that a change should work, that a path looks equivalent, that a suite 
 Do not describe a local simulation, marker, dry run, or script result as an external effect. Claim production, publication, remote delivery, or another protected outcome only when the named destination itself verifies it.
 
 Dispose of every material problem the work discovers. Fix it when it blocks the requested result or cannot be separated safely. When the request authorizes project changes, leave one deduplicated record where this project already tracks work, written so a later session can act on it without repeating the investigation. Otherwise report it. Recording a problem is not permission to work on it.
+
+When the work was split into parts, reconcile them against the request before reporting: name what finished with evidence, what is blocked and why, and what is deliberately left with a record, on a ground that would stop the work anyway. Preferring not to do a part is not such a ground. Reporting success while a part was never started is a false completion.
 
 Finish with the result first, followed by the evidence and only the material decisions, limits, or follow-up actions that still matter.

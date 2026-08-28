@@ -56,6 +56,16 @@ The constraint is therefore the trigger and the kernel, not the word count. Keep
 
 Revisit this if receipts show applicable methods going unread, a kernel rule displaced into a reference, or added depth producing no change in outcome.
 
+## Decomposition is decided before the work, by verifiability
+
+Work splits when it carries more than one independently verifiable outcome and carrying the whole result at once would cost more than the split does. A unit is right-sized when one person can observe its behavior end to end, verify it alone, and review it in one pass. Parts that land, get verified, and get reviewed together stay one unit whatever they touch.
+
+Version 1.9.0 established that decomposition needs a trigger a run can evaluate, and 2.0 removed it with the rest of that contract. What replaced it fired on work "too large for one pass", which a run can only judge after the pass has failed, and it lived inside the delegation method, so work that was not delegated was never split at all. The sizing rule that remained, that a delegate's task be narrow enough to finish and verify on its own, named verification but left the shape of a unit open, and an agent choosing a shape freely splits along layers. Layer-shaped units cannot be demonstrated or verified alone, so review necessarily waits for all of them and happens once, at full size.
+
+The verifiability test is decidable in advance, and the proportionality it is paired with compares the cost of carrying the whole result against the cost of splitting it, rather than estimating how long the work will take. Mechanical changes with a wide blast radius have no honest vertical slice and are sequenced expand, migrate, contract instead.
+
+Revisit this if receipts show work split into units that cannot be verified alone, invented dependencies serializing independent work, or the test producing units too small to demonstrate.
+
 ## Critical rules stay in the kernel
 
 Authority, autonomy, preservation, and completion remain in `SKILL.md`. Conditional technique belongs in a focused reference.
