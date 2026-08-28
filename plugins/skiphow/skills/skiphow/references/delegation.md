@@ -24,4 +24,4 @@ Nothing here requires a branch, worktree, pull request, or review stage. Use tho
 
 When isolation is warranted, where it lands matters as much as that it exists. Prefer the host's own worktree mechanism, which owns placement and cleanup. Otherwise put the worktree in the location this repository already ignores, and confirm it is ignored before creating anything there rather than assuming. Only when the repository has no such location, use a directory under the temporary area. Never create a worktree beside the repository or anywhere else outside it: a sibling directory is invisible to the project's own ignore rules and cleanup, and it accumulates until someone finds it by accident. Do not edit ignore rules merely to make room for isolation.
 
-Remove what you created once its work is integrated, without forcing. A refusal to remove a worktree or branch is evidence that something still owns it, not an obstacle to override.
+Clear away what you created once its work is integrated; [finishing a branch](finishing-a-branch.md) settles when that is true and what to do when a removal is refused.

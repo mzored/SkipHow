@@ -2,7 +2,7 @@
 
 Inspect the repository's remote, branch, review, and integration conventions. Identify the requested destination from the owner's words and project evidence. Decide routine push, branch, and pull-request mechanics without asking the owner.
 
-Rewriting or deleting shared history requires an exact grant when it could discard unique or foreign work, affect a protected ref, or disrupt collaborator state. Routine cleanup of an owned task ref may proceed when its work is durably integrated and the requested delivery plus repository conventions include that cleanup.
+Rewriting or deleting shared history requires an exact grant when it could discard unique or foreign work, affect a protected ref, or disrupt collaborator state. Cleanup of an owned task ref follows [finishing a branch](finishing-a-branch.md).
 
 Confirm that the local commit contains only owned changes and that its evidence still applies. Run any additional check the shared target requires. Do not hide a failing required check or publish unrelated local work.
 
