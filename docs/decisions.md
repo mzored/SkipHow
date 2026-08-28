@@ -127,3 +127,5 @@ Revisit automated evaluation when a host offers repository-preserving runs again
 Current design, decisions, and evidence stay in four small documents. Superseded raw material remains in immutable commits, tags, pull requests, and releases.
 
 Do not add one ADR or research file per release. Update this page when a decision changes. Update [`evidence.md`](evidence.md) when the set of supported claims changes. Link to durable source material instead of copying it into the current tree.
+
+The rule bounds per-release records, not the number of reader-facing pages. Version 2.4.3 added [`prior-art.md`](prior-art.md) and [`faq.md`](faq.md) as standing documents that answer a question a reader arrives with. The prior-art material had been written before and was deleted with the research tree it lived in, which lost the reasoning behind several rejections that this page still depends on. Both pages are revised when the answer changes and neither accumulates a section per release.

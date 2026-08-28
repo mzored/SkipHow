@@ -2,6 +2,8 @@
 
 Tell SkipHow what should change for someone using the product. You do not need to name a library, design a schema, write tickets, or choose an agent workflow.
 
+Short answers to common questions are in the [FAQ](faq.md).
+
 ## Install
 
 Codex:
