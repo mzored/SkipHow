@@ -2,6 +2,16 @@
 
 All notable changes to SkipHow 2.x appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 2.0.2 (2026-08-28)
+
+### Changed
+
+- Cut the tracked repository from 108 files to 50 without changing the owner skill, internal methods, or continuity hook.
+- Rewrote the README for a faster first read and moved installation, design, decisions, and evidence into four focused documents.
+- Replaced the 1.x ADR and research tree with concise current summaries and immutable links to the complete 2.0.1 archive.
+- Removed the contributor-only dogfood analyzer, its transcript-format tests, and the unused run-summary script.
+- Grouped retained tests by package structure, deterministic checks, and host checks.
+
 ## 2.0.1 (2026-08-28)
 
 ### Changed

@@ -1733,4 +1733,3 @@ def test_file_enumeration_falls_back_without_git(tmp_path: Path) -> None:
     ):
         assert list(check.repository_files({".md"})) == [expected]
         assert check.validate_diff(None) == []
-
