@@ -10,7 +10,9 @@ SkipHow exposes one plain-language skill. Focused methods remain internal refere
 
 Earlier versions tried named routes, separate commands, role files, and sibling method skills. Those shapes either exposed engineering workflow to the owner or allowed a method to load without the authority kernel.
 
-Revisit this if a portable skill standard adds required skill dependencies, or repeated receipts show one entry causing missed outcomes or unauthorized actions.
+Version 2.6.0 considered a command surface for four owner-facing entries and did not ship one. Two of the four restated policy the methods already carried, which is duplication that drifts at the first edit to either copy. The other two would have earned their place only by naming a method file so its loading stopped being the model's decision, and the evidence for that is the general non-loading measured in 2.5.0 rather than anything about these methods. Codex plugins also support no command surface at all, so anything a command carried would have existed on one host and not the other. What the owner asked for is now two methods with triggers stated in their own words, reached the same way on both hosts.
+
+Revisit this if a portable skill standard adds required skill dependencies, if receipts show the new methods going unread from a plain-language request, or if repeated receipts show one entry causing missed outcomes or unauthorized actions.
 
 ## Host-native execution
 
@@ -69,6 +71,16 @@ Version 1.12 had this as cross-host escalation with named commands, and 2.0 remo
 Version 2.4.2 tried to make the rule execute and failed, which is worth recording so the next attempt starts further along. Ten runs on an order service that charges the card inside the same transaction as the warehouse call — a decision that commits the project to a schema, a retry loop, and an operational dependency — produced ten sound transactional-outbox designs and not one outside read, five runs on each host, with `technical-design` demonstrably open in all five on Codex. Three kernel wordings were tried and discarded: the read as a condition of finishing, the same with the host's own delegate named, and the same as a step before building on the decision. None changed the behavior on either host, and none of the runs mentioned the rule. What the runs did say points at the trigger rather than the wording: each treated its own choice as ordinary and cheap to reverse, and one listed its remaining choices as "both reversible". "Expensive to undo" is the agent's own estimate of its own decision, which is the shape 1.9.0 identified as unusable. So nothing was promoted, the rule stays where it was, and the behavior stays `UNVERIFIED`. A future attempt should replace the trigger, not restate the duty.
 
 Revisit this if a trigger appears that a run can evaluate without grading its own decision, if receipts show the outside read returning agreement without finding anything, or if its cost exceeds the rework it prevents.
+
+## Ordering applies only to work that competes
+
+A roadmap is produced where more candidates are on record than can be done soon and no order settles them: accumulated ideas, feature requests, user feedback. Units belonging to one outcome the owner already authorized are not ranked. They are sequenced by what blocks what, and whichever is more valuable, the one that unblocks the other still goes first, so a ranking over siblings inside a decomposition is arithmetic that dependency then overrules.
+
+The owner raised this against the first draft of `prioritization`, which scored recorded work generally. The risk they named is the one that would have made the method worthless: run over the epics and tasks of one large piece of work, it spends a pass to rediscover the dependency edges the decomposition already wrote down. The method now checks which shape is in front of it before scoring anything, and a project holding both ranks the competing outcomes while never ranking one outcome's internal parts against another's.
+
+What comes out is a short roadmap in the project's own tracker that the owner reorders without owing a reason, not a scored table. RICE is how a position is argued when they ask why, not the artifact. Effort is the agent's and never asked; reach and impact are theirs and usually already answered by the project's records; a question reaches them only where sweeping the uncertain factor across its plausible range actually changes the order.
+
+Revisit this if receipts show a roadmap the owner never reorders, ordering questions reaching them on work the project already settles, or competing candidates going unordered because the shape test read them as one outcome.
 
 ## No universal engineering workflow
 

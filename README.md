@@ -85,7 +85,7 @@ SkipHow has no phases, roles, personas, required specs, ticket templates or appr
 
 An instruction the agent never opens governs nothing. The project measured that in its own field audit: references loaded three times against roughly twelve applicable triggers, and the rules inside the unopened files changed nothing. So the package keeps only the rules that change what a capable agent would otherwise do. The ones about authority and completion stay in context permanently. The rest sit behind triggers the agent can evaluate without opening the file.
 
-The whole thing is 1,600 words of kernel plus 18 focused methods, about 6,800 words, read only when they help.
+The whole thing is about 1,800 words of kernel plus 22 focused methods, some 9,000 words, read only when they help.
 
 ## What the receipts show
 
@@ -109,7 +109,7 @@ Not on every run. Where a behavior held on one host and wobbled on the other, [c
 | Your role | Approve the spec, the tickets, the tests | Decide product behavior, priority, cost, risk, privacy, rollout |
 | Authority | Approval gates | Routine local work is autonomous; shared delivery and protected actions stop for you |
 | State | Framework files and databases | Git and your project's own tracker |
-| Size | Dozens of agents and commands | One skill, 1,830 words in context, 20 methods on demand |
+| Size | Dozens of agents and commands | One skill, about 1,800 words in context, 22 methods on demand |
 
 This is a design position, not a measured advantage. Nothing here benchmarks SkipHow against another framework on cost, speed or reliability.
 

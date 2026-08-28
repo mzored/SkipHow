@@ -46,6 +46,8 @@ Read only the guidance that materially helps the current request. These are meth
 - For a long-running step, a stalled lane, or a failure that keeps repeating, use [execution health](references/execution-health.md).
 - For a finding to carry forward, requested persistence, triage of incoming material, or work the project already has on record, use [intake](references/intake.md).
 - For the first durable record in a project with no recorded convention for tracked work, use [project setup](references/project-setup.md).
+- For carrying recorded work forward across several items rather than one named thing, use [advancing tracked work](references/advancing-tracked-work.md).
+- For more competing candidates on record than can be done soon, use [prioritization](references/prioritization.md).
 - For work whose parts would land, be verified, or be reviewed separately, use [decomposition](references/decomposition.md).
 - For work run through delegates or across several units, use [delegation](references/delegation.md).
 - For choosing the capability and effort a delegate runs at, use [model routing](references/model-routing.md).
