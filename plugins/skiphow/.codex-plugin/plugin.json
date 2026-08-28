@@ -1,6 +1,6 @@
 {
   "name": "skiphow",
-  "version": "2.4.3",
+  "version": "2.5.0",
   "description": "Describe the product outcome in plain language. The agent owns the engineering, verifies the result, and reports the evidence.",
   "author": {
     "name": "mzored",

@@ -55,6 +55,8 @@ Superpowers' `brainstorming` was read and rejected whole. It gates every task be
 
 `to-spec` and `to-tickets` were read twice and rejected twice. Both require the owner to approve engineering shape, one a specification and the other ticket granularity. SkipHow owns both.
 
+The second half of `grill-with-docs` is adapted where the first half was not. Its interview is the `grilling` frontier already covered above, but it ends in documents rather than in the conversation, and the domain-modeling it runs alongside settles what each term means before the design is argued. SkipHow's `product-spec` takes that: a vocabulary in the owner's own words fixed before the outcomes, and each decision recorded with the option that was turned down. It stays compatible with the rejection above because what the owner reads and checks is the product they want, never the engineering shape — no specification of implementation, no ticket granularity, and no approval gate. The idea was taken without source text and is written in SkipHow's own words.
+
 A spec-to-tickets chain and an implement-spec fork were considered as orchestration and rejected for the same reason: they turn a product request into a sequence the owner has to supervise.
 
 ## The adoption rule

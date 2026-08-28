@@ -8,7 +8,7 @@ Serialize parts that would change the same shared surface even when nothing else
 
 Give each delegate the outcome it owns, what would show that outcome true, the boundary it works inside — what it must not touch, and which authority it does not carry — and the instruction to come back with a blocking unknown instead of settling it alone. A delegate knows only what its brief says, so a rule you did not write into the brief does not reach it. A delegate that cannot state its own completion condition will invent one. Rules and the completion condition belong in the brief; the material they apply to is pointed at, not copied. Name the record, the prior change, or the file to read. Repeating context into every brief multiplies cost and lets briefs drift from the source.
 
-Match the effort to the work, using whatever control this host exposes for it. A delegate that reviews, judges, or decides runs at no less effort than the session dispatching it, because a weaker check reports agreement rather than finding what you missed.
+Match the capability and effort each delegate runs at to its own work rather than to whatever the host would pick for it; [model routing](model-routing.md) settles that.
 
 What comes back matters as much as what goes out. Where the output is long, have the delegate leave it in the host's own working area rather than the project, and return its verdict, its findings, and the path. Every finding still comes back; it is the bulk that stays behind. Pulling entire reports into the context that dispatched them undoes the isolation the delegate was for.
 

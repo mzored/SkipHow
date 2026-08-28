@@ -109,7 +109,7 @@ Not on every run. Where a behavior held on one host and wobbled on the other, [c
 | Your role | Approve the spec, the tickets, the tests | Decide product behavior, priority, cost, risk, privacy, rollout |
 | Authority | Approval gates | Routine local work is autonomous; shared delivery and protected actions stop for you |
 | State | Framework files and databases | Git and your project's own tracker |
-| Size | Dozens of agents and commands | One skill, 1,600 words in context, 18 methods on demand |
+| Size | Dozens of agents and commands | One skill, 1,830 words in context, 20 methods on demand |
 
 This is a design position, not a measured advantage. Nothing here benchmarks SkipHow against another framework on cost, speed or reliability.
 
