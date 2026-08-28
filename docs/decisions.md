@@ -30,6 +30,24 @@ Version 2.1.0 added the durable records because the earlier contract met this se
 
 Revisit this if a receipt shows an unauthorized protected action, a dropped material outcome, or repeated questions about routine engineering mechanics.
 
+## An unstated choice is an unfinished result
+
+Where the owner's request leaves open a material choice in what a person using the product gets, and available project evidence cannot settle it, the agent asks before building and reports any choice it made instead, named with the alternative it did not take. A result that hides such a choice is not finished. What the project cannot do yet settles nothing: it is a cost for the owner to weigh, and treating it as an answer was the escape that survived the first two drafts.
+
+Receipts against 2.3.0 showed the opposite three times. Given "let someone share their cart with a friend", the agent picked one reading of sharing, built it, and described the behavior as though it were the request. Executing tracked work, it took an item recorded as `Blocked: needs a decision on how long notes can be`, invented a limit, shipped it, marked the item done, and deleted the note that a decision was owed.
+
+The first draft of the fix put the rule in the kernel's autonomy section as a pre-build trigger. An independent review argued the trigger was the agent's own estimate of novelty, which is exactly the shape 1.9.0 identified as unusable, and that a reporting duty without a completion consequence changes nothing. Receipts agreed: the tracker case was fixed, the underspecified-idea case was not. Binding it to the definition of done, and closing the escape where a technical limit stands in for a product answer, is what held.
+
+Revisit this if receipts show questions on work the product already defines, an owner asked about engineering mechanics, or a small change acquiring a round of clarification.
+
+## A consequential decision gets one outside read
+
+A technology, architecture, or system-shape decision that is expensive to undo gets one read from a context that did not produce it, given the problem and the evidence rather than the preferred answer, and asked what it would choose and what would make that choice wrong. The rule lives in the method that owns those decisions, so its reach is that method's trigger and no wider. A second host or model family is preferred over a second pass by the same context. The result is evidence to weigh, not a vote.
+
+Version 1.12 had this as cross-host escalation with named commands, and 2.0 removed it with the rest of that machinery. The mechanics were the defect: they encoded one host's invocation into portable policy. The invariant survives the implementation, because whoever made a decision is the worst judge of it. The project keeps paying for that. Version 2.3.0 shipped only after two independent reviews found roughly twenty defects in a hundred lines, and this release's own kernel wording was rewritten after a review contradicted it.
+
+Revisit this if receipts show the outside read returning agreement without finding anything, or its cost exceeding the rework it prevents.
+
 ## No universal engineering workflow
 
 Planning, TDD, review, worktrees, delegation, and pull requests are tools. None is a mandatory stage for every request.
@@ -80,6 +98,8 @@ The shared skill contains no versioned provider model IDs, cost tables, or host-
 
 Several releases tried semantic tiers and adapter files. Host metadata changed too quickly, and the package had no reliable cost signal for a portable router.
 
+Effort is chosen relative to the current session, never in host terms. Both supported hosts expose a per-delegate reasoning control through incompatible surfaces, and neither treats a level name as meaning the same amount of work across models, so no portable absolute setting exists to name. The package therefore states only a floor relative to the dispatching session and leaves the control for the agent to find in its host's current documentation. A relative floor is not a routing tier, and the revisit condition below stays unmet.
+
 Revisit this if hosts publish a stable portable capability interface and paired runs show a material quality or total-cost benefit.
 
 ## Receipts prove model behavior
@@ -87,6 +107,8 @@ Revisit this if hosts publish a stable portable capability interface and paired 
 Deterministic checks prove package structure. They do not prove how a model behaves. Deliberate runs with retained receipts support behavior claims.
 
 The project removed a live evaluation harness because it could mutate repositories, spend budget, and still fail to prove the exact installed package. A later contributor-only transcript parser became larger than the product and coupled maintenance to private host log formats. Version 2.0.2 removes that parser from the repository.
+
+Version 2.4.0 produced the first receipts since 2.0 by holding the package fixed and varying nothing else: a throwaway fixture repository per run, a host home containing only the candidate skill tree, no user-level skills, and the same prompt before and after a change. That is enough to show a defect and to show it gone. It is not a reliability rate, and one host's behavior is not the other's.
 
 Revisit automated evaluation when a host offers repository-preserving runs against an exact installed package with trustworthy receipts.
 
