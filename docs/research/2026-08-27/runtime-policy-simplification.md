@@ -5,8 +5,8 @@ Research performed on 2026-08-27 for the 2.0 architecture in
 owner's question directly: whether SkipHow should become a curated, autonomous adaptation of small skills
 instead of another universal workflow engine.
 
-This note describes an unpublished 2.0 release candidate. Marketplace installation still resolves to the
-published 1.14.2 package until 2.0 is published.
+This note describes the candidate before its 2.0.1 release on 2026-08-28. At the time of this research,
+marketplace installation still resolved to the published 1.14.2 package.
 
 ## Conclusion
 

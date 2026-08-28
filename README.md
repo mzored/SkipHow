@@ -47,9 +47,7 @@ SkipHow preserves unrelated work and shared state. It uses isolation when collis
 
 ## Install
 
-These marketplace commands currently install the published 1.14.2 package. The 2.0 package and documentation
-on this branch are an unpublished release candidate; the marketplace will not install them until 2.0 is
-published.
+Install the current SkipHow release from its marketplace.
 
 Codex:
 
@@ -98,8 +96,7 @@ observe implicit project-local selection for these six prompts, not a general se
 `unslop` skill is a confounder in all six; the visual run also used the user-level `impeccable` skill.
 Marketplace installation of 2.0, the packaged 2.0 hook at runtime, Claude runtime, editing in the owner's real
 application, real remote delivery, continuation across compaction or restart, and performance
-remain separately limited or unverified. This 2.0 architecture remains a local release candidate until
-publication is explicitly authorized.
+remain separately limited or unverified.
 
 ## Docs
 

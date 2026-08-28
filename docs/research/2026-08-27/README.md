@@ -4,8 +4,8 @@ This directory records the second audit of real SkipHow sessions run in other re
 same-day candidate census that triggered the 2.0 simplification, current architecture and analogue research, one
 owner report from the field, the 1.12.0 invocation receipts, and the 1.13.0 parallel review round.
 
-The 2.0 material describes an unpublished release candidate. Marketplace installation still resolves to
-1.14.2 until 2.0 is published.
+The 2.0 material describes the candidate before its 2.0.1 release on 2026-08-28. At the time of these records,
+marketplace installation still resolved to 1.14.2.
 
 | Topic | What it records |
 | --- | --- |

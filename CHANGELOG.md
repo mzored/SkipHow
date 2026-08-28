@@ -2,10 +2,7 @@
 
 All notable changes to this project appear in this file.
 
-## 2.0.1 (2026-08-27)
-
-This is a local release candidate. It has not been published; marketplace installation still resolves to
-the published 1.14.2 package.
+## 2.0.1 (2026-08-28)
 
 ### Breaking changes
 

@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted for the unpublished 2.0.1 release candidate. This is a breaking replacement for the procedural
+Accepted for 2.0.1. This is a breaking replacement for the procedural
 runtime contract accumulated through 1.14.2. It preserves both the plain-language owner entry and the
 one-public-skill topology from
 [ADR 0001](0001-one-owner-entry.md), while superseding that decision's four fixed routes.

@@ -4,8 +4,7 @@ Tell SkipHow what should be true for the product. You do not need to choose a sk
 
 ## Install
 
-These commands currently install the published 1.14.2 package. The 2.0 package and this guide on the current
-branch are an unpublished release candidate and will not come from either marketplace until 2.0 is published.
+Install the current SkipHow release from its marketplace.
 
 Codex:
 
