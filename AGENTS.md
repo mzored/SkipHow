@@ -18,7 +18,7 @@ Prefer deleting a contradiction, clarifying intent, or moving a discipline into 
 
 Use current primary documentation for host behavior, plugin formats, and security guidance. Read `docs/decisions.md` before changing the product contract so old alternatives are not reopened without new evidence. The immutable 2.0.1 links in that file preserve the full earlier ADR and research archive.
 
-Model behavior is proven only by deliberate receipts from real runs made with the host's own permission and budget controls. Summarize claims and durable source links in `docs/evidence.md`; do not add one research file per run or release. A behavior no receipt has shown stays `UNVERIFIED`. Deterministic checks and CI never start a model, and tests never create or delete a repository.
+Model behavior is proven only by deliberate receipts from real runs made with the host's own permission and budget controls. A receipt worth keeping holds everything fixed but the package: a throwaway fixture repository, a host home carrying only the candidate skill tree, and the same prompt on both sides of the change. Run the failing case before the change as well as after it, because a run that only shows the new behavior proves the wording is compatible with it, not that it produced it. Summarize claims and durable source links in `docs/evidence.md`; do not add one research file per run or release. A behavior no receipt has shown stays `UNVERIFIED`. Deterministic checks and CI never start a model, and tests never create or delete a repository.
 
 ## Checks
 

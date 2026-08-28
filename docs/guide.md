@@ -50,6 +50,8 @@ Save these observations so we can prioritize them tomorrow.
 
 Rough requests are fine. Before substantial work it tells you back what it understood and what would count as done, so you can correct it early. SkipHow reads the project before it asks you for anything. It brings a question back only when the answer changes product behavior, scope, priority, cost, risk, privacy, or rollout. It also asks when an action needs your explicit grant or only a person can complete it.
 
+Where your request leaves a genuine product choice open, you get the question before the work, with the option it recommends, batched into one round wherever the choices are visible up front. "Let someone share their cart with a friend" comes back asking whether the friend gets a snapshot or a live shared cart, not with one of the two silently built. Where it had to choose without asking, the report names the choice and the alternative it did not take, so correcting it costs one message. What the project cannot do yet is never treated as an answer to what the product should do; it is a cost, and the cost is yours to weigh.
+
 You can correct or extend the request while work is running. The agent treats the new message as part of the current outcome unless you replace the request.
 
 ## Know what your request allows
@@ -71,7 +73,7 @@ The first time a project needs to record something, SkipHow asks once where your
 
 Work with more than one result you could check separately is split into parts you can each see working, with only the genuine dependencies between them, and parts that do not block each other can run at the same time. When your request allows a change, that split is recorded where your tasks live and the report names what continues it, so you can start it now or in a later session. When you only asked for a plan, you get the split in the answer and nothing is written.
 
-That record is what lets a later session continue your work, and what stops a problem found along the way from disappearing when the conversation ends. A request only to answer, compare, diagnose, review, research, plan, triage, or organize still records nothing.
+That record is what lets a later session continue your work, and what stops a problem found along the way from disappearing when the conversation ends. Finishing a tracked item writes what the work established back into it, so nobody pays for the same investigation twice. Something reported that turns out not to happen is closed as not reproducible, with what was checked, rather than as fixed. A request only to answer, compare, diagnose, review, research, plan, triage, or organize still records nothing.
 
 ## Read the report
 

@@ -2,6 +2,34 @@
 
 All notable changes to SkipHow 2.x appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 2.4.0 (2026-08-28)
+
+### Added
+
+- A material choice the owner's request leaves open in what a person using the product gets, that available project evidence cannot settle, is now the owner's to make. The agent asks before building, in one round, each question carrying the option it recommends. What the project cannot do yet answers no such question; that is a cost for the owner to weigh, not a reading for the agent to take.
+- A choice made instead of asking belongs in the report and in the record, named with the alternative that was not taken. Describing the behavior that was built is not naming the choice. A result that hides a choice is not finished.
+- Closing a tracked item updates the record that work already owns, so it needs no separate grant. What the work established goes into the item before it closes, in proportion to what finding it cost: the cause, the evidence that the outcome holds, and any reading that had to be assumed. A report that could not be reproduced closes as not reproducible, naming what was checked and against what state. A one-line fix closes in a line.
+- An item the project already marked as waiting on a decision belongs to whoever makes that decision. The block is the record's own instruction to ask, and answering it unilaterally while clearing the note is not progress.
+- Effort is matched to the work, through whatever control the host exposes. A delegate that reviews, judges, or decides runs at no less effort than the session that dispatched it, because a weaker check reports agreement rather than finding what was missed. The floor is relative to the session, so no model name, tier, or host key enters the package.
+- A technology, architecture, or system-shape decision that is expensive to undo gets one read from a context that did not produce it, given the problem and the evidence rather than the preferred answer, and asked what it would choose and what would make that choice wrong. A second host or model family is preferred; where neither exists, a fresh context given only the problem still beats rereading your own reasoning. The answer is evidence to weigh, not a vote.
+- Where a delegate's output is long, it leaves the bulk in the host's own working area rather than the project and returns its verdict, its findings, and the path. Every finding still comes back; pulling whole reports into the dispatching context is what undoes the isolation.
+- The decomposition check now looks for two units that would do the same work, not only for gaps. Delegates given adjacent briefs converge on the same choices and both write them.
+
+### Changed
+
+- Product questions go out in one round rather than one exchange at a time, so the owner answers once and the work carries on.
+- The kernel's statement of what is not evidence now separates the three cases: the check ran and what it showed, the check did not run, or the search found nothing. A check that did not run is not a check that passed, and a thing not found is not a thing shown absent.
+- `docs/evidence.md` reports observed behavior for the first time since 2.0, and its unverified list now names what the receipt method itself cannot reach.
+
+### Evidence
+
+- Forty-five one-off Codex runs against throwaway fixture repositories, in a host home holding the candidate skill tree and the host's own built-in skills. Claims below are quoted only from the eleven runs whose package matched 2.3.0 exactly and the six that matched this release. Method and results are in [`docs/evidence.md`](docs/evidence.md); the transcripts are not retained.
+- Three failures on 2.3.0. An underspecified feature built to a silently chosen reading, three times. Closing tracked work stripping every item back to its title, twice. And, once, a tracker item marked `Blocked: needs a decision` answered unilaterally, shipped, closed, and its block deleted.
+- On 2.4.0 the cart-sharing request returns the open question with a recommendation and writes nothing; the epic names the three product decisions it took in the result and the tracker; executing tracked work leaves the blocked item blocked and returns both decisions in one round; and a resumed session closes five items carrying what each established, against a baseline run of the same fixture that left five bare titles.
+- Unchanged across the release: a reported bug fixed with a regression test and a clean commit in about a minute, opening two method files; a read-only comparison writing nothing; seven observations grouped into five items by cause.
+- `python scripts/check.py` and `git diff --check` pass. Both host package validators pass, and Claude's isolated install passes. Codex's isolated install is `UNVERIFIED`: local machine policy restricts marketplace sources to the published repository, and CI skips installs by design.
+- Claude behavior, delegation, concurrent lanes, effort routing, the outside read, continuity across compaction, and whether the asking rule over-asks all remain `UNVERIFIED`; no receipt reaches them.
+
 ## 2.3.0 (2026-08-28)
 
 ### Added
