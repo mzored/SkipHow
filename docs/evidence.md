@@ -20,7 +20,7 @@ These checks do not start a model and do not prove runtime behavior.
 
 ## How these runs were made
 
-Forty-one owner turns across thirty sessions are counted here, eight of them against 2.4.1 and the rest against this release. Each run used a throwaway fixture repository built from a script, a session carrying the package under test and the host's own built-in skills, and the host's own permission controls. The one-sentence `project-setup` clarification below landed after most of these runs; the sessions that reach that method are reported as a before and after pair, and no other session's request reaches its trigger. Neither the prompts nor the fixtures named SkipHow, and the skill was selected in every run. The transcripts are not retained; the method in [`AGENTS.md`](../AGENTS.md) reproduces them.
+Seventy-five owner turns across fifty-seven sessions are counted here. Eight ran against 2.4.1. The rest ran against this release's wording while it was being built, which happened in steps: the frontier clause first, then the clause about not building what you have just asked about, and three attempts at a kernel rule for the outside read that were all discarded. Every claim below says which wording produced it, and both clauses that ship were re-run on the exact released package. Each run used a throwaway fixture repository built from a script, a session carrying the package under test and the host's own built-in skills, and the host's own permission controls. The one-sentence `project-setup` clarification landed after most of these runs; the sessions that reach that method are reported as a before and after pair, and no other session's request reaches its trigger. Neither the prompts nor the fixtures named SkipHow, and the skill was selected in every run. The transcripts are not retained; the method in [`AGENTS.md`](../AGENTS.md) reproduces them.
 
 The Codex isolation described in 2.4.1 was insufficient, and this release corrects it. Codex also reads a host-agnostic user skill directory that `CODEX_HOME` does not cover: a control run isolated by `CODEX_HOME` alone carried three of the maintainer's own user skills into the model's context, which the session transcript shows and the model's own answer confirmed. Runs here point the operating-system home at a scratch directory as well. The corrected control transcript contains no user skill name and no user skill path, and lists the owner skill plus Codex's own built-ins and nothing else. The earlier Codex receipts were made under the weaker isolation; nothing in this pass re-tests them.
 
@@ -43,20 +43,40 @@ On 2.4.1, no second round happened in any of the four sessions.
 - Shared basket, Codex: turn one built read-only sharing without asking. Turn two built collaborative baskets and settled, silently, that the friend keeps their own basket.
 - Shared basket, Claude: turn one asked three questions in one round and wrote nothing. Turn two built, named three settled choices with their alternatives, and flagged the checkout question as worth deciding without asking it.
 
-On this release, a second round happened on both hosts.
+With the frontier clause, a second round happened on both hosts.
 
 - Shared basket, Codex, is the clean pair: same fixture, same two prompts, same host. Turn one asked and wrote nothing. Turn two asked the question 2.4.1 had settled silently — does the shared basket stay separate from the friend's own, replace it, or merge into it — and wrote nothing. Turn three answered it, and the work was built and committed with no third round.
-- Cancellation, Claude: turn two came back with "The decision your answer opened — please confirm", and "That wasn't a live question until you said yes, so I couldn't ask it earlier". It also built a default and a switch rather than stopping, so the choice was surfaced but not gated.
-- Shared basket, Claude: turn one asked two questions and named the third as one it would have to come back for under one of the two answers, which is the frontier stated in advance. Turn two built and left that question in a durable record rather than asking it, on the ground that the checkout it depends on does not exist in the project yet.
-- Cancellation, Codex: turn one built without asking, on the same prompt and fixture where the 2.4.1 run asked. The trigger for asking at all is unchanged in this release, so this is run-to-run variation. It is the clearest evidence in this pass that one run establishes neither behavior.
+- Cancellation, Claude: turn two came back with "The decision your answer opened — please confirm", and "That wasn't a live question until you said yes, so I couldn't ask it earlier".
+- Shared basket, Claude: turn one asked two questions and named the third as one it would have to come back for under one of the two answers, which is the frontier stated in advance.
+
+Five further cancellation sessions were run with both shipped clauses in place — two on the exact released package, three on a package that also carried a kernel sentence later discarded, which touched only technical decisions. The second round holds on Claude and is unreliable on Codex.
+
+- Claude, both sessions: turn two returned the fee and the recall-failure questions together, each with a recommendation, and built no part of either answer.
+- Codex, three sessions: one asked at turn one and, at turn two, asked the recall-failure question and wrote nothing. The other two settled the opened choices themselves at turn two and built them — one on the ground that the project's existing full-refund promise covers the fee, recording that in the README without naming the alternative; the other naming its reading of "on its way" but not the alternative it rejected.
+- Cancellation on Codex also varied at turn one across the whole pass, asking in some runs and building the pre-ship reading in others, on the same prompt and fixture. The trigger for asking at all is unchanged in this release. One run establishes neither behavior, and this fixture is the clearest demonstration of that in the pass.
+
+### A question you have asked is not a choice you may build
+
+The frontier clause opened a hole the release closes. Having asked the questions its own frontier had raised, Claude went on to build both answers anyway.
+
+The pair is the cancellation fixture, same prompts, same host, packages differing only in this clause and, in the first after-session, one further kernel sentence that was later discarded.
+
+- Before: turn two shipped the whole thing and reported it under "The £4.50 fee: I chose, you can overturn", then asked the recall-failure question after building its answer — "That failure case is the one your answer opened, and I had to pick something to ship" — and offered to switch it. Fifteen tests, committed. The choice was named with its alternative, which the contract requires, and it was still the owner's to make.
+- After: turn two asked both questions with recommendations and built none of it. It committed one thing: a durable record of the decision and the two open points, whose own commit message reads "No behaviour is coded yet, since either choice would otherwise be settled by whatever default was written".
+- After, on the exact released package: same two questions, and it built the one piece both answers need — recording which parcel belongs to a shipped order, which nothing did before — with a mutation check that the test fails without it, and nothing else. That is the clause's other half working: independent parts carry on.
+
+On Codex the same before-run asked the question but wrote tests asserting its own recommendation, uncommitted, against source that did not implement it. With the clause in place, the one Codex session that asked wrote nothing at all.
+
+Reversibility was the escape. A default is the owner's choice made for them, and a switch only offers them the chance to notice.
 
 ### Work that must not produce a question
 
-Three cases were built so that asking would be the failure.
+Two cases were built so that asking would be the failure, and both were run on the exact released package on both hosts.
 
-- A request with its acceptance criteria fully stated — the exact subject and body of a delivery email, once per order, only in the delivered state. Both hosts built, tested, and committed it with no question.
-- A purely technical fork, keeping the time an order entered each state. Both hosts chose the storage shape and the timestamp convention themselves and asked nothing. Claude named the two conventions it had picked; Codex reported the result.
-- The larger runs below carried no question either, except where the project had nowhere to record a finding.
+- A request with its acceptance criteria fully stated — the exact subject and body of a delivery email, once per order, only in the delivered state. Both hosts built, tested, and committed it with no question. Claude verified the message character for character against a real run.
+- A purely technical fork, keeping the time an order entered each state. Both hosts chose the storage shape and the timestamp convention themselves and asked nothing.
+- The same two cases were run twelve further times across 2.4.1 and the intermediate wordings. None of the sixteen sessions produced a question, and none spawned anything.
+- The larger runs below carried no question about work the project already defines, except where the project had nowhere to record a finding.
 
 ### Findings carried forward
 
@@ -92,13 +112,15 @@ Asked to build it, both hosts did the whole thing in the root context, in one co
 
 So the split is verified and the orchestration is not. No delegate was spawned, no lane ran concurrently, no worktree was created, no delegate returned a question, and no unit was integrated separately as it landed. This fixture did not reach the size where either host judged delegation worth its cost, and the proportionality rule behaving that way is not a defect. Everything in that list stays `UNVERIFIED`, and no numeric threshold was added to force it.
 
-### A consequential technical decision
+### A consequential technical decision, and a rule that does not execute
 
 An order service charged the card and called the warehouse partner inside one database transaction, so a partner outage rolled back the order and left the customer charged with nothing to pick. The repository carries the real constraints: one container on one small virtual machine, Postgres as the only stateful dependency, EU-only order data, half a day of engineering a week, a partner that treats the order reference as an idempotency key, publishes a rate limit, and refuses consignments older than fourteen days.
 
-Both hosts recovered those constraints, chose the transactional-outbox shape inside the Postgres the project already runs, and introduced no broker, managed queue, vendor, or paid service. Neither asked the owner to choose a technology. Claude replayed the eleven-hour outage at the documented volume — 1,440 orders charged, 1,440 later handed over, none picked twice — and that replay caught a real overflow in its own backoff code, which it fixed and covered. It brought the owner exactly one thing: capturing the card on dispatch instead of at checkout, because that changes the payments arrangement, which the repository reserves to the owner.
+Ten sessions were run on this fixture, five on each host. All ten recovered those constraints, chose the transactional-outbox shape inside the Postgres the project already runs, and introduced no broker, managed queue, vendor, or paid service. None asked the owner to choose a technology; several brought back exactly the choices the repository reserves to the owner, such as capturing the card on dispatch or paying for an alerting service. Claude replayed the eleven-hour outage at documented volume more than once — 1,440 orders in one run, 960 with two container restarts in another, none picked twice — and one such replay caught a real overflow in its own backoff code, which it fixed and covered.
 
-Neither host obtained the outside read from a fresh context that `technical-design` requires for a decision that is expensive to undo. On Codex the method was open in the session when that happened, so a method that failed to load is not the explanation, and the remedy of promoting the rule into the kernel is not what this evidence points at. The outside read stays `UNVERIFIED`.
+Not one of the ten obtained the outside read from a fresh context that `technical-design` requires for a decision that is expensive to undo. Codex opened `technical-design` in all five of its sessions on this fixture; no Claude session anywhere in the pass opened it at all. Three kernel wordings were written and tested against this fixture and all three were discarded: the read as a condition of finishing, the same with the host's own delegate named, and the same as a step before building on the decision. No run on any of them spawned a delegate, invoked a second runtime, or mentioned the rule, and the two negative controls were re-run under each wording to confirm none of them started asking for reads on ordinary work — none did.
+
+What the runs say points at the trigger rather than the wording. Each treated its own decision as ordinary and cheap to reverse; one listed its remaining choices as "both reversible". "Expensive to undo" is the agent's estimate of its own decision, which is the shape this project has already found unusable once. Nothing was promoted into the kernel, the rule stays in the method unchanged, and the outside read stays `UNVERIFIED`.
 
 ### Configured once, and one thing it gets wrong
 
@@ -108,17 +130,18 @@ Claude wrote that convention into `CLAUDE.md`, which the other supported host do
 
 ### Which methods load
 
-On Codex, method files load in proportion to the work, and the trigger decides it rather than the size: `technical-design`, `diagnosing-bugs` and `testing` on the architecture case, `decomposition`, `product-decisions`, `codebase-design` and `technical-design` on the request to plan the six-unit build, and none at all on the request to build the same six units, which it read as one pass. On Claude the picture has moved since 2.4.1, which recorded methods opening in one run out of six. Across the runs measured here Claude opened method files in three sessions — `product-decisions`, `project-setup`, and `intake` — and none in four others. The rules this release turns on live in the kernel, which is why behavior held on both hosts either way.
+On Codex, method files load in proportion to the work, and the trigger decides it rather than the size: `technical-design`, `diagnosing-bugs` and `testing` on the architecture case, `decomposition`, `product-decisions`, `codebase-design` and `technical-design` on the request to plan the six-unit build, and none at all on the request to build the same six units, which it read as one pass. On Claude the picture has moved since 2.4.1, which recorded methods opening in one run out of six. Across the twenty-eight Claude sessions whose transcripts this pass retained, fourteen opened at least one method — `project-setup`, `intake`, `product-decisions`, `testing`, `decomposition` — and fourteen opened none. No Claude session in the pass opened `technical-design`, including every one on the architecture fixture. The two clauses this release turns on live in the kernel, which is why the cancellation behavior held on Claude in sessions that opened `product-decisions` and in sessions that did not.
 
 These are observations, not a reliability rate.
 
 ## Still unverified
 
-- Delegation and everything that runs on it: a spawned delegate, concurrent lanes, an isolated worktree, a bounded brief, a delegate returning a question for the orchestrator to settle, effort chosen per delegate, and units integrated separately as they land. The largest fixture in this pass, six capabilities over 2,725 lines, was carried in one pass by both hosts.
+- The outside read of a consequential design decision. Ten runs made the decision well and none took an outside read. Codex had the method open in all five of its runs; no Claude session in the pass opened it at all. Three kernel wordings changed nothing on either host. The rule is stated and does not execute.
+- Delegation and everything that runs on it: a spawned delegate, concurrent lanes, an isolated worktree, a bounded brief, a delegate returning a question for the orchestrator to settle, effort chosen per delegate, and units integrated separately as they land. The largest fixture in this pass, six capabilities over 2,725 lines, was carried in one pass by both hosts. No run in the whole pass spawned a delegate for any reason.
+- Whether the second round is reliable on Codex. It happened in one of three released-package sessions on the cancellation fixture, and in the shared-basket pair before it. When it does happen, nothing gets built, which is the part this release adds.
 - Whether the corrected wording in `project-setup` puts the setup record somewhere both hosts read.
-- The outside read of a consequential design decision. Two runs made the decision well and neither took an outside read, one of them with the method open.
 - Stopping after three genuine attempts against one hypothesis, and the budget and anomaly rules around it. The intermittent-failure run is evidence for the surrounding discipline, not for the three-attempt rule.
-- Whether the asking rule over-asks in general. Three negative cases and the second-round runs are a counterweight, not a bound.
+- Whether the asking rule over-asks in general. Sixteen negative-control sessions are a counterweight, not a bound.
 - Continuity across compaction. Resuming from a tracker in a fresh session is covered; resuming a compacted session is not. The smallest configurable auto-compaction window is a hundred thousand tokens, so provoking a genuine compaction costs a long run, and a simulated one would not be evidence.
 - Real production or public-delivery actions.
 - Comparative cost or speed against any other approach. Nothing here benchmarks SkipHow against anything.
