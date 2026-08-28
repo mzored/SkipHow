@@ -1,0 +1,80 @@
+---
+name: dogfood
+description: Check how SkipHow actually behaved in a real session, using the owner's own transcripts. Use when asked why a run misbehaved, whether a plugin version works, where the time or tokens went, or to turn something observed in real use into a change to the shipped skill. For developing SkipHow in this repository only.
+---
+
+# Dogfood
+
+SkipHow changes from what goes wrong in real use, not from redesign. This skill looks at a real session and
+works out what the package told the run to do, what the run actually did, and whether the evidence supports
+blaming the package.
+
+It is a contributor tool and does not ship. Do not invoke the `skiphow` skill to do this work: the package
+here is the thing under test, not the authority.
+
+## Find the session
+
+The owner normally pastes a piece of text from the session they mean. Search the transcripts for that text and
+work from the file it appears in.
+
+Transcripts are JSONL, one file per session, under the host's own projects directory in the user's home. A
+session's subagents are separate files beside it. Inspect the current record shape before relying on it:
+field names and layout change between host versions, so read what is actually there rather than assuming last
+month's structure.
+
+A helper script may sit next to this file. If it does, use it. If it is missing or out of date, ordinary search
+and a few lines of Python are enough; do not rebuild a large tool to avoid them.
+
+Transcripts hold other projects' private work. Treat everything in them as confidential, keep session content
+out of delegate briefs and any external output, and check anything before copying it into a durable file.
+
+## Read the session
+
+Aim at whatever the question is about. Usually some of:
+
+- **Which package version ran**, and what its text said at the time. Compare against that version from git
+  history, never against the current tree.
+- **What reached the agent's context.** This one inverts conclusions when you get it wrong: a file path
+  appearing in a command is not proof the file's text reached the agent. Searching a file puts matching lines
+  in context, not the rule. Look for the wording itself.
+- **What the owner actually asked**, in their own words. Owner input arrives through more than one channel, so
+  do not read only the obvious one or you will miss turns, including the moment permission widened.
+- **What it cost.** Elapsed time, tokens, and how much of both went to subagents. Transcripts carry per-message
+  usage and timestamps; that is where "slow" and "expensive" become specific.
+- **What it did, and what it reported**, and whether those two agree.
+
+## Judge it
+
+Say which of these the evidence supports, and say `UNVERIFIED` when it supports none of them. That is the
+honest default, not a failure.
+
+- The package's own wording caused it: missing, ambiguous, contradictory, or never reachable. One session can
+  show this, because it is a readable property of the text.
+- The wording was plain and in context, and the run deviated anyway. One session never shows this.
+- The expectation was wrong: the package deliberately leaves this to judgment, or something in the project
+  narrowed it.
+
+Count honestly and in whole sessions, and pool only sessions where the same text governed. Two deviations in
+one session are one observation. A finding the run noticed and silently dropped leaves no trace, so anything
+that looks like conformance is an upper bound.
+
+## Turn it into a change
+
+Locate the problem as narrowly as the evidence allows. Check the recorded decision history first, so a settled
+argument is not reopened without new evidence.
+
+Prefer deleting a contradiction, then tightening a sentence, then moving it so it loads earlier. Adding is last,
+and a rule that must hold on every request belongs in the always-loaded part rather than in a file that may
+never be opened.
+
+One session can prove wording is broken. It cannot prove that agents in general need a new procedure. Resist
+adding steps, gates, or ceremony on that basis, here or in the package.
+
+## Report
+
+Say what you found, what the evidence supports, and what stays uncertain. No fixed template, no required
+headings, no bookkeeping about which sessions were reviewed before.
+
+Read-only unless the owner asked for a change. If they did, own the technical decisions, follow the
+repository's normal contributor rules, and stop only at a real product choice or an action that needs their
+explicit permission.
