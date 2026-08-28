@@ -22,9 +22,11 @@ Revisit this if supported hosts lose required durability, or verified demand app
 
 ## Authority follows the requested outcome
 
-Read-only requests stay read-only. Record requests grant only the record. Project changes include edits, checks, and a clean local commit. Shared delivery must be requested. Protected actions need an explicit grant.
+Read-only requests stay read-only. Record requests grant only the record. Project changes include edits, checks, a clean local commit, and the durable records the project keeps for that work: the agreed outcome, the state needed to resume it, and one carry-forward record for a material problem left unfixed. Shared delivery must be requested. Protected actions need an explicit grant.
 
 Earlier versions tried magic phrases, fixed routes, tracker markers, and GitHub lifecycle rules. They made wording and procedure more important than the owner's actual outcome.
+
+Version 2.1.0 added the durable records because the earlier contract met this section's own revisit condition: a separable finding that reached only the chat transcript was a dropped material outcome, and the next session paid to rediscover it. The records use the project's own tracker and classification, so no SkipHow schema returns with them.
 
 Revisit this if a receipt shows an unauthorized protected action, a dropped material outcome, or repeated questions about routine engineering mechanics.
 
@@ -35,6 +37,14 @@ Planning, TDD, review, worktrees, delegation, and pull requests are tools. None 
 The 1.x contract accumulated planner, builder, reviewer, model tier, queue, timeout, diff, and prose rules. The root grew while small work still stalled on mechanics. Version 2.0 removed those gates.
 
 Reconsider one method only when paired evidence shows that it adds cost or delay without improving the result. Add a universal rule only when capable agents repeatedly miss a high-risk boundary without it.
+
+## Tracked work is configured once, not re-derived
+
+A project settles where its tracked work lives and who may see it in one owner question, recorded in the project's own agent instructions. Later sessions follow that record instead of inspecting again.
+
+This reverses an alternative ADR 0014 rejected, and the ground has changed. That rejection covered classification, which a live read does recover. Destination and visibility cannot be read out of a repository at all: nothing in the code says whether the owner accepts a public record. Staleness is answered by refreshing the note when a write is rejected or the convention has visibly moved, not by inspecting every time.
+
+Revisit this if a receipt shows a record written to a destination the owner did not choose, a stale note surviving a real convention change, or the setup question repeating in a configured project.
 
 ## Critical rules stay in the kernel
 

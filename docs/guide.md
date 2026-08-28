@@ -48,7 +48,7 @@ Compare these onboarding ideas. Recommend one, but do not change the project.
 Save these observations so we can prioritize them tomorrow.
 ```
 
-Rough requests are fine. SkipHow reads the project before it asks you for anything. It brings a question back only when the answer changes product behavior, scope, priority, cost, risk, privacy, or rollout. It also asks when an action needs your explicit grant or only a person can complete it.
+Rough requests are fine. Before substantial work it tells you back what it understood and what would count as done, so you can correct it early. SkipHow reads the project before it asks you for anything. It brings a question back only when the answer changes product behavior, scope, priority, cost, risk, privacy, or rollout. It also asks when an action needs your explicit grant or only a person can complete it.
 
 You can correct or extend the request while work is running. The agent treats the new message as part of the current outcome unless you replace the request.
 
@@ -58,12 +58,18 @@ You can correct or extend the request while work is running. The agent treats th
 | --- | --- |
 | Answer, compare, diagnose, review, research, plan, triage, or organize | Read and report |
 | Create a record | Write that record only |
-| Change the project | Edit, check, and make a clean local commit |
+| Change the project | Edit, check, make a clean local commit, and keep the project's record of that work |
 | Deliver the change | Use the repository's normal shared path |
 
 A mixed request such as "review and fix" allows a project change. A request only to review does not.
 
 Changing a project does not grant an unrelated push, pull request, or merge. Ask for shared delivery when you want it. Name production, staging, a public release, payments, repository settings, access changes, material deletion, wider disclosure, or credential work explicitly.
+
+## Keep work in one place
+
+The first time a project needs to record something, SkipHow asks once where your tasks and findings should live and who may see them, then writes that choice into the project's own instructions. After that it uses the same place without asking again.
+
+That record is what lets a later session continue your work, and what stops a problem found along the way from disappearing when the conversation ends. A request only to review or diagnose still records nothing.
 
 ## Read the report
 

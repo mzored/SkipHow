@@ -24,6 +24,18 @@ Model behavior is proven only by deliberate receipts from real runs made with th
 
 Run focused tests through `python scripts/check.py --pytest <pytest-arguments>`. Before completion, run `python scripts/check.py` and `git diff --check`. For packaging changes, also run `python scripts/check_hosts.py` and report an unavailable host as `UNVERIFIED`. `scripts/check.py` validates the single owner skill, all reachable internal methods and resources, the continuity hook, aligned versions, and portability boundaries such as personal paths and versioned model IDs. Change the check and `docs/decisions.md` together when those invariants change; do not pin a method roster, role set, or prose budget.
 
+## Versioning and releases
+
+Follow Semantic Versioning 2.0.0. The public surface is the runtime contract, not the file layout: owner-visible behavior, authority boundaries, default side effects, the public skill name and description, and any format a project keeps.
+
+Use `PATCH` for repository, documentation, or wording changes that keep the promised behavior. Use `MINOR` for a capability, method, or behavior a project opts into, compatible with projects already installed. Use `MAJOR` for a change to the owner interface, an authority boundary, or a default side effect with no safe path for those projects.
+
+Decide the number after the change is complete and its compatibility is known. Do not reserve a major version while planning.
+
+Release one coherent, verified change set at a time. Bump `VERSION` and both manifests once, at the start of the branch that will carry the release, and keep that number through the branch; related work accumulates there rather than as a sequence of releases on `main`. Never edit or re-tag a released version.
+
+Claim a material change in model behavior only after receipts. Until then it stays `UNVERIFIED`.
+
 ## Portability and safety
 
 Do not add personal paths, home-directory assumptions, credentials, telemetry, or network calls to the package or its checks. Keep provider model IDs out of the shared skill policy. Bump `VERSION` whenever `plugins/skiphow/` changes.
