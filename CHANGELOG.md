@@ -2,6 +2,21 @@
 
 All notable changes to SkipHow 2.x appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 2.7.0 (2026-08-29)
+
+### Added
+
+- [`finishing-a-branch`](plugins/skiphow/skills/skiphow/references/finishing-a-branch.md) is a new method for work carried on its own branch or in an isolated checkout once it reaches its verified end. Finishing is two things: carrying the change to where the project itself calls it integrated, read off that project's own recent history rather than asked about, and clearing away what the work created. Checks are run against the merged state, because an earlier pass on the branch alone covers a state the merge replaced. Removal is limited to what your own work created and what is demonstrably integrated; an open review means it is not, and a squashed or rebased merge leaves no shared commit, so a missing shared commit is not evidence that work is unmerged. A refusal to remove a branch or checkout is a question to answer rather than an obstacle to force past: where it only reflects a merge that rewrote the work and the change is already established as integrated, removal proceeds, and where it reflects work or files that exist only there, it stops the removal.
+- The same method makes the run that follows collect what the run before it could not. A branch usually becomes garbage after its session has ended, because review finishes later, so a rule that only fires at the end of a run can never retire it. When branch work next happens in a project whose request already authorizes changing it, the branches and isolated checkouts the agent's own earlier runs left there are retired under the same integration test. Late collection carries no authority of its own: it is working state the agent's own runs created, it reports rather than acts under a read-only request or where the project keeps integrated branches, and it authorizes no sweep of the repository.
+
+### Changed
+
+- The cleanup rule now lives in one place. `delegation` and `delivery` each carried a sentence about removing an owned branch or worktree once its work was integrated, and both now point at `finishing-a-branch` instead. The rules were never wrong; their triggers were unreachable for the case that produced the litter, since `delegation` only opens for delegated work and `delivery` only for a requested shared destination, and a branch created directly matched neither.
+
+### Evidence
+
+- The defect is measured, on a real project: 46 local branches, 43 of them already integrated, 15 of those left by host-created worktrees, one isolated checkout placed beside the repository against the kernel's own rule, and one orphaned directory under the ignored worktree location. What that inventory demonstrates is the accumulation, not its cause; the two explanations recorded in the decision history are reasoning from the shipped text. The corrective behavior carries no receipt and is `UNVERIFIED`.
+
 ## 2.6.0 (2026-08-29)
 
 ### Added

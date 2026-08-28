@@ -43,6 +43,7 @@ Read only the guidance that materially helps the current request. These are meth
 - For durable automated coverage, use [testing](references/testing.md).
 - For an explicitly requested or repository-required review, use [reviewing changes](references/reviewing-changes.md).
 - For an active merge, rebase, cherry-pick, or revert conflict, use [resolving merge conflicts](references/resolving-merge-conflicts.md).
+- For work on a branch or isolated checkout that is done and needs integrating and clearing away, use [finishing a branch](references/finishing-a-branch.md).
 - For a long-running step, a stalled lane, or a failure that keeps repeating, use [execution health](references/execution-health.md).
 - For a finding to carry forward, requested persistence, triage of incoming material, or work the project already has on record, use [intake](references/intake.md).
 - For the first durable record in a project with no recorded convention for tracked work, use [project setup](references/project-setup.md).
