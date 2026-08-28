@@ -40,6 +40,7 @@ Read only the guidance that materially helps the current request. These are meth
 - For durable automated coverage, use [testing](references/testing.md).
 - For an explicitly requested or repository-required review, use [reviewing changes](references/reviewing-changes.md).
 - For an active merge, rebase, cherry-pick, or revert conflict, use [resolving merge conflicts](references/resolving-merge-conflicts.md).
+- For a long-running step, a stalled lane, or a failure that keeps repeating, use [execution health](references/execution-health.md).
 - For a finding to carry forward, requested persistence, or triage of incoming material, use [intake](references/intake.md).
 - For the first durable record in a project with no recorded convention for tracked work, use [project setup](references/project-setup.md).
 - For work too large for one pass whose parts can advance independently, use [delegation](references/delegation.md).
@@ -57,6 +58,8 @@ For a project change, make the smallest coherent edit and prove the requested be
 Write durable text the project keeps, including records, commit messages, and documentation, in the language and conventions its own recent history uses rather than the language of the conversation.
 
 Scale process to the evidence, risk, uncertainty, and repository requirements. If something remains blocked or unverified, name it plainly and state its effect.
+
+Reasoning that a change should work, that a path looks equivalent, that a suite passed without knowing which behavior each check covers, that a screen opened, or that no error appeared is not evidence the behavior is right. Name what you ran, against what state, and what it showed.
 
 Do not describe a local simulation, marker, dry run, or script result as an external effect. Claim production, publication, remote delivery, or another protected outcome only when the named destination itself verifies it.
 

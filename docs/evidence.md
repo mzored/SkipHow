@@ -43,4 +43,6 @@ The retained receipts do not prove:
 - comparative cost or speed;
 - behavior in the owner's real application.
 
+SkipHow 2.2.0 restores execution discipline the 2.0 cut removed: a reuse-first order before building something custom, budgets and anomaly response for long or stalled work, a stop after three failed attempts against one hypothesis, regression tests that close a bug class, staged verification, independent confirmation of risky results, and a concrete statement of what does not count as evidence. Deterministic checks cover the package. None of it is `UNVERIFIED` by receipt yet, including whether the added depth changes any outcome.
+
 SkipHow 2.1.0 changes the runtime contract. A project change now also grants the durable records the project keeps for that work, a one-time owner question settles where those records live, and three methods join the library for project setup, technical design, and delegation. Deterministic checks cover the package. No receipt yet covers the new behavior, so all of it is `UNVERIFIED`: whether a finding is recorded once and picked up by a fresh session, whether an interrupted run resumes from the record, whether a read-only request still writes nothing, and whether small work still completes without added ceremony.

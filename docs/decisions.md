@@ -46,6 +46,16 @@ This reverses an alternative ADR 0014 rejected, and the ground has changed. That
 
 Revisit this if a receipt shows a record written to a destination the owner did not choose, a stale note surviving a real convention change, or the setup question repeating in a configured project.
 
+## Method depth is limited by loading, not by length
+
+Methods carry the detail that changes what a capable agent does: the order to search before building something custom, what stops a lane from repeating a failed attempt, what makes a regression test close a bug class, what does not count as evidence.
+
+Version 2.0 cut this material along with the workflow machinery it was tangled in, on the reasoning that shorter instructions cost less attention. That traded away substance for a saving the project never measured. What the project did measure, in the 1.8.0 audit, is that a reference which does not load governs nothing.
+
+The constraint is therefore the trigger and the kernel, not the word count. Keep a method's trigger decidable without reading the file, keep anything that changes authority or the definition of done in the kernel, and let the method itself be as detailed as the discipline requires.
+
+Revisit this if receipts show applicable methods going unread, a kernel rule displaced into a reference, or added depth producing no change in outcome.
+
 ## Critical rules stay in the kernel
 
 Authority, autonomy, preservation, and completion remain in `SKILL.md`. Conditional technique belongs in a focused reference.
