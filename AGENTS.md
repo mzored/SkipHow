@@ -16,13 +16,13 @@ Prefer deleting a contradiction, clarifying intent, or moving a discipline into 
 
 ## Evidence
 
-Use current primary documentation for host behavior, plugin formats, and security guidance rather than older notes in this repository. Accepted decisions in `docs/decisions/` and notes in `docs/research/` are evidence with a date, not constraints: confirm, revise, or supersede them with a new ADR when current evidence supports it.
+Use current primary documentation for host behavior, plugin formats, and security guidance. Read `docs/decisions.md` before changing the product contract so old alternatives are not reopened without new evidence. The immutable 2.0.1 links in that file preserve the full earlier ADR and research archive.
 
-Model behavior is proven only by receipts under `docs/research/<date>/` from real runs made on purpose with the host's own permission and budget controls (ADR 0008). A behavior no receipt has shown stays `UNVERIFIED`. Deterministic checks and CI never start a model, and tests never create or delete a repository.
+Model behavior is proven only by deliberate receipts from real runs made with the host's own permission and budget controls. Summarize claims and durable source links in `docs/evidence.md`; do not add one research file per run or release. A behavior no receipt has shown stays `UNVERIFIED`. Deterministic checks and CI never start a model, and tests never create or delete a repository.
 
 ## Checks
 
-Run focused tests through `python scripts/check.py --pytest <pytest-arguments>`. Before completion, run `python scripts/check.py` and `git diff --check`. For packaging changes, also run `python scripts/check_hosts.py` and report an unavailable host as `UNVERIFIED`. `scripts/check.py` validates the single owner skill, all reachable internal methods and resources, the continuity hook, aligned versions, and portability boundaries such as personal paths and versioned model IDs. Change the check together with the ADR when those invariants change; do not pin a method roster, role set, or prose budget.
+Run focused tests through `python scripts/check.py --pytest <pytest-arguments>`. Before completion, run `python scripts/check.py` and `git diff --check`. For packaging changes, also run `python scripts/check_hosts.py` and report an unavailable host as `UNVERIFIED`. `scripts/check.py` validates the single owner skill, all reachable internal methods and resources, the continuity hook, aligned versions, and portability boundaries such as personal paths and versioned model IDs. Change the check and `docs/decisions.md` together when those invariants change; do not pin a method roster, role set, or prose budget.
 
 ## Portability and safety
 
