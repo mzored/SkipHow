@@ -2,6 +2,22 @@
 
 All notable changes to SkipHow 2.x appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 2.4.1 (2026-08-28)
+
+### Fixed
+
+- `docs/evidence.md` claimed Claude behavior could not be isolated without exposing a token. That was wrong. `--setting-sources ''` with `--strict-mcp-config` and the package passed as a session plugin drops user settings, skills, plugins, hooks, and MCP servers while authentication stays in the system keychain untouched. A control run confirmed the owner skill loads and no `CLAUDE.md` reaches the context.
+- The run count is now the number of counted cases, eleven on 2.3.0 and seventeen on the release, rather than the bench's total volume. The earlier figure counted runs against intermediate wording that the page never quoted.
+
+### Evidence
+
+- Claude behavior is no longer `UNVERIFIED`. The four cases 2.3.0 failed and the two it passed that mattered most behave the same on both hosts: the open product question comes back with a recommendation and nothing is written, a `Blocked` item stays blocked while the rest is fixed, a resumed epic closes items carrying what they established, and a reported bug is fixed with a regression test and a clean commit in about a minute with no questions.
+- Three cases built so that asking would be the failure — a fully specified request, an ambiguity the project's own code settles, and a purely technical fork — produced no question and no assumption inventory. This is the counterweight the release previously lacked.
+- A real repository of five hundred commits took a small feature in eight files and ninety-one lines, following its existing layout and commit convention, restructuring nothing, and leaving an unrelated dirty file and untracked directory untouched. A Russian request was answered in Russian with English commit, tests, and tracker entry.
+- Method files load in proportion to the work on Codex and mostly do not load on Claude, where the kernel alone carried the same behavior across six runs. The rules this release turns on are in the kernel, which is why it held.
+- Delegation, effort routing, and the delegate return shape remain `UNVERIFIED`: two runs built to provoke delegation did not, because the proportionality rule correctly judged three small features to be one pass. Continuity across compaction remains `UNVERIFIED`; the smallest auto-compaction window makes provoking a real one expensive, and simulating it would not be evidence.
+- The shipped package is unchanged from 2.4.0. This release corrects documentation only.
+
 ## 2.4.0 (2026-08-28)
 
 ### Added
