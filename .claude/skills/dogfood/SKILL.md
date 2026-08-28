@@ -22,8 +22,10 @@ session's subagents are separate files beside it. Inspect the current record sha
 field names and layout change between host versions, so read what is actually there rather than assuming last
 month's structure.
 
-A helper script may sit next to this file. If it does, use it. If it is missing or out of date, ordinary search
-and a few lines of Python are enough; do not rebuild a large tool to avoid them.
+Ordinary search plus a few lines of Python is the whole toolchain. Finding the session is one `grep`; reading
+it, and adding up time and tokens per subagent, is a short script written on the spot. Do not build a standing
+tool for this — one existed, grew to thousands of lines defending against tampering with the owner's own local
+transcripts, and answered the question worse than a `grep` does.
 
 Transcripts hold other projects' private work. Treat everything in them as confidential, keep session content
 out of delegate briefs and any external output, and check anything before copying it into a durable file.
