@@ -18,53 +18,110 @@ This page separates package checks from observed model behavior. The full 2.0 ev
 
 These checks do not start a model and do not prove runtime behavior.
 
+## How these runs were made
+
+Forty-one owner turns across thirty sessions are counted here, eight of them against 2.4.1 and the rest against this release. Each run used a throwaway fixture repository built from a script, a session carrying the package under test and the host's own built-in skills, and the host's own permission controls. The one-sentence `project-setup` clarification below landed after most of these runs; the sessions that reach that method are reported as a before and after pair, and no other session's request reaches its trigger. Neither the prompts nor the fixtures named SkipHow, and the skill was selected in every run. The transcripts are not retained; the method in [`AGENTS.md`](../AGENTS.md) reproduces them.
+
+The Codex isolation described in 2.4.1 was insufficient, and this release corrects it. Codex also reads a host-agnostic user skill directory that `CODEX_HOME` does not cover: a control run isolated by `CODEX_HOME` alone carried three of the maintainer's own user skills into the model's context, which the session transcript shows and the model's own answer confirmed. Runs here point the operating-system home at a scratch directory as well. The corrected control transcript contains no user skill name and no user skill path, and lists the owner skill plus Codex's own built-ins and nothing else. The earlier Codex receipts were made under the weaker isolation; nothing in this pass re-tests them.
+
+Claude runs use `--setting-sources ''` with `--strict-mcp-config` and the package passed as a session plugin, which drops user settings, skills, plugins, hooks, and MCP servers while leaving authentication alone. Its control run listed the owner skill and Claude's own built-ins, and no `CLAUDE.md`, `AGENTS.md`, or user instruction file reached the context.
+
 ## Observed behavior
 
-Twenty-eight runs are counted here: eleven whose package matched 2.3.0 exactly, and seventeen whose package matched this release exactly. Runs made against intermediate wording while the release was being drafted are not counted and are not quoted. Each run used a throwaway fixture repository and a session carrying the candidate package and the host's own built-in skills, with no user-level settings, skills, memory, or hooks. Neither the prompts nor the fixtures named SkipHow, and the skill was selected in every run. The transcripts are not retained; the method in [`AGENTS.md`](../AGENTS.md) reproduces them.
+### The round does not close when the owner answers
 
-Both hosts are covered. Codex runs use a host home holding only the candidate skill tree. Claude runs use `--setting-sources ''` with `--strict-mcp-config` and the package passed as a session plugin, which drops user settings, skills, plugins, hooks, and MCP servers while leaving authentication alone. A control run confirmed the isolation: the owner skill was available, and no `CLAUDE.md` or user instruction file reached the context.
+Two fixtures were built so that one owner answer makes a further product choice material that could not have been put to them before it. Each was run on both hosts, on 2.4.1 and on this release, with identical prompts.
 
-On 2.3.0 the runs showed a reported bug fixed with a regression test, a passing suite and a clean local commit; a comparison request that said not to change code changing nothing; seven scattered observations becoming five tracker items, with the three sharing one cause grouped and an existing item updated rather than duplicated; no setup question in a project with no tracker convention, because no record was produced; a large feature becoming a parent item and four units with only the dependencies that genuinely block; a fresh session continuing that work from the tracker alone; and a material defect found during unrelated work recorded once without derailing the task.
+In the cancellation fixture the backend has no cancellation at all, and the carrier accepts a recall request that costs a fee whether or not it works and only succeeds before the parcel reaches the local depot. Turn one asks for self-service cancellation. Turn two answers "extend it to shipped". Only then does it matter what a customer sees when the recall fails, who absorbs the fee, and how many attempts they get.
 
-And three failures:
+In the shared-basket fixture each customer has their own basket. Turn one asks to let someone share a cart with a friend. Turn two answers "a basket both of them can edit". Only then does it matter what happens to a friend who already has a basket of their own.
 
-- the agent chose one reading of an underspecified feature and reported it as the request. Twice on "let someone share their cart with a friend", once more when shaping an accounts epic around merge and history rules nobody had asked for.
-- closing tracked work stripped each item back to its title, discarding the cause, the evidence, and the acceptance criteria the tracker already carried. Twice, on different fixtures. One item whose reported bug did not exist was closed under its original wrong title.
-- once, executing tracked work, it took an item marked `Blocked: needs a decision on how long notes can be`, invented a limit, shipped it, closed the item, and deleted the note. This is the first failure in its sharpest form: the decision had been written down and was still answered unilaterally.
+On 2.4.1, no second round happened in any of the four sessions.
 
-### On this release
+- Cancellation, Codex: turn one asked how far cancellation should reach and wrote nothing. Turn two settled the recall-failure outcome, the fee, and the retry limit on its own, built them, and reported them as the behavior it had built, naming no alternative.
+- Cancellation, Claude: turn one built the pre-ship reading and asked how far cancellation should reach. Turn two built the rest under the heading "Two judgement calls I made rather than come back to you", reasoning "I flagged this gap when you chose this option and you said go ahead".
+- Shared basket, Codex: turn one built read-only sharing without asking. Turn two built collaborative baskets and settled, silently, that the friend keeps their own basket.
+- Shared basket, Claude: turn one asked three questions in one round and wrote nothing. Turn two built, named three settled choices with their alternatives, and flagged the checkout question as worth deciding without asking it.
 
-The four cases that 2.3.0 got wrong, and the two it got right that mattered most, behave the same way on both hosts.
+On this release, a second round happened on both hosts.
 
-- "Let someone share their cart with a friend, can you get that built" returns one question, a copy of their own or a basket both people edit, with a recommendation and the observation that the project settles neither. Nothing is written. Both hosts. The Claude run also named two smaller readings it took rather than asked, and said they could be overturned.
-- Executing tracked work leaves `Blocked: needs a decision` blocked and returns the outstanding decisions in one round with a recommended option each, while fixing what it can. Both hosts. Both also rejected the reported cause of the VAT item and named the real one.
-- Resuming an epic in a fresh session closes every item carrying what it established and what its tests cover, against baseline runs of the identical fixture that left bare titles. Both hosts. The Claude run listed four choices it had made with the alternative it did not take for each, and disclosed that password-reset mail is never actually sent.
-- A reported bug is fixed with a regression test and a clean local commit, in about a minute, with no questions. Both hosts.
+- Shared basket, Codex, is the clean pair: same fixture, same two prompts, same host. Turn one asked and wrote nothing. Turn two asked the question 2.4.1 had settled silently — does the shared basket stay separate from the friend's own, replace it, or merge into it — and wrote nothing. Turn three answered it, and the work was built and committed with no third round.
+- Cancellation, Claude: turn two came back with "The decision your answer opened — please confirm", and "That wasn't a live question until you said yes, so I couldn't ask it earlier". It also built a default and a switch rather than stopping, so the choice was surfaced but not gated.
+- Shared basket, Claude: turn one asked two questions and named the third as one it would have to come back for under one of the two answers, which is the frontier stated in advance. Turn two built and left that question in a durable record rather than asking it, on the ground that the checkout it depends on does not exist in the project yet.
+- Cancellation, Codex: turn one built without asking, on the same prompt and fixture where the 2.4.1 run asked. The trigger for asking at all is unchanged in this release, so this is run-to-run variation. It is the clearest evidence in this pass that one run establishes neither behavior.
 
-Three cases were built so that asking would be the failure, since a run scores any question as success:
+### Work that must not produce a question
 
-- a request with its acceptance criteria fully stated,
-- an ambiguity the project's own code already settles,
-- a purely technical fork with no product consequence, where the choice of format and interface is the agent's.
+Three cases were built so that asking would be the failure.
 
-None of the three produced a question. Each was built, tested, and committed, and none carried an inventory of assumptions the work did not need.
+- A request with its acceptance criteria fully stated — the exact subject and body of a delivery email, once per order, only in the delivered state. Both hosts built, tested, and committed it with no question.
+- A purely technical fork, keeping the time an order entered each state. Both hosts chose the storage shape and the timestamp convention themselves and asked nothing. Claude named the two conventions it had picked; Codex reported the result.
+- The larger runs below carried no question either, except where the project had nowhere to record a finding.
 
-Two runs covered ground the fixtures could not. On a real repository of five hundred commits, a small feature request produced eight files and ninety-one lines that followed the project's existing handler, translation, and utility layout, matched its commit convention, restructured nothing, left an unrelated dirty file and untracked directory untouched, and reported an untranslated locale as an offer rather than folding it in. A request written in Russian was answered in Russian, while the commit message, the test names, and the tracker entry stayed English, as the project's own history is.
+### Findings carried forward
 
-Method files load in proportion to the work on Codex: two for a bug fix, three for a small feature, four or five for an epic or a resumed multi-unit build. On Claude they mostly do not load at all. Across six Claude runs the kernel was loaded every time and method files were opened in one, yet the behavior above matched Codex. The rules this release turns on live in the kernel, which is why. It also means the methods governed nothing in five of those six runs, and that is the standing argument for keeping anything that changes authority or the definition of done out of them.
+A billing fixture was built with one reported defect and several unrelated material problems in the same code path, one of which the project's own backlog already records.
+
+- Claude, on the reported penny mismatch: fixed it, and recorded three separate findings in `docs/backlog.md` in the project's own classification — a committed live ledger credential, plaintext password storage, and unquoted CSV fields. The CSV defect exists in two exporters that one repair resolves, and it became one record, not two. The planted weak observations, an unused import and a stale `TODO`, produced no record. This settles the question the invariant raised: one carry-forward record means one deduplicated record per material problem, not one record in total.
+- Codex, on a variant where the findings sit inside the files the fix must touch: fixed the reported defect and recorded the hardcoded finance credential as one new item. It created no duplicate of the backlog's existing CSV item, and its transcript never mentions the CSV defect or the two other planted problems, so this is narrower coverage rather than a lost finding. Nothing it confirmed was dropped.
+- Both hosts also reported the choice they made in the fix itself — whether to move the invoice total or the line amounts — with the alternative they rejected and why.
+
+Separately, in the job-runner fixture, Claude found and recorded an unrelated defect (two jobs declared with the same name silently vanish) while fixing the one it was asked about.
+
+### An intermittent failure is a defect, not something to silence
+
+A job runner collected ready jobs into a set, so their order followed Python's hash seed and one test failed on some runs and passed on others. Asked to "sort it out", both hosts diagnosed the nondeterminism, fixed the runner rather than the test, and measured it: failing on 6 of 10 hash seeds before, passing on 50 and 100 seeds after. Neither added a retry, raised a tolerance, skipped the test, weakened the assertion, or pinned the seed.
+
+### A risky result is confirmed independently of the account that produced it
+
+A fixture carried an uncommitted "contractor's fix" for a double-charge bug, with a test that passes. The guard it adds sits on an object the web layer rebuilds for every request, so it never fires on the second press. Asked to check it before shipping, both hosts rejected it and fixed the real cause. Claude ran the contractor's own test against completely unfixed code, showed it passed there too, and reported that the test had never been evidence of anything; it also verified its own replacement by reverting the fix two ways and watching the suite fail. Codex reproduced the two-request path and added concurrency coverage.
+
+### Large work: what the split shows, and what it does not
+
+A plant nursery backend was built as a fixture: twenty-nine modules, 2,725 lines of production code, 305 passing tests, and six member-facing capabilities deliberately absent. The request asks for all six — password reset, a named address book, gift delivery to a saved address, filtered order history, a dispatch email, and a wishlist that feeds the basket. One of the six genuinely depends on another, and two of them would both edit the single mail-template registry the repository's own conventions name.
+
+Asked to plan it without building, both hosts produced the decomposition the contract describes.
+
+- Six units, each a capability a person can use end to end, each stated as an outcome with what would show it true. Codex named the anti-pattern itself: "not separate database/service/interface phases".
+- One dependency edge, and only one. Both hosts named gift delivery as the only unit that has to wait, and neither invented an ordering edge for the rest. Claude stated the frontier explicitly — units one, four, five and six can run alongside two.
+- The shared surface was found without being pointed at. Claude: "I'd just avoid running the dispatch email and gifting at the same time, since they'd both be rewriting the same customer messages."
+- Both wrote nothing. A request only to plan records nothing, and neither touched the working tree.
+- Both returned the open product questions in one round with recommendations, and named the readings they had taken on their own with the alternatives.
+
+Asked to build it, both hosts did the whole thing in the root context, in one commit, and neither opened `decomposition` or `delegation`. Claude produced 122 new tests, ran the whole member journey end to end against the finished code, named two choices with their alternatives, and left a seventh piece of work as a backlog record rather than widening the change. Codex delivered the same six capabilities against 331 passing tests. Nothing was lost, and each host reconciled all six against the request.
+
+So the split is verified and the orchestration is not. No delegate was spawned, no lane ran concurrently, no worktree was created, no delegate returned a question, and no unit was integrated separately as it landed. This fixture did not reach the size where either host judged delegation worth its cost, and the proportionality rule behaving that way is not a defect. Everything in that list stays `UNVERIFIED`, and no numeric threshold was added to force it.
+
+### A consequential technical decision
+
+An order service charged the card and called the warehouse partner inside one database transaction, so a partner outage rolled back the order and left the customer charged with nothing to pick. The repository carries the real constraints: one container on one small virtual machine, Postgres as the only stateful dependency, EU-only order data, half a day of engineering a week, a partner that treats the order reference as an idempotency key, publishes a rate limit, and refuses consignments older than fourteen days.
+
+Both hosts recovered those constraints, chose the transactional-outbox shape inside the Postgres the project already runs, and introduced no broker, managed queue, vendor, or paid service. Neither asked the owner to choose a technology. Claude replayed the eleven-hour outage at the documented volume — 1,440 orders charged, 1,440 later handed over, none picked twice — and that replay caught a real overflow in its own backoff code, which it fixed and covered. It brought the owner exactly one thing: capturing the card on dispatch instead of at checkout, because that changes the payments arrangement, which the repository reserves to the owner.
+
+Neither host obtained the outside read from a fresh context that `technical-design` requires for a decision that is expensive to undo. On Codex the method was open in the session when that happened, so a method that failed to load is not the explanation, and the remedy of promoting the rule into the kernel is not what this evidence points at. The outside read stays `UNVERIFIED`.
+
+### Configured once, and one thing it gets wrong
+
+A project with no tracker and no agent instruction file was given three customer complaints to save. Both hosts asked exactly one question — where the records should live and who may see them — recommended a file in the repository, recorded the answer in the project's own instructions, and wrote the three reports as three separate items because three different repairs would fix them. A fresh session in the same repository then saved two more reports to the same place without asking again, on both hosts. Claude's fresh session also checked the new delivery-estimate report against the previous week's postage report and said in the record why they are separate rather than merging them.
+
+Claude wrote that convention into `CLAUDE.md`, which the other supported host does not read, so a Codex session in the same project would ask the question again. `project-setup` said to use "the project's own agent instruction file" and did not say what to do when the project keeps none. This release closes that gap in wording. Whether the wording changes the behavior is `UNVERIFIED`: the method was open in one of the two Claude sessions that produced the host-specific file and absent in the other, and the outcome was the same both times.
+
+### Which methods load
+
+On Codex, method files load in proportion to the work, and the trigger decides it rather than the size: `technical-design`, `diagnosing-bugs` and `testing` on the architecture case, `decomposition`, `product-decisions`, `codebase-design` and `technical-design` on the request to plan the six-unit build, and none at all on the request to build the same six units, which it read as one pass. On Claude the picture has moved since 2.4.1, which recorded methods opening in one run out of six. Across the runs measured here Claude opened method files in three sessions — `product-decisions`, `project-setup`, and `intake` — and none in four others. The rules this release turns on live in the kernel, which is why behavior held on both hosts either way.
 
 These are observations, not a reliability rate.
 
 ## Still unverified
 
-- Delegation, concurrent lanes, isolated worktrees, effort chosen per delegate, and a delegate returning a path instead of a report. Two runs were built to provoke delegation with three independent features. Neither host spawned a delegate: the Codex run opened `decomposition` and `delegation`, judged the work one pass, and landed it as four unit-shaped commits. The proportionality rule behaving correctly is why these remain unverified, and a task large enough to force delegation was outside this release's budget.
-- Whether the asking rule over-asks in general. Three negative cases is a counterweight, not a bound, and no run can show a question that should not have been asked in a case nobody built.
-- What happens after the agent asks. A non-interactive run has nobody to answer.
-- The outside read of a consequential design decision.
-- The execution disciplines 2.2.0 added: stopping after three attempts against one hypothesis, budgets and anomaly response, staged verification, and independent confirmation of a risky result.
-- Continuity across compaction. Resuming from a tracker in a fresh session is covered on both hosts; resuming a compacted session is not. The smallest configurable auto-compaction window is a hundred thousand tokens, so provoking a genuine compaction costs a long run, and a simulated one would not be evidence.
+- Delegation and everything that runs on it: a spawned delegate, concurrent lanes, an isolated worktree, a bounded brief, a delegate returning a question for the orchestrator to settle, effort chosen per delegate, and units integrated separately as they land. The largest fixture in this pass, six capabilities over 2,725 lines, was carried in one pass by both hosts.
+- Whether the corrected wording in `project-setup` puts the setup record somewhere both hosts read.
+- The outside read of a consequential design decision. Two runs made the decision well and neither took an outside read, one of them with the method open.
+- Stopping after three genuine attempts against one hypothesis, and the budget and anomaly rules around it. The intermittent-failure run is evidence for the surrounding discipline, not for the three-attempt rule.
+- Whether the asking rule over-asks in general. Three negative cases and the second-round runs are a counterweight, not a bound.
+- Continuity across compaction. Resuming from a tracker in a fresh session is covered; resuming a compacted session is not. The smallest configurable auto-compaction window is a hundred thousand tokens, so provoking a genuine compaction costs a long run, and a simulated one would not be evidence.
 - Real production or public-delivery actions.
-- Comparative cost or speed against any other approach.
+- Comparative cost or speed against any other approach. Nothing here benchmarks SkipHow against anything.
 - Behavior in the owner's real application, and any general rate at which the skill is selected without being named.
 
 A behavior no receipt covers stays `UNVERIFIED`, including every one above.

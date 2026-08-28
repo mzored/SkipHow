@@ -18,7 +18,7 @@ Anyone who owns what a product should do and would rather not run the engineerin
 
 You decide visible behavior, priority, cost, risk, privacy, and rollout. SkipHow owns libraries, schemas, tests, branches, decomposition, review, and every other engineering choice.
 
-It brings a question back only when the answer changes product behavior, scope, priority, cost, risk, privacy, or rollout, when an action needs your explicit grant, or when only a person can do it. Where your request leaves such a choice open, it asks once, with a recommendation, before building. Where it chose without asking, it tells you what it chose and what the alternative was.
+It brings a question back only when the answer changes product behavior, scope, priority, cost, risk, privacy, or rollout, when an action needs your explicit grant, or when only a person can do it. Where your request leaves such a choice open, it asks before building, with a recommendation, and puts everything it can ask into one round. If your answer opens a choice nobody could have put to you before it, that comes back too, and then the work carries on. Where it chose without asking, it tells you what it chose and what the alternative was.
 
 ## Install
 
@@ -53,7 +53,7 @@ Review this change and fix any real problems you find.
 
 ## How a request usually goes
 
-You say what should be true for the product. SkipHow reads the project before it asks you anything, and if a product choice is genuinely open it asks once, with the option it recommends. Then it decides the engineering, does the work, and checks the result against real behavior. You get the result first, then the evidence, then whatever is still uncertain.
+You say what should be true for the product. SkipHow reads the project before it asks you anything, and if a product choice is genuinely open it asks, with the option it recommends, before it builds. Then it decides the engineering, does the work, and checks the result against real behavior. You get the result first, then the evidence, then whatever is still uncertain.
 
 ## What it does
 
@@ -63,14 +63,14 @@ You say what should be true for the product. SkipHow reads the project before it
 - Production, public releases, credentials, payments, access changes, and destructive actions need an explicit grant.
 - A problem found along the way is fixed, or recorded where your project tracks work, so the next session picks it up.
 - Work that finishes carries what it established into the record, so nobody investigates it twice.
-- Large work is split into parts you can each see working, and independent parts can run at the same time.
+- Large work is split into parts you can each see working, with only the dependencies that genuinely block one another.
 - Unrelated work stays untouched. Missing evidence stays `UNVERIFIED`.
 
 ## Why there is so little process
 
 SkipHow has no phases, roles, personas, required specs, ticket templates, or approval stages. That is a design choice, not an omission. A strong model does not need to be told the order of engineering work. An instruction the agent never opens governs nothing, which the project measured in its own field audit. So the package keeps only the rules that change what a capable agent would otherwise do. The ones about authority and completion stay where they are always in context. The rest sit behind triggers the agent can decide from outside the file.
 
-Where a more prescriptive framework gives the operator a workflow to drive, SkipHow states a contract and leaves the sequence to the agent. Treat that as a design position rather than a measured comparison; nothing here benchmarks one against the other. What is measured, on both supported hosts, is that a reported bug fix finishes in about a minute with no questions, while a new feature stops to ask which product it should be, and that a fully specified request is built without asking anything. The runs are in [current evidence](docs/evidence.md).
+Where a more prescriptive framework gives the operator a workflow to drive, SkipHow states a contract and leaves the sequence to the agent. Treat that as a design position rather than a measured comparison; nothing here benchmarks one against the other. What is measured, on both supported hosts, is that a fully specified request is built and committed without a question, that a purely technical fork is settled without one, and that an underspecified feature comes back with the product question and its recommendation before anything is written. Not on every run, which the evidence records rather than smooths over. The runs are in [current evidence](docs/evidence.md).
 
 SkipHow is an instruction package, not a workflow engine. The host still controls permissions, tools, sessions, and credentials, and SkipHow cannot exceed them.
 

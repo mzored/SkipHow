@@ -2,6 +2,30 @@
 
 All notable changes to SkipHow 2.x appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 2.5.0 (2026-08-28)
+
+### Changed
+
+- A round of product questions now ends when nothing material is open, not when the owner has answered once. One round is the shape of a batch, not a budget: ask together everything that can be asked now, and when the owner's answer makes a further choice material, ask that one too. An answer is not permission to settle what it opened.
+- `product-decisions` states which questions are askable now — a question whose options only exist under a particular answer belongs to the round after that answer — and that anything the project, its records, or a source can settle is the agent's to settle rather than the owner's.
+
+### Fixed
+
+- The Codex isolation that `AGENTS.md` prescribes for receipts was insufficient. Codex reads a host-agnostic user skill directory that `CODEX_HOME` does not cover, and a control run under the old method carried three of the maintainer's own skills into the model's context. The method now isolates the operating-system home as well, and requires confirming isolation in the session transcript rather than by asking the model what it can see.
+- `README.md` claimed a new feature stops to ask which product it should be. Receipts show that happening on some runs and not others, so the claim now states what was actually measured.
+- `project-setup` did not say where the one-time record of a project's tracked work goes when the project keeps no agent instruction file of its own. A receipt shows Claude writing it into a file only Claude reads, which would make the other host ask the same question again. The method now says to put it where any agent working on the project would read it. Whether that changes the behavior is `UNVERIFIED`.
+
+### Evidence
+
+- Forty-one owner turns across thirty sessions on throwaway fixtures, on both hosts: eight turns on 2.4.1, the rest on this release. The `project-setup` clarification landed late, so the sessions that reach that method are reported as a before and after pair and no other session's request reaches its trigger. Method, isolation, and results are in [`docs/evidence.md`](docs/evidence.md); the transcripts are not retained.
+- The defect this release fixes was demonstrated before the change on both hosts. In four 2.4.1 sessions across two fixtures, not one opened a second round after the owner's answer, and each settled the choices that answer had opened. On this release a second round appears on both hosts, and the cleanest pair is a Codex session that asked exactly the question its 2.4.1 counterpart had settled in silence, then built once it was answered, with no third round.
+- Two cases built so that asking would be the failure produced no question on either host: a request with its acceptance criteria fully stated, and a purely technical fork. The larger runs in this pass carried no question either, except where the project had nowhere to record a finding.
+- One reported defect plus several unrelated material problems in one code path produced one deduplicated record per problem, including one defect spanning two files that became a single record, and no record for the planted weak observations. "One carry-forward record" is not "one problem".
+- Both hosts split a six-capability build over a 2,725-line codebase into six independently verifiable units with exactly one dependency edge, found the shared surface unprompted, and wrote nothing on a plan-only request. Asked to build the same six, both carried them in one pass. Delegation, concurrent lanes, worktrees, and delegate briefs remain `UNVERIFIED`, and no numeric trigger was added to force them.
+- An intermittent test failure was diagnosed and fixed at its cause on both hosts, measured across hash seeds, with no retry, skip, or weakened assertion. A change that claimed to fix a double charge was rejected on both hosts after each reproduced the failure itself; Claude also showed the change's own test passing against unfixed code.
+- Both hosts chose a transactional outbox inside the project's existing database for a consequential architecture decision, added no vendor or paid service, and brought the owner only the choice that changes the payments arrangement. Neither took the outside read that `technical-design` requires, on Codex with the method open, so that behavior stays `UNVERIFIED` and no rule moved into the kernel.
+- `python scripts/check.py` and `git diff --check` pass. Both host package validators pass and Claude's isolated install passes. Codex's isolated install is `UNVERIFIED`: local machine policy restricts marketplace sources to the published repository.
+
 ## 2.4.1 (2026-08-28)
 
 ### Fixed
