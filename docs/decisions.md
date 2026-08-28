@@ -10,7 +10,9 @@ SkipHow exposes one plain-language skill. Focused methods remain internal refere
 
 Earlier versions tried named routes, separate commands, role files, and sibling method skills. Those shapes either exposed engineering workflow to the owner or allowed a method to load without the authority kernel.
 
-Revisit this if a portable skill standard adds required skill dependencies, or repeated receipts show one entry causing missed outcomes or unauthorized actions.
+Version 2.6.0 considered a command surface for four owner-facing entries and did not ship one. Two of the four restated policy the methods already carried, which is duplication that drifts at the first edit to either copy. The other two would have earned their place only by naming a method file so its loading stopped being the model's decision, and the evidence for that is the general non-loading measured in 2.5.0 rather than anything about these methods. Codex plugins also support no command surface at all, so anything a command carried would have existed on one host and not the other. What the owner asked for is now two methods with triggers stated in their own words, reached the same way on both hosts.
+
+Revisit this if a portable skill standard adds required skill dependencies, if receipts show the new methods going unread from a plain-language request, or if repeated receipts show one entry causing missed outcomes or unauthorized actions.
 
 ## Host-native execution
 
@@ -27,6 +29,8 @@ Read-only requests stay read-only. Record requests grant only the record. Projec
 Earlier versions tried magic phrases, fixed routes, tracker markers, and GitHub lifecycle rules. They made wording and procedure more important than the owner's actual outcome.
 
 Version 2.1.0 added the durable records because the earlier contract met this section's own revisit condition: a separable finding that reached only the chat transcript was a dropped material outcome, and the next session paid to rediscover it. The records use the project's own tracker and classification, so no SkipHow schema returns with them.
+
+Version 2.5.0 named where the largest of those records goes. The contract already granted "the state a later session needs to continue it" without saying where, and installed sessions read it as a local file: in two of them the plan driving the whole run was untracked, invisible on the project's own tracker, and never brought current — one a seventeen-kilobyte specification carrying the owner's own pricing and legal decisions, whose file was last written ninety minutes before the two-hour session that executed it and never again, while that session's context was compacted mid-run. Where an authorized change runs across several units and needs a plan to finish safely, that plan now belongs in the place the project already keeps tracked work. This names a destination the grant did not, and it is new policy to that extent; it leaves `continuity` to decide when a checkpoint exists at all, introduces no format, schema, or file of SkipHow's own, and reaches only work the owner already authorized as a change.
 
 Revisit this if a receipt shows an unauthorized protected action, a dropped material outcome, or repeated questions about routine engineering mechanics.
 
@@ -48,6 +52,16 @@ The frontier is adapted from Matt Pocock's `grilling`, which asks each round the
 
 Revisit this if receipts show questions on work the product already defines, an owner asked about engineering mechanics, or a small change acquiring a round of clarification.
 
+## What the owner decided is a record, not a message
+
+An answer the owner gives is a decision the project carries. Where the request authorizes a record, it is written where the work is tracked, with what it settled and the option they turned down, before anything depending on it is built. When the owner asks to settle what they want before work starts, `product-spec` turns that into a document they can read back: a vocabulary in their own words settled before the outcomes, the outcome stated as what a person will be able to do, each decision with its rejected alternative, and what is deliberately out of scope.
+
+The kernel already required naming the alternative for a reading the agent took on the owner's behalf. It said nothing about the answers the owner gave. Installed sessions recorded them well anyway — one wrote "Решение владельца 2026-08-28" into the issue it opened for the work — but that was good practice rather than a rule, and the seventeen-kilobyte specification carrying the same owner's pricing and legal decisions stayed an untracked local file that its own executing session never reopened.
+
+Version 2.5.0 adds the rule and the method. The method fires on the owner's own request and not on the agent's judgment that a result was broadly stated: that case was already covered, by asking under `product-decisions` and recording the agreed outcome, and making it a second trigger would have added a procedure the receipts do not support. Only the documentary half of `grill-with-docs` is adapted; its interview is the `grilling` frontier already adopted in the section above, and that section's stopping rule is restated in the method so the spec cannot become an interview that runs until a design tree is exhausted. The standing rejection of `to-spec` and `to-tickets` is intact: the owner reads and checks the product they want, never the engineering shape, and the method forbids prescribing files, structure, steps, or ticket granularity. What is new and not adapted from anywhere is the vocabulary rule; nothing in the package had one, and a term that carries two meanings is a defect that reaches every delegate reading the spec.
+
+Revisit this if receipts show the record duplicating what the tracker already holds, a spec written for work the owner had already stated plainly, or the vocabulary list growing past what the outcome needs.
+
 ## A consequential decision gets one outside read
 
 A technology, architecture, or system-shape decision that is expensive to undo gets one read from a context that did not produce it, given the problem and the evidence rather than the preferred answer, and asked what it would choose and what would make that choice wrong. The rule lives in the method that owns those decisions, so its reach is that method's trigger and no wider. A second host or model family is preferred over a second pass by the same context. The result is evidence to weigh, not a vote.
@@ -57,6 +71,16 @@ Version 1.12 had this as cross-host escalation with named commands, and 2.0 remo
 Version 2.4.2 tried to make the rule execute and failed, which is worth recording so the next attempt starts further along. Ten runs on an order service that charges the card inside the same transaction as the warehouse call — a decision that commits the project to a schema, a retry loop, and an operational dependency — produced ten sound transactional-outbox designs and not one outside read, five runs on each host, with `technical-design` demonstrably open in all five on Codex. Three kernel wordings were tried and discarded: the read as a condition of finishing, the same with the host's own delegate named, and the same as a step before building on the decision. None changed the behavior on either host, and none of the runs mentioned the rule. What the runs did say points at the trigger rather than the wording: each treated its own choice as ordinary and cheap to reverse, and one listed its remaining choices as "both reversible". "Expensive to undo" is the agent's own estimate of its own decision, which is the shape 1.9.0 identified as unusable. So nothing was promoted, the rule stays where it was, and the behavior stays `UNVERIFIED`. A future attempt should replace the trigger, not restate the duty.
 
 Revisit this if a trigger appears that a run can evaluate without grading its own decision, if receipts show the outside read returning agreement without finding anything, or if its cost exceeds the rework it prevents.
+
+## Ordering applies only to work that competes
+
+A roadmap is produced where more candidates are on record than can be done soon and no order settles them: accumulated ideas, feature requests, user feedback. Units belonging to one outcome the owner already authorized are not ranked. They are sequenced by what blocks what, and whichever is more valuable, the one that unblocks the other still goes first, so a ranking over siblings inside a decomposition is arithmetic that dependency then overrules.
+
+The owner raised this against the first draft of `prioritization`, which scored recorded work generally. The risk they named is the one that would have made the method worthless: run over the epics and tasks of one large piece of work, it spends a pass to rediscover the dependency edges the decomposition already wrote down. The method now checks which shape is in front of it before scoring anything, and a project holding both ranks the competing outcomes while never ranking one outcome's internal parts against another's.
+
+What comes out is a short roadmap in the project's own tracker that the owner reorders without owing a reason, not a scored table. RICE is how a position is argued when they ask why, not the artifact. Effort is the agent's and never asked; reach and impact are theirs and usually already answered by the project's records; a question reaches them only where sweeping the uncertain factor across its plausible range actually changes the order.
+
+Revisit this if receipts show a roadmap the owner never reorders, ordering questions reaching them on work the project already settles, or competing candidates going unordered because the shape test read them as one outcome.
 
 ## No universal engineering workflow
 
@@ -100,6 +124,12 @@ Authority, autonomy, preservation, and completion remain in `SKILL.md`. Conditio
 
 Earlier designs put mandatory behavior behind conditional reads. Missing one reference could change what the agent was allowed or required to do.
 
+Version 2.5.0 acted on this condition on the loading half of it. Across four installed 2.x sessions on two repositories, two of them dispatching eighteen and eight delegates, none of `decomposition`, `delegation`, or `execution-health` ever reached context — established by searching the transcripts for the files' own sentences, not only for their paths. What those receipts show is non-loading, not a wrong result traced to it; the condition as written asks for a method "needed for correct work", and that half stays inferred. Two rules moved into the kernel in their delegate-facing minimum form, both about a delegate rather than about technique: the size of the outcome one delegate carries, and naming the level it runs at. The technique behind each stayed in its method. The kernel also gained a requirement to read a method whose trigger plainly matches before acting on that work. That is an addition, not a narrowing: the sentence it replaced barred loading a method "merely because it exists", which left an applicable method optional, and optional is what the receipts measured.
+
+A third candidate was dropped for want of evidence. Neither root ever formed an expectation of how long a delegate should take, and one reported while a lane it had accepted two hours earlier was still running and unmentioned. That shows the expectation was never set; it does not show the durations were unhealthy, or that a capable agent could not infer when to intervene. Requiring a pre-dispatch duration estimate would have been a mandatory step on evidence that does not reach the bar this repository sets for one. The kernel says only what to do with a lane that has visibly stopped progressing, and the pre-dispatch technique stays in `execution-health`.
+
+Kernel placement raises the odds; it does not settle the question. The same sessions carried the kernel's existing rule against placing an isolated checkout beside the repository, and one session created three sibling worktrees anyway. A rule in the kernel is read; whether it is followed is a separate measurement, and this one is `UNVERIFIED` until receipts.
+
 Revisit this if a critical rule moves behind a reference, or installed receipts repeatedly miss a method needed for correct work.
 
 ## Provider-independent policy
@@ -108,9 +138,15 @@ The shared skill contains no versioned provider model IDs, cost tables, or host-
 
 Several releases tried semantic tiers and adapter files. Host metadata changed too quickly, and the package had no reliable cost signal for a portable router.
 
-Effort is chosen relative to the current session, never in host terms. Both supported hosts expose a per-delegate reasoning control through incompatible surfaces, and neither treats a level name as meaning the same amount of work across models, so no portable absolute setting exists to name. The package therefore states only a floor relative to the dispatching session and leaves the control for the agent to find in its host's current documentation. A relative floor is not a routing tier, and the revisit condition below stays unmet.
+Effort is chosen relative to the current session, never in host terms. Both supported hosts expose a per-delegate reasoning control through incompatible surfaces, and neither treats a level name as meaning the same amount of work across models, so no portable absolute setting exists to name. The package therefore states only levels relative to the dispatching session and leaves the control for the agent to find in its host's current documentation.
 
-Revisit this if hosts publish a stable portable capability interface and paired runs show a material quality or total-cost benefit.
+Version 2.5.0 restored a `model-routing` method. The owner decided this, and the condition below was not met when they did: no host has published a portable capability interface, and no paired run has shown a quality or total-cost benefit. What the receipts add is a defect the earlier reasoning had not weighed. That reasoning was about the risk of naming host models; it did not consider that saying nothing is itself a routing choice. On the measured host a delegate whose level is unset inherits the session's, and across two installed sessions twenty-five of the twenty-six delegates the roots dispatched ran on the session's own model, including every implementation lane, while the single explicit downgrade went to the one delegate that was judging — the case the floor exists to protect.
+
+The method therefore names what the work demands and never what a provider calls it: mechanical work at the cheapest sufficient level, work carrying a settled design at the ordinary one, deciding work at the strongest, and anything that reviews or judges at no less than the session. Inheritance is stated as something to check on the current host rather than as a portable fact. Where a host offers only an effort control the levels collapse onto it, and where it offers no per-delegate control the levels are unavailable. No model identifier, tier key, or cost table enters the package, so the boundary this decision protects is intact.
+
+The cost claim is not part of this and the method says so. That routing down is cheaper in total rather than merely per token stays `UNVERIFIED` until paired runs measure it, so the method presents routing down as a judgment about how well the work is specified rather than as a saving.
+
+The original condition — a portable capability interface and paired runs showing a benefit — is superseded rather than satisfied, because the decision to restore was the owner's. Revisit this instead if paired runs settle the total-cost question either way, or if receipts show routed-down lanes spending more than the level they saved.
 
 ## Receipts prove model behavior
 

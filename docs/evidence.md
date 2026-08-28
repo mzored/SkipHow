@@ -136,10 +136,20 @@ On Codex, method files load in proportion to the work, and the trigger decides i
 
 These are observations, not a reliability rate.
 
+### What delegation looked like in installed sessions
+
+The evidence above comes from fixtures, where no run ever spawned a delegate. A 2026-08-29 pass over the maintainer's own installed sessions covers the opposite case. Four sessions on 2.0.2, 2.3.0 and 2.4.1 across two private repositories were read from their host transcripts; two of them dispatched eighteen and eight delegates. Method loading was established by searching each transcript for the method files' own sentences rather than for their paths, because a path can appear in a command without the file's text ever reaching the model.
+
+None of `decomposition`, `delegation` or `execution-health` reached context in any of the four. The longest delegates ran 235, 133, 111, 81, 81, 75, 58 and 47 minutes, and delegates accounted for 67 to 68 per cent of each session's output tokens and 92 to 94 per cent of its cache writes. Twenty-five of the twenty-six delegates the two roots dispatched ran on the session's own model because the host's per-delegate model was left unset; the single explicit downgrade went to a delegate asked to verify a specification against code. One root reported while a lane it had accepted two hours earlier was still running and unmentioned. One created three worktrees beside the repository, against a rule that was in the kernel and therefore in its context.
+
+These sessions are the maintainer's own work, not controlled runs: the package version, repository, and prompt all vary, and nothing here is paired. They are evidence about what reached the model and what the run cost, which is readable from the transcript, and not about whether the wording caused the outcome.
+
 ## Still unverified
 
 - The outside read of a consequential design decision. Ten runs made the decision well and none took an outside read. Codex had the method open in all five of its runs; no Claude session in the pass opened it at all. Three kernel wordings changed nothing on either host. The rule is stated and does not execute.
-- Delegation and everything that runs on it: a spawned delegate, concurrent lanes, an isolated worktree, a bounded brief, a delegate returning a question for the orchestrator to settle, effort chosen per delegate, and units integrated separately as they land. The largest fixture in this pass, six capabilities over 2,725 lines, was carried in one pass by both hosts. No run in the whole pass spawned a delegate for any reason.
+- Delegation under the shipped wording. No fixture run in the pass spawned a delegate for any reason; the largest fixture, six capabilities over 2,725 lines, was carried in one pass by both hosts. The installed sessions above show delegation happening at scale but with the governing methods absent from context, so they say what delegation costs and not whether the wording works.
+- Whether a rule moved into the kernel is followed. The installed sessions carried the kernel's worktree-placement rule and one breached it anyway, so kernel placement is shown to change what is read and not yet what is done.
+- Whether routing a delegate down is cheaper in total rather than per token. No paired run measures it.
 - Whether the second round is reliable on Codex. It happened in one of three released-package sessions on the cancellation fixture, and in the shared-basket pair before it. When it does happen, nothing gets built, which is the part this release adds.
 - Whether the corrected wording in `project-setup` puts the setup record somewhere both hosts read.
 - Whether removing the disclose-afterwards wording changes anything. The escape it left was observed; its removal was not run.

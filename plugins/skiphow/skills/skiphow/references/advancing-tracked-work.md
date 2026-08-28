@@ -1,0 +1,21 @@
+# Advancing tracked work
+
+Use this when the owner asks to carry on with what the project already has on record, rather than naming one thing to do. [Intake](intake.md) owns reading and writing an individual record; this owns crossing several of them in one session and knowing when to stop.
+
+The frontier is what is takeable right now: open items whose blockers are all closed and that nothing else is already working on. Everything else is either blocked, claimed, or done. Work the frontier and nothing else, because an item you take out of order either duplicates a lane already running or builds on a result that does not exist yet.
+
+Take items in the order the project itself records. Where the tracker carries a priority, that order is the answer and re-deriving it wastes the pass that produced it. Where it carries none, take the oldest first. A recorded order you believe is wrong is a reason to run [prioritization](prioritization.md) and say so, never a reason to quietly take something else; reordering the owner's work without telling them is a product decision made in silence.
+
+Claim an item before working it, using whatever the tracker already provides for that: an assignee, a status, a label. The claim is what stops a second session from starting the same work, so it goes first, before any investigation. Where the tracker has no claim mechanism, say in the record what is being taken and when.
+
+Reconcile before acting. An item the code has already overtaken closes as done rather than being rebuilt. An item whose stated outcome no longer matches live project state is corrected in the record before work starts, not after. An item the project has marked as waiting on a decision belongs to whoever makes that decision: check whether the current product settles it, and where it does not, leave it and move on. Supplying the answer yourself is the failure this rule exists to prevent, and clearing the note while doing it hides that it happened.
+
+An item is finished when its outcome is demonstrated against live state, what the work established is written back into the record, and the record is closed. Close it at that point rather than at the end of the run, and recompute the frontier as you do, because closing an item is what unblocks its dependents and the next thing to take is often something that was not takeable a minute ago.
+
+Independent frontier items may run concurrently, one delegate each, under [delegation](delegation.md). Concurrent writing lanes each need their own isolated checkout. Do not run two items that touch the same behavior in parallel, however independent their records claim to be; the tracker records intent and not the code they will both edit.
+
+An item's stated outcome bounds what this pass delivers. It does not decide what may be changed, because the owner's request still decides that and a record is evidence of intent rather than authority. A material problem found while carrying an item out is disposed of under the kernel's rule for problems the work discovers, rather than absorbed into the item in hand; that is what keeps the item reviewable and keeps a run from becoming an open-ended sweep nobody asked for.
+
+Stop when the frontier is empty, or when everything left on it is blocked on a decision only the owner can make, an action only they can grant, or an external party. Do not stop at the first such block: set it aside, carry on with what remains takeable, and bring the accumulated questions back in one round rather than one at a time. A lane that has stopped making measurable progress is stopped and diagnosed under [execution health](execution-health.md), not waited on and not retried a fourth time.
+
+Report the run as one reconciliation against what the owner asked for: what closed and on what evidence, what is blocked and on whom, what was newly recorded, and what is still takeable. A list of items touched is not that report, because it does not say whether the owner can now do anything they could not do before.

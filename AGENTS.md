@@ -14,6 +14,16 @@ Change the shipped instructions to fix an observed defect or protect a high-risk
 
 Prefer deleting a contradiction, clarifying intent, or moving a discipline into a focused method over adding universal policy. Add a mandatory step, role, gate, dependency, or persistent state only when evidence shows that capable agents cannot reliably infer the needed behavior and the benefit justifies its ongoing cost. Remove obsolete or redundant text when a rule changes. Review added policy for lost autonomy, extra turns, and provider assumptions as seriously as any functional regression.
 
+## Reviewing a change to the instructions
+
+This is for the contributor acting on a review of their own change, not for the reviewer producing one. The shipped contract is prose, so a reviewer can always propose a different wording, and a review that is allowed to do so never ends. Treat what comes back as evidence to weigh, not a list to work through, and confirm every finding against the file yourself before acting on it. A reviewer that cannot point at the defect is reporting taste.
+
+A finding qualifies when it names one of these: a factual error, including a number, a claim about what a file says, or a claim about how a host behaves; a contradiction with another shipped sentence or with `docs/decisions.md`; a trigger that cannot be decided without opening the file it guards; a claim presented as demonstrated that no receipt supports; a mandatory step, gate, or persistent state added without the evidence this file requires for one; or an authority, boundary, or portability error. Fix what qualifies, within the scope the change already carries, and record what it was.
+
+A finding does not qualify when it offers a rephrasing that changes no behavior, prefers a different degree of hedging, or says a sentence could be clearer without naming what breaks if it is not. Say so and leave the sentence alone. Neither the reviewer's confidence nor the length of its list is evidence.
+
+Stop when a round returns only findings that do not qualify. Do not open another round to see whether it finds more, and do not re-review wording that survived a round unchanged. Improving instructions has no completion condition of its own; the observed defect is the completion condition.
+
 ## Evidence
 
 Use current primary documentation for host behavior, plugin formats, and security guidance. Read `docs/decisions.md` before changing the product contract so old alternatives are not reopened without new evidence. The immutable 2.0.1 links in that file preserve the full earlier ADR and research archive.

@@ -26,6 +26,8 @@
             "skills/engineering/tdd/mocking.md",
             "skills/engineering/tdd/tests.md",
             "skills/engineering/to-tickets/SKILL.md",
+            "skills/engineering/triage/AGENT-BRIEF.md",
+            "skills/engineering/wayfinder/SKILL.md",
             "skills/engineering/wizard/SKILL.md",
             "skills/in-progress/implement-spec/SKILL.md",
             "skills/productivity/grilling/SKILL.md",
@@ -34,6 +36,7 @@
           ],
           "files": [
             "SKILL.md",
+            "references/advancing-tracked-work.md",
             "references/codebase-design.md",
             "references/decomposition.md",
             "references/delegation.md",
