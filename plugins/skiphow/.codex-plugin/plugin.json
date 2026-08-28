@@ -1,7 +1,7 @@
 {
   "name": "skiphow",
-  "version": "2.4.2",
-  "description": "Autonomous project work for nontechnical product owners.",
+  "version": "2.4.3",
+  "description": "Describe the product outcome in plain language. The agent owns the engineering, verifies the result, and reports the evidence.",
   "author": {
     "name": "mzored",
     "url": "https://github.com/mzored"
@@ -13,13 +13,17 @@
     "agent-skills",
     "claude-code",
     "codex",
-    "autonomy"
+    "ai-agent",
+    "coding-agent",
+    "autonomy",
+    "product-owner",
+    "developer-tools"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "SkipHow",
     "shortDescription": "Project work from one owner request",
-    "longDescription": "Start from one plain-language owner request. SkipHow selects only the focused internal guidance that helps; technical decisions, authorized completion, and verification stay with the agent.",
+    "longDescription": "One Agent Skill for owners who know what the product should do. Describe the outcome; SkipHow reads the project, decides libraries, schemas, tests and branches itself, verifies the result against real behavior, and reports what the evidence proves and what stays unverified. It asks only when the answer changes product behavior, priority, cost, risk, privacy or rollout.",
     "developerName": "mzored",
     "category": "Developer Tools",
     "capabilities": [],

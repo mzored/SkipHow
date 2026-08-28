@@ -44,6 +44,8 @@ Keeping focused methods inside one owner skill avoids that gap. It also gives th
 
 The exact adapted paths and inspected revision live in [`SOURCES.json`](../plugins/skiphow/SOURCES.json). The distributed package keeps the source license and copyright notice in [`THIRD_PARTY_NOTICES.md`](../plugins/skiphow/THIRD_PARTY_NOTICES.md).
 
+[Prior art](prior-art.md) records the other projects this one learned from, what each contributed, and which of their ideas were read and rejected.
+
 ## Packaging
 
 The plugin root follows the [OpenAI plugin package layout](https://developers.openai.com/plugins/build/plugins): a required `.codex-plugin/plugin.json` beside optional skills and hooks. Root marketplace catalogs expose only `plugins/skiphow/`.

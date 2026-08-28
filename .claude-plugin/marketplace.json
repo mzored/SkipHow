@@ -4,7 +4,7 @@
     "name": "mzored",
     "url": "https://github.com/mzored"
   },
-  "description": "Handle product and project work from one owner request.",
+  "description": "Describe the product outcome. SkipHow handles the engineering, verifies it, and reports the evidence.",
   "plugins": [
     {
       "name": "skiphow",

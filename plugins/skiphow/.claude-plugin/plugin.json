@@ -1,7 +1,7 @@
 {
   "name": "skiphow",
-  "version": "2.4.2",
-  "description": "One autonomous project entry for nontechnical product owners.",
+  "version": "2.4.3",
+  "description": "Describe the product outcome in plain language. The agent owns the engineering, verifies the result, and reports the evidence.",
   "author": {
     "name": "mzored",
     "url": "https://github.com/mzored"
@@ -13,7 +13,11 @@
     "agent-skills",
     "claude-code",
     "codex",
-    "autonomy"
+    "ai-agent",
+    "coding-agent",
+    "autonomy",
+    "product-owner",
+    "developer-tools"
   ],
   "skills": "./skills/"
 }

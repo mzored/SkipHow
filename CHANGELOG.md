@@ -2,6 +2,25 @@
 
 All notable changes to SkipHow 2.x appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 2.4.3 (2026-08-29)
+
+### Changed
+
+- `README.md` is rewritten for the reader who arrives from a search engine or an AI answer. It leads with what SkipHow is and which hosts run it, keeps install and a working request on the first screen, and states the boundary between what the owner decides and what the agent decides before any of the reasoning behind it.
+- The README now says what real runs have shown, with the numbers: the size of the 2.4.2 pass, the negative controls, the flaky-test and false-fix cases, and the six-unit split over 2,725 lines. Behaviors with no receipt are named as unproven in the same section rather than left out.
+- Plugin descriptions and keywords in both manifests, and the Claude marketplace description, now say what the skill does for the person installing it. The Codex `longDescription` states the same boundary as the README. The skill's own `description` frontmatter is unchanged, because it governs selection rather than presentation.
+
+### Added
+
+- [`docs/prior-art.md`](docs/prior-art.md) returns. It records the projects this one learned from, what each contributed, what was left out, and which of their ideas were read and rejected. The earlier version of this page was deleted along with the research tree it lived in, which lost the reasoning behind several standing rejections. Upstream issues and repository state were re-checked on 2026-08-29 before the page was restored.
+- [`docs/faq.md`](docs/faq.md) answers what a reader asks before installing: which agents it runs on, whether it pushes or deploys without asking, where records go, what `UNVERIFIED` means in a report, and how to update or remove it. Every answer restates a rule that already exists in the guide, the kernel, or the evidence page.
+
+### Evidence
+
+- Documentation and package metadata only. The shipped instructions are unchanged, so no model behavior is claimed and no receipt is added. Every factual claim in the new pages traces to [`docs/evidence.md`](docs/evidence.md), [`docs/decisions.md`](docs/decisions.md), or a source link checked on 2026-08-29.
+- The kernel and method word counts quoted in the README were measured on this package: 1,610 words in `SKILL.md` and 6,759 across 18 method files.
+- `python scripts/check.py` and `git diff --check` pass. `python scripts/check_hosts.py` passes Claude package validation and Claude's isolated install; Codex package validation and Codex's isolated install are `UNVERIFIED` locally, because the validator is not installed on this machine and local policy restricts marketplace sources to the published repository. CI runs the Codex validator.
+
 ## 2.4.2 (2026-08-29)
 
 ### Changed
