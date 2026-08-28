@@ -15,7 +15,7 @@ python scripts/check.py --prepare-only
 Run a focused test through that environment:
 
 ```sh
-python scripts/check.py --pytest tests/test_repository.py -q
+python scripts/check.py --pytest tests/test_package.py -q
 ```
 
 ## Change the canonical package
@@ -25,9 +25,9 @@ python scripts/check.py --pytest tests/test_repository.py -q
 - Use linked resources for detail that can materially help only some tasks. Keep every Markdown file under the owner skill's `references/` library recursively reachable from `SKILL.md`.
 - Keep Codex and Claude manifests pointed at the same `skills/` directory.
 - Bump `VERSION` whenever `plugins/skiphow/` changes. Claude Code uses the manifest version as its update key.
-- Update research and an ADR when evidence changes architecture, the product contract, or security policy.
-- `scripts/check.py` validates one top-level owner skill, recursive reachability of every Markdown file under its `references/` library, the required continuity-hook metadata and accepted command shape, aligned versions, and the personal-path and provider-model-ID boundaries it scans. Do not reintroduce fixed method counts, role sets, model tiers, prose spellings, or word budgets. Change package invariants with an ADR that records the evidence and update the check in the same change.
-- Preserve upstream license, copyright, path, and inspected revision whenever a method copies or adapts source text. Credit borrowed ideas in [prior art](docs/prior-art.md).
+- Update `docs/decisions.md` when evidence changes architecture, the product contract, or security policy. Update `docs/evidence.md` when supported claims or known limits change. Link to durable source material instead of adding one file per run or release.
+- `scripts/check.py` validates one top-level owner skill, recursive reachability of every Markdown file under its `references/` library, the required continuity-hook metadata and accepted command shape, aligned versions, and the personal-path and provider-model-ID boundaries it scans. Do not reintroduce fixed method counts, role sets, model tiers, prose spellings, or word budgets. Record package-invariant changes and their evidence in `docs/decisions.md`, then update the check in the same change.
+- Preserve upstream license, copyright, path, and inspected revision whenever a method copies or adapts source text. Record borrowed ideas and rejected alternatives in [the design](docs/design.md) and [decision history](docs/decisions.md).
 - Write direct English prose. Use active voice, sentence-case headings, straight quotes, and concrete claims.
 
 ## Verify a pull request
@@ -46,7 +46,7 @@ candidate's exact relative regular-file paths and SHA-256 contents from that loc
 isolated host home. Marketplace source paths are not installation proof. Validator and install results do not
 prove model or session behavior.
 
-Keep tests and CI local and deterministic. They must not start Codex, Claude Code, or another model. Behavior claims come from receipts under `docs/research/<date>/` written after a real run (ADR 0008).
+Keep tests and CI local and deterministic. They must not start Codex, Claude Code, or another model. Behavior claims come from deliberate real-run receipts. Summarize the current claims and link their durable evidence in `docs/evidence.md`.
 
 The pull request should state the user-visible result, scope, tests run, package evidence, and every material blocker or unverified limit. Keep unrelated cleanup out of the same pull request.
 
