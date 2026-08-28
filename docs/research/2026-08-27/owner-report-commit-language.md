@@ -16,7 +16,7 @@ that the behavior occurred; it is not evidence of how often, or on which version
 
 ## What the package said
 
-Verified against `6aa91c0`, the tip at the time of the report. Which version the reporting run had actually loaded is unrecorded, and the [field audit](field-audit-2026-08-27.md) in this directory records an owner watching a version their session had never loaded:
+Verified against `6aa91c0`, the tip at the time of the report. Which version the reporting run had actually loaded is unrecorded. The [field audit](field-audit-2026-08-27.md) in this directory separately records an owner watching 1.9.0 while the transcript's only qualifying root-skill injection identified 1.7.0:
 
 - The word `commit` appeared three times in `plugins/skiphow/`, all incidental: a review candidate's
   identity (`references/engineering.md`), a checkpoint field (`references/long-work.md`), and a deletion

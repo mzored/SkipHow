@@ -2,7 +2,7 @@
 
 ## Status
 
-Superseded by [ADR 0008](0008-receipts-over-a-live-harness.md) for the evaluation mechanism. The claims policy (deterministic checks prove the package, missing evidence is `UNVERIFIED`) stands.
+Superseded by [ADR 0008](0008-receipts-over-a-live-harness.md) for the evaluation mechanism. The claims policy stands: deterministic checks prove only the package invariants they inspect, and missing evidence is `UNVERIFIED`.
 
 ## Date
 
@@ -18,7 +18,12 @@ An operator-controlled routing map can compare the cost of recorded routes. It c
 
 ## Decision
 
-Deterministic checks remain local and never start a model. Host package checks use repository-free local marketplace snapshots, reject links and special files, and compare the installed package bytes with the candidate. A managed policy that blocks the safe installation path is `UNVERIFIED` unless the release explicitly requires that host install.
+Deterministic checks remain local and never start a model; each result proves only its named invariant. Host
+package validators check their accepted static package rules. The optional isolated-install checks use
+repository-free local marketplace snapshots, reject links and special files, and compare the installed
+package bytes with the candidate. A successful isolated install proves that exact local installation, not
+runtime loading or behavior. A managed policy that blocks the safe installation path is `UNVERIFIED` unless
+the release explicitly requires that host install.
 
 Live Codex trials accept only a pre-provisioned plain local marketplace whose manifest and plugin bytes match the committed candidate. Remote Git marketplace sources are rejected. Live Claude trials validate and load the exact candidate with `--plugin-dir`, bare mode, a fresh config, required sandbox startup, and unsandboxed command fallback disabled.
 

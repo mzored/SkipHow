@@ -18,13 +18,26 @@ The [system review](../research/2026-08-26/system-review.md) concluded that one 
 
 The live harness is removed. Model behavior is proven by receipts: a real run of a scenario on a real or throwaway repository, recorded under `docs/research/<date>/` with what was asked, what happened (Issues, pull requests, delegations and their effective models, host cost when reported), what was cleaned up, and what went wrong.
 
-The claims policy from ADR 0005 stands: deterministic checks prove the package, host checks prove installation, and anything no receipt has shown is `UNVERIFIED`. README and changelog copy may not claim behavior without a receipt.
+A field-audit report may have an adjacent `field-audit-<date>.receipts.json` sidecar. That file is not a
+model-evaluation schema and does not replace the narrative receipt. It stores only the transcript identity,
+root record count, observed plugin-version values, and evidence fingerprint needed to tell whether the
+private transcript evidence has changed since the report was written. Coverage reads this strict sidecar,
+not Markdown presentation. A missing, malformed, incomplete, or stale key proves no coverage.
+
+The claims policy from ADR 0005 stands: deterministic checks prove only the named package invariants they
+inspect; host validators prove only their static validation result; and a successful isolated-install check
+proves only that the exact candidate files were installed in that isolated local setup. Anything no receipt
+has shown is `UNVERIFIED`. README and changelog copy may not claim behavior without a receipt.
 
 Deterministic checks and CI never start a model. Receipts are produced by a person or an agent on purpose, with the host's own permission mode and budget flags.
 
 ## Consequences
 
-About 3,500 lines of harness, fixtures, oracles, and tests leave the repository. Release evidence becomes a short document rather than a JSON receipt schema. Coverage is narrower and more honest: a receipt exists for a scenario or it does not.
+About 3,500 lines of harness, fixtures, oracles, and tests leave the repository. Release evidence remains a
+short document rather than a behavioral JSON result schema. A small field-census sidecar can establish only
+that the document was written against the same mechanically observed transcript evidence. Coverage is
+narrower and more honest: a behavioral receipt exists for a scenario or it does not, and freshness is
+separate from the quality of its ruling.
 
 ## Rejected alternatives
 

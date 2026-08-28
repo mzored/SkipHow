@@ -2,7 +2,9 @@
 
 ## Status
 
-Amended by [ADR 0015](0015-unconditional-invariants-live-in-the-root.md) on the findings tags, by [ADR 0012](0012-per-spawn-effort-and-portable-timestamps.md), which supersedes the shipped Codex role files, and by [ADR 0013](0013-read-only-requests-save-nothing.md), which supersedes "saving a finding is always within authority". Accepted in 1.4.0. Amends [ADR 0007](0007-host-adapters-for-routing-and-continuity.md) (Codex routing path) and [ADR 0010](0010-two-matcher-hook-and-codex-project-loading.md) (evidence). [ADR 0008](0008-receipts-over-a-live-harness.md) and [ADR 0009](0009-reviewer-inherits-and-one-engineering-reference.md) stand.
+Partially superseded by [ADR 0018](0018-autonomous-kernel-and-independent-task-skills.md). Findings tags,
+role files, and fixed report vocabulary do not ship in 2.0. Neutral repository instructions and the
+read-only record boundary in [ADR 0013](0013-read-only-requests-save-nothing.md) stand.
 
 ## Date
 

@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted. Supersedes the phrase-based routine merge boundary in [ADR 0004](0004-github-lifecycle-and-authority.md) and [ADR 0015](0015-unconditional-invariants-live-in-the-root.md). Amends [ADR 0009](0009-reviewer-inherits-and-one-engineering-reference.md) on exact aggregate review and [ADR 0016](0016-decomposition-needs-a-trigger-a-run-can-evaluate.md) on re-sizing after owner turns.
+Superseded by [ADR 0018](0018-autonomous-kernel-and-independent-task-skills.md). Outcome-based authority and
+the protected staging and production boundary stand. Mandatory owned worktrees, automatic remote
+integration, exact aggregate review, re-sizing procedure, and fixed evidence lifecycle do not.
 
 ## Date
 
@@ -40,6 +42,22 @@ The package gains `references/worktrees.md`. The root grows to carry rules that 
 Deterministic checks can prove package structure, forbidden phrase absence, continuity anchors, and release ancestry. They cannot prove that a model obeys the new workflow. Every runtime claim remains `UNVERIFIED` until an installed 1.14 session supplies a receipt.
 
 The contract states outcomes and non-negotiable safety boundaries, not a universal script. Reports and handoffs carry the evidence needed for completion or recovery without mandatory empty fields; decomposition and retry strategy stay with the agent. Contributor tooling likewise exposes timestamped facts instead of pretending an enumerated command grammar can decide whether Git usage was safe.
+
+## Revalidation and supersession, 2.0.0
+
+A stricter census corrected the initial attribution recorded here. Two comparable UI sessions each contained
+complete 1.14.2 root bytes and no compaction, and both left routine work uncommitted while asking the owner
+when to branch, batch, or commit. Each transcript also contained an unversioned contract contributor,
+however, so neither exact governing identity can be assigned solely to 1.14.2. The symptom repeated in 2 of
+2 comparable sessions; package causality and a 1.14.2 `VARIANCE` ruling remain `UNVERIFIED`. The intended
+1.14.2 sentence was already present in both records, so another Git step still would not address the observed
+uncertainty or the package's accumulated process weight.
+
+The same audit found that the solution had grown into the problem. Mandatory worktrees, integration,
+aggregate review, cross-host review, route and reference gates, and exact evidence rules occupied most of a
+1,348-word root plus nine references. ADR 0018 therefore preserves outcome-based authority and the exact
+staging and production gate, while replacing this portable lifecycle with proportional use of repository and
+host-native mechanics. The 2.0 behavior remains `UNVERIFIED` until an installed receipt exercises it.
 
 ## Rejected alternatives
 
@@ -79,3 +97,8 @@ Hooks are repository-controlled code, vary across hosts, and can be bypassed or 
 ## Revalidation triggers
 
 Revisit when a receipt shows a 1.14 or later run asking for routine delivery mechanics, writing outside its owned worktree, losing a later owner item, committing through a bypass path, skipping aggregate review, merging against a changed target without renewed evidence, or promoting into staging or production without approval. Revisit the host procedure when Codex or Claude Code supplies stronger native isolation or changes detached-worktree behavior.
+
+The routine-mechanics symptom appeared in the 2 of 2 UI observations recorded above, but exact governing
+identity is unresolved and this ADR no longer claims a 1.14.2 variance receipt. ADR 0018 supersedes the
+workflow architecture independently. Use ADR 0018's triggers for 2.0 and later; the rest of this list remains
+historical evaluation criteria for exact 1.14 receipts.

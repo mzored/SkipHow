@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted in 1.6.1. Amends [ADR 0011](0011-findings-tag-codex-role-files-neutral-repo-instructions.md) (finding authority). [ADR 0004](0004-github-lifecycle-and-authority.md) stands and is the rule this restores.
+Accepted as amended by [ADR 0018](0018-autonomous-kernel-and-independent-task-skills.md). Read-only
+requests still grant no project or record write, and a save request still grants its requested record. The
+four route names and mandatory findings tags are historical 1.x mechanics.
 
 ## Date
 

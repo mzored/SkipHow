@@ -2,10 +2,9 @@
 
 ## Status
 
-Accepted in 1.9.0, amended in 1.10.0 and 1.14.0. Amends [ADR 0006](0006-host-native-campaign-and-engineering-policy.md) by stating the
-trigger it left unstated: 0006 defines how a campaign queue is run, never what makes a request one. Follows
-[ADR 0015](0015-unconditional-invariants-live-in-the-root.md) (unconditional rules live in the root). [ADR 0004](0004-github-lifecycle-and-authority.md) and
-[ADR 0003](0003-semantic-model-routing.md) stand.
+Superseded by [ADR 0018](0018-autonomous-kernel-and-independent-task-skills.md). SkipHow 2.0 leaves
+decomposition to proportional agent judgment and repository requirements; no item wording, count, or
+"systemic" label selects a campaign protocol.
 
 ## Date
 
@@ -57,7 +56,8 @@ load. Here the file loads on a condition it alone defines.
   place to put one.
 - Delegates never hold credentials and never write to remote systems moves into the root. It is an
   unconditional safety invariant that applied whenever a delegate existed, and it lived only in
-  `long-work.md` and `model-routing.md` — the two references that have never both loaded in the field. Per
+  `long-work.md` and `model-routing.md` — the historical digest found no audited session with qualifying
+  read or body evidence for both references. Per
   ADR 0015 those references stop repeating it.
 
 ## Consequences
@@ -66,10 +66,11 @@ The root grows from 732 to about 794 words against the 850-word budget, and `lon
 `model-routing.md` each lose the sentence the root now carries.
 
 More runs will decompose, and therefore more runs will delegate. That is the intended effect and it is also
-the risk: `model-routing.md` has not loaded in 4 of 4 delegating sessions the audit has read. The role-naming
-rule and the credential rule are now both in the root, which covers the two ways a delegation can be unsafe
-without that file. The tier table, the brief contract, and the escalation ladder remain conditional detail,
-and whether they reach a run that decomposes is the first thing the next receipt should measure.
+the risk: the historical digest found no qualifying `model-routing.md` read or body evidence in 4 of 4
+delegating sessions. The role-naming rule and the credential rule are now both in the root, which covers the
+two ways a delegation can be unsafe without that file. The tier table, the brief contract, and the escalation
+ladder remain conditional detail, and whether they reach a run that decomposes is the first thing the next
+receipt should measure.
 
 The change does not adopt an orchestrator, an integration branch, or a progress stream. The
 [parallel orchestration survey](../research/2026-08-26/parallel-orchestration-proposals.md) rejected those on
@@ -81,8 +82,9 @@ The Consequences above ended by naming what the next receipt should measure: whe
 brief contract, and the escalation ladder reach a run that decomposes. The
 [2026-08-27 field audit](../research/2026-08-27/field-audit-2026-08-27.md) measured it. They do not.
 
-A session decomposed an owner request into eight delegated units across isolated worktrees and never loaded
-`model-routing.md`, which makes it 5 of 5 delegating sessions. It routed correctly anyway: the shipped agent
+A session decomposed an owner request into eight delegated units across isolated worktrees; the historical
+digest found no qualifying `model-routing.md` read or body evidence, which makes that result 5 of 5
+delegating sessions. It routed correctly anyway: the shipped agent
 definitions carry the tier in their own descriptions, so a run picks `builder` or `reviewer` from the host's
 agent listing without the reference. The observed models were `claude-sonnet-5` for every builder and the
 session model for every reviewer — the first field evidence that
@@ -95,19 +97,19 @@ one. Both move into the root beside the delegation sentences, and `model-routing
 [ADR 0015](0015-unconditional-invariants-live-in-the-root.md). The reference keeps what is genuinely
 conditional: which tier a job needs, the Codex spawn mechanics, and the effective-model rule.
 
-This does not fix the loading trigger, and it is not meant to. It removes the two rules whose absence had a
-cost from the file that does not load.
+This does not fix the reference-selection trigger, and it is not meant to. It removes the two rules whose
+absence had a cost from the file for which the audited transcripts had no qualifying read or body evidence.
 
 ## Amendment, 1.14.0
 
-The trigger must run again after every owner turn, not only at session start. A 1.13.0 session began with one bounded UI request, then received six independent and systemic additions. It kept the original single-lane process, loaded neither `long-work.md` nor `model-routing.md`, and worked in a shared checkout. The initial classification was correct and became stale.
+The trigger must run again after every owner turn, not only at session start. A 1.13.0 session began with one bounded UI request, then received six independent and systemic additions. It kept the original single-lane process, worked in a shared checkout, and contained no qualifying `long-work.md` or `model-routing.md` read or body evidence. The initial classification was correct and became stale.
 
 The root now requires re-reading and re-sizing before the next act after every owner turn. Newly authorized, independently landable work joins an explicit queue; it does not disappear inside the current unit. `long-work.md` repeats the procedure at item boundaries and requires every returned commit to be integrated before the unit becomes done.
 
 ## Rejected alternatives
 
 - **Move the decomposition procedure into the root.** It is conditional detail by any reading — most requests
-  are one item — and it would cost roughly 200 words in the surface that loads on every request. ADR 0015's
+  are one item — and it would add roughly 200 words to the owner root body. ADR 0015's
   rule is that unconditional rules go to the root, not that unreached rules do. The trigger was the defect.
 - **Trigger on size instead: diff size, file count, or estimated duration.** None is knowable before the work
   starts, which is when the decision has to be made. `long-work.md` already rejected diff size in its own
@@ -129,6 +131,7 @@ shows the new trigger firing on a request the owner considered bounded, when a d
 work that a single pass would have finished, or when a receipt shows a delegation made without a brief or a
 third failure worked past without `BLOCKED` — the two rules the 1.10.0 amendment moved into the root.
 
-The "still did not load `model-routing.md`" trigger is retired by that amendment: it fired 5 of 5 times and
-the answer each time was that the reference held nothing the run needed. What remains in it is conditional
-detail, so its loading is no longer evidence of anything.
+The "still no qualifying `model-routing.md` read or body evidence" trigger is retired by that amendment: the
+historical digest returned that result 5 of 5 times, and the answer each time was that the reference held
+nothing the run needed. What remains in it is conditional detail, so observing its body is no longer evidence
+of anything by itself.

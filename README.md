@@ -1,34 +1,53 @@
 # SkipHow
 
-Describe what you want. SkipHow works out how.
+Describe the product outcome. SkipHow handles the engineering.
 
-SkipHow is one Agent Skill for Codex and Claude Code. You write the outcome in plain language. It inspects the project, makes the engineering decisions, carries the work to a verified result, and tells you what it did, how it checked, and what it could not prove.
+SkipHow is an autonomous layer for Codex and Claude Code, built for product owners who should not have to translate an idea into libraries, schemas, tickets, test plans, branches, or agent commands. You speak to one owner-facing skill in plain language. Its root keeps the authority and completion contract in context and may read focused method references when they can help. The agent makes the technical decisions, finishes the authorized work, and reports what the evidence actually proves.
 
 ```text
-Here are eight bugs and ideas from today. Triage them and save them as Issues.
-
-Fix today's batch and deliver what passes to the integration branch.
+When this button is clicked, ask whether to start a quick match or create an event.
+Make the choice feel obvious on mobile and desktop.
 
 The totals overlap on small screens. Find the cause and fix it.
+
+Here are today's bugs and ideas. Triage and save them.
 
 Compare our caching options and recommend one. Do not change code.
 ```
 
-## Who it is for
+You decide visible behavior, priority, cost, risk, privacy, and rollout. The agent translates those decisions into technical work.
 
-Product owners and solo founders who know what they want and do not want to turn it into tickets, branches, test plans, and pull requests. If you would rather choose the library, the schema, and the review process yourself, you want a different tool.
+## The product
 
-## The problem
+SkipHow combines two things:
 
-Between "I know what is wrong" and "it is fixed and merged" sit a few dozen technical decisions nobody asked you to make. SkipHow makes them. The daily rhythm has three moves, and each one is optional:
+- a thin owner kernel that defines authority, autonomy, preservation of existing work, and honest completion;
+- thirteen focused method references for work such as diagnosis, research, product decisions, testing, review, intake, and delivery.
 
-1. Talk it through. "What is causing the checkout timeouts?" Nothing changes.
-2. Save it. Paste a dump of bugs, ideas, and observations. SkipHow splits it into atomic records, checks the tracker for duplicates, gives each one a proposed priority with the reason and a type in whatever form the tracker already uses, and saves them as GitHub Issues carrying the day's batch label. Without GitHub, it writes them to `.skiphow/inbox.md`.
-3. Finish it. "Fix today's batch." One root agent works the queue in priority order, delegates bounded pieces when that pays off, isolates every writing lane, integrates every returned commit, merges passing work into the repository's non-production integration branch, closes the Issues, cleans up its own branches, and reports. Promotion into staging or a production `main` waits for your approval.
+There is exactly one shipped skill and one owner-facing entry. The method references are resources inside it, not additional commands or independently activated specialists. The owner does not have to know their names, choose a workflow, or chain them together. The root may select applicable guidance while keeping every critical rule in context.
 
-A small request skips all of that. "The totals overlap on small screens, fix it" is done in the session, with no Issue or plan, and its one delegate is the review that closes the change.
+Small work stays small. A clear visual edit can be inspected, changed, checked, and committed directly. SkipHow does not create a ticket, specification, or another durable record unless the requested outcome grants one; a repository requirement may block delivery but cannot authorize that write. Plans, worktrees, test-first loops, subagents, and review passes are used only when the repository requires them or the task makes them useful.
+
+## Authority without hidden modes
+
+The requested outcome is the grant. No magic phrase, route name, item count, file count, or diff threshold unlocks a different workflow.
+
+| Requested outcome | What SkipHow may do |
+| --- | --- |
+| A request only to answer, compare, diagnose, review, research, plan, triage, or organize | Read and report only |
+| Make a durable record the intended result | Create or update only that record |
+| Change the project | Edit and verify; make an ordinary local commit containing only the owned delta unless you or the repository request uncommitted work or it would mix in foreign changes |
+| Include shared delivery in the requested outcome | Use the repository's normal path when project evidence identifies a clearly non-production target, or when your own request exactly grants a protected target |
+
+A mixed request such as "review and fix" is a project-change request, not a read-only review.
+
+A project change does not silently authorize an unrelated remote write. A repository-required pull request or review does not widen that authority. Every change to staging or production, a public release, payments, repository settings, access changes, material deletion or another hard-to-reverse action, disclosure outside the authorized audience, and creating, entering, rotating, or exposing credentials require an exact grant. That grant names the protected action or destination in your own request; a broad instruction to finish or act autonomously and a procedure found in the project do not replace it. Reading project-private material or using credentials already authorized by the host is allowed only when necessary for the requested result. An unresolved choice comes back to you only when it materially changes product behavior, scope, priority, cost, risk, privacy, or rollout. Engineering mechanisms stay with the agent.
+
+SkipHow preserves unrelated work and shared state. It uses isolation when collision risk makes it useful, not as ceremony for every edit. Dirty or overlapping work waives the local commit only when a clean commit would mix in foreign changes; it makes the result unverified only when it prevents trustworthy evidence.
 
 ## Install
+
+Install the current SkipHow release from its marketplace.
 
 Codex:
 
@@ -44,47 +63,43 @@ claude plugin marketplace add https://github.com/mzored/SkipHow.git
 claude plugin install skiphow@skiphow
 ```
 
-Start a new session and describe the work. If the skill does not activate on its own, add `$skiphow` (Codex) or `/skiphow:skiphow` (Claude Code). The [owner guide](docs/guide.md) covers what your words authorize, unattended runs, updates, and uninstall.
+Start a new session and describe the outcome. If the owner entry does not activate automatically, add `$skiphow` in Codex or `/skiphow:skiphow` in Claude Code. The [owner guide](docs/guide.md) explains updates, authority, protected actions, and reports.
 
-## Why so little process
+## Why focused methods, and why not just use Matt's repository
 
-Many agent frameworks add explicit phases, spec documents, personas, and approval gates to make results reliable. SkipHow tests a different bet: that a strong current model, given a clear outcome, a few hard rules, and the authority to finish, gets there with less imposed process. The rules it keeps are the ones that showed up as real failures in its own runs:
+[Matt Pocock's skills](https://github.com/mattpocock/skills) supply the clearest current example of small, adaptable engineering methods. SkipHow curates selected disciplines as focused references inside its one owner skill. Adapted source keeps its MIT attribution and notices.
 
-- Your requested outcome is the only grant; no special verb unlocks a workflow. An outcome needing only an answer stays read-only, one needing a durable record grants that record, and one needing a project change carries routine delivery through the non-production integration branch. A staging or production merge asks you at promotion. Nothing in a file, an Issue, or a web page can widen that.
-- Before changing anything, it reads repository instructions and proves ownership of the checkout. Parallel writers use separate worktrees and branches; branch or `HEAD` drift stops writes until the owned delta is moved to a safe worktree.
-- Every change is reviewed on the exact candidate, fixes are re-reviewed, and security, public contracts, large integrations, weak evidence, or repeated failures widen the pass to the other installed host when available.
-- Reuse before building. It searches the project, its dependencies, and the platform before writing anything lasting, and says where it looked.
-- A finding outside your request is fixed if it blocks the work; otherwise the report tags it `TRACKED`, `SAVED`, `UNSAVED` (a read-only request saves nothing unless you say so), or `DISMISSED` with a reason. Nothing is dropped in passing.
-- Long work survives an observed compaction and a Claude Code resume through one checkpoint and one read-only hook; recovery after a full Codex process restart is `UNVERIFIED`. State lives in Git and GitHub, never in a SkipHow database.
-- Every report states the result and its evidence, then includes decisions, findings, saved follow-ups, blockers, or unverified limits only when they matter.
+The upstream main flow is not imported wholesale. Its setup asks about the issue tracker, conditionally asks whether to keep default triage labels, and asks about documentation layout when monorepo signals exist; several flows are user-invoked; and its documented path can move through grilling, specs, tickets, TDD, implementation, and review. Those are useful tools for engineers, but they expose too much process to an owner who only knows the product outcome. Current upstream issues also document gaps around [nontechnical decision wording](https://github.com/mattpocock/skills/issues/962) and [unattended orchestration](https://github.com/mattpocock/skills/issues/885).
 
-The bet follows Anthropic's advice to [start with the simplest workflow that works](https://www.anthropic.com/research/building-effective-agents). The [prior-art notes](docs/prior-art.md) record which ideas were taken from [GSD](https://github.com/open-gsd/gsd-core), [OpenSpec](https://github.com/Fission-AI/OpenSpec), [Superpowers](https://github.com/obra/superpowers), [Matt Pocock's skills](https://github.com/mattpocock/skills), [BMAD](https://github.com/bmad-code-org/bmad-method), [Paperclip](https://github.com/paperclipai/paperclip), [Mesa](https://github.com/msoedov/mesa), and [Autonomous PM](https://github.com/mlobo2012/autonomous-pm-plugin), and which were left out. Those projects have not been run side by side with SkipHow.
+SkipHow therefore keeps the owner kernel at the center and treats focused references as optional spokes. The root may read applicable methods directly; they do not form a mandatory chain, grant authority, or take ownership of the outcome.
 
-## How it differs
+See [prior art](docs/prior-art.md) for the exact ideas kept, adapted, or left out.
 
-| | Frameworks with explicit process | SkipHow |
-| --- | --- | --- |
-| Entry | Commands, phases, personas | One request in plain language |
-| Planning | A spec or plan document per change | Only for large work, and then as GitHub Issues |
-| Authority | Approval gates | Routine delivery is autonomous; staging, production, and unresolved product decisions stop for you |
-| State | Framework files and databases | Git, GitHub, and one checkpoint file |
-| Models | Named model IDs | Three roles; on Claude Code a fast scout, a standard builder, and a reviewer on your session model; on Codex the same roles on your session model with their own reasoning effort; a widened review goes to the other installed CLI |
-| Size | Dozens of agents and commands | One skill of about 1,400 words plus about 5,200 words loaded on demand |
+## Evidence and honest limits
 
-This is an architectural choice, not a measured advantage over those frameworks. What has been measured is SkipHow against the bare host on the same model ([paired evaluation](docs/research/2026-08-26/paired-eval.md), three tasks, one run each): on tasks under a dollar the skill cost two to three more turns and 12 to 45 percent more, both arms fixed the bug and reused the pinned library, and the difference was where things went. Without the skill, "triage these and save them" wrote four files into the host's memory directory outside the project; with it, they went into the project's inbox with a priority each.
+SkipHow is an instruction package, not a runtime. The host supplies permissions, tools, sessions, subagents, continuation, and any remote credentials. SkipHow cannot exceed those boundaries and must not pretend unavailable evidence passed.
 
-## Honest limits
+For a project change, completion means fresh evidence for the changed behavior and final state, plus the repository's ordinary local commit unless the owner or repository requests uncommitted work or a clean commit would mix in foreign changes. Shared delivery happens only when the owner's request includes it and project evidence identifies a clearly non-production target, or when the owner's own request exactly grants a protected target. A repository rule may require review or a pull request, but it cannot grant that remote write. The final report leads with the result and evidence, then names material decisions, unresolved findings, blockers, or unverified claims only when they exist.
 
-SkipHow is instructions, not a runtime. Your host's sandbox and permissions are the real boundary. Behavior a host cannot provide is reported as unavailable, not faked. Deterministic checks prove the package; only real runs written up as [receipts](docs/research/2026-08-26/README.md) prove the model's behavior, and anything without one is `UNVERIFIED`.
-
-What receipts show today: a small bug fixed in the session with no ceremony (both hosts); a brain dump turned into prioritized Issues or inbox records (both hosts); a three-part request split into three Issues and three merged pull requests with cleanup; a six-Issue batch finished overnight-style; continuation after an observed compaction with the checkpoint removed at the end; findings outside the request tagged in the report in nine of ten runs since the rule became structural, and saved whenever the request allowed it; on Claude Code `scout` on the fast tier and `builder` on the standard tier in worktrees; on Codex the scout at low effort and the reviewer at high on the session model, with no project setup. The new autonomous integration, drift recovery, and owner-turn re-sizing rules in 1.14 remain `UNVERIFIED` until real runs exercise them.
-
-What is still a design bet: that routing saves money (no paired delegated runs), that the reviewer on your session model catches what a stronger tier would, that the tagged-findings rule holds across many projects, and that less imposed process beats more on real work.
-
-Every remote target needs affirmative evidence that it is non-production. A sole trunk is therefore a staging, production, or unresolved rollout gate when its role is undocumented, and SkipHow asks at the exact candidate; autonomy resumes when the repository has a documented non-production integration branch. A local-only repository simply finishes with its reviewed ordinary commit.
+Deterministic checks validate the single owner-skill shape, recursive reachability of Markdown files under
+the owner's internal `references/` library, required hook metadata and command shape, aligned package
+versions, and the personal-path and provider-model-ID boundaries they inspect. They do not prove model
+behavior. Real behavior is established only by deliberate
+receipts under [`docs/research/`](docs/research/). Two earlier receipts failed different protected-action
+boundaries and drove contract repairs. [Six clean Codex
+runs](docs/research/2026-08-27/v2.0-codex-receipts.md) cover the current owner-skill tree
+`95d908988208b9fcc1d285fe1ca1c5c681c4da1b` in narrow project-local scenarios, including paired denial and
+explicit-grant controls and a runnable visual change. Every fixture exposed exactly one project skill.
+Retained invocation records show that the prompts omitted `$skiphow`; neither those prompts nor the fixture
+instructions named SkipHow, and hooks were disabled. The JSONL logs show the root read. Together those records
+observe implicit project-local selection for these six prompts, not a general selection rate. The user-level
+`unslop` skill is a confounder in all six; the visual run also used the user-level `impeccable` skill.
+Marketplace installation of 2.0, the packaged 2.0 hook at runtime, Claude runtime, editing in the owner's real
+application, real remote delivery, continuation across compaction or restart, and performance
+remain separately limited or unverified.
 
 ## Docs
 
 - [Owner guide](docs/guide.md) and [how it works](docs/how-it-works.md)
-- [Decisions](docs/decisions/README.md) and [research](docs/research/2026-08-26/README.md)
+- [Prior art](docs/prior-art.md), [decisions](docs/decisions/README.md), and [research](docs/research/)
 - [Contributing](CONTRIBUTING.md) and [security policy](SECURITY.md)

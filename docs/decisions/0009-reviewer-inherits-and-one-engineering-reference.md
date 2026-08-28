@@ -2,7 +2,10 @@
 
 ## Status
 
-Accepted in 1.2.0, amended in 1.12.0 and 1.14.0. Amended by [ADR 0015](0015-unconditional-invariants-live-in-the-root.md) on the root budget. Amends [ADR 0007](0007-host-adapters-for-routing-and-continuity.md) (reviewer tier) and [ADR 0006](0006-host-native-campaign-and-engineering-policy.md) (method layout). [ADR 0008](0008-receipts-over-a-live-harness.md) stands.
+Superseded by [ADR 0018](0018-autonomous-kernel-and-independent-task-skills.md) for reviewer roles,
+cross-host review, model effort, and the old topology built around one engineering reference. Focused
+Markdown method references may improve task quality, but they do not route work or carry critical policy.
+Receipt-based evaluation under [ADR 0008](0008-receipts-over-a-live-harness.md) stands.
 
 ## Date
 
@@ -90,7 +93,11 @@ call that runs in minutes, not seconds. Nothing is installed, written, or config
 
 Amended again in 1.13.0: effort is requested only from the host that validates the request. `claude --effort` warns and falls back on an unknown value; on codex-cli 0.149.1 with the model disclosed as `gpt-5.6-sol`, `codex -c model_reasoning_effort` accepts any value, including a bogus one, and the run stays at the host default across eight measured passes, three of them through `codex review` itself. Naming a level there was a claim the tool does not honour. The reference states the rule and the receipt carries the measurement, so no version-bound host claim ships in the package. The model is still never named on either side.
 
-The mechanics are two commands in `model-routing.md` and one sentence in `engineering.md`. Corrected in 1.14.0: the root now carries the widened-review trigger because a field run changed a public contract, loaded neither reference, and used only a same-host reviewer despite the other authenticated host being available. The commands and availability procedure remain conditional detail in the reference.
+The mechanics are two commands in `model-routing.md` and one sentence in `engineering.md`. Corrected in
+1.14.0: the root now carries the widened-review trigger because a field run changed a public contract, its
+transcript contained no qualifying read or body evidence for either reference, and it used only a same-host
+reviewer despite the other authenticated host being available. Whether another host path supplied either
+body is unverified. The commands and availability procedure remain conditional detail in the reference.
 
 ## Amendment, 1.14.0
 

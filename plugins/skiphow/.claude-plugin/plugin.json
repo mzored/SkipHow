@@ -1,7 +1,7 @@
 {
   "name": "skiphow",
-  "version": "1.14.2",
-  "description": "Handle product and project work from one owner request.",
+  "version": "2.0.1",
+  "description": "One autonomous project entry for nontechnical product owners.",
   "author": {
     "name": "mzored",
     "url": "https://github.com/mzored"
@@ -13,7 +13,7 @@
     "agent-skills",
     "claude-code",
     "codex",
-    "orchestration"
+    "autonomy"
   ],
   "skills": "./skills/"
 }

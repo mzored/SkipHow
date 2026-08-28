@@ -81,7 +81,19 @@ def validator_python() -> tuple[str | None, str]:
 
 
 def _payload(root: Path) -> dict[str, str]:
-    if not root.is_dir() or root.is_symlink():
+    try:
+        relative = root.relative_to(ROOT)
+    except ValueError:
+        linked_component = root.is_symlink()
+    else:
+        current = ROOT
+        linked_component = False
+        for part in relative.parts:
+            current /= part
+            if current.is_symlink():
+                linked_component = True
+                break
+    if not root.is_dir() or linked_component:
         raise ValueError(f"package directory is unavailable: {root}")
     result: dict[str, str] = {}
     for path in root.rglob("*"):
@@ -97,11 +109,33 @@ def _payload(root: Path) -> dict[str, str]:
     return result
 
 
+def _marketplace_manifest(host: str) -> tuple[str, Path]:
+    relative = (
+        ".agents/plugins/marketplace.json"
+        if host == "codex"
+        else ".claude-plugin/marketplace.json"
+    )
+    path = ROOT / relative
+    current = ROOT
+    linked = False
+    for part in Path(relative).parts:
+        current /= part
+        if current.is_symlink():
+            linked = True
+            break
+    if linked or not path.is_file():
+        raise ValueError(f"marketplace manifest must be a regular non-symlink file: {relative}")
+    return relative, path
+
+
 def _plain_marketplace(destination: Path, host: str) -> Path:
-    destination.mkdir(parents=True, exist_ok=False)
+    _marketplace_manifest(host)
     metadata = ".agents" if host == "codex" else ".claude-plugin"
-    shutil.copytree(ROOT / metadata, destination / metadata)
-    shutil.copytree(PLUGIN_ROOT, destination / "plugins/skiphow")
+    _payload(ROOT / metadata)
+    _payload(PLUGIN_ROOT)
+    destination.mkdir(parents=True, exist_ok=False)
+    shutil.copytree(ROOT / metadata, destination / metadata, symlinks=True)
+    shutil.copytree(PLUGIN_ROOT, destination / "plugins/skiphow", symlinks=True)
     _payload(destination)
     return destination
 
@@ -110,15 +144,15 @@ def verify_plain_marketplace_source(source: str, host: str) -> tuple[bool, str]:
     """Require a repository-free local marketplace with the exact package bytes."""
     marketplace = Path(source).expanduser().resolve()
     try:
+        manifest, candidate_manifest = _marketplace_manifest(host)
         marketplace_payload = _payload(marketplace)
-        manifest = ".agents/plugins/marketplace.json" if host == "codex" else ".claude-plugin/marketplace.json"
-        if (marketplace / manifest).read_bytes() != (ROOT / manifest).read_bytes():
+        if (marketplace / manifest).read_bytes() != candidate_manifest.read_bytes():
             return False, "marketplace manifest does not match the candidate"
         plugin_payload = _payload(PLUGIN_ROOT)
         if _payload(marketplace / "plugins/skiphow") != plugin_payload:
             return False, "marketplace plugin payload does not match the candidate"
         expected = {
-            manifest: hashlib.sha256((ROOT / manifest).read_bytes()).hexdigest(),
+            manifest: hashlib.sha256(candidate_manifest.read_bytes()).hexdigest(),
             **{f"plugins/skiphow/{name}": digest for name, digest in plugin_payload.items()},
         }
         if marketplace_payload != expected:
@@ -128,26 +162,60 @@ def verify_plain_marketplace_source(source: str, host: str) -> tuple[bool, str]:
     return True, "plain marketplace contains the exact candidate package"
 
 
-def _installed_path(host: str, raw: str) -> Path:
+def _inventory_entry(host: str, raw: str) -> dict[str, object]:
+    """Return the one enabled installed entry reported by the host inventory."""
     value = json.loads(raw)
     entries = value.get("installed") if host == "codex" and isinstance(value, dict) else value
     if not isinstance(entries, list):
         raise ValueError("plugin inventory is not a list")
-    matches = []
+    matches: list[dict[str, object]] = []
     for item in entries:
         if not isinstance(item, dict):
             continue
         identifier = item.get("pluginId") if host == "codex" else item.get("id")
-        if identifier == "skiphow@skiphow" and item.get("enabled") is True and item.get("installed", True) is True:
+        if identifier == "skiphow@skiphow":
             matches.append(item)
     if len(matches) != 1:
-        raise ValueError("expected one enabled skiphow@skiphow installation")
-    item = matches[0]
-    source = item.get("source") if host == "codex" else None
-    path = source.get("path") if isinstance(source, dict) else item.get("installPath")
+        raise ValueError("expected exactly one skiphow@skiphow inventory entry")
+    match = matches[0]
+    installed = (
+        match.get("installed") is True
+        if host == "codex"
+        else match.get("installed", True) is True
+    )
+    if match.get("enabled") is not True or not installed:
+        raise ValueError("skiphow@skiphow inventory entry is not enabled and installed")
+    return match
+
+
+def _codex_installed_path(raw: str) -> Path:
+    """Read the installed payload path from `codex plugin add --json`."""
+    value = json.loads(raw)
+    if not isinstance(value, dict):
+        raise ValueError("Codex plugin add output is not an object")
+    if value.get("pluginId") != "skiphow@skiphow":
+        raise ValueError("Codex plugin add output has the wrong pluginId")
+    path = value.get("installedPath")
     if not isinstance(path, str) or not path:
-        raise ValueError("host inventory omitted the installed package path")
-    return Path(path).resolve()
+        raise ValueError("Codex plugin add output omitted installedPath")
+    return Path(path).expanduser().resolve()
+
+
+def _claude_installed_path(item: dict[str, object]) -> Path:
+    """Read the installed payload path from Claude's verified inventory entry."""
+    path = item.get("installPath")
+    if not isinstance(path, str) or not path:
+        raise ValueError("Claude plugin inventory omitted installPath")
+    return Path(path).expanduser().resolve()
+
+
+def _require_isolated_path(installed: Path, host_home: Path) -> Path:
+    """Reject a host claim that resolves outside its fresh configuration home."""
+    resolved_home = host_home.resolve()
+    resolved_installed = installed.resolve()
+    if resolved_installed == resolved_home or not resolved_installed.is_relative_to(resolved_home):
+        raise ValueError("installed package path is outside the isolated host home")
+    return resolved_installed
 
 
 def _created_repository(root: Path) -> bool:
@@ -185,6 +253,8 @@ def isolated_install(
             return False, detail
         host_home = temporary_root / "host-home"
         host_home.mkdir()
+        command_cwd = temporary_root / "command-cwd"
+        command_cwd.mkdir()
         if host == "codex":
             environment["CODEX_HOME"] = str(host_home)
             marketplace_command = [
@@ -218,15 +288,23 @@ def isolated_install(
         else:
             raise ValueError(f"unsupported host: {host}")
 
-        output = ""
+        outputs: list[str] = []
         for command in commands:
-            passed, output = checked(command, env=environment)
+            output = ""
+            passed, output = checked(command, env=environment, cwd=command_cwd)
+            outputs.append(output)
             if _created_repository(temporary_root):
                 return False, "host package check created a repository"
             if not passed:
                 return False, output or f"failed {' '.join(command)}"
         try:
-            installed = _installed_path(host, output)
+            inventory = _inventory_entry(host, outputs[2])
+            installed = (
+                _codex_installed_path(outputs[1])
+                if host == "codex"
+                else _claude_installed_path(inventory)
+            )
+            installed = _require_isolated_path(installed, host_home)
             if _payload(installed) != _payload(PLUGIN_ROOT):
                 return False, "installed plugin payload does not match the candidate"
         except (OSError, ValueError, json.JSONDecodeError) as exc:

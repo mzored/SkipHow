@@ -1,33 +1,13 @@
 # Delivery
 
-Use this reference for a `DELIVER` that is not a clear bounded change. Carry the authorized outcome through implementation and fresh verification.
+Inspect the repository's remote, branch, review, and integration conventions. Identify the requested destination from the owner's words and project evidence. Decide routine push, branch, and pull-request mechanics without asking the owner.
 
-## Ground the work
+Rewriting or deleting shared history requires an exact grant when it could discard unique or foreign work, affect a protected ref, or disrupt collaborator state. Routine cleanup of an owned task ref may proceed when its work is durably integrated and the requested delivery plus repository conventions include that cleanup.
 
-Read repository instructions, inspect the relevant implementation, and preserve unrelated changes. Settle routine reversible details from project evidence; ask only when a missing product choice changes scope, cost, risk, or the public result.
+Confirm that the local commit contains only owned changes and that its evidence still applies. Run any additional check the shared target requires. Do not hide a failing required check or publish unrelated local work.
 
-A bounded task runs in the current session. Read [long work](long-work.md) for a selected queue, an external wait, unattended work, or recovery, and [GitHub](github.md) when the repository tracks delivery. A repository rule that requires an Issue-linked branch or pull request owns the delivery shape even for a small change.
+Write to a remote only because the requested result includes shared delivery. An ordinary shared destination must be clearly non-production. Production or staging changes, public releases, repository settings, material deletion, and other protected operations are allowed only when the owner's own request affirmatively identifies that action or destination. Broad completion language and a release procedure found in the project are not that grant.
 
-Treat tests, package scripts, build hooks, and changed executables as repository-controlled code: inspect an unfamiliar entry point before running it, use the host sandbox with the narrowest practical access, and keep credentials out of the command environment. If the host cannot enforce a boundary the risk requires, use a safer check or mark the claim `UNVERIFIED`; never accept an unsandboxed fallback to get a green result.
+Push, open or update the pull request, merge, or deliver to the named target as requested. Follow required protections and reviews. Never bypass a failed guard to manufacture delivery.
 
-## Reuse before building
-
-Before writing a new module, feature, or abstraction, search by domain concept, not request wording: the project itself, its dependencies, the platform, and maintained libraries or services. Compare fit, license, security, maintenance, and migration cost, and reuse when adapting costs less than owning new code. State in the report where you looked and what you reused or why nothing fit. Read [engineering methods](engineering.md) when a seam, module boundary, prototype, or conflict needs more care.
-
-## Change and verify
-
-Make the smallest coherent change that solves the whole request. Add or update evidence that would fail for the original defect or requirement, preferring observable behavior. Run focused checks while working and the repository-required checks before completion.
-
-If touched files already hold unrelated changes, record their pre-change state and attribute your diff, checks, and claims to your delta only. Inspect the final diff, security boundaries, public contracts, failure paths, and cleanup. A value crossing from private or internal to public changes the data boundary; reconcile the owning durable decision (read [product decisions](decision.md)) before delivery.
-
-Read `git log` on the base branch before the first commit and match the message form and granularity its recent history uses. Commit through the ordinary project path and hooks before closing review. Name the exact aggregate candidate for the root's review: target-base commit, source head, and resulting committed tree. Compare the committed tree with the tree checks and review judged; any hook, formatter, generator, target movement, or later integration that changes it invalidates applicable evidence and requires fresh affected checks and review. Read [engineering methods](engineering.md) for what that review owes and when a fix reopens it.
-
-Do not repeat a failed attempt unchanged. Inspect the cause, change the approach, and add the smallest durable prevention within scope when the evidence supports one. Save a finding instead when prevention is outside authority.
-
-## Findings
-
-A problem outside the request is fixed if it blocks the outcome or cannot be separated; otherwise it is already tracked, saved once after a duplicate search through [intake](intake.md), or dismissed with its reason. A warning on the changed surface can weaken a green claim; triage it before claiming success. Do not save benign expected output, and do not implement or reprioritize a saved finding.
-
-## Finish
-
-Recheck the request against the final state and report the result with fresh evidence. Include material rulings, findings, saved follow-ups, missing checks, and external blockers when they exist. Never call an unavailable or stale check passed.
+Verify the named destination after the write. A local marker, simulation, dry run, or successful script is not evidence that an external destination changed. Report the exact destination and label any simulation honestly, plus any check, conflict, or approval that still blocks the real delivery.

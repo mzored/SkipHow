@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted. The rule that tiers are mapped only from host metadata is superseded by [ADR 0007](0007-host-adapters-for-routing-and-continuity.md), which resolves tiers through host adapters using family aliases. The tiers, the `STANDARD` floor for mutation, and the cost-claim rule stand.
+Superseded by [ADR 0018](0018-autonomous-kernel-and-independent-task-skills.md). The shipped contract no
+longer defines model tiers, role floors, escalation counts, or provider adapters. The requirement that cost or
+quality claims need appropriate comparative evidence stands.
 
 ## Date
 

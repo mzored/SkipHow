@@ -2,11 +2,29 @@
 
 ## Status
 
-Accepted. Amended by [ADR 0014](0014-conform-to-the-tracker-classification.md); its phrase-based routine merge boundary is superseded by [ADR 0017](0017-autonomous-routine-delivery-uses-owned-worktrees.md).
+Partially superseded by [ADR 0018](0018-autonomous-kernel-and-independent-task-skills.md). Tracker-native
+records, read-only authority, protected actions, and preservation of unrelated work stand. The fixed GitHub
+lifecycle, operation markers, worktree procedure, and automatic remote integration do not.
 
 ## Date
 
 2026-08-25
+
+## Current interpretation, 2026-08-28
+
+The detailed GitHub lifecycle and the 1.14.0 automatic-integration amendment below are historical 1.x policy.
+[ADR 0018](0018-autonomous-kernel-and-independent-task-skills.md) governs the 2.0.1 candidate when this ADR
+conflicts with it. Tracker-native records, read-only authority, exact grants for protected effects, and
+preservation of unrelated work remain current boundaries.
+
+A request to fix or implement grants necessary project edits, fresh verification, and an ordinary local
+commit of owned changes. It does not by itself grant an Issue, finding record, pull request, merge, branch
+cleanup, or any other remote write. Shared remote delivery must be part of the requested outcome and target
+an affirmatively non-production destination; a material finding is persisted only when the request grants
+that record. The protected-action categories and exact-grant rule in ADR 0018 replace the older lists and
+phrase distinctions below. SkipHow defines neither a fixed `.skiphow/inbox.md` fallback nor an automatic
+handoff schema. GitHub procedures apply only when they are useful or repository-required within authority the
+owner actually granted.
 
 ## Context
 

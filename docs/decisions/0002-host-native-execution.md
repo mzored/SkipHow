@@ -2,11 +2,26 @@
 
 ## Status
 
-Accepted. Amended by [ADR 0007](0007-host-adapters-for-routing-and-continuity.md): the package may ship one read-only `SessionStart` continuity hook and three role adapters; it still ships no runtime.
+Accepted as amended by [ADR 0018](0018-autonomous-kernel-and-independent-task-skills.md). Host-native
+execution, permissions, continuation, and the rejection of a private runtime stand. Fixed routes, required
+worktrees, and the three role adapters do not.
 
 ## Date
 
 2026-08-25
+
+## Current interpretation, 2026-08-28
+
+Host-native execution and the rejection of a private SkipHow runtime remain current. The workflow triggers,
+state hierarchy, and fallback records below describe the historical 1.x contract;
+[ADR 0018](0018-autonomous-kernel-and-independent-task-skills.md) governs the 2.0.1 candidate when they
+conflict.
+
+No item count, external wait, or unattended phrase selects a long-work procedure. The agent uses host tasks,
+delegates, worktrees, continuation, or a handoff only when they materially help the authorized result or the
+repository requires them. GitHub is not a universal task record, and SkipHow defines no automatic handoff or
+fixed local inbox. A requested durable record follows the project's existing tracker and classification; a
+project change does not gain remote-write authority from that tracker or from repository procedure.
 
 ## Context
 

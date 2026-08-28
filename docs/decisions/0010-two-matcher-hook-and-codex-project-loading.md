@@ -2,11 +2,27 @@
 
 ## Status
 
-Accepted in 1.3.0. Amended by [ADR 0011](0011-findings-tag-codex-role-files-neutral-repo-instructions.md) on the evidence. Amends [ADR 0007](0007-host-adapters-for-routing-and-continuity.md) (hook shape). [ADR 0008](0008-receipts-over-a-live-harness.md) and [ADR 0009](0009-reviewer-inherits-and-one-engineering-reference.md) stand.
+Partially superseded by [ADR 0018](0018-autonomous-kernel-and-independent-task-skills.md). The read-only
+startup/clear and compact/resume continuity matchers still emit instructions to load or reload the owner
+kernel, and the receipt policy in [ADR 0008](0008-receipts-over-a-live-harness.md) stands. The 1.x Codex
+project-loading workaround, fixed queue fallback, and reviewer topology do not define 2.0. Hook execution
+and any resulting skill load remain runtime evidence.
 
 ## Date
 
 2026-08-26
+
+## Current interpretation, 2026-08-28
+
+The two matcher groups and exact-candidate receipt principle remain relevant to the 2.0.1 package, subject to
+[ADR 0018](0018-autonomous-kernel-and-independent-task-skills.md). The Codex project-loading workaround,
+fixed offline queue, and automatic continuity procedure below are historical 1.x policy.
+
+The hook only prints an instruction to load or reload the owner kernel. On resume it prints a conditional
+instruction to read `.skiphow/handoff.md` if that file exists; the hook itself does not test for, read,
+display, trust, or restore the checkpoint, or load the skill. Host execution and any resulting skill load
+remain `UNVERIFIED` without a runtime receipt. SkipHow defines no fixed `.skiphow/inbox.md` queue for the
+current candidate.
 
 ## Context
 
@@ -20,7 +36,7 @@ Every Codex behavior claim since 1.0 has been `UNVERIFIED` because this machine'
 
 ## Decision
 
-- `hooks/hooks.json` has two groups: `startup|clear` (invoke the skill; show unfinished work) and `compact|resume` (re-read the request and live state; show the checkpoint). The deterministic check requires each of the four sources to appear exactly once across the groups and keeps every other hook rule from ADR 0007.
+- `hooks/hooks.json` has two groups: `startup|clear` (emit an instruction to load the skill and show unfinished work) and `compact|resume` (emit an instruction to reload the skill, re-read the request and live state, and show the checkpoint). The deterministic check requires each of the four sources to appear exactly once across the groups and keeps every other hook rule from ADR 0007.
 - Codex receipts are produced by project-level loading of the exact candidate as described above and are recorded like any other receipt. This does not change the shipped package or the install instructions.
 - Evaluation stays receipt-based (ADR 0008). `plugin eval` remains the intended path for comparative claims once it is available; until then the README labels the comparison a hypothesis.
 - The queue for long work may come from `.skiphow/inbox.md` when the project has no tracker, so "save it" and "finish it" both work offline.
