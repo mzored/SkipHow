@@ -43,4 +43,4 @@ The retained receipts do not prove:
 - comparative cost or speed;
 - behavior in the owner's real application.
 
-SkipHow 2.0.2 changes repository documentation, maintenance files, and package version metadata. The runtime owner skill, internal methods, and hook text remain unchanged from 2.0.1, so no new behavior claim is added for this release.
+SkipHow 2.1.0 changes the runtime contract. A project change now also grants the durable records the project keeps for that work, a one-time owner question settles where those records live, and three methods join the library for project setup, technical design, and delegation. Deterministic checks cover the package. No receipt yet covers the new behavior, so all of it is `UNVERIFIED`: whether a finding is recorded once and picked up by a fresh session, whether an interrupted run resumes from the record, whether a read-only request still writes nothing, and whether small work still completes without added ceremony.

@@ -1,10 +1,12 @@
 # Intake
 
-Write only when the owner's requested outcome is a durable record. A request merely to triage, organize, review, diagnose, research, or inspect incoming material stays read-only unless that outcome also includes a record.
+Write when the owner's requested outcome is a durable record, and when an authorized project change produces one the contract already grants: the agreed outcome for that work, the state a later session needs to continue it, or a material problem the change leaves unfixed. A request merely to triage, organize, review, diagnose, research, or inspect incoming material stays read-only unless that outcome also includes a record.
 
 Use the repository's existing tracker or record convention when it is within the authorized project audience. Inspect its visibility before writing. A public or external record requires an exact grant when it would disclose material beyond that audience. Otherwise use the smallest private or local format the project can keep, or ask only for the disclosure decision when no safe destination exists.
 
 Preserve the owner's meaning while turning fragments into actionable records. Capture the observable problem or desired result, the evidence supplied, and the condition that would show it is resolved. Include priority, scope, or dependencies only when the source or project evidence supports them.
+
+Write a record the way a capable agent with no history could act on it. Beyond the problem and its resolution condition, carry the impact, what surfaced it, the evidence already gathered, and the explanations already ruled out. Omitting what was already tried is what makes a later session repeat the investigation. Use the structure the tracker itself provides, including a parent item and sub-items when it has that hierarchy.
 
 Search for likely duplicates before creating a new record. Merge only when the outcomes are truly the same. Keep distinct problems distinct even when they touch the same screen or module.
 
