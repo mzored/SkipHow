@@ -1,6 +1,6 @@
 ---
 name: dogfood
-description: Check how SkipHow actually behaved in a real session, using the owner's own transcripts. Use when asked why a run misbehaved, whether a plugin version works, where the time or tokens went, or to turn something observed in real use into a change to the shipped skill. For developing SkipHow in this repository only.
+description: Check how SkipHow actually behaved in a real session, using the owner's own transcripts. Use when asked why a run misbehaved, whether a plugin version works, where the time or tokens went, or to turn something observed in real use into a change to the shipped skill, weighed against how comparable projects solve it. For developing SkipHow in this repository only.
 ---
 
 # Dogfood
@@ -59,24 +59,42 @@ honest default, not a failure.
 Count honestly and in whole sessions, and pool only sessions where the same text governed. Two deviations in
 one session are one observation. A finding the run noticed and silently dropped leaves no trace, so anything
 that looks like conformance is an upper bound.
+## Design the fix
 
-## Turn it into a change
+Only when the evidence names a defect in the package's own wording. A verdict of `UNVERIFIED`, a run that
+deviated from text that was plain and in context, and a question that was only ever about cost or time all end
+at the report. Do not manufacture a change for them.
 
-Locate the problem as narrowly as the evidence allows. Check the recorded decision history first, so a settled
-argument is not reopened without new evidence.
+Locate the problem as narrowly as the evidence allows. Start with this project's own record. The decision
+history and the prior art page say what was already argued and turned down, so a settled argument is not
+reopened without new evidence — and when this session is that evidence, say so.
+
+Those same pages name which outside projects are comparable on the shape in front of you. Read the ones that
+are, as their text stands now rather than as this project summarised it or as you remember it; both go stale,
+and a claim about a project that was not read is not evidence. Note what the mechanism costs the person living
+with it, because that cost is usually why SkipHow left it out, and apply the adoption rule recorded there.
+Finding nothing comparable, or nothing worth taking, is a normal result and is worth a sentence.
 
 Prefer deleting a contradiction, then tightening a sentence, then moving it so it loads earlier. Adding is last,
 and a rule that must hold on every request belongs in the always-loaded part rather than in a file that may
 never be opened.
+
+Then say what else it could have been. Two or three candidates, one of them the smallest the evidence
+justifies, each with the wording it changes and where it lands, whether it loads on every request or behind a
+trigger the agent can evaluate without opening the file, what it costs every future run, what it borrows, and
+what would show it was the wrong call. Recommend one and say why the others lose. That is how the reasoning
+gets checked, not a menu to be picked from: the choice goes back to the owner only where the candidates differ
+in something the kernel reserves for them.
 
 One session can prove wording is broken. It cannot prove that agents in general need a new procedure. Resist
 adding steps, gates, or ceremony on that basis, here or in the package.
 
 ## Report
 
-Say what you found, what the evidence supports, and what stays uncertain. No fixed template, no required
-headings, no bookkeeping about which sessions were reviewed before.
+Say what you found, what the evidence supports, and what stays uncertain. Where there was a fix to design,
+the candidates and the recommendation go with it. No fixed template, no required headings, no bookkeeping
+about which sessions were reviewed before.
 
-Read-only unless the owner asked for a change. If they did, own the technical decisions, follow the
-repository's normal contributor rules, and stop only at a real product choice or an action that needs their
-explicit permission.
+Read-only unless the owner asked for a change. If they did, implement the recommendation: own the technical
+decisions, follow the repository's contributor rules, and stop only at a real product choice or an action that
+needs their explicit permission.
