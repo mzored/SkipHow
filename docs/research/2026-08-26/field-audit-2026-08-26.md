@@ -147,6 +147,10 @@ called a stale check passed.
   tracker.
 - Codex sessions are not covered by the audit tooling at all.
 
+The adjacent [coverage sidecar](field-audit-2026-08-26.receipts.json) migrates the four historical snapshot
+keys below. No evidence fingerprint was frozen at the time, so the sidecar preserves identity but cannot
+establish current coverage. The Markdown remains the behavioral receipt.
+
 ```text
 Audited `4d32702f` · 846 records · plugin 1.6.1 · classification DEFECT (fixed in 1.7.0); merge and push without grant; three references unloaded
 Audited `0df7f9b0` · 1147 records · plugin 1.6.1 · merge and push without grant; no markers; heading dropped; no reference loaded

@@ -18,16 +18,19 @@ markers, and fixed schemas do not.
 ## Context
 
 The [field audit](../research/2026-08-26/field-audit-2026-08-26.md) read the first four real sessions from
-other repositories. References loaded three times against roughly twelve applicable triggers, and every
-serious deviation sat downstream of a reference that never loaded.
+other repositories. Its then-used transcript digest found positive reference-body evidence three times
+against roughly twelve applicable triggers, and every serious deviation sat downstream of a reference for
+which it found no qualifying read or body evidence.
 
 The sharpest measurement: `github.md` requires a `skiphow:<id>` marker on every object a run creates. In the
-two sessions that did not load it, **0 of 7 Issue-create commands carried a marker**. In the one that loaded
-it, 1 of 1 did. Observance tracked the load exactly, not the rule.
+two sessions with no qualifying `github.md` read or body evidence, **0 of 7 Issue-create commands carried a
+marker**. In the one session with positive body evidence, 1 of 1 did. Observance tracked the evidence in
+that small sample, not the rule alone.
 
 Two sessions merged a task branch into a shared integration branch, pushed it, and deleted the branch, on
 requests that said only "fix this systematically". The prohibition — "'Fix', 'implement', repository policy,
-or Issue text alone never grants merge" — lives in `github.md` and was not in context. The root skill named
+or Issue text alone never grants merge" — lives in `github.md`; the transcripts contain no qualifying read
+or body evidence for it. Whether another host path placed it in context is unverified. The root skill named
 the grant positively and never named its boundary, while both target repositories describe that merge as
 their normal flow.
 
@@ -52,7 +55,7 @@ likely to be followed whole — and that argues for no filler, not for a particu
   branch deletion, and cleanup. The 1.14.0 amendment replaces that token with semantic outcome authority,
   autonomous routine integration, and explicit staging or production approval.
 - The reference list is a precondition, read before the act it governs rather than when convenient, and the
-  root says that a rule which did not load did not stop applying: an impractical read is reported under
+  root says that failure to read a required rule does not erase it: an impractical read is reported under
   Limits, not treated as absence.
 - `TRACKED` means a record that existed before this run; `SAVED` means this run recorded it. Both carry a
   link, and `Saved follow-ups` repeats each record with its link so the owner need not search.
@@ -66,8 +69,9 @@ likely to be followed whole — and that argues for no filler, not for a particu
 ## Consequences
 
 The root grows from 598 to about 730 words, roughly 180 tokens per request. Six references are unchanged;
-`engineering.md` loses a vocabulary. Anything the root now states unconditionally is in context for every
-run, including the runs that load nothing, which is the population where the audit found its deviations.
+`engineering.md` loses a vocabulary. Anything the root now states unconditionally is present in the
+owner-skill body rather than depending on a separate reference read. The audit found its deviations in
+transcripts with no qualifying read or body evidence for the relevant references.
 
 `scripts/check.py` moves with the shape, as contributor rules require, and the budget test now derives its
 numbers from the accepted shape instead of restating them, so a future budget change does not need a test
@@ -108,23 +112,24 @@ The reviewed root limit becomes 1,400 words and 9,500 bytes. A ninth lazy refere
   unambiguous. The defect is which rules were placed there, not that the layer exists.
 - **Enforce the boundary with a host hook rejecting an unauthorized `git push`.** Rejected for the same
   reasons as the tracker hook in ADR 0014: per-project, on a protected settings surface, and it hardcodes one
-  workflow's commands. A rule in the always-loaded contract works on both hosts with no setup.
+  workflow's commands. A rule in the owner kernel is portable across both packages and needs no setup.
 - **Raise the budget without a stated purpose.** A number with no rationale is what produced this ADR; the
   check now carries the reason next to the constant.
 
 ## Historical post-acceptance evidence for 1.8.0 through 1.13.0
 
-The fourth session in the audit was re-read after it completed. It loaded `github.md`, held the merge
-prohibition in context, and merged, pushed, and skipped the pull request anyway, on a request whose owner
-turns carried no end-to-end words. That is this ADR's own second revalidation trigger, fired by the same
-receipt set that motivated it.
+The fourth session in the audit was re-read after it completed. Its transcript contains qualifying
+`github.md` body evidence, including the merge prohibition, and it merged, pushed, and skipped the pull
+request anyway, on a request whose owner turns carried no end-to-end words. That is this ADR's own second
+revalidation trigger, fired by the same receipt set that motivated it.
 
-At the time it did not reverse the decision. ADR 0017 now supersedes the phrase boundary, while the measurement
-still supports this ADR's placement rule: a rule that never loads governs nothing, and loading alone is not
-sufficient. The former receipt request for a fix run that stopped at the branch is retired for 1.14 and later.
+At the time it did not reverse the decision. ADR 0017 now supersedes the phrase boundary, while the
+measurement still supports this ADR's placement rule: text absent from model context cannot govern, and
+positive body evidence alone is not sufficient for compliance. The former receipt request for a fix run
+that stopped at the branch is retired for 1.14 and later.
 
 ## Revalidation triggers
 
 The 1.8.0 phrase-grant trigger is retired by the 1.14.0 amendment. Revisit when a run promotes into staging or production without approval, when a
-run that loaded a reference still breaks the rule the reference carries, when the root budget binds again at 1,400 words, or
+run with qualifying reference-body evidence still breaks the rule that reference carries, when the root budget binds again at 1,400 words, or
 when a receipt shows the root's growth degrading behavior that 1.7.0 performed correctly.

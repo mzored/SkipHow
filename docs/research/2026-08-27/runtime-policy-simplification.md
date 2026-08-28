@@ -5,21 +5,26 @@ Research performed on 2026-08-27 for the 2.0 architecture in
 owner's question directly: whether SkipHow should become a curated, autonomous adaptation of small skills
 instead of another universal workflow engine.
 
+This note describes an unpublished 2.0 release candidate. Marketplace installation still resolves to the
+published 1.14.2 package until 2.0 is published.
+
 ## Conclusion
 
-Yes, with one important distinction. The useful analogue is a **library of focused methods behind one
-plain-language owner skill**, not a copied package topology or chain of commands. SkipHow's unique work is the
-thin root that converts a nontechnical owner's outcome into authority, technical judgment, preservation of
-unrelated work, and a verified result. It reads only the method references that help.
+Yes, with one important distinction. The useful analogue is a library of thirteen focused Markdown methods
+behind one top-level, plain-language owner skill, not a copied package topology or chain of commands.
+SkipHow's root defines authority, autonomous technical judgment, preservation of unrelated work, and verified
+completion for a nontechnical owner's request. The methods are optional technique.
 
 The Agent Skills standard does not define a dependency by which a selected method skill must also load an
-owner kernel. Codex also has no portable way to hide enabled sibling skills from the owner. SkipHow therefore
+owner kernel. The inspected Codex 0.149.1 package metadata has no field equivalent to Claude's model-only
+visibility control. SkipHow therefore
 ships one top-level skill and keeps its focused methods as internal Markdown resources. They never grant
 authority, call one another, or become owner commands.
 
-Read-only lifecycle hooks reinforce that boundary: startup/clear tells the host to load the kernel for project
-requests, and compact/resume restores it before work continues. The hook is not a dependency primitive and
-grants no authority.
+The package requires one read-only lifecycle hook. Its handlers are configured to print a kernel-load
+instruction on startup or clear and a reload instruction on compact or resume. Whether a host supports or
+executes those handlers is separate runtime behavior. The hook does not perform either load, is not a
+dependency primitive, and grants no authority.
 
 ## What the earlier research got wrong
 
@@ -29,17 +34,19 @@ then treated several shipped skills as several workflows the owner would have to
 [ADR 0006](../../decisions/0006-host-native-campaign-and-engineering-policy.md) consequently rejected split
 method skills and put conditional methods behind one root router.
 
-That inference first produced an overcorrection: a 2.0 candidate separated the kernel into one skill and the
-methods into thirteen sibling skills. Cross-host review then showed that package topology does affect this
-owner interface. Claude has a host-specific model-only visibility field; the inspected Codex implementation
-does not, and Agent Skills has no leaf-to-kernel dependency. An exposed or independently selected leaf could
-bypass the only contract the owner actually relies on.
+That inference first produced an overcorrection: a superseded 2.0 candidate separated the kernel into one
+skill and the methods into thirteen sibling skills. Cross-host review then showed that package topology does
+affect this owner interface. Claude has a host-specific model-only visibility field; the inspected Codex
+0.149.1 metadata has no equivalent package field, and Agent Skills has no leaf-to-kernel dependency. An exposed or independently
+selected leaf could bypass the only contract the owner actually relies on. Exploratory runs against that
+candidate are not evidence for the selected one-skill package.
 
-The final decision keeps one top-level skill and corrects the real 1.x failure instead. In 1.x, conditional
-references held critical authority and workflow rules, so missed loads changed behavior. In 2.0, every
-critical authority, autonomy, preservation, and completion rule stays in the root. References contain only
-focused methods, with no routes or mandatory load gates. Missing one can reduce technique quality; it cannot
-remove the contract.
+The selected decision keeps one top-level skill and corrects the late-1.x layout instead. In the audited 1.x
+snapshots, conditional references held critical authority and workflow rules, so a missed load could change
+behavior. In 2.0, every critical authority, autonomy, preservation, and completion rule stays in the root.
+The thirteen internal Markdown references contain optional methods, with no routes or mandatory load gates.
+An applicable method can help with technique, but it cannot add to or remove from the critical contract in
+the root.
 
 ## Primary sources read
 
@@ -72,14 +79,15 @@ role, reviewer, worktree, queue, report, or word-budget contract.
 the model or user to invoke them. It also documents user-only skills for side-effectful operations and says
 the body remains in context after loading. Its
 [extension overview](https://code.claude.com/docs/en/features-overview) says built-in tools cover most coding
-tasks and recommends adding extensions when specific triggers arise. Skills, subagents, hooks, permissions,
-and continuation are separate host capabilities.
+tasks and recommends adding extensions when specific triggers arise. Skills, subagents, and hooks are
+separate host capabilities.
 
 Claude Code also supports a host-specific `user-invocable: false` field for hiding a skill from its owner
 menu while retaining model invocation. The portable specification does not define that field. The inspected
 [Codex 0.149.1 skill model](https://github.com/openai/codex/blob/rust-v0.149.1/codex-rs/skills/src/model.rs)
-has no equivalent user-visibility property; enabled skills remain owner-visible. Neither host can infer a
-portable dependency that guarantees a sibling method loads the kernel first.
+has no equivalent user-visibility property. The audited formats therefore offer no portable package field
+that guarantees an internal sibling stays model-only in Codex, and neither host can infer a dependency that
+guarantees a sibling method loads the kernel first.
 
 [OpenAI](https://learn.chatgpt.com/docs/build-skills) also supports explicit and implicit activation. Codex's
 2% context-window or 8,000-character limit applies to the initial catalog of names and descriptions, not to a
@@ -87,7 +95,7 @@ selected skill's body and not to a fixed 600- or 1,400-word root. OpenAI's
 [skill design guidance](https://developers.openai.com/plugins/build/skills) says a plugin may hold one skill
 or a related group and recommends splitting when triggers, inputs, or success criteria differ. Its
 [plugin format](https://developers.openai.com/plugins/build/plugins) requires the manifest; skills, hooks,
-MCP connections, apps, agents metadata, and assets are optional components.
+MCP connections, apps, and assets are optional components.
 
 The reviewed OpenAI examples at
 [`33bd9529725fcee78c9e51fcbaa93cd963c3a47b`](https://github.com/openai/plugins/tree/33bd9529725fcee78c9e51fcbaa93cd963c3a47b)
@@ -95,7 +103,7 @@ package sibling task skills under one plugin. The Notion example exposes four in
 No reviewed OpenAI format field declares a skill dependency or call graph. The older
 [`openai/skills`](https://github.com/openai/skills) repository is deprecated in favor of the plugin examples,
 so it is not the architecture source for this decision. Sibling skills are valid packaging, but they do not
-satisfy SkipHow's stricter one-entry and always-loaded-kernel boundary on Codex.
+satisfy SkipHow's stricter one-entry boundary in which one selected owner skill carries the complete kernel.
 
 Anthropic's [pinned skills repository](https://github.com/anthropics/skills/tree/3b3fad96af16a10759d930941b4520ba0c40edae) likewise presents each skill as a
 self-contained folder loaded dynamically for a specialized task. Its own disclaimer says examples and product
@@ -114,7 +122,8 @@ on-demand loading than SkipHow 1.14's one universal route file.
 It is still not an autonomous product-owner layer:
 
 - The repository describes itself as ["Skills For Real Engineers"](https://github.com/mattpocock/skills/blob/6654f6b60cd9d5be8b54c6fafe44346dabeb3b76/README.md).
-- Setup asks the user to choose an issue tracker, triage labels, and documentation layout.
+- Setup asks about the issue tracker, conditionally asks whether to keep default triage labels, and asks about
+  documentation layout only when monorepo signals exist.
 - Named user workflows remain the normal entry. Its
   [grilling documentation](https://github.com/mattpocock/skills/blob/6654f6b60cd9d5be8b54c6fafe44346dabeb3b76/docs/productivity/grilling.md)
   calls cross-skill loading a real unfixed rough edge and says selective installation can omit the primitive
@@ -145,8 +154,8 @@ Vercel's pinned
 tree has nine top-level skills and a generated discovery index with one independent name and description per
 skill, without dependency, parent, or invocation fields. Its riskier deployment leaf contains the procedure
 that deployment needs; a separate optimization leaf uses host-native subagent fan-out with a serial fallback.
-That is useful evidence for keeping risk-specific procedure in a conditional method, not in the always-loaded
-kernel. It does not require that method to be a separate top-level skill.
+That is useful evidence for keeping risk-specific procedure in a conditional method, not in the owner root.
+It does not require that method to be a separate top-level skill.
 
 Superpowers is deliberately not the template for 2.0. It is a larger workflow system, but its own current
 history demonstrates why universal mechanics require measurements:
@@ -167,24 +176,26 @@ portable invariant without evidence for that exact population.
 
 ## Measured package shape
 
-The comparison below is repository evidence, not a runtime benchmark.
+The comparison below is repository evidence, not a runtime benchmark. The 2.0 column was measured from
+candidate commit `b2196d0bd3eeca1f542cbd8af3e1b45639aad29d`, whose owner-skill subtree is
+`95d908988208b9fcc1d285fe1ca1c5c681c4da1b`.
 
 | Shape | 1.14.2 | 2.0 candidate |
 | --- | ---: | ---: |
 | Top-level owner skills | 1 | 1 |
 | Additional top-level skills | 0 | 0 |
-| Root words | 1,348 | 862 |
-| Focused method references | 0 | 13 |
-| Reference words | 5,090 across 9 files | 2,589 across 13 files |
+| Root words | 1,348 | 929 |
+| Bundled Markdown references | 9 | 13 |
+| Reference words | 5,090 across 9 files | 2,806 across 13 files |
 | Fixed delegate role files | 3 | 0 |
 | Plugin files | 18 | 21 |
 | Enforced root word ceiling | 1,400 | none |
 
-The root shrinks by about 36%. Total runtime instruction prose across root and conditional method material
-falls from 6,438 to 3,451 words. More importantly, the host exposes one skill, every activation carries the
-critical root, and the agent reads only applicable methods. The candidate currently includes `codebase-design`, `continuity`, `delivery`,
-`diagnosing-bugs`, `intake`, `product-decisions`, `prototype`, `research`, `resolving-merge-conflicts`,
-`reviewing-changes`, `testing`, `wizard`, and `writing-for-agents`.
+The root is about 31% shorter. Total runtime instruction prose across the root and conditional method material
+falls from 6,438 to 3,735 words, about 42%. The package exposes one skill, so its critical root and authority
+boundary are part of that skill rather than a sibling dependency. Its internal methods are `codebase-design`,
+`continuity`, `delivery`, `diagnosing-bugs`, `intake`, `product-decisions`, `prototype`, `research`,
+`resolving-merge-conflicts`, `reviewing-changes`, `testing`, `wizard`, and `writing-for-agents`.
 
 Nine method references are curated adaptations from the pinned Matt commit. Four are SkipHow-specific methods.
 Provenance is recorded in the distributed
@@ -194,12 +205,14 @@ wording.
 
 The removed numeric budget history is also exact repository evidence:
 
-| Release | Root limit |
+| Release range | Root limit |
 | --- | ---: |
-| 1.2.0 | 600 words |
-| 1.8.0 | 850 words |
-| 1.10.0 | 1,000 words |
+| 0.9.0–1.0.1 | 700 words |
+| 1.1.0–1.7.x | 600 words |
+| 1.8.0–1.9.x | 850 words |
+| 1.10.0–1.13.x | 1,000 words |
 | 1.14.x | 1,400 words |
+| 2.0 release candidate | none |
 
 No current primary host or format source read for this decision requires any of those numbers.
 
@@ -210,8 +223,20 @@ No current primary host or format source read for this decision requires any of 
   accepted upstream behavior or a model receipt.
 - Superpowers' figures are its own reported experiments. They justify caution, not a SkipHow performance
   claim.
-- The 2.0 word and file counts describe the final single-skill candidate when measured. They do not prove that
-  the root reads the right reference or that models obey it.
-- Four Codex receipts cover the superseded multi-skill candidate and explicit `$skiphow` activation. The final
-  single-skill layout and bare activation stay `UNVERIFIED` until deliberate receipts supply evidence under
+- The 2.0 word and file counts describe commit `b2196d0bd3eeca1f542cbd8af3e1b45639aad29d` when measured. They are repository
+  evidence, not a runtime result.
+- [Six Codex receipts](v2.0-codex-receipts.md) use prompts that omit `$skiphow` against fixtures exposing one
+  project-local skill. Neither the prompts nor fixture instructions name SkipHow, and hooks were disabled.
+  Their records show Codex reading that exact root and applicable methods, which observes implicit
+  project-local selection for those prompts. Six one-off runs do not establish a general selection rate. The
+  visual receipt also used the user-level `impeccable` skill, so it does not isolate visual method.
+- When a transcript exposes only an unknown or unversioned contract path and no external exact-tree binding,
+  the governing contract identity and body remain `UNVERIFIED`; nearby versioned reads do not establish them.
+- Two earlier receipts failed. One accepted broad autonomy plus a repository procedure as a protected grant.
+  The next enforced that repaired gate but falsely described local markers as real production and publication.
+  Both failures informed the clean receipt candidate at commit
+  `b2196d0bd3eeca1f542cbd8af3e1b45639aad29d`, skill subtree
+  `95d908988208b9fcc1d285fe1ca1c5c681c4da1b`, before the six controls. The current 2.0.1 working tree keeps
+  those runtime bytes but changes package metadata and contributor tooling, which the controls do not cover.
+  Installed-plugin behavior, packaged-hook execution, Claude runtime, real remote effects, and other scenarios remain `UNVERIFIED` under
   [ADR 0008](../../decisions/0008-receipts-over-a-live-harness.md).

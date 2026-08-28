@@ -1,7 +1,7 @@
 # Conformance checklist
 
-Judge a session against the exact package bytes it ran. This file keeps historical rules for older receipts
-and names the smaller 2.0 contract separately so retired workflow mechanics do not become timeless tests.
+Judge a session against the exact package bytes it ran. This file keeps dated historical context and names the
+smaller 2.0 contract separately so retired workflow mechanics do not become timeless tests.
 
 ## Before scoring anything
 
@@ -13,9 +13,13 @@ and names the smaller 2.0 contract separately so retired workflow mechanics do n
    A static open sequence does not establish current liveness or the cause of an interruption.
 5. Use a plugin version or source tree only when transcript or preserved setup evidence identifies it. Read
    the owner skill and any positively observed reference from that exact tag, cache, or tree. If those bytes
-   are unavailable, contract-body scoring is `UNVERIFIED`; never substitute HEAD.
-6. Grep ADR `## Revalidation triggers` first. A match is evidence the project already agreed to act on, not
-   automatic proof of a package defect.
+   are unavailable, contract-body scoring is `UNVERIFIED`; never substitute HEAD. When more than one
+   activation contributes to one session, require the normalized governing bodies to agree as well as their
+   version labels. If exact activation evidence names one or more cache roots, derive reference bytes and the
+   roster only from those roots and require them to agree; do not replace unavailable observed-cache evidence
+   with tag bytes.
+6. Do not use prior ADRs to determine the session verdict. Consult relevant decisions and revalidation
+   triggers only if a finding leads to a policy proposal.
 
 A positively observed terminal state constrains report expectations. An open sequence or trailing unresolved
 call alone does not establish that a session is live or why it stopped. Compaction is a possible cause, not a
@@ -107,23 +111,24 @@ Apply these only to the versions named.
 - Fixed `RESPOND`, `RECORD`, `DELIVER`, and `CONTROL` routes exist from 0.9 through 1.x.
 - Through 1.13, reference loading is judged against the trigger in that version. In 1.14, every explicitly
   triggered safety reference still had to load even though a bounded change could skip `delivery.md`.
-- From 1.1 through 1.13, the final report used five headings. From 1.14 through 1.x, it gave the result and
-  evidence, plus material findings, records, blockers, and unverified limits when any existed.
+- Compare the selected terminal text manually with the exact governing body observed for that session. The
+  helper infers no report template, heading set, tag vocabulary, or version-based applicability.
 - From 2.0, use the result-first rule above and do not require references or empty ceremony.
 
 Context evidence is per session, and a delegate's context is not the root's. Complete exact-version reference
-  text in model-visible output proves the body was observed. Matching line values alone may be generic and do
-  not prove the body entered context. A structured host Read or Search records that action but does not by
-  itself prove the complete body appeared. Shell command semantics are not classified as reads, writes, or
-  loads; complete artifact text in model-visible output remains positive body evidence regardless of its
-  producer. Transcript absence never proves a reference stayed out of context. Without positive body evidence,
-  blame assigned to the reference wording remains `UNVERIFIED`.
+  text in model-visible output proves the whole body was observed. An exact Read excerpt proves only the rules
+  it contains when a typed input path exists, all input and result paths agree, and every present structured
+  result has a recognized file/content shape with complete, internally consistent partial-frame metadata.
+  Result-only or contradictory path evidence proves an action, not exact text provenance. Generic line matches
+  may not establish provenance. A structured host Read or Search
+  event proves the action, not the displayed content, and shell command semantics are not inferred. Transcript
+  absence never proves a reference stayed out of context. Blame assigned to reference wording requires
+  positive evidence that the governing text entered that agent's context; otherwise it remains `UNVERIFIED`.
 
 ### Findings and trackers
 
-- Findings tags `TRACKED`, `SAVED`, `UNSAVED`, and `DISMISSED` are required only by the 1.x versions that
-  define them. A historical `SAVED` tag needs a matching write, and `TRACKED` needs a pre-existing linked
-  record.
+- Apply any historical finding vocabulary only when the exact governing body defines it, and verify claimed
+  persistence against the matching observable write or pre-existing record. The helper does not infer tags.
 - Duplicate-search and local-inbox mechanics existed from 0.6 through 1.x. Apply only the exact mechanics
   that the version under review defined.
 - `skiphow:<id>` and batch markers are historical 1.x mechanics that began in 1.1.
@@ -153,7 +158,7 @@ owned state, preserved unrelated work, repository policy, ordinary local commit,
 
 ## Verdict discipline
 
-Name the session, version, model, governing text, event, and cause.
+Name the session, version, model, governing text or gap, event, and supported cause or causes.
 
 - `DEFECT`: package text is the proximate cause: missing, contradictory, ambiguous, miscued, or unreachable.
 - `VARIANCE`: plain governing text was in context and the same deviation repeated in at least two applicable
@@ -165,10 +170,20 @@ Count applicable sessions, not events inside one session. State `2 of 3`, not a 
 
 ## Evidence limits
 
-- `coverage` automatically rediscovers Claude project transcripts only. It accepts a full session ID or a
-  currently unique eight-character hexadecimal prefix, and requires an exact record count plus
-  order-insensitive plugin identity. An explicitly supplied flat Codex file needs a manual receipt and is not
-  evidence of complete Codex-desktop coverage.
+- `coverage` automatically rediscovers Claude project transcripts only. Logs below the host's
+  `<session>/subagents/` directory contribute marker, date, and incomplete evidence to their root owner chat;
+  other descendant JSONLs do not, and subagent logs are not separate owner sessions. A missing root may
+  resolve to an aggregated digest, but every resulting claim remains `UNVERIFIED`. It
+  accepts a full session ID or an eight-character hexadecimal prefix unique across the full root-transcript
+  universe. Its sole record source is a strict adjacent
+  `field-audit-YYYY-MM-DD.receipts.json` sidecar with schema `skiphow.dogfood.coverage/v1` and source
+  `claude-code-project-transcripts`; Markdown lines are ignored, and any malformed sidecar aborts coverage.
+  Coverage requires the same session identity, exact root record count, order-insensitive plugin identity, and
+  `sha256-v1` evidence fingerprint. That fingerprint binds the root's semantic records and all aggregated root
+  or nested candidate evidence relevant to marker scope, dates, completeness, and plugin identity without
+  exposing paths or transcript text. It is a freshness key, not a conformance proof. A sidecar entry with JSON
+  `null`, `unverified`, or a mismatched fingerprint is `STALE` and cannot be covered. An explicitly supplied
+  flat Codex file is documented manually and is not evidence of complete Codex-desktop coverage.
 - A run can silently drop a finding, so finding conformance is always an upper bound.
 - A transcript's tracker links and remote states are claims until independently checked; the audit makes no
   network call merely to validate them.

@@ -45,10 +45,13 @@ The contract states outcomes and non-negotiable safety boundaries, not a univers
 
 ## Revalidation and supersession, 2.0.0
 
-The trigger below fired immediately in two byte-identical 1.14.2 UI sessions. Both were authorized project
-changes with no compaction. Both left routine work uncommitted and asked the owner when to branch, batch, or
-commit, despite the root saying not to ask for those mechanics. That repeated 2 of 2 result is `VARIANCE`:
-the rule was plain and in context, so it does not justify another Git step.
+A stricter census corrected the initial attribution recorded here. Two comparable UI sessions each contained
+complete 1.14.2 root bytes and no compaction, and both left routine work uncommitted while asking the owner
+when to branch, batch, or commit. Each transcript also contained an unversioned contract contributor,
+however, so neither exact governing identity can be assigned solely to 1.14.2. The symptom repeated in 2 of
+2 comparable sessions; package causality and a 1.14.2 `VARIANCE` ruling remain `UNVERIFIED`. The intended
+1.14.2 sentence was already present in both records, so another Git step still would not address the observed
+uncertainty or the package's accumulated process weight.
 
 The same audit found that the solution had grown into the problem. Mandatory worktrees, integration,
 aggregate review, cross-host review, route and reference gates, and exact evidence rules occupied most of a
@@ -95,6 +98,7 @@ Hooks are repository-controlled code, vary across hosts, and can be bypassed or 
 
 Revisit when a receipt shows a 1.14 or later run asking for routine delivery mechanics, writing outside its owned worktree, losing a later owner item, committing through a bypass path, skipping aggregate review, merging against a changed target without renewed evidence, or promoting into staging or production without approval. Revisit the host procedure when Codex or Claude Code supplies stronger native isolation or changes detached-worktree behavior.
 
-The routine-mechanics trigger fired in the 2 of 2 UI observations recorded above and is closed by ADR 0018.
-Use ADR 0018's triggers for 2.0 and later; the rest of this list remains historical evaluation criteria for
-1.14 receipts.
+The routine-mechanics symptom appeared in the 2 of 2 UI observations recorded above, but exact governing
+identity is unresolved and this ADR no longer claims a 1.14.2 variance receipt. ADR 0018 supersedes the
+workflow architecture independently. Use ADR 0018's triggers for 2.0 and later; the rest of this list remains
+historical evaluation criteria for exact 1.14 receipts.

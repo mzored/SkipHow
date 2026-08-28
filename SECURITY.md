@@ -5,7 +5,7 @@
 | Version | Supported |
 | --- | --- |
 | 2.0.x | Yes |
-| 1.14.x | No |
+| 1.14.x | Yes |
 | 1.13.x | No |
 | 1.12.x | No |
 | 1.11.x | No |
@@ -14,6 +14,7 @@
 | 1.8.x | No |
 | 1.7.x | No |
 | 1.6.x | No |
+| 1.5.x | No |
 | 1.4.x | No |
 | 1.3.x | No |
 | 1.2.x | No |
@@ -21,7 +22,12 @@
 | 1.0.x | No |
 | Earlier versions | No |
 
-Security support covers the packaged SkipHow owner skill and its reachable method references, host manifests, marketplace metadata, continuity hook, release checks, and documented authority boundaries. Codex, Claude Code, GitHub, Git, operating systems, and third-party services keep their own security policies.
+The marketplace currently publishes 1.14.2; 2.0 support applies to the unpublished release-candidate source
+on this branch, not to a marketplace installation. Security review for the 2.0 release candidate covers its
+packaged owner skill and reachable method references, host manifests, marketplace metadata, required
+continuity hook, release checks, and documented
+authority boundaries. Codex, Claude Code, GitHub, Git, operating systems, and third-party services keep their
+own security policies.
 
 ## Report a vulnerability
 

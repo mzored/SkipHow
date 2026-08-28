@@ -10,6 +10,19 @@ worktrees, and the three role adapters do not.
 
 2026-08-25
 
+## Current interpretation, 2026-08-28
+
+Host-native execution and the rejection of a private SkipHow runtime remain current. The workflow triggers,
+state hierarchy, and fallback records below describe the historical 1.x contract;
+[ADR 0018](0018-autonomous-kernel-and-independent-task-skills.md) governs the 2.0.1 candidate when they
+conflict.
+
+No item count, external wait, or unattended phrase selects a long-work procedure. The agent uses host tasks,
+delegates, worktrees, continuation, or a handoff only when they materially help the authorized result or the
+repository requires them. GitHub is not a universal task record, and SkipHow defines no automatic handoff or
+fixed local inbox. A requested durable record follows the project's existing tracker and classification; a
+project change does not gain remote-write authority from that tracker or from repository procedure.
+
 ## Context
 
 SkipHow built a Python runner with a CLI, SQLite state, provider adapters, scheduling, model routing, verification, recovery, and a separate GitHub delivery command. Its deterministic tests cover many internal contracts. They do not prove the owner outcome that matters: take several tracked issues, finish them through pull requests and CI, merge them, and clean up owned branches without manual handoffs.

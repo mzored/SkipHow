@@ -10,6 +10,17 @@ Markdown references, not additional skills or routes.
 
 2026-08-25
 
+## Current interpretation, 2026-08-28
+
+The one plain-language owner entry remains current. The route map and any consequences that depend on it are
+the historical 1.x design; [ADR 0018](0018-autonomous-kernel-and-independent-task-skills.md) governs the
+2.0.1 candidate when the text below conflicts with it.
+
+In particular, a change in audience or an accepted product direction does not by itself authorize an update
+to the owning product record. The owner's requested outcome must grant that record. The owner kernel may read
+the product-decisions method when it materially helps, but no request must load that method or any other
+method as a workflow gate. Critical authority and completion rules remain in the kernel.
+
 ## Context
 
 SkipHow is for product owners who can describe the outcome they want but should not have to choose an engineering process. Separate commands for bugs, ideas, technical direction, and unattended work make the owner learn SkipHow's internal categories. They also invite each command to acquire its own policy and documentation.

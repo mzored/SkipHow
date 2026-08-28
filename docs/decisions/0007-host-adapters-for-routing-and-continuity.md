@@ -10,6 +10,17 @@ delegation retries, and checkpoint procedure do not.
 
 2026-08-26
 
+## Current interpretation, 2026-08-28
+
+The model tiers, fixed delegate roles, host routing adapters, retry ladder, and checkpoint procedure below are
+historical 1.x policy. [ADR 0018](0018-autonomous-kernel-and-independent-task-skills.md) governs the 2.0.1
+candidate when this ADR conflicts with it. The ban on versioned provider model IDs remains current.
+
+The package still requires one read-only continuity hook, but packaging a hook does not prove that either host
+read or executed it. Its handlers print instructions to load or reload the owner kernel; they do not load the
+kernel, restore a session, or grant authority. Any hook execution and resulting skill load require runtime
+evidence. A checkpoint or handoff is optional method support, not a mandatory continuity procedure.
+
 ## Context
 
 ADR 0003 defines `FAST`, `STANDARD`, and `DEEP` tiers and says the root maps them "only from capability, cost, or latency metadata exposed by the host". The [host research](../research/2026-08-26/host-routing-and-continuity.md) shows that neither Claude Code nor Codex exposes such metadata, and that the plugin ships no agent definitions. In practice every subagent inherits the owner's main model. The tiers never route anything.

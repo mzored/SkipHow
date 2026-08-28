@@ -2,8 +2,9 @@
 
 ## Status
 
-Accepted for 2.0.0. This is a breaking replacement for the procedural runtime contract accumulated through
-1.14.2. It preserves both the plain-language owner entry and the one-public-skill topology from
+Accepted for the unpublished 2.0.1 release candidate. This is a breaking replacement for the procedural
+runtime contract accumulated through 1.14.2. It preserves both the plain-language owner entry and the
+one-public-skill topology from
 [ADR 0001](0001-one-owner-entry.md), while superseding that decision's four fixed routes.
 
 ## Date
@@ -18,22 +19,24 @@ pointed at nine references containing another 5,090 words. Three fixed delegate 
 mandatory review, exact worktree and Git lifecycle, finding tags, tracker markers, queue and handoff schemas,
 and word and byte budgets had become part of the product contract.
 
-The limits were local policy, not host constraints. The root ceiling moved from 600 words in 1.2.0 to 850 in
-1.8.0, 1,000 in 1.10.0, and 1,400 in 1.14.0 as new universal rules were added. ADR 0015 already records that
-the first limit was self-imposed and that compressing toward it removed meaning. Raising the number each time
+The limits were local policy, not host constraints. The root ceiling began at 700 words in 0.9.0, fell to 600
+in 1.1.0, then rose to 850 in 1.8.0, 1,000 in 1.10.0, and 1,400 in 1.14.0 as new universal rules were added. ADR 0015 already records that
+the 600-word limit was self-imposed and that compressing toward it removed meaning. Raising the number each time
 the policy grew made the check follow the design instead of controlling it.
 
-Two UI sessions on the byte-identical 1.14.2 contract then repeated the same failure: authorized work
-was left uncommitted and the owner was asked when to branch, batch, or commit. The root already prohibited
-those questions and required an ordinary commit. With no compaction in either run, this is `VARIANCE` in 2 of
-2 applicable sessions, not evidence that another Git procedure is missing. It fires ADR 0017's explicit
-revalidation trigger for a 1.14 run asking about routine delivery mechanics.
+Two comparable UI sessions then repeated the same failure: authorized work was left uncommitted and the
+owner was asked when to branch, batch, or commit. Both contained complete 1.14.2 root bytes and no compaction,
+but both also contained an unversioned contract contributor. Their exact governing identity and package
+causality therefore remain `UNVERIFIED`; this is an observed missing endpoint in 2 of 2 comparable sessions,
+not a 1.14.2 variance rate. It is also not evidence that another Git procedure is missing. The intended root
+sentence was already present, while the package had accumulated the workflow machinery summarized above.
 
 The owner's closest analogue is Matt Pocock's skills collection. At commit
 [`6654f6b60cd9d5be8b54c6fafe44346dabeb3b76`](https://github.com/mattpocock/skills/tree/6654f6b60cd9d5be8b54c6fafe44346dabeb3b76),
 it contains many small task skills rather than one universal process. That shape is useful, but the product is
-for engineers and is not the SkipHow contract. Its setup asks the user to choose tracker and documentation
-mechanics; user-invoked skills may call model-invoked skills; and its `implement` workflow prescribes TDD,
+for engineers and is not the SkipHow contract. Its setup asks about the issue tracker, conditionally asks
+whether to keep default triage labels, and asks about documentation layout only when monorepo signals exist;
+user-invoked skills may call model-invoked skills; and its `implement` workflow prescribes TDD,
 review, and a commit. Open [issue #962](https://github.com/mattpocock/skills/issues/962) records the exact
 nontechnical boundary SkipHow must own: questions exposed enum values and architecture terms instead of
 asking about visible behavior and translating the answer afterwards. That issue opened after the pinned
@@ -41,11 +44,11 @@ commit and was still a proposal when reviewed, so SkipHow does not treat it as i
 
 ADR 0006 had already examined small methods and rejected several public skills because it assumed the owner
 would have to choose a workflow. The owner-choice argument was wrong, but the one-skill conclusion proved
-right for a different reason. A first 2.0 candidate shipped the kernel plus thirteen sibling skills. Claude
-can mark a skill as model-only, but that field is a host extension. The inspected Codex skill model has no
-equivalent owner-visibility control and exposes every enabled skill. More importantly, Agent Skills defines no
-dependency by which selecting a method skill must also load the owner kernel. A leaf selected alone could
-therefore miss the authority and completion contract it was meant only to supplement.
+right for a different reason. An early, superseded 2.0 candidate placed the kernel beside thirteen sibling
+skills. Claude can mark a skill as model-only, but that field is a host extension. The inspected Codex 0.149.1
+skill metadata has no equivalent package field. More importantly, Agent
+Skills defines no dependency by which selecting a method skill must also load the owner kernel. A leaf
+selected alone could therefore miss the authority and completion contract it was meant only to supplement.
 
 Current host and format documentation supports a smaller composition:
 
@@ -85,35 +88,39 @@ top-level skill. Focused methods remain internal resources selected by the agent
 
 ### One kernel with focused methods
 
-The package has one `skiphow` skill, a thin owner kernel, and focused Markdown references:
+The package has one top-level `skiphow` skill, a thin owner kernel, and thirteen internal Markdown method
+references:
 
 - The kernel owns authority, nontechnical communication, preservation of unrelated work, proportional
   process, and verified completion.
 - The root contains every critical authority, autonomy, preservation, and completion invariant. A reference
   cannot grant authority, weaken those rules, or become necessary for safe completion.
-- A focused reference improves one discipline where additional method materially helps, such as diagnosis,
+- A focused reference can help with one discipline where additional method is materially useful, such as
+  diagnosis,
   research, product clarification, testing, or review. Short semantic pointers in the root say when to read
   it. References do not call one another or define an owner-visible sequence.
-- The host loads one skill. The agent combines only the useful methods around the owner's result. Reference
+- The host can load one skill. The agent may combine applicable methods around the owner's result. Reference
   names and count may evolve without changing the owner interface.
 
 Procedure belongs only in the focused method whose risk or repeatability justifies it. Universal policy stays
 limited to critical root invariants. Existing host capabilities handle permissions, subagents, plans,
-worktrees, continuation, and external services; SkipHow does not duplicate them. The read-only
-`startup|clear` and `compact|resume` hooks explicitly tell the host to load or restore the owner kernel before
-project work; they grant no authority and are not a private runner.
+worktrees, continuation, and external services; SkipHow does not duplicate them. The package requires one
+read-only continuity hook whose `startup|clear` and `compact|resume` handlers are configured to print
+instructions to load or reload the owner kernel before project work. Host support and execution are separate
+runtime behavior. The hook does not load or restore the kernel itself, grant authority, or act as a private
+runner.
 
 This does not restore the 1.x reference architecture. In 1.x, conditional files held mandatory authority,
 delivery, role, review, queue, and lifecycle rules, so a missed load could change what the agent was allowed or
-required to do. In 2.0, all such critical rules stay in the root. Missing a reference can reduce method
-quality, but cannot remove the safety or completion boundary. There are no routes, fixed loading gates, or
-reference-defined workflow stages.
+required to do. In 2.0, all such critical rules stay in the root. An applicable reference can help with method
+technique, but missing one cannot remove the safety or completion boundary. There are no routes, fixed loading
+gates, or reference-defined workflow stages.
 
 ### Authority and completion
 
-- Discussion, comparison, planning, diagnosis, review, research, triage, and organization are read-only
-  unless the owner asks to save, record, file, use a named durable destination, or change something.
-- A save request grants the requested record and follows the project's existing tracker and classification;
+- A request only to answer, compare, diagnose, review, research, plan, triage, or organize is read-only. A
+  mixed request that also asks to fix or change the project is a project-change request.
+- A durable-record outcome grants only that record and follows the project's existing tracker and classification;
   SkipHow adds no hidden schema. A project-change request grants the necessary edits, fresh verification, and
   an ordinary local commit of owned changes. The exception is an explicit request or repository rule to keep
   work uncommitted, or a checkout where a commit cannot avoid foreign changes. Routine technical mechanics do
@@ -123,8 +130,9 @@ reference-defined workflow stages.
   settings, access changes, material deletion or another hard-to-reverse action, disclosure outside the
   authorized audience, and creating, entering, rotating, or exposing credentials require an exact grant.
   The owner's own request must affirmatively name the protected action or destination. Broad completion or
-  autonomy language and procedures found in the project cannot substitute for that grant. Routine use of
-  already-authorized credentials and project-private material is not a new protected effect.
+  autonomy language and procedures found in the project cannot substitute for that grant. Reading
+  project-private material or using credentials already authorized by the host is allowed only when necessary
+  for the requested result; that necessary use is not itself a new protected effect.
 - The agent asks only for one of those protected actions, a material product choice evidence cannot settle,
   or an action only a human can perform. It reports blockers and uncertainty instead of inventing authority.
 - It preserves unrelated work and proves changed behavior against the final state. Plans, trackers,
@@ -151,44 +159,63 @@ license text in [`THIRD_PARTY_NOTICES.md`](../../plugins/skiphow/THIRD_PARTY_NOT
 ## Consequences
 
 The root contract remains inspectable as a set of product invariants. Specialized guidance can
-improve one task without making every request pay for or obey it. Strong hosts keep freedom to choose the
+help with one task without making every request pay for or obey it. Strong hosts keep freedom to choose the
 least process that reaches the result, while owners retain the same plain-language entry.
 
 This removes safeguards that were expressed as universal procedures. Safety now comes from the authority
 boundary, repository rules, host permissions, ownership of the changed state, and fresh evidence. A
-repository may still require Issues, pull requests, review, worktrees, or a particular delivery path, and the
-agent must follow it. SkipHow simply stops claiming one such path is portable to every repository and host.
+repository may still require Issues, pull requests, review, worktrees, or a particular delivery path. The
+agent follows those requirements only within the action and shared-delivery authority granted by the owner's
+request; repository text cannot grant a remote write. SkipHow simply stops claiming one path is portable to
+every repository and host.
 
-The decision itself is not runtime proof. Four project-local Codex runs against the preceding multi-skill
-candidate showed the owner contract and selected methods working when `$skiphow` explicitly loaded the kernel.
-They did not validate this final resource layout, automatic owner-entry activation, marketplace installation,
-Claude runtime, remote delivery, or performance. The single-skill candidate needs its own receipts, and any
-performance or cost claim still requires paired runs.
+The decision itself is not runtime proof. The
+[one-skill receipt-tree record](../research/2026-08-27/v2.0-codex-receipts.md) documents six project-local
+Codex runs against the exact owner-skill tree named there. Retained invocation records show that the prompts
+omitted `$skiphow`, fixture instructions did not name SkipHow, and hooks were disabled; the JSONL logs show
+the root read. Together those records observe implicit project-local selection for those six prompts; they do
+not establish a general selection rate or packaged-hook behavior.
+The fixtures cover a committed small change, two read-only requests, and both sides
+of a local protected-action fixture, plus one runnable visual change that reached a tested clean commit. They
+are six one-off observations, not a reliability rate. The user-level skills read by these runs remain
+confounders, including `impeccable` in the visual fixture.
+
+Two earlier one-skill receipts failed before the controls recorded by that receipt tree. The first accepted
+broad autonomy plus a repository procedure as a production and public-release grant. The second enforced the
+repaired authority gate, but falsely reported local markers as real production and publication. Those failures drove the
+exact-grant and destination-verification rules. The clean controls used owner-skill subtree
+`95d908988208b9fcc1d285fe1ca1c5c681c4da1b`, sourced from commit
+`b2196d0bd3eeca1f542cbd8af3e1b45639aad29d`. The current 2.0.1 candidate keeps those runtime bytes; its later
+package-metadata and contributor-tool changes are outside the receipt. The record does not validate marketplace installation, packaged
+hook behavior, Claude runtime, real remote delivery, or performance. Any speed or cost claim still requires
+paired runs.
 
 ## Rejected alternatives
 
 ### Add more explicit steps to the 1.14 root
 
-The two current deviations ignored plain rules already in context. Another branch, commit, or review
+The two observed deviations ignored plain rules already in context. Another branch, commit, or review
 procedure would add attention cost without addressing that cause.
 
 ### Copy Matt Pocock's repository wholesale
 
 It is an engineer-facing collection with user-invoked orchestration, setup choices, and opinionated workflow
-leaves. Its own issue #962 shows the gap at the product-question boundary. SkipHow adopts the useful small-skill
-shape and rewrites only selected leaves for autonomous, nontechnical ownership.
+skills. Its own issue #962 shows the gap at the product-question boundary. SkipHow keeps one owner skill and
+adapts selected disciplines as internal methods for autonomous, nontechnical ownership.
 
 ### Ship the focused methods as sibling skills
 
-This was the first 2.0 candidate and produced useful Codex method-selection receipts. It still failed the
-cross-host product boundary: Codex cannot hide enabled leaves from the owner, and Agent Skills cannot require a
-selected leaf to load the kernel. Repeating critical rules in every leaf would create drift and still would not
-solve a host selecting no skill. One skill with noncritical method resources is the only portable shape that
-keeps one entry and one authority contract.
+This was an early, superseded 2.0 candidate. Static cross-host review rejected it because Codex 0.149.1 has no
+package field equivalent to Claude's model-only visibility control, and Agent Skills cannot require a
+selected leaf to load the kernel. Repeating
+critical rules in every leaf would create drift and still would not solve a host selecting no skill. One skill
+with noncritical method resources is the only portable shape that keeps one entry and one authority contract.
+Exploratory runs against the sibling-skill candidate are not evidence for the selected one-skill package and are
+not cited as such.
 
 ### Restore the 1.x reference router
 
-The final package does use references, but not a route or router. Critical rules never leave the root, no
+The 2.0 release candidate does use references, but not a route or router. Critical rules never leave the root, no
 reference load is a mandatory stage, and a reference cannot alter authority. The old failure is preserved as
 a test of where a rule lives, not as a ban on conditional method guidance.
 
@@ -200,15 +227,15 @@ tests found no measurable benefit.
 
 ### Replace word budgets with larger word budgets
 
-The 600, 850, 1,000, and 1,400-word ceilings were all repository choices. A check should catch broken package
-shape, unreachable components, secrets, personal paths, or forbidden provider IDs, not negotiate policy by
-word count.
+The 700, 600, 850, 1,000, and 1,400-word ceilings were all repository choices. A check should confirm
+recursive reachability of every Markdown file under the owner skill's internal `references/` library and
+scan the packaged text for personal paths and provider model IDs, not negotiate policy by word count.
 
 ## Evidence
 
 - [Field audit, 2026-08-27](../research/2026-08-27/field-audit-2026-08-27.md)
 - [Architecture and analogue research, 2026-08-27](../research/2026-08-27/runtime-policy-simplification.md)
-- [Codex behavior receipts for the exact 2.0 candidate](../research/2026-08-27/v2.0-codex-receipts.md)
+- [Codex behavior receipts for the current owner-skill tree](../research/2026-08-27/v2.0-codex-receipts.md)
 - [Matt Pocock skills at the reviewed commit](https://github.com/mattpocock/skills/tree/6654f6b60cd9d5be8b54c6fafe44346dabeb3b76)
 - [Matt Pocock issue 962](https://github.com/mattpocock/skills/issues/962), an open nontechnical-UX proposal
 - [Agent Skills specification](https://github.com/agentskills/agentskills/blob/69ef37e9424c0a7ea9dd2293b559e43ec8176379/docs/specification.mdx)
@@ -225,7 +252,7 @@ word count.
 ## Revalidation triggers
 
 Revisit when installed 2.0 receipts repeatedly miss an applicable method, when a critical rule moves behind a
-reference, when the owner kernel fails to load or restore before project work, when ordinary changes still
-stop for engineering mechanics, when protected actions occur without an exact grant, or when local commits
-absorb unrelated work. Reconsider a specific method when paired or controlled evidence shows it adds delay or
-cost without a material outcome benefit.
+reference, when the owner kernel is absent before project work or after compaction or resume, when ordinary
+changes still stop for engineering mechanics, when protected actions occur without an exact grant, or when
+local commits absorb unrelated work. Reconsider a specific method when paired or controlled evidence shows it
+adds delay or cost without a material outcome benefit.

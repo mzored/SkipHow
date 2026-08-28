@@ -19,7 +19,7 @@ SkipHow keeps or adapts selected ideas:
 - code review as an available independent judgment;
 - concise handoffs when work must survive interruption.
 
-SkipHow does not copy the upstream main flow wholesale. The current setup asks the user to choose a tracker, triage labels, and document locations. Several orchestration skills must be invoked by name, and the documented engineering path can expose grilling, specs, tickets, TDD seams, implementation, and review as owner-visible steps. That design is useful for engineers who want to control the method. It remains too technical and ceremonial for an owner who knows the desired behavior but should not have to operate the software process.
+SkipHow does not copy the upstream main flow wholesale. Its setup asks about the issue tracker, conditionally asks whether to keep default triage labels, and asks about documentation layout when monorepo signals exist. Several orchestration skills must be invoked by name, and the documented engineering path can expose grilling, specs, tickets, TDD seams, implementation, and review as owner-visible steps. That design is useful for engineers who want to control the method. It remains too technical and ceremonial for an owner who knows the desired behavior but should not have to operate the software process.
 
 The caveat is supported by current upstream evidence, not a hypothetical objection:
 
@@ -47,4 +47,4 @@ These projects have not been run side by side with SkipHow. Their inclusion is a
 
 ## Adoption rule
 
-A useful idea becomes a focused method reference or root invariant only when it improves an observed task or protects a high-risk boundary. Procedures do not enter the owner kernel merely because they are good practice somewhere else. The default is still the least process that reaches a fresh, verified result while preserving the owner's authority and unrelated work.
+A useful idea becomes a focused method reference or root invariant only when it addresses an observed task need or protects a high-risk boundary. Procedures do not enter the owner kernel merely because they are good practice somewhere else. The default is still the least process that reaches a fresh, verified result while preserving the owner's authority and unrelated work.
