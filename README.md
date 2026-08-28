@@ -18,7 +18,7 @@ Anyone who owns what a product should do and would rather not run the engineerin
 
 You decide visible behavior, priority, cost, risk, privacy, and rollout. SkipHow owns libraries, schemas, tests, branches, decomposition, review, and every other engineering choice.
 
-It brings a question back only when the answer changes product behavior, scope, priority, cost, risk, privacy, or rollout, when an action needs your explicit grant, or when only a person can do it. Where your request leaves such a choice open, it asks before building, with a recommendation, and puts everything it can ask into one round. If your answer opens a choice nobody could have put to you before it, that comes back too, and then the work carries on. While a question is with you it does not build one of the answers behind a default or a switch; it gets on with the parts that do not depend on you. Where it chose without asking, it tells you what it chose and what the alternative was.
+It brings a question back only when the answer changes product behavior, scope, priority, cost, risk, privacy, or rollout, when an action needs your explicit grant, or when only a person can do it. Where your request leaves such a choice open, it asks before building, with a recommendation, and puts everything it can ask into one round. If your answer opens a choice nobody could have put to you before it, that comes back too, and then the work carries on. While a question is with you it does not build one of the answers behind a default or a switch; it gets on with the parts that do not depend on you. Where the project's own evidence settled a reading, it tells you which one it took and what the alternative was.
 
 ## Install
 

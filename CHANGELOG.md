@@ -2,12 +2,13 @@
 
 All notable changes to SkipHow 2.x appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
-## 2.4.2 (2026-08-28)
+## 2.4.2 (2026-08-29)
 
 ### Changed
 
 - A round of product questions now ends when nothing material is open, not when the owner has answered once. One round is the shape of a batch, not a budget: ask together everything that can be asked now, and when the owner's answer makes a further choice material, ask that one too. An answer is not permission to settle what it opened.
 - A question that is with the owner is not answered by a default. Nothing whose product meaning depends on the answer is built, committed, or treated as settled while they decide, and the parts that do not depend on it carry on. Reversible technical choices are untouched by this and still need no confirmation.
+- The kernel and `product-decisions` no longer read as permission to settle a material product choice and disclose it afterwards. What gets reported is a reading the project settled; having no answer yet is not an answer; and where such a choice has already been built, the work stays unfinished until the owner answers and the behavior agrees. This removes a contradiction with the rule above rather than demonstrating a new behavior, and its effect is `UNVERIFIED`.
 - `product-decisions` states which questions are askable now — a question whose options only exist under a particular answer belongs to the round after that answer — and that anything the project, its records, or a source can settle is the agent's to settle rather than the owner's.
 
 ### Fixed
@@ -18,8 +19,8 @@ All notable changes to SkipHow 2.x appear in this file. Earlier release notes re
 
 ### Evidence
 
-- Seventy-five owner turns across fifty-seven sessions on throwaway fixtures, on both hosts. The release's wording was built in steps, every claim says which wording produced it, and both shipped clauses were re-run on the exact released package. Method, isolation, and results are in [`docs/evidence.md`](docs/evidence.md); the transcripts are not retained.
-- The round defect was demonstrated before the change on both hosts. In four 2.4.1 sessions across two fixtures, not one opened a second round after the owner's answer, and each settled the choices that answer had opened. With the frontier clause a second round appears on both hosts; on Codex it appears in one of three released-package sessions on the cancellation fixture, which the evidence records rather than smooths over.
+- Seventy-five owner turns across fifty-seven sessions on throwaway fixtures, on both hosts. The release's wording was built in steps, every claim says which wording produced it, and both shipped clauses were re-run on the exact release-candidate package. Method, isolation, and results are in [`docs/evidence.md`](docs/evidence.md); the transcripts are not retained.
+- The round defect was demonstrated before the change on both hosts. In four 2.4.1 sessions across two fixtures, not one opened a second round after the owner's answer, and each settled the choices that answer had opened. With the frontier clause a second round appears on both hosts; on Codex it appears in one of three release-candidate sessions on the cancellation fixture, which the evidence records rather than smooths over.
 - The second defect was the candidate's own. Having asked the two questions its new frontier had opened, Claude built both answers anyway, committed them, and reported one as "the failure case your answer opened, and I had to pick something to ship". Under the new clause the same fixture and prompts produce two questions, no dependent behavior, and one commit that is only a record — "No behaviour is coded yet, since either choice would otherwise be settled by whatever default was written". A second released-package session built the one piece both answers need and nothing else.
 - Two cases built so that asking would be the failure produced no question on either host on the released package: a request with its acceptance criteria fully stated, and a purely technical fork. Sixteen negative-control sessions across all wordings produced no question and spawned nothing.
 - The outside read that `technical-design` requires for a decision that is expensive to undo does not execute. Ten sessions on the same architecture fixture, five on each host, produced ten sound transactional-outbox designs and no outside read, with the method open in all five Codex runs. Three kernel wordings were written, tested, and discarded. Nothing was promoted, the method is unchanged, and the behavior stays `UNVERIFIED`. What the runs say points at the trigger — every one judged its own decision cheap to reverse.
