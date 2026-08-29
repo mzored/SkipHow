@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
+  <title id="title">SkipHow — outcome-first Agent Skill</title>
+  <desc id="desc">Product owners own outcomes and protected actions. Coding agents own engineering and proof.</desc>
+  <rect width="1280" height="640" fill="#f5f0e8"/>
+  <rect x="54" y="54" width="1172" height="532" fill="none" stroke="#1a1916" stroke-width="2"/>
+  <path d="M102 118h90v10h-72v52h72v10h-90z" fill="#1a1916"/>
+  <path d="M190 142l34 22-34 22z" fill="#d94b2b"/>
+  <text x="258" y="178" fill="#1a1916" font-family="Georgia, serif" font-size="72" font-weight="700">SkipHow</text>
+  <text x="102" y="300" fill="#9d2d17" font-family="Arial, sans-serif" font-size="28" font-weight="700" letter-spacing="3">OUTCOME-FIRST AGENT SKILL</text>
+  <text x="102" y="390" fill="#1a1916" font-family="Georgia, serif" font-size="58" font-weight="600">You own the product.</text>
+  <text x="102" y="460" fill="#1a1916" font-family="Georgia, serif" font-size="58" font-weight="600">The agent owns the engineering.</text>
+  <line x1="102" y1="520" x2="1178" y2="520" stroke="#cec5b7" stroke-width="2"/>
+  <text x="102" y="558" fill="#625e56" font-family="Arial, sans-serif" font-size="22">Claude Code + OpenAI Codex · github.com/mzored/SkipHow</text>
+</svg>

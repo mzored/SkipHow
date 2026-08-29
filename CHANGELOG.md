@@ -2,6 +2,26 @@
 
 All notable changes to SkipHow 2.x appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 2.11.1 (2026-08-30)
+
+### Changed
+
+- The public skill description now says “product owner” rather than “nontechnical product owner,” states the outcome-first fit as ownership of the technical method so read-only work remains in scope, and excludes recommendations to adopt an owner-operated mandatory workflow or runtime orchestrator. It keeps requests to build those capabilities in the current project in scope. This corrects conflicts with the audience and read-only surface already stated in the README and makes adjacent negative categories explicit. The kernel body, authority boundary, and invoked runtime behavior are unchanged.
+- The startup continuity reminder now defers to the skill description instead of requiring the kernel for every project request. A discovery receipt showed the old reminder overriding the description and selecting SkipHow for a mandatory owner-operated workflow. Resume and compaction reminders remain unconditional because they continue an already active request.
+- README, FAQ, host manifests, marketplace copy, and Codex display metadata now use one category and promise: an outcome-first Agent Skill for Claude Code and Codex in which the owner owns outcomes, tradeoffs, and protected actions while the agent owns technical decisions, implementation, and proof. The product now answers directly when to use the base agent, a spec/workflow framework, or a runtime orchestrator.
+- Popularity counts and volatile package-size counts have been removed from public positioning. Prior art now compares mechanisms and boundaries rather than stars.
+
+### Added
+
+- A static, JavaScript-free GitHub Pages site with product, comparison, and evidence pages; canonical metadata; `SoftwareSourceCode` JSON-LD; a sitemap; favicon; and a custom social preview asset. Publication remains a separate protected action.
+- A standing discoverability protocol records the eight bilingual recommendation prompts, scoring fields, target repository metadata, launch checklist, and 30/60/90-day measurement cadence.
+- Deterministic site validation checks required routes, metadata, structured data, sitemap coverage, local links, and the absence of client-side scripts.
+
+### Evidence
+
+- In nine isolated Claude Code sessions on the exact candidate, direct, indirect outcome-owner, indirect read-only, incomplete, and two current-project capability requests selected SkipHow; unrelated, owner-operated mandatory-workflow, and runtime-orchestrator adoption requests did not. One run per cell is not a precision rate. Exact-candidate Codex selection remains `UNVERIFIED` because a fresh isolated home had no authentication and credentials were not moved.
+- Package checks and visual inspection are recorded in the completion report for this change. No site, repository setting, topic, social preview, or webmaster property was published or changed remotely.
+
 ## 2.11.0 (2026-08-29)
 
 ### Fixed

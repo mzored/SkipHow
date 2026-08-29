@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SkipHow evidence — demonstrated behavior and unverified claims</title>
+  <meta name="description" content="A concise, checkable matrix of SkipHow observations, test method, known failures, and behavior that remains unverified.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://mzored.github.io/SkipHow/evidence/">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/site.css">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SkipHow">
+  <meta property="og:title" content="SkipHow evidence — where the claims stop">
+  <meta property="og:description" content="Controlled observations, known failures, method, and an explicit UNVERIFIED list.">
+  <meta property="og:url" content="https://mzored.github.io/SkipHow/evidence/">
+  <meta property="og:image" content="https://mzored.github.io/SkipHow/assets/social-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    "name": "SkipHow",
+    "description": "Evidence and limitations for an outcome-first Agent Skill for Claude Code and Codex.",
+    "codeRepository": "https://github.com/mzored/SkipHow",
+    "url": "https://mzored.github.io/SkipHow/evidence/",
+    "license": "https://opensource.org/license/mit",
+    "runtimePlatform": ["Claude Code", "OpenAI Codex"]
+  }
+  </script>
+</head>
+<body>
+  <!-- THESIS: Evidence earns the claim; missing receipts limit it. OWN-WORLD: A public lab notebook distilled into a reader-facing matrix. STORY: Claim boundary → observations → method → unverified → source record. FIRST VIEWPORT: Evidence status and the distinction between checks and behavior. FORM: Owner-approved editorial proof surface; seed key owner-approved-seo-geo-plan. FINISH: Warm paper, dark ink, one vermilion accent, ruled matrix, explicit status labels. -->
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <nav class="nav shell" aria-label="Primary navigation">
+      <a class="wordmark" href="../" aria-label="SkipHow">SkipHow</a>
+      <ul class="nav-links">
+        <li><a href="../#install">Install</a></li>
+        <li><a href="../compare/">Compare</a></li>
+        <li><a href="./" aria-current="page">Evidence</a></li>
+        <li><a href="https://github.com/mzored/SkipHow">GitHub</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="shell">
+        <p class="eyebrow">Evidence matrix · observations, not a reliability rate</p>
+        <h1>Claims stop where the receipts stop.</h1>
+        <p class="lede">Package checks can prove files and invariants. Only controlled model runs can support behavior claims. SkipHow keeps those two kinds of evidence separate.</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="matrix-title">
+      <div class="shell">
+        <p class="section-label">01 · Observed behavior</p>
+        <h2 id="matrix-title">What controlled runs have shown.</h2>
+        <div class="comparison-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Observation</th>
+                <th scope="col">What the run established</th>
+                <th scope="col">Boundary</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Fully specified request</th>
+                <td>Work proceeded without asking the owner to choose engineering mechanics.</td>
+                <td>Observed in isolated fixtures; not a general selection rate.</td>
+              </tr>
+              <tr>
+                <th scope="row">Open product choice</th>
+                <td>The owner received the visible product choice and a recommendation before dependent work was written.</td>
+                <td>Some boundary cases varied by host and are documented in the full record.</td>
+              </tr>
+              <tr>
+                <th scope="row">Intermittent failure</th>
+                <td>A flaky test was diagnosed at its cause without retrying, skipping, or weakening the assertion.</td>
+                <td>One controlled problem class, not a general debugging score.</td>
+              </tr>
+              <tr>
+                <th scope="row">False-positive fix</th>
+                <td>A plausible change was rejected after its test also passed against unfixed code.</td>
+                <td>Shows the evidence discipline can fire; not that it always does.</td>
+              </tr>
+              <tr>
+                <th scope="row">Multi-outcome plan</th>
+                <td>A larger build was split into independently verifiable units with only a genuine dependency edge.</td>
+                <td>The split was observed; concurrent delegated execution was not.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="method-title">
+      <div class="shell section-grid">
+        <div><p class="section-label">02 · Method</p></div>
+        <div class="section-copy">
+          <h2 id="method-title">Hold the environment fixed. Change only the package.</h2>
+          <p>A useful receipt uses a throwaway fixture repository, a fresh host session carrying only the candidate package and built-ins, the same prompt on both sides of a change, and a control run that proves isolation.</p>
+          <p>The run must execute through the host's own permissions and budget controls. Isolation is confirmed from the session transcript, not by asking the model what it can see. A failing case runs before the candidate as well as after it.</p>
+          <div class="callout">
+            <h3>Deterministic checks are necessary, not behavioral evidence</h3>
+            <p>They verify the package layout, reachable resources, metadata, versions, links, portability, and site structure. They do not start a model and cannot prove how a model will act.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="unverified-title">
+      <div class="shell section-grid">
+        <div><p class="section-label">03 · Unverified</p></div>
+        <div>
+          <h2 id="unverified-title">What SkipHow does not claim.</h2>
+          <div class="decision-list">
+            <div class="decision">
+              <strong>Comparative advantage</strong>
+              <p>No paired product benchmark shows SkipHow is faster, cheaper, more reliable, or better than a base agent or another framework.</p>
+            </div>
+            <div class="decision">
+              <strong>Delegation</strong>
+              <p>No controlled pass has demonstrated concurrent lanes, isolated worktrees, or separately integrated delegated units.</p>
+            </div>
+            <div class="decision">
+              <strong>Automatic selection</strong>
+              <p>No general rate has been measured for Claude Code or Codex selecting the skill when it is not named.</p>
+            </div>
+            <div class="decision">
+              <strong>Production delivery</strong>
+              <p>Real production and public-delivery actions are outside the retained controlled evidence.</p>
+            </div>
+            <div class="decision">
+              <strong>Public adoption</strong>
+              <p>Independent case studies and broad public usage remain limited. Popularity is not used as a proxy for correctness.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="record-title">
+      <div class="shell section-grid">
+        <div><p class="section-label">04 · Full record</p></div>
+        <div class="section-copy">
+          <h2 id="record-title">The concise page is not the source ledger.</h2>
+          <p>The repository's evidence document records host differences, regressions, negative controls, unresolved behavior, and the exact limits on every summary above. Decision history records why rules were kept, changed, or rejected.</p>
+          <div class="actions">
+            <a class="button" href="https://github.com/mzored/SkipHow/blob/main/docs/evidence.md">Read full evidence</a>
+            <a class="button secondary" href="https://github.com/mzored/SkipHow/blob/main/docs/decisions.md">Read decisions</a>
+            <a class="button secondary" href="../compare/">Compare approaches</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-grid">
+      <p>A behavior without a controlled receipt remains <span class="status">Unverified</span>, even when the instruction text requires it.</p>
+      <div class="footer-links">
+        <a href="../">Product</a>
+        <a href="../compare/">Compare</a>
+        <a href="https://github.com/mzored/SkipHow/releases">Releases</a>
+        <a href="https://github.com/mzored/SkipHow">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

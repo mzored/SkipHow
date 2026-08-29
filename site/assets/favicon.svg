@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="SkipHow">
+  <rect width="64" height="64" rx="10" fill="#1a1916"/>
+  <path d="M16 19h22v8H24v10h14v8H16z" fill="#f5f0e8"/>
+  <path d="M38 30l12 8-12 8z" fill="#d94b2b"/>
+</svg>

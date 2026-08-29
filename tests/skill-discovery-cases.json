@@ -1,0 +1,56 @@
+[
+  {
+    "id": "direct_named_change",
+    "kind": "direct",
+    "should_select": true,
+    "prompt": "Use SkipHow to fix the checkout timeout and prove the result without changing payment providers."
+  },
+  {
+    "id": "indirect_outcome_owner",
+    "kind": "indirect",
+    "should_select": true,
+    "prompt": "I own the product outcome. Make mobile totals stop overlapping; you decide the technical method and verify it."
+  },
+  {
+    "id": "incomplete_project_defect",
+    "kind": "incomplete",
+    "should_select": true,
+    "prompt": "The checkout sometimes hangs after payment. Find the cause and fix it."
+  },
+  {
+    "id": "indirect_read_only_decision",
+    "kind": "indirect",
+    "should_select": true,
+    "prompt": "Compare the caching choices for this project, recommend one, and do not change code."
+  },
+  {
+    "id": "negative_unrelated",
+    "kind": "negative_unrelated",
+    "should_select": false,
+    "prompt": "Explain why the sky is blue in two sentences."
+  },
+  {
+    "id": "negative_owner_workflow",
+    "kind": "negative_mandatory_workflow",
+    "should_select": false,
+    "prompt": "I want a mandatory spec, ticket, TDD, review, and approval workflow that I operate at every stage. What framework should I use?"
+  },
+  {
+    "id": "negative_runtime",
+    "kind": "negative_runtime_orchestration",
+    "should_select": false,
+    "prompt": "I need twenty persistent agents with budgets, leases, scheduling, and a control plane. What should I install?"
+  },
+  {
+    "id": "edge_build_approval_workflow",
+    "kind": "edge_current_project_capability",
+    "should_select": true,
+    "prompt": "Add a mandatory approval workflow to this product. You own the technical design and implementation; I will decide the visible approval policy."
+  },
+  {
+    "id": "edge_build_runtime",
+    "kind": "edge_current_project_capability",
+    "should_select": true,
+    "prompt": "Implement agent budgets, leases, and scheduling in this repository. Choose the engineering method and verify the result."
+  }
+]

@@ -1,6 +1,6 @@
 interface:
   display_name: "SkipHow"
-  short_description: "Own project work from one plain-language request"
-  default_prompt: "Own this project request, make the technical decisions, and verify the result."
+  short_description: "Outcome-first work for product owners"
+  default_prompt: "Use $skiphow for this product outcome. Own technical decisions, implementation, and proof; leave tradeoffs and protected actions with me."
 policy:
   allow_implicit_invocation: true

@@ -4,18 +4,16 @@ SkipHow exists because I used the popular agent frameworks on my own work first 
 
 ## What I tried
 
-Star counts are a rough measure of how many people are solving this problem, not of fitness. They were read on 2026-08-29 and will be stale soon after.
-
-| Project | Stars | What I kept or studied | What I left out |
-| --- | --- | --- | --- |
-| [Superpowers](https://github.com/obra/superpowers) | 279,011 | Isolated review, bounded repair, safe worktree and conflict practice | Mandatory brainstorming, approval gates, test-first as a universal stage |
-| [Matt Pocock's skills](https://github.com/mattpocock/skills) | 240,118 | Small methods, one discipline each; semantic discovery; diagnosis driven by an observable loop | The setup interview, the named-invocation orchestration skills, the owner-visible spec and ticket chain |
-| [Paperclip](https://github.com/paperclipai/paperclip) | 79,564 | External task state, idempotent reconciliation, dependency semantics | A server, a task database, a company model, a dashboard |
-| [OpenSpec](https://github.com/Fission-AI/OpenSpec) | 66,569 | Stating intent clearly for a material contract change; thin host packaging | Proposal, specification, design and task artifacts for every change |
-| [BMAD](https://github.com/bmad-code-org/bmad-method) | 52,420 | One entry point; planning depth chosen from the work | Personas, menus, repeated handoffs, standing ledgers |
-| [GSD](https://github.com/open-gsd/gsd-core) | 8,845 | Fresh context per unit, dependency-aware parallelism, proportional depth | A large command tree, mandatory phases, several state files |
-| [Mesa](https://github.com/msoedov/mesa) | 69 | Atomic ownership, event-driven wake-up | Fixed roles, an embedded tracker, company simulation |
-| [Autonomous PM](https://github.com/mlobo2012/autonomous-pm-plugin) | 1 | Provenance, and keeping facts separate from assumptions | Standing personas, mandatory scoring |
+| Project | Mechanism kept or studied | Boundary SkipHow chose instead |
+| --- | --- | --- |
+| [Superpowers](https://github.com/obra/superpowers) | Isolated review, bounded repair, safe worktree and conflict practice | No mandatory brainstorming, approval gates, or universal test-first stage |
+| [Matt Pocock's skills](https://github.com/mattpocock/skills) | Small methods, semantic discovery, diagnosis driven by an observable loop | No setup interview, named-invocation orchestration, or owner-visible spec and ticket chain |
+| [Paperclip](https://github.com/paperclipai/paperclip) | External task state, idempotent reconciliation, dependency semantics | No server, task database, company model, or dashboard |
+| [OpenSpec](https://github.com/Fission-AI/OpenSpec) | Stating intent clearly for a material contract change; thin host packaging | No proposal, specification, design, and task artifacts for every change |
+| [BMAD](https://github.com/bmad-code-org/bmad-method) | One entry point; planning depth chosen from the work | No personas, menus, repeated handoffs, or standing ledgers |
+| [GSD](https://github.com/open-gsd/gsd-core) | Fresh context per unit, dependency-aware parallelism, proportional depth | No large command tree, mandatory phases, or parallel state files |
+| [Mesa](https://github.com/msoedov/mesa) | Atomic ownership, event-driven wake-up | No fixed roles, embedded tracker, or company simulation |
+| [Autonomous PM](https://github.com/mlobo2012/autonomous-pm-plugin) | Provenance and separation of facts from assumptions | No standing personas or mandatory scoring |
 
 ## What went wrong for me
 
