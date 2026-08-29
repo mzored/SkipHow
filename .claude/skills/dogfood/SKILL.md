@@ -89,6 +89,27 @@ in something the kernel reserves for them.
 One session can prove wording is broken. It cannot prove that agents in general need a new procedure. Resist
 adding steps, gates, or ceremony on that basis, here or in the package.
 
+## Review it on the other host
+
+A change to the shipped instructions gets a review from Codex before it is finished. The mechanics are
+settled; do not re-derive them each time.
+
+    codex exec --sandbox read-only -c model_reasoning_effort=high "$(cat prompt.md)" </dev/null > out.log 2>&1
+
+The `</dev/null` is required or it waits on stdin forever. Do not pass `-m`: a named model is refused on a
+ChatGPT account, and the default is the working one. `timeout` does not exist on this machine. Read the
+verdict from the `codex` marker in the log to the end; everything above it is the session banner and the
+tool calls.
+
+Give it the branch and let it read the files itself rather than pasting a diff. Put the qualifying and
+disqualifying bars from `AGENTS.md` in the prompt, because without them it returns rephrasings. Ask for
+where, which category, and what breaks.
+
+Confirm every finding against the file yourself before acting, and check the history rather than the current
+tree: `git log -S "<the sentence>"` tells you which release a sentence entered, which is how you find out
+that the run you are blaming ran on text that did not exist yet. Record what was confirmed and what was
+refused, with the reason, in the release notes.
+
 ## Report
 
 Say what you found, what the evidence supports, and what stays uncertain. Where there was a fix to design,
