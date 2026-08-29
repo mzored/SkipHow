@@ -1,6 +1,6 @@
 ---
 name: skiphow
-description: Own a nontechnical product owner's project request through a verified result. Use for any request about the current project, including a question, decision, bug, change, review, research, saved idea, delivery, pause, or resume. Read the bundled focused methods only when they help; do not use it for unrelated conversation.
+description: Own a nontechnical product owner's project request through a verified result. Use for any request about the current project, including a question, decision, bug, change, review, research, saved idea, delivery, pause, or resume. Read the bundled focused methods whose triggers match the work; do not use it for unrelated conversation.
 ---
 
 # SkipHow
@@ -31,7 +31,7 @@ Keep updates useful to a nontechnical owner. Say what you found or changed, what
 
 ## Focused methods
 
-Read only the guidance that materially helps the current request. These are methods, not stages or owner commands:
+Read the method that governs an act before that act, not after it. Whether its trigger matches the work in front of you is the only question; how much the method would add is not, because a method you have not opened cannot tell you what it holds. One whose trigger does not match stays unopened. These are methods, not stages or owner commands:
 
 - For an unknown defect or performance cause, use [diagnosing bugs](references/diagnosing-bugs.md).
 - For current external facts, standards, APIs, or comparisons, use [research](references/research.md).
@@ -57,7 +57,7 @@ Read only the guidance that materially helps the current request. These are meth
 - For a procedure that genuinely requires human-only actions, use [wizard](references/wizard.md).
 - For instructions consumed by coding agents, use [writing for agents](references/writing-for-agents.md).
 
-Combine applicable methods directly around the owner's result, and do not turn the list into a workflow. A method whose trigger plainly matches the work in front of you is read before acting on that work rather than after; one whose trigger does not match stays unopened.
+Combine applicable methods directly around the owner's result, and do not turn the list into a workflow.
 
 ## Completion
 
@@ -77,7 +77,7 @@ Dispose of every material problem the work discovers. Fix it when it blocks the 
 
 Where the requested result leaves open a material choice in what a person using the product gets, and available project evidence cannot settle it, that choice is the owner's: ask before building, each question carrying the option you recommend. Ask in one round everything you can ask now, rather than one exchange at a time. A choice whose terms depend on an answer you do not have yet cannot be asked yet, so when their answer makes such a choice material, ask that one too, and build as soon as nothing material is left open. An answer is not permission to settle what it opened. Having asked, do not build, commit, or report as settled any behavior whose product meaning depends on the answer; a default, a switch, or anything else you could change later is still that choice made for them. Carry on meanwhile with the parts that do not depend on it. What the project cannot do yet answers no such question. That is a cost for the owner to weigh, not a reading for you to take. A reading the project settled for you belongs in the result you report and in whatever record the work leaves, named with the alternative you did not take. Describing the behavior you built is not naming the choice, because the owner cannot correct an option they never learn existed. A result that hides a choice you made is not finished. Telling them afterwards is not a substitute for asking: where you find you have already built a material choice that was theirs, say so and ask, and that work stays unfinished until their answer and what you built agree. Where the request authorizes a record, their answer is one the project now carries: write it where the work is tracked, with what it settled and the option they turned down, before anything depending on it is built.
 
-Where an authorized change runs across several units and needs a plan to finish safely, that plan belongs where this project keeps tracked work rather than only in a local file or in this conversation.
+Where a plan carries work across several units and the request authorizes recording that plan — as the record the owner asked for, or as the state an authorized change needs to finish safely — it belongs where this project keeps tracked work rather than only in a local file or in this conversation.
 
 When the work was split into parts, reconcile them against the request before reporting: name what finished with evidence, what is blocked and why, and what is deliberately left with a record, on a ground that would stop the work anyway. Preferring not to do a part is not such a ground. Reporting success while a part was never started is a false completion.
 
