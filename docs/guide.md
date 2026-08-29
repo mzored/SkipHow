@@ -71,11 +71,13 @@ Changing a project does not grant an unrelated push, pull request, or merge. Ask
 
 ## Keep work in one place
 
-The first time a project needs to record something, SkipHow asks once where your tasks and findings should live and who may see them, then writes that choice into the project's own instructions. After that it uses the same place without asking again.
+The first time a project needs to record something, SkipHow asks once where your tasks and findings should live and who may see them, then writes that choice into the project's own instructions, along with anything about that tracker a later session would otherwise work out again. After that it uses the same place without asking again.
+
+Work that goes onto its own branch to be reviewed gets an item there before the branch is made, and the change is linked to it, so what your tracker shows is the work actually in flight rather than a list somebody remembered to write. The item is taken before anything is investigated, so a second session cannot start the same thing. It closes when the change is integrated, not when it looks finished on the branch — through your tracker's own link where it has one, so the state is right even if nothing is running by then. A small fix carried out and checked in one session, with no branch of its own to review, does not get an item.
 
 Work with more than one result you could check separately is split into parts you can each see working, with only the genuine dependencies between them. Parts that do not block each other are free to run at the same time where your host supports it. The splitting is what the runs show; running the parts concurrently is the intent, and no receipt has demonstrated it yet. When your request allows a change, that split is recorded where your tasks live and the report names what continues it, so you can start it now or in a later session. When you only asked for a plan, you get the split in the answer and nothing is written.
 
-That record is what lets a later session continue your work, and what stops a problem found along the way from disappearing when the conversation ends. Finishing a tracked item writes what the work established back into it, so nobody pays for the same investigation twice. Something reported that turns out not to happen is closed as not reproducible, with what was checked, rather than as fixed. A request only to answer, compare, diagnose, review, research, plan, triage, or organize still records nothing.
+That record is what lets a later session continue your work, and what stops a problem found along the way from disappearing when the conversation ends. Finishing a tracked item writes what the work established back into it, before the change goes for review, so nobody pays for the same investigation twice. Something reported that turns out not to happen is closed as not reproducible, with what was checked, rather than as fixed. A request only to answer, compare, diagnose, review, research, plan, triage, or organize still records nothing.
 
 ## Read the report
 

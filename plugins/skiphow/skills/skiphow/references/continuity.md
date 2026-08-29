@@ -1,6 +1,6 @@
 # Continuity
 
-Where the project records tracked work, that record is the continuation surface: keep it current enough that a fresh session resumes from it. Prefer the host's native continuation state for anything shorter. Use `.skiphow/handoff.md` only when the project has no such destination, needs a durable local checkpoint, and the request authorizes that record.
+Where the project records tracked work, that record is the continuation surface: keep it current enough that a fresh session resumes from it, which is what [tracked work](tracked-work.md) asks of an item anyway. Prefer the host's native continuation state for anything shorter. Use `.skiphow/handoff.md` only when the project has no such destination, needs a durable local checkpoint, and the request authorizes that record.
 
 Record current truth, not a transcript. A useful checkpoint lets a capable agent recover the owner's requested result, decisions already made, owned and foreign changes, evidence already obtained, remaining work, and any authorization boundary. Include exact paths or commands only when recovery depends on them.
 

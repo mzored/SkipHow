@@ -47,6 +47,10 @@ Version 2.6.0 adapts two more from the same repository. The frontier discipline 
 
 The upstream repository is MIT licensed. The exact adapted paths and the inspected revision are recorded in [`SOURCES.json`](../plugins/skiphow/SOURCES.json), and the distributed package carries the source licence and copyright in [`THIRD_PARTY_NOTICES.md`](../plugins/skiphow/THIRD_PARTY_NOTICES.md). An idea taken without source text is credited here and written in SkipHow's own words.
 
+Version 2.8.0 adapts the claim primitive from `wayfinder` more exactly than 2.6.0 did, and moves it where a single named item reaches it: the assignee is the claim, and it is the session's first write, before any investigation, so a concurrent session skips the item. From Paperclip it takes two things read in that project's own execution semantics: hierarchy and dependency are different relations, and a parent waiting on a child is modelled as a blocker rather than inferred from the nesting; and a claim that loses to another session means that session holds the item, never that the claim is worth retrying. From `to-tickets` it takes the warning against recording too finely, in the upstream maintainers' own measurements — twelve items for a three-line change, and a stack sliced by layer costing roughly twenty agent runs for each item closed with three quarters of them rework. Superpowers contributes by contrast rather than by adaptation: it keeps no tracker, holding the work in a plan file and a git-ignored ledger that is deleted with the branch it served, so nothing outside the working tree knows the work existed. None of this was taken as source text.
+
+The mechanics that make the tracker keep its own state came from reading what trackers actually provide rather than from another agent framework. Where the tracker performs closure through a link the change carries, wiring that link when the branch is created is what keeps an item correct after the run that built the change has ended. Anthropic's own shipped practice on its repositories is narrower still and was read for comparison: its triage agent may only add and remove labels, never comment, create, or close, and timers close what goes stale.
+
 ## Ideas read and rejected
 
 Rejection is part of the record, so the same argument does not get reopened.
@@ -70,6 +74,8 @@ Superpowers' `finishing-a-development-branch` was read for 2.7.0 and its shape a
 Matt Pocock's `resolving-merge-conflicts` was re-read alongside it and nothing further was taken, because SkipHow's method already adapts it and is deliberately wider on one point: the source says never to abort, and SkipHow allows aborting where continuing would discard unique or foreign work.
 
 A command surface — `/bug`, `/idea`, `/continue`, `/prior`, in the shape Addy Osmani's repository uses for its lifecycle commands — was built for 2.6.0 and removed before release. Half of it restated policy the methods already carried, which drifts at the first edit to either copy, and Codex plugins support no command surface at all, so none of it was portable. The reasoning is in [decision history](decisions.md) under "One owner entry".
+
+A summary of each tracked-work rule in the kernel beside the method holding its detail was rejected for 2.8.0, and so was moving the whole lifecycle into the kernel. The reasoning is in [decision history](decisions.md) under "An item exists before the branch, and closes on integration".
 
 ## The adoption rule
 

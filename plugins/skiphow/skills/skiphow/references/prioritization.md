@@ -1,6 +1,6 @@
 # Prioritization
 
-Use this only where more work is on record than can be done soon and the items compete: accumulated ideas, feature requests, and user feedback that no order settles on its own. What comes out is a short roadmap the owner can read and reorder, kept where the project already tracks work. Producing one is read-only; writing it into the tracker needs the same record grant as any other write, and [intake](intake.md) governs that write.
+Use this only where more work is on record than can be done soon and the items compete: accumulated ideas, feature requests, and user feedback that no order settles on its own. What comes out is a short roadmap the owner can read and reorder, kept where the project already tracks work. Producing one is read-only; writing it into the tracker needs the same record grant as any other write, and [tracked work](tracked-work.md) governs that write.
 
 Most tracked work is not this. Units belonging to one outcome the owner already authorized are sequenced by what blocks what, not by value: whichever is more valuable, the one that unblocks the other still goes first, and ranking siblings inside a decomposition produces an order that dependency then overrules. That work belongs to [advancing tracked work](advancing-tracked-work.md), and running this method over it spends a pass to learn what the dependency edges already said. Check which shape is in front of you before scoring anything. Where a project holds both, the competing units are the outcomes, and each one's internal parts are never ranked against another's.
 
