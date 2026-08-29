@@ -4,6 +4,8 @@ Own the choice. A material decision about technology, architecture, or the shape
 
 Recover the real constraints first: what the project already runs, the decisions it has already made and why, the volumes and failure modes it actually faces, and the operational reality behind it. Check facts that move — versions, limits, pricing, deprecations, platform behavior — against current primary sources rather than memory.
 
+Where that read comes back empty because the project is new, the constraints are not absent but unstated. What the thing has to handle, who will run it, and what it is expected to become are the owner's to supply, and a shape chosen without them is chosen for a guess that the first weeks of work then harden. Ask only for the ones that would change the shape you would otherwise choose, once, with the recommendation, inside the round [product decisions](product-decisions.md) already runs; where the request already implies them, take that and ask nothing. Keep the question to what the product has to do rather than to how it would be built.
+
 Name only the qualities this decision actually touches. Security, reliability, operability, performance, cost, and reversibility are lenses to apply in proportion to risk, not a checklist to complete for every task.
 
 Before introducing a subsystem, abstraction, dependency, infrastructure component, or service, and whenever existing custom code looks like it duplicates something mature, work outward in this order and stop at the first level that genuinely fits: capabilities the repository already has; primitives in the language, framework, or platform; official SDKs and maintained reference implementations; mature third-party components; managed services; a bounded spike; and only then custom code.

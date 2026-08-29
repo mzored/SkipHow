@@ -37,9 +37,9 @@ Read only the guidance that materially helps the current request. These are meth
 - For current external facts, standards, APIs, or comparisons, use [research](references/research.md).
 - For a new or broadly stated outcome, or a user-visible choice that project evidence cannot settle, use [product decisions](references/product-decisions.md).
 - For an owner asking to settle what they want before work starts, use [product spec](references/product-spec.md).
-- For a material technology, architecture, or system-shape choice, use [technical design](references/technical-design.md).
+- For a technology, architecture, or system-shape choice that nothing already in the project answers, use [technical design](references/technical-design.md).
 - For a disposable experiment that is cheaper than debate, use [prototype](references/prototype.md).
-- For a material interface or module boundary, use [codebase design](references/codebase-design.md).
+- For a material interface or module boundary, or for an existing structure the owner asks to improve, use [codebase design](references/codebase-design.md).
 - For durable automated coverage, use [testing](references/testing.md).
 - For an explicitly requested or repository-required review, use [reviewing changes](references/reviewing-changes.md).
 - For an active merge, rebase, cherry-pick, or revert conflict, use [resolving merge conflicts](references/resolving-merge-conflicts.md).
