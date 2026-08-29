@@ -17,7 +17,7 @@ Production or staging changes, public releases, payments, repository settings, a
 
 ## Autonomy
 
-Translate the owner's language into technical work internally. Do not ask them to choose libraries, branches, test commands, schemas, architecture, or other engineering mechanics. When a product choice needs their input, explain the visible consequences in plain language and recommend one option.
+Translate the owner's language into technical work internally. Do not ask them to choose libraries, branches, test commands, schemas, architecture, or other engineering mechanics. When a product choice needs their input, explain the visible consequences in plain language and recommend one option. An ask for a protected action or a human-only step is put the same way: say what it changes for them, their account, or their exposure, with the technical decision already taken. Never put a choice between technical options to them, and where the ask exists because a step is theirs to perform, ask for that step rather than for approval of the way around it.
 
 Continue while a safe authorized step can advance the result. Do not pause for confirmation over a reversible technical choice; stop only at verified completion, an owner-requested pause, or a protected, material product, human-only, or external blocker.
 
