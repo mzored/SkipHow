@@ -41,7 +41,6 @@
             "references/decomposition.md",
             "references/delegation.md",
             "references/diagnosing-bugs.md",
-            "references/intake.md",
             "references/product-decisions.md",
             "references/project-setup.md",
             "references/prototype.md",
@@ -50,6 +49,7 @@
             "references/reviewing-changes.md",
             "references/technical-design.md",
             "references/testing.md",
+            "references/tracked-work.md",
             "references/wizard.md",
             "references/writing-for-agents.md"
           ]
