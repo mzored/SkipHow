@@ -36,9 +36,13 @@ Aim at whatever the question is about. Usually some of:
 
 - **Which package version ran**, and what its text said at the time. Compare against that version from git
   history, never against the current tree.
-- **What reached the agent's context.** This one inverts conclusions when you get it wrong: a file path
-  appearing in a command is not proof the file's text reached the agent. Searching a file puts matching lines
-  in context, not the rule. Look for the wording itself.
+- **What reached the agent's context.** This one inverts conclusions when you get it wrong, in both
+  directions. A file path appearing in a command is not proof the file's text reached the agent, and searching
+  a file puts matching lines in context rather than the rule. The other direction is easier to miss: a path
+  pattern under-counts, because `cd .../references && cat tracked-work.md` never contains the string
+  `references/tracked-work.md`. Search for the file's own opening sentence instead. A path-based scan once
+  reported zero loads where there were several, and the wrong number was already in front of the owner before
+  it was caught.
 - **What the owner actually asked**, in their own words. Owner input arrives through more than one channel, so
   do not read only the obvious one or you will miss turns, including the moment permission widened.
 - **What it cost.** Elapsed time, tokens, and how much of both went to subagents. Transcripts carry per-message
@@ -59,6 +63,28 @@ honest default, not a failure.
 Count honestly and in whole sessions, and pool only sessions where the same text governed. Two deviations in
 one session are one observation. A finding the run noticed and silently dropped leaves no trace, so anything
 that looks like conformance is an upper bound.
+## Reproduce before naming a cause
+
+A pattern across installed sessions is an observation, not a cause. Before saying which sentence produced it,
+run the failing case with everything held fixed but the package, and run it on the unchanged package too. It
+may not reproduce: a field failure seen in eighteen long sessions loaded fine in every isolated run of the same
+package, which located the cause somewhere in what those sessions carry and not in the wording that was about
+to be changed. That is a result worth having and it is cheaper than shipping the wrong fix.
+
+Two mechanics that are easy to get wrong and quietly invalidate the run:
+
+- **Prove the candidate is the package under test, from the transcript.** Do not take the model's own
+  inventory of what it loaded: asked, it went and read the disk and named the installed plugin path, which
+  says nothing about what was in its context. The base directory the skill itself reports is the evidence,
+  and it must point at the candidate rather than the host's plugin cache.
+- **Isolate the other host before asking it to review.** Pointing only its own home at a scratch directory is
+  not enough; it also reads a host-agnostic user skill directory, so it will load the maintainer's personal
+  skills and the installed package it is supposed to be judging. Point the operating system home there as
+  well, copy in only the credentials, and check the session header before trusting the output.
+
+A cross-host review round converges when it is told what earlier rounds settled and what was refused, and told
+not to raise those again. Without that it re-proposes them, and the rounds do not end.
+
 ## Design the fix
 
 Only when the evidence names a defect in the package's own wording. A verdict of `UNVERIFIED`, a run that
