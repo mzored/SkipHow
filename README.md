@@ -81,7 +81,7 @@ A request to answer, compare, diagnose, review, research, plan, or organize is r
 
 Many agent frameworks expose a method for the owner to operate: choose a command, approve a specification, accept ticket granularity, or move work through phases. Those are valid products for people who want that control. SkipHow starts from a different product position: a strong agent should investigate the task and own the engineering method, while the human remains the owner of the product.
 
-The package therefore keeps an authority and completion kernel in context and loads focused engineering methods only when their triggers match the work. The methods are not routes, roles, commands, or an owner-operated chain. [Prior art](docs/prior-art.md) records what the project learned from other systems and what it deliberately left out.
+The package therefore keeps an authority and completion kernel in context and instructs the agent to load a focused engineering method when its trigger matches the work. The methods are not routes, roles, commands, or an owner-operated chain. Whether hosts follow those loading instructions reliably remains `UNVERIFIED`. [Prior art](docs/prior-art.md) records what the project learned from other systems and what it deliberately left out.
 
 This is a product contract, not a claim that agents are better engineers or that SkipHow outperforms Claude Code, Codex, or another framework. No comparative benchmark has been run.
 

@@ -10,11 +10,12 @@ All notable changes to SkipHow 2.x appear in this file. Earlier release notes re
 - The startup continuity reminder now defers to the skill description instead of requiring the kernel for every project request. A discovery receipt showed the old reminder overriding the description and selecting SkipHow for a mandatory owner-operated workflow. Resume and compaction reminders remain unconditional because they continue an already active request.
 - README, FAQ, host manifests, marketplace copy, and Codex display metadata now use one category and promise: an outcome-first Agent Skill for Claude Code and Codex in which the owner owns outcomes, tradeoffs, and protected actions while the agent owns technical decisions, implementation, and proof. The product now answers directly when to use the base agent, a spec/workflow framework, or a runtime orchestrator.
 - Popularity counts and volatile package-size counts have been removed from public positioning. Prior art now compares mechanisms and boundaries rather than stars.
+- README and FAQ now state that reliable trigger-based method loading remains `UNVERIFIED`. The site gives keyboard users explicit focus and labels for horizontally scrollable tables and command blocks, and keeps the primary action closer on mobile screens.
 
 ### Added
 
 - A static, JavaScript-free GitHub Pages site with product, comparison, and evidence pages; canonical metadata; `SoftwareSourceCode` JSON-LD; a sitemap; favicon; and a custom social preview asset. Publication remains a separate protected action.
-- A standing discoverability protocol records the eight bilingual recommendation prompts, scoring fields, target repository metadata, launch checklist, and 30/60/90-day measurement cadence.
+- A standing discoverability protocol records twelve bilingual recommendation prompts covering the fitting case and all three rejection paths, scoring fields, target repository metadata, launch checklist, and 30/60/90-day measurement cadence. It accounts for GitHub's 14-day referral window, includes Google's Generative AI performance report, preserves the owner-supplied ChatGPT answer as the available pre-launch observation, and records official OpenAI directory submission as a later distribution phase.
 - Deterministic site validation checks required routes, metadata, structured data, sitemap coverage, local links, and the absence of client-side scripts.
 
 ### Evidence

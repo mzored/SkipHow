@@ -60,7 +60,7 @@ It splits work that carries more than one independently verifiable outcome, with
 
 ## How much context does it use?
 
-The authority and completion kernel stays in context. Focused methods load only when their triggers match the work. The package deliberately avoids a standing workflow, but context use still depends on the host and the request; the project does not promise a fixed token cost.
+The authority and completion kernel stays in context. It instructs the agent to load a focused method when its trigger matches the work. Reliable loading remains `UNVERIFIED`, and context use depends on the host and the request; the project does not promise a fixed token cost.
 
 ## Does it send my code anywhere?
 
