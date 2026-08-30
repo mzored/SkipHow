@@ -21,7 +21,7 @@ All notable changes to SkipHow 2.x appear in this file. Earlier release notes re
 ### Evidence
 
 - In nine isolated Claude Code sessions on the exact candidate, direct, indirect outcome-owner, indirect read-only, incomplete, and two current-project capability requests selected SkipHow; unrelated, owner-operated mandatory-workflow, and runtime-orchestrator adoption requests did not. One run per cell is not a precision rate. Exact-candidate Codex selection remains `UNVERIFIED` because a fresh isolated home had no authentication and credentials were not moved.
-- Package checks and visual inspection are recorded in the completion report for this change. No site, repository setting, topic, social preview, or webmaster property was published or changed remotely.
+- Package checks and visual inspection are recorded in the completion report for this change. The GitHub Pages site, repository description, homepage, and topics were published and verified after integration. The repository social preview and webmaster properties were not changed.
 
 ## 2.11.0 (2026-08-29)
 
