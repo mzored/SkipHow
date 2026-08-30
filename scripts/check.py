@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+from html.parser import HTMLParser
 from html import unescape as html_unescape
 from importlib.metadata import PackageNotFoundError, version
 import json
@@ -20,10 +21,18 @@ from typing import Iterable
 import unicodedata
 from urllib.parse import unquote, urlsplit
 import venv
+import xml.etree.ElementTree as ET
 
 
 ROOT = Path(__file__).resolve().parents[1]
 PLUGIN_ROOT = ROOT / "plugins/skiphow"
+SITE_ROOT = ROOT / "site"
+SITE_BASE_URL = "https://mzored.github.io/SkipHow/"
+SITE_PAGES = {
+    "index.html": SITE_BASE_URL,
+    "compare/index.html": f"{SITE_BASE_URL}compare/",
+    "evidence/index.html": f"{SITE_BASE_URL}evidence/",
+}
 REQUIREMENTS = ROOT / "requirements-dev.txt"
 PERSONAL_PATH = re.compile(
     r"(?:(?<![\w.])/(?:Users|home)/[^/\s]+/?|"
@@ -818,6 +827,177 @@ def validate_markdown_links() -> list[str]:
     return errors
 
 
+class SiteHTML(HTMLParser):
+    """Collect the small set of HTML facts the static site contract requires."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.start_tags: list[tuple[str, dict[str, str]]] = []
+        self.title_parts: list[str] = []
+        self._in_title = False
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        normalized = {key: value or "" for key, value in attrs}
+        self.start_tags.append((tag.casefold(), normalized))
+        if tag.casefold() == "title":
+            self._in_title = True
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag.casefold() == "title":
+            self._in_title = False
+
+    def handle_data(self, data: str) -> None:
+        if self._in_title:
+            self.title_parts.append(data)
+
+    def attributes(self, tag: str) -> list[dict[str, str]]:
+        return [attrs for candidate, attrs in self.start_tags if candidate == tag]
+
+
+def _site_meta(document: SiteHTML, key: str, value: str) -> list[str]:
+    return [
+        attrs.get("content", "").strip()
+        for attrs in document.attributes("meta")
+        if attrs.get(key) == value
+    ]
+
+
+def _site_local_target(page: Path, value: str) -> Path | None:
+    parsed = urlsplit(value)
+    if parsed.scheme or parsed.netloc or not parsed.path:
+        return None
+    candidate = (page.parent / unquote(parsed.path)).resolve()
+    try:
+        candidate.relative_to(SITE_ROOT.resolve())
+    except ValueError as exc:
+        raise DisallowedLocalLink(value) from exc
+    if candidate.is_dir() or parsed.path.endswith("/"):
+        candidate /= "index.html"
+    return candidate
+
+
+def validate_site() -> list[str]:
+    """Validate the canonical no-runtime GitHub Pages site."""
+    errors: list[str] = []
+    titles: set[str] = set()
+    descriptions: set[str] = set()
+    for relative, canonical in SITE_PAGES.items():
+        page = SITE_ROOT / relative
+        problem = regular_file_problem(page, f"site/{relative}")
+        if problem is not None:
+            errors.append(problem)
+            continue
+        try:
+            text = page.read_text(encoding="utf-8")
+        except (OSError, UnicodeError) as exc:
+            errors.append(f"cannot read site/{relative}: {exc}")
+            continue
+        document = SiteHTML()
+        try:
+            document.feed(text)
+        except Exception as exc:
+            errors.append(f"cannot parse site/{relative}: {exc}")
+            continue
+
+        html_tags = document.attributes("html")
+        if len(html_tags) != 1 or html_tags[0].get("lang") != "en":
+            errors.append(f"site/{relative} must declare exactly one English html root")
+        title = "".join(document.title_parts).strip()
+        if not title:
+            errors.append(f"site/{relative} must have a nonempty title")
+        elif title in titles:
+            errors.append(f"site/{relative} duplicates another page title: {title}")
+        titles.add(title)
+
+        description = _site_meta(document, "name", "description")
+        if len(description) != 1 or not description[0]:
+            errors.append(f"site/{relative} must have one nonempty meta description")
+        elif description[0] in descriptions:
+            errors.append(f"site/{relative} duplicates another meta description")
+        descriptions.update(description)
+        if _site_meta(document, "name", "robots") != ["index,follow"]:
+            errors.append(f"site/{relative} must declare robots index,follow")
+
+        canonical_links = [
+            attrs.get("href")
+            for attrs in document.attributes("link")
+            if "canonical" in attrs.get("rel", "").split()
+        ]
+        if canonical_links != [canonical]:
+            errors.append(f"site/{relative} canonical URL must be {canonical}")
+        if _site_meta(document, "property", "og:url") != [canonical]:
+            errors.append(f"site/{relative} Open Graph URL must match its canonical URL")
+        for property_name in ("og:title", "og:description", "og:image"):
+            values = _site_meta(document, "property", property_name)
+            if len(values) != 1 or not values[0]:
+                errors.append(f"site/{relative} must have one nonempty {property_name}")
+
+        scripts = document.attributes("script")
+        if len(scripts) != 1 or scripts[0].get("type") != "application/ld+json":
+            errors.append(
+                f"site/{relative} may contain only one JSON-LD script and no client runtime"
+            )
+        else:
+            match = re.search(
+                r'<script\s+type="application/ld\+json">(.*?)</script>',
+                text,
+                re.DOTALL | re.IGNORECASE,
+            )
+            try:
+                structured = load_json_text(match.group(1)) if match else None
+            except (ValueError, json.JSONDecodeError):
+                structured = None
+            if not isinstance(structured, dict):
+                errors.append(f"site/{relative} has invalid JSON-LD")
+            else:
+                if structured.get("@type") != "SoftwareSourceCode":
+                    errors.append(f"site/{relative} JSON-LD must use SoftwareSourceCode")
+                if structured.get("url") != canonical:
+                    errors.append(f"site/{relative} JSON-LD URL must match its canonical URL")
+
+        if len(document.attributes("h1")) != 1:
+            errors.append(f"site/{relative} must contain exactly one h1")
+        for tag, attribute in (("a", "href"), ("link", "href"), ("img", "src")):
+            for attrs in document.attributes(tag):
+                value = attrs.get(attribute)
+                if not value or value.startswith("#"):
+                    continue
+                try:
+                    target = _site_local_target(page, value)
+                except DisallowedLocalLink:
+                    errors.append(f"site/{relative} link escapes site root: {value}")
+                    continue
+                if target is not None and not path_exists_with_exact_spelling(target):
+                    errors.append(f"broken site link: site/{relative} -> {value}")
+
+    sitemap = SITE_ROOT / "sitemap.xml"
+    problem = regular_file_problem(sitemap, "site/sitemap.xml")
+    if problem is not None:
+        errors.append(problem)
+    else:
+        try:
+            root = ET.parse(sitemap).getroot()
+            locations = {
+                element.text.strip()
+                for element in root.findall("{http://www.sitemaps.org/schemas/sitemap/0.9}url/{http://www.sitemaps.org/schemas/sitemap/0.9}loc")
+                if element.text and element.text.strip()
+            }
+        except (OSError, ET.ParseError) as exc:
+            errors.append(f"invalid site/sitemap.xml: {exc}")
+        else:
+            expected = set(SITE_PAGES.values())
+            if locations != expected:
+                errors.append("site/sitemap.xml must contain exactly the three canonical pages")
+
+    for relative in ("assets/site.css", "assets/favicon.svg", "assets/social-preview.png", ".nojekyll"):
+        path = SITE_ROOT / relative
+        if not path.is_file() or path.is_symlink():
+            errors.append(f"site must contain a regular site/{relative}")
+    if (SITE_ROOT / "robots.txt").exists():
+        errors.append("project site must not claim control of the account-level robots.txt")
+    return errors
+
+
 def portability_scan() -> list[str]:
     """Reject personal paths from shipped files and public documentation."""
     roots = (
@@ -829,6 +1009,7 @@ def portability_scan() -> list[str]:
         ROOT / "CHANGELOG.md",
         ROOT / "CONTRIBUTING.md",
         ROOT / "SECURITY.md",
+        SITE_ROOT,
     )
     errors: list[str] = []
     for path in repository_files():
@@ -1827,6 +2008,7 @@ def offline_checks(base: str | None = None) -> list[str]:
         validate_json()
         + validate_yaml()
         + validate_markdown_links()
+        + validate_site()
         + portability_scan()
         + validate_version()
         + validate_plugin_static()

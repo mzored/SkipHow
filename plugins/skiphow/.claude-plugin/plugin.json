@@ -1,7 +1,7 @@
 {
   "name": "skiphow",
-  "version": "2.11.0",
-  "description": "Describe the product outcome in plain language. The agent owns the engineering, verifies the result, and reports the evidence.",
+  "version": "2.11.1",
+  "description": "Outcome-first Agent Skill for Claude Code and Codex. Product owners own outcomes and protected actions; the agent owns technical decisions, implementation, and proof.",
   "author": {
     "name": "mzored",
     "url": "https://github.com/mzored"
@@ -12,11 +12,10 @@
   "keywords": [
     "agent-skills",
     "claude-code",
-    "codex",
-    "ai-agent",
+    "openai-codex",
     "coding-agent",
-    "autonomy",
-    "product-owner",
+    "autonomous-agents",
+    "product-management",
     "developer-tools"
   ],
   "skills": "./skills/"

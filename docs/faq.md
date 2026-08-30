@@ -4,7 +4,15 @@ Short answers about installing and using SkipHow. The [owner guide](guide.md) ha
 
 ## What is SkipHow?
 
-SkipHow is one Agent Skill for Claude Code and OpenAI Codex. You describe what should be true for the product in ordinary language, and the agent inspects the project, makes the engineering decisions, verifies the result, and reports what the evidence proves. It ships as a plugin containing a single skill: no server, no database, no separate runtime.
+SkipHow is an outcome-first Agent Skill for Claude Code and OpenAI Codex. It gives the agent one contract: the product owner owns the outcome, tradeoffs, and protected actions; the agent owns technical decisions, implementation, and proof. It ships as a plugin containing a single skill: no server, no database, no separate runtime.
+
+## Do modern agents already do this?
+
+They already plan, write code, run tests, and often make sound technical choices. SkipHow does not make a model smarter. It makes the decision and authority boundary explicit and portable, then requires an evidence-backed finish. If your base agent already keeps that boundary reliably, SkipHow adds little.
+
+## Should I use SkipHow?
+
+Use it when you own a product outcome, work in a repository through Claude Code or Codex, and want the agent to own the engineering method. Do not install it merely to make an agent “more autonomous.” Install it when you want to stay at the level of behavior, tradeoffs, and protected actions.
 
 ## Which agents does it work with?
 
@@ -14,7 +22,15 @@ Claude Code and OpenAI Codex. Both host manifests point at the same skill direct
 
 No. You need a repository and one of the two hosts. SkipHow is written for the person who owns what the product should do, and it will not ask you to pick a library, a schema, a branch strategy or a test command. If a question comes back to you, it is about visible behavior, priority, cost, risk, privacy or rollout, in plain language, with a recommendation.
 
-## How is SkipHow different from OpenSpec, BMAD or Superpowers?
+## Does the owner need technical review?
+
+No. The owner can be technical, but their job in this contract is to decide the product, not inspect implementation details. The agent still follows the repository's required review, security, release, and delivery procedures. SkipHow removes those mechanics from the owner's role, not from the project.
+
+## When should I use something else?
+
+Use the base agent alone if it already maintains the boundary and verifies completion reliably. Use a spec or workflow framework when you want people to inspect and approve specifications, phases, tickets, or the development method. Use a runtime orchestrator when you need persistent agent teams, budgets, leases, scheduling, or a control plane.
+
+## How is SkipHow different from OpenSpec, BMAD, or Superpowers?
 
 Those frameworks give you a workflow to drive: commands, phases, specs, tickets, approval gates. SkipHow states a contract and leaves the sequence to the agent, so there is nothing for you to operate. The tradeoff is real. If you want to control the method yourself, one of those projects fits you better. [Prior art](prior-art.md) records what SkipHow borrowed from each and what it dropped.
 
@@ -42,9 +58,9 @@ Only when the answer changes what a person using the product gets and the projec
 
 It splits work that carries more than one independently verifiable outcome, with only the dependencies that genuinely block one another. That split is what the receipts show. Running the parts concurrently through delegates and worktrees is the intent, and no run has demonstrated it yet, so it stays `UNVERIFIED` in [current evidence](evidence.md).
 
-## How much of my context does it use?
+## How much context does it use?
 
-The kernel is about 1,600 words and stays in context. Eighteen focused methods, about 6,800 words in total, load only when a request reaches them. Receipts show methods loading in proportion to the work rather than on every request.
+The authority and completion kernel stays in context. It instructs the agent to load a focused method when its trigger matches the work. Reliable loading remains `UNVERIFIED`, and context use depends on the host and the request; the project does not promise a fixed token cost.
 
 ## Does it send my code anywhere?
 

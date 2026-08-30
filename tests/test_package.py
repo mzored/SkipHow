@@ -111,6 +111,26 @@ def test_workflows_are_sha_pinned_with_least_privilege() -> None:
         assert all("permissions" not in job for job in workflow["jobs"].values()), name
 
 
+def test_pages_workflow_requires_a_manual_publication_action() -> None:
+    workflow = yaml.safe_load(read(".github/workflows/pages.yml"))
+    triggers = workflow.get("on", workflow.get(True))
+    assert triggers == {"workflow_dispatch": None}
+    assert workflow["permissions"] == {
+        "contents": "read",
+        "pages": "write",
+        "id-token": "write",
+    }
+    uses = every_uses(workflow)
+    assert uses
+    assert all(re.fullmatch(r"[^@]+@[0-9a-f]{40}", item) for item in uses)
+    upload = next(
+        step
+        for step in workflow["jobs"]["deploy"]["steps"]
+        if step.get("uses", "").startswith("actions/upload-pages-artifact@")
+    )
+    assert upload["with"] == {"path": "site"}
+
+
 def test_release_refuses_a_tag_outside_main() -> None:
     workflow = yaml.safe_load(read(".github/workflows/release.yml"))
     steps = workflow["jobs"]["release"]["steps"]
@@ -135,6 +155,39 @@ def test_every_skill_has_valid_discovery_metadata() -> None:
         names.add(metadata["name"])
         assert check.validate_skill_directory(directory) == []
     assert "skiphow" in names
+
+
+def test_owner_skill_discovery_contract_and_case_matrix_are_precise() -> None:
+    description = frontmatter(SKILL)["description"]
+    assert isinstance(description, str)
+    assert "product owner's current-project request" in description
+    assert "plain-language outcome" in description
+    assert "nontechnical product owner" not in description
+    for excluded in (
+        "unrelated conversation",
+        "mandatory development workflow",
+        "runtime orchestrator",
+    ):
+        assert excluded in description
+    assert "build those capabilities in the current project remains in scope" in description
+
+    cases = json.loads(read("tests/skill-discovery-cases.json"))
+    assert isinstance(cases, list)
+    assert {case["kind"] for case in cases} == {
+        "direct",
+        "indirect",
+        "incomplete",
+        "negative_unrelated",
+        "negative_mandatory_workflow",
+        "negative_runtime_orchestration",
+        "edge_current_project_capability",
+    }
+    assert all(case["should_select"] for case in cases if not case["kind"].startswith("negative_"))
+    assert all(not case["should_select"] for case in cases if case["kind"].startswith("negative_"))
+
+
+def test_static_site_matches_its_canonical_contract() -> None:
+    assert check.validate_site() == []
 
 
 def test_progressive_skill_resources_are_dynamic_and_links_resolve() -> None:

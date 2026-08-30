@@ -32,6 +32,14 @@ Codex and Claude Code supply execution, permissions, tools, credentials, session
 
 The package includes one continuity hook. It prints a short load or reload reminder for startup, clear, compact, and resume events. The hook does not load the skill, restore context, write project state, or change permissions.
 
+## Public site visual system
+
+The canonical site is a static editorial proof surface, not a second product specification. Its visible claims summarize and link back to the README, evidence, decisions, releases, and installation instructions.
+
+The reusable visual rules are warm paper, dark ink, one vermilion accent, serif display type, sans-serif reading text, thin rules, and evidence presented as matrices or field notes. The responsibility handoff is the primary visual motif. No robot imagery, neon AI decoration, synthetic dashboard, ornamental gradients, or stock illustration enters the system.
+
+Every page has one clear heading, a constrained reading measure, keyboard-visible focus, semantic landmarks, and responsive layouts that collapse without changing reading order. The site ships plain HTML and CSS with no client runtime, cookies, tracking, or external font dependency. Structured data matches visible text and exists for classification, not as a ranking claim.
+
 ## Why one public skill
 
 Separate public methods look tidy, but a host can select one without loading the owner kernel. That can drop the authority and completion rules. Agent Skills has no portable dependency that forces a leaf skill to load another skill first.
@@ -40,7 +48,7 @@ Keeping focused methods inside one owner skill avoids that gap. It also gives th
 
 ## Prior art
 
-[Matt Pocock's skills](https://github.com/mattpocock/skills) showed that small engineering methods can stay useful without becoming one large workflow. SkipHow adapts selected method ideas but keeps a different product boundary: one nontechnical owner entry, no setup interview, and no required chain of specs, tickets, TDD, implementation, and review.
+[Matt Pocock's skills](https://github.com/mattpocock/skills) showed that small engineering methods can stay useful without becoming one large workflow. SkipHow adapts selected method ideas but keeps a different product boundary: one product-owner entry, no setup interview, and no required chain of specs, tickets, TDD, implementation, and review.
 
 The exact adapted paths and inspected revision live in [`SOURCES.json`](../plugins/skiphow/SOURCES.json). The distributed package keeps the source license and copyright notice in [`THIRD_PARTY_NOTICES.md`](../plugins/skiphow/THIRD_PARTY_NOTICES.md).
 

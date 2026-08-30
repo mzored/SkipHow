@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'SkipHow is installed. Load the skiphow owner kernel for every project request, then read the repository instructions and live state before acting.'",
+            "command": "echo 'SkipHow is installed. When a project request matches the skiphow skill description, load its owner kernel, then read the repository instructions and live state before acting.'",
             "timeout": 10
           }
         ]

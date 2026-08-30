@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SkipHow: Outcome-first Agent Skill for Claude Code and Codex</title>
+  <meta name="description" content="SkipHow gives product owners and coding agents a clear contract: the owner owns outcomes and protected actions; the agent owns engineering and proof.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://mzored.github.io/SkipHow/">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/site.css">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SkipHow">
+  <meta property="og:title" content="SkipHow: Outcome-first Agent Skill">
+  <meta property="og:description" content="The product owner owns the outcome, tradeoffs, and protected actions. The agent owns technical decisions, implementation, and proof.">
+  <meta property="og:url" content="https://mzored.github.io/SkipHow/">
+  <meta property="og:image" content="https://mzored.github.io/SkipHow/assets/social-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    "name": "SkipHow",
+    "description": "An outcome-first Agent Skill for Claude Code and Codex. Product owners own outcomes and protected actions; the agent owns technical decisions, implementation, and proof.",
+    "codeRepository": "https://github.com/mzored/SkipHow",
+    "url": "https://mzored.github.io/SkipHow/",
+    "license": "https://opensource.org/license/mit",
+    "runtimePlatform": ["Claude Code", "OpenAI Codex"],
+    "programmingLanguage": "Markdown",
+    "author": {"@type": "Person", "name": "mzored", "url": "https://github.com/mzored"}
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <nav class="nav shell" aria-label="Primary navigation">
+      <a class="wordmark" href="./" aria-label="SkipHow" aria-current="page">SkipHow</a>
+      <ul class="nav-links">
+        <li><a href="#install">Install</a></li>
+        <li><a href="compare/">Compare</a></li>
+        <li><a href="evidence/">Evidence</a></li>
+        <li><a href="https://github.com/mzored/SkipHow">GitHub</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="shell">
+        <p class="eyebrow">Outcome-first Agent Skill · Claude Code + Codex</p>
+        <h1>Own the product.<br>Let the agent own the engineering.</h1>
+        <p class="lede">SkipHow gives a coding agent one contract: you own the outcome, tradeoffs, and protected actions; the agent owns technical decisions, implementation, and proof.</p>
+        <div class="actions">
+          <a class="button" href="#codex-install">Install for Codex</a>
+          <a class="button" href="#claude-install">Install for Claude Code</a>
+          <a class="button secondary" href="evidence/">Read the evidence</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="problem-title">
+      <div class="shell section-grid">
+        <div>
+          <p class="section-label">01 · The problem</p>
+        </div>
+        <div class="section-copy">
+          <h2 id="problem-title">A product owner should not have to operate the development method.</h2>
+          <p>Modern coding agents can plan, write code, and run tests. Yet many systems still ask the human to choose libraries, approve ticket granularity, inspect specifications, or move work through phases before the outcome is settled.</p>
+          <p>SkipHow does not add intelligence. It makes the decision boundary explicit and portable, so the owner can stay with product behavior while a strong agent investigates and owns the engineering method.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="contract-title">
+      <div class="shell">
+        <p class="section-label">02 · The contract</p>
+        <h2 id="contract-title">Two kinds of decisions.<br>One accountable handoff.</h2>
+        <div class="contract" aria-label="Responsibility split between product owner and coding agent">
+          <div class="contract-side">
+            <h3>Product owner</h3>
+            <p>Outcome and visible behavior</p>
+            <p>Scope, priority, cost, risk, privacy, rollout</p>
+            <p>Protected actions and genuine product choices</p>
+          </div>
+          <div class="contract-center" aria-hidden="true">→</div>
+          <div class="contract-side">
+            <h3>Coding agent</h3>
+            <p>Research and technical design</p>
+            <p>Libraries, schemas, code, tests, branches</p>
+            <p>Project procedures and verified completion</p>
+          </div>
+          <div class="contract-note">SkipHow · decision and authority contract</div>
+        </div>
+        <div class="callout">
+          <h3>No technical review required from the owner</h3>
+          <p>The agent still follows every review, security, release, and delivery procedure required by the repository. SkipHow removes those engineering mechanics from the owner's role, not from the project.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="fit-title">
+      <div class="shell section-grid">
+        <div>
+          <p class="section-label">03 · Choose honestly</p>
+        </div>
+        <div>
+          <h2 id="fit-title">Use the smallest layer that solves your problem.</h2>
+          <div class="decision-list">
+            <div class="decision">
+              <strong>Use SkipHow</strong>
+              <p>You own the product outcome, use Claude Code or Codex in a repository, and want the agent to own the engineering method through a verified result.</p>
+            </div>
+            <div class="decision">
+              <strong>Use the base agent</strong>
+              <p>Your agent already maintains this authority boundary and proves completion reliably. Another instruction layer adds little.</p>
+            </div>
+            <div class="decision">
+              <strong>Use a workflow framework</strong>
+              <p>You want people to inspect and approve specifications, phases, tickets, or the development method.</p>
+            </div>
+            <div class="decision">
+              <strong>Use an orchestrator</strong>
+              <p>You need persistent agent teams, budgets, leases, scheduling, governance, or a runtime control plane.</p>
+            </div>
+          </div>
+          <p><a href="compare/">See the full scenario comparison →</a></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="install" aria-labelledby="install-title">
+      <div class="shell">
+        <p class="section-label">04 · Install</p>
+        <h2 id="install-title">One skill. Two supported hosts.</h2>
+        <div class="two-up">
+          <article class="card" id="codex-install">
+            <span class="card-kicker">OpenAI Codex</span>
+            <h3>Install from the repository marketplace</h3>
+            <pre tabindex="0" aria-label="Codex installation commands"><code>codex plugin marketplace add mzored/SkipHow
+codex plugin add skiphow@skiphow</code></pre>
+          </article>
+          <article class="card" id="claude-install">
+            <span class="card-kicker">Claude Code</span>
+            <h3>Install the same shared skill package</h3>
+            <pre tabindex="0" aria-label="Claude Code installation commands"><code>claude plugin marketplace add https://github.com/mzored/SkipHow.git
+claude plugin install skiphow@skiphow</code></pre>
+          </article>
+        </div>
+        <p>Start a new session after installation. If automatic selection misses, invoke <code>$skiphow</code> in Codex or <code>/skiphow:skiphow</code> in Claude Code. Updates and uninstall steps are in the <a href="https://github.com/mzored/SkipHow/blob/main/docs/guide.md">owner guide</a>.</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="evidence-title">
+      <div class="shell section-grid">
+        <div>
+          <p class="section-label">05 · Evidence</p>
+        </div>
+        <div class="section-copy">
+          <h2 id="evidence-title">Claims stop where the receipts stop.</h2>
+          <p>Controlled runs have shown product questions surfacing before dependent work, fully specified requests proceeding without engineering questions, diagnosis without weakening tests, and false-positive fixes being rejected.</p>
+          <p>Those are observations, not a reliability rate. Comparative advantage over a base agent, automatic selection reliability, and delegation remain <span class="status">Unverified</span>.</p>
+          <p><a href="evidence/">Inspect the concise evidence matrix →</a></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="faq-title">
+      <div class="shell section-grid">
+        <div>
+          <p class="section-label">06 · FAQ</p>
+        </div>
+        <div>
+          <h2 id="faq-title">Short answers before you install.</h2>
+          <div class="faq">
+            <details>
+              <summary>Do modern agents already do this?</summary>
+              <p>They already do much of the engineering. SkipHow does not make them smarter; it makes ownership, authority, and evidence of completion explicit. If your base agent already holds that contract reliably, use it alone.</p>
+            </details>
+            <details>
+              <summary>Who counts as a product owner?</summary>
+              <p>Anyone who owns the outcome for this request: founder, product manager, designer, domain expert, or engineer. Technical fluency does not change the decision boundary.</p>
+            </details>
+            <details>
+              <summary>Is this a workflow engine?</summary>
+              <p>No. SkipHow is Markdown instructions. The host provides the runtime, sandbox, permissions, tools, sessions, credentials, and any subagents.</p>
+            </details>
+            <details>
+              <summary>Will it deploy or change access without asking?</summary>
+              <p>No. Production, staging, public releases, credentials, access changes, repository settings, payments, and material deletion require an explicit grant naming the protected action.</p>
+            </details>
+          </div>
+          <p><a href="https://github.com/mzored/SkipHow/blob/main/docs/faq.md">Read the complete FAQ →</a></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-grid">
+      <p>SkipHow is MIT licensed. Public adoption is still limited; unknown behavior is labelled rather than converted into a marketing claim.</p>
+      <div class="footer-links">
+        <a href="https://github.com/mzored/SkipHow">GitHub</a>
+        <a href="https://github.com/mzored/SkipHow/releases">Releases</a>
+        <a href="compare/">Compare</a>
+        <a href="evidence/">Evidence</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

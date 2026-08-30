@@ -1,6 +1,6 @@
-name: Workflow request
-description: Propose a repeated workflow that SkipHow should handle.
-title: "workflow: "
+name: Capability request
+description: Propose a product request SkipHow should handle.
+title: "capability: "
 labels:
   - enhancement
 body:
@@ -8,7 +8,7 @@ body:
     id: problem
     attributes:
       label: Problem
-      description: Describe the repeated work SkipHow should handle.
+      description: Describe the product-owner problem SkipHow should handle.
     validations:
       required: true
   - type: textarea
@@ -19,7 +19,7 @@ body:
     validations:
       required: true
   - type: textarea
-    id: workflow
+    id: result
     attributes:
       label: Expected result
       description: Describe the result, any records that must remain, and when SkipHow should stop.

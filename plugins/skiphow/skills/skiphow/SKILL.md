@@ -1,6 +1,6 @@
 ---
 name: skiphow
-description: Own a nontechnical product owner's project request through a verified result. Use for any request about the current project, including a question, decision, bug, change, review, research, saved idea, delivery, pause, or resume. Read the bundled focused methods whose triggers match the work; do not use it for unrelated conversation.
+description: Own a product owner's current-project request through a verified result when they want the agent to own the technical method from a plain-language outcome. Use for a question, decision, bug, change, review, research, saved idea, delivery, pause, or resume. Read the bundled focused methods whose triggers match the work. Do not use for unrelated conversation or to recommend an owner-operated mandatory development workflow or runtime orchestrator; a request to build those capabilities in the current project remains in scope.
 ---
 
 # SkipHow

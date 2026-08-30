@@ -14,6 +14,16 @@ Version 2.6.0 considered a command surface for four owner-facing entries and did
 
 Revisit this if a portable skill standard adds required skill dependencies, if receipts show the new methods going unread from a plain-language request, or if repeated receipts show one entry causing missed outcomes or unauthorized actions.
 
+## Product owner is a role, not a technical level
+
+SkipHow is for whoever owns the product outcome in a request: a founder, product manager, designer, domain expert, or engineer. Technical ability neither qualifies nor disqualifies the owner. The contract assigns product outcomes, tradeoffs, and protected actions to that role, and technical decisions, implementation, project-required procedures, and proof to the agent.
+
+Version 2.11.1 removes “nontechnical” from the public skill description. The README already included engineers who want to stay at the outcome level, so the old description conflicted with the stated audience and could suppress correct discovery. The description says the agent owns the technical method rather than only technical execution, because the same sentence explicitly includes read-only questions, decisions, reviews, and research where no implementation is authorized. It also names two adjacent negative recommendation categories: choosing an owner-operated mandatory development workflow and choosing a runtime orchestrator. It distinguishes those adoption questions from a request to build the same capabilities in the current project, which remains ordinary outcome-first project work. That narrows discovery to the contract the product already promises; it does not change what an invoked skill may do. The kernel body and its runtime behavior are unchanged. The owner is not required to review technical work; any review, security, release, or delivery procedure required by the project still applies and remains engineering work for the agent to carry.
+
+The startup continuity reminder now points to that description instead of saying to load the kernel for every project request. An isolated Claude selection run showed the old reminder overriding the new negative boundary: on a request for a mandatory spec, ticket, TDD, review, and approval workflow, the model reasoned that the request did not fit the outcome-first description, then loaded SkipHow because the reminder still called every project request in scope. The reminder establishes availability and continuity; it must not broaden discovery beyond the skill metadata. Resume and compaction reminders are unchanged because they apply after the skill is already active.
+
+Revisit this if evidence shows that technical fluency itself changes which side of the decision boundary a person should occupy, or that the selection description rejects fitting outcome-first project work or selects adoption questions for mandatory development workflows and runtime orchestrators. A preference to approve the method is already a different product fit, regardless of fluency.
+
 ## Host-native execution
 
 SkipHow relies on host sessions, worktrees, subagents, permissions, and continuation. It does not ship a runner or coordinator.
