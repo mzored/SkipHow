@@ -88,6 +88,41 @@ def test_release_metadata_uses_one_version() -> None:
     assert f"| {release.rsplit('.', 1)[0]}.x | Yes |" in read("SECURITY.md")
 
 
+def test_public_discovery_metadata_uses_one_category() -> None:
+    description = (
+        "Outcome-first orchestration for Claude Code and Codex. Describe the product "
+        "result; the agent chooses the engineering method and proves the outcome."
+    )
+    topics = [
+        "agent-skills",
+        "agent-instructions",
+        "agent-orchestration",
+        "agentic-coding",
+        "coding-agent",
+        "claude-code",
+        "claude-code-plugin",
+        "openai-codex",
+        "codex-plugin",
+        "product-owner",
+    ]
+    codex = json_object("plugins/skiphow/.codex-plugin/plugin.json")
+    claude = json_object("plugins/skiphow/.claude-plugin/plugin.json")
+    marketplace = json_object(".claude-plugin/marketplace.json")
+    openai = yaml.safe_load(read("plugins/skiphow/skills/skiphow/agents/openai.yaml"))
+
+    assert codex["description"] == claude["description"] == description
+    assert marketplace["description"] == description
+    assert codex["keywords"] == claude["keywords"] == topics
+    assert (
+        codex["interface"]["shortDescription"]
+        == openai["interface"]["short_description"]
+        == "Outcome-first orchestration for coding agents"
+    )
+    discoverability = read("docs/discoverability.md")
+    assert f"Repository description: `{description}`" in discoverability
+    assert f"Topics: `{ '`, `'.join(topics) }`" in discoverability
+
+
 def every_uses(node: object) -> list[str]:
     """Collect every action reference, including reusable workflows."""
     if isinstance(node, dict):

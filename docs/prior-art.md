@@ -6,7 +6,7 @@ SkipHow exists because I used the popular agent frameworks on my own work first 
 
 | Project | Mechanism kept or studied | Boundary SkipHow chose instead |
 | --- | --- | --- |
-| [Superpowers](https://github.com/obra/superpowers) | Isolated review, bounded repair, safe worktree and conflict practice | No mandatory brainstorming, approval gates, or universal test-first stage |
+| [Superpowers](https://github.com/obra/superpowers) | Instruction-led orchestration, isolated review, bounded repair, safe worktree and conflict practice | Adaptive method selection instead of mandatory brainstorming, design approval, planning, TDD, and review stages |
 | [Matt Pocock's skills](https://github.com/mattpocock/skills) | Small methods, semantic discovery, diagnosis driven by an observable loop | No setup interview, named-invocation orchestration, or owner-visible spec and ticket chain |
 | [Paperclip](https://github.com/paperclipai/paperclip) | External task state, idempotent reconciliation, dependency semantics | No server, task database, company model, or dashboard |
 | [OpenSpec](https://github.com/Fission-AI/OpenSpec) | Stating intent clearly for a material contract change; thin host packaging | No proposal, specification, design, and task artifacts for every change |
@@ -31,7 +31,9 @@ So the gap is not that the methods are bad. It is that the owner is expected to 
 
 ## What SkipHow does instead
 
-The owner kernel keeps authority, autonomy, preservation of unrelated work and honest completion in context at all times. The same agent reads whichever focused methods help the current request. Methods are not routes, stages, commands or personas, and the owner never picks one.
+The owner kernel keeps authority, autonomy, preservation of unrelated work and honest completion in context at all times. The same agent is instructed to read the focused methods whose triggers match the current work. Methods are not routes, stages, commands or personas, and the owner never picks one.
+
+That is orchestration policy, not an execution runtime. SkipHow shapes how the host agent chooses and coordinates the work. Claude Code or Codex runs the model, tools, sessions and any subagents. A separate control plane, where one exists, owns durable workers, queues, scheduling and budgets.
 
 That leaves a different division of labour. You decide visible behavior, priority, cost, risk, privacy and rollout. SkipHow decides libraries, schemas, tests, branches, decomposition and review, and comes back only when your answer would change one of your six, when an action needs a grant only you can give, or when only a person can do it.
 

@@ -2,6 +2,20 @@
 
 All notable changes to SkipHow 2.x appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 2.12.1 (2026-08-31)
+
+### Changed
+
+- Public positioning now describes SkipHow as outcome-first, instruction-level orchestration. The README and product site explain the three separate responsibilities: SkipHow supplies orchestration policy, Claude Code or Codex supplies execution, and a control plane, when one exists, owns durable workers and operations.
+- The README and site now lead with the product problem and mechanism: one public skill, focused internal methods selected from the work, product decisions retained by the owner, and engineering carried through evidence by the agent. A founder note records the practical mismatch that led to the design without making comparative performance claims.
+- The comparison and FAQ now distinguish base agents, skill libraries, adaptive orchestration, prescribed workflow frameworks such as Superpowers, and runtime orchestrators. The package still claims no comparative advantage, automatic-selection rate, or demonstrated multi-agent delegation.
+- Repository, marketplace, social, and search metadata now use the same category. GitHub topics target agent orchestration, agent instructions, agentic coding, the two supported hosts, their plugin formats, and the product-owner audience.
+
+### Evidence
+
+- The category correction follows current primary definitions from OpenAI, Anthropic, and Google Cloud, all of which distinguish deciding the flow of agent work from providing the execution runtime. The package boundary itself remains deterministic: SkipHow ships Markdown policy and no model runner, scheduler, queue, persistent worker service, lease manager, budget enforcer, or control plane.
+- No runtime instruction or focused method changed. Existing behavioral receipts and their limits are unchanged; reliable multi-agent orchestration under the shipped policy remains `UNVERIFIED`.
+
 ## 2.12.0 (2026-08-30)
 
 ### Changed

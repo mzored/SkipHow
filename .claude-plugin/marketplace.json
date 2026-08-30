@@ -4,7 +4,7 @@
     "name": "mzored",
     "url": "https://github.com/mzored"
   },
-  "description": "Outcome-first Agent Skill for Claude Code and Codex. Product owners own outcomes and protected actions; the agent owns technical decisions, implementation, and proof.",
+  "description": "Outcome-first orchestration for Claude Code and Codex. Describe the product result; the agent chooses the engineering method and proves the outcome.",
   "plugins": [
     {
       "name": "skiphow",

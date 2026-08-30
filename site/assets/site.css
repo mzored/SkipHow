@@ -171,6 +171,15 @@ h3 {
   line-height: 1.48;
 }
 
+.mechanism-line {
+  max-width: 810px;
+  margin: 1.35rem 0 0;
+  color: var(--accent-dark);
+  font-size: 0.94rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;
@@ -222,9 +231,110 @@ h3 {
   max-width: var(--measure);
 }
 
+.section-intro {
+  max-width: var(--measure);
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.08rem;
+}
+
 .section-copy > :last-child,
 .card > :last-child {
   margin-bottom: 0;
+}
+
+.orchestration-flow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 2.8rem 0 0;
+  padding: 0;
+  border-block: 1px solid var(--ink);
+  list-style: none;
+}
+
+.orchestration-flow li {
+  position: relative;
+  min-width: 0;
+  padding: 1.7rem clamp(1rem, 2.4vw, 1.7rem) 1.8rem;
+}
+
+.orchestration-flow li + li {
+  border-left: 1px solid var(--line);
+}
+
+.orchestration-flow li:not(:last-child)::after {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  right: -0.35rem;
+  width: 0.6rem;
+  height: 0.6rem;
+  border: solid var(--accent-dark);
+  border-width: 1px 1px 0 0;
+  background: var(--paper);
+  content: "";
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.orchestration-flow h3 {
+  font-size: 1.35rem;
+  line-height: 1.1;
+}
+
+.orchestration-flow p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+
+.flow-order {
+  display: block;
+  margin-bottom: 1.15rem;
+  color: var(--accent-dark);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.value-list {
+  margin: 2.2rem 0 0;
+  padding: 0;
+  border-top: 1px solid var(--ink);
+}
+
+.value-list > div {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.8fr) minmax(0, 1.2fr);
+  gap: 1.6rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.value-list dt {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.12rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.value-list dd {
+  margin: 0;
+}
+
+.claim-boundary {
+  margin: 2rem 0 0;
+  color: var(--muted);
+  font-size: 0.94rem;
+}
+
+.founder-story {
+  max-width: var(--measure);
+}
+
+.founder-story p:first-of-type {
+  font-size: 1.08rem;
 }
 
 .contract {
@@ -248,9 +358,15 @@ h3 {
   display: grid;
   place-items: center;
   border-inline: 1px solid var(--line);
-  color: var(--accent-dark);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 2rem;
+}
+
+.contract-center::before {
+  width: 1rem;
+  height: 1rem;
+  border: solid var(--accent-dark);
+  border-width: 2px 2px 0 0;
+  content: "";
+  transform: rotate(45deg);
 }
 
 .contract-note {
@@ -357,6 +473,10 @@ td {
   border-bottom: 1px solid var(--line);
   text-align: left;
   vertical-align: top;
+}
+
+.wide-comparison table {
+  min-width: 1120px;
 }
 
 th {
@@ -473,6 +593,27 @@ details p {
 
   .section-grid {
     gap: 1.3rem;
+  }
+
+  .orchestration-flow {
+    grid-template-columns: 1fr;
+  }
+
+  .orchestration-flow li + li {
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+
+  .orchestration-flow li:not(:last-child)::after {
+    top: auto;
+    right: 50%;
+    bottom: -0.35rem;
+    transform: translateX(50%) rotate(135deg);
+  }
+
+  .value-list > div {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
   }
 
   .contract {
