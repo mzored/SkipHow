@@ -15,6 +15,7 @@
   <meta property="og:description" content="The product owner owns the outcome, tradeoffs, and protected actions. The agent owns technical decisions, implementation, and proof.">
   <meta property="og:url" content="https://mzored.github.io/SkipHow/">
   <meta property="og:image" content="https://mzored.github.io/SkipHow/assets/social-preview.png">
+  <meta property="og:image:alt" content="SkipHow: own the product, let the agent own the engineering.">
   <meta name="twitter:card" content="summary_large_image">
   <script type="application/ld+json">
   {
@@ -55,6 +56,7 @@
           <a class="button" href="#codex-install">Install for Codex</a>
           <a class="button" href="#claude-install">Install for Claude Code</a>
           <a class="button secondary" href="evidence/">Read the evidence</a>
+          <a class="button secondary repository-cta" href="https://github.com/mzored/SkipHow">View on GitHub ↗</a>
         </div>
       </div>
     </section>
@@ -76,7 +78,7 @@
       <div class="shell">
         <p class="section-label">02 · The contract</p>
         <h2 id="contract-title">Two kinds of decisions.<br>One accountable handoff.</h2>
-        <div class="contract" aria-label="Responsibility split between product owner and coding agent">
+        <div class="contract">
           <div class="contract-side">
             <h3>Product owner</h3>
             <p>Outcome and visible behavior</p>
@@ -106,24 +108,24 @@
         </div>
         <div>
           <h2 id="fit-title">Use the smallest layer that solves your problem.</h2>
-          <div class="decision-list">
+          <dl class="decision-list">
             <div class="decision">
-              <strong>Use SkipHow</strong>
-              <p>You own the product outcome, use Claude Code or Codex in a repository, and want the agent to own the engineering method through a verified result.</p>
+              <dt>Use SkipHow</dt>
+              <dd>You own the product outcome, use Claude Code or Codex in a repository, and want the agent to own the engineering method through a verified result.</dd>
             </div>
             <div class="decision">
-              <strong>Use the base agent</strong>
-              <p>Your agent already maintains this authority boundary and proves completion reliably. Another instruction layer adds little.</p>
+              <dt>Use the base agent</dt>
+              <dd>Your agent already maintains this authority boundary and proves completion reliably. Another instruction layer adds little.</dd>
             </div>
             <div class="decision">
-              <strong>Use a workflow framework</strong>
-              <p>You want people to inspect and approve specifications, phases, tickets, or the development method.</p>
+              <dt>Use a workflow framework</dt>
+              <dd>You want people to inspect and approve specifications, phases, tickets, or the development method.</dd>
             </div>
             <div class="decision">
-              <strong>Use an orchestrator</strong>
-              <p>You need persistent agent teams, budgets, leases, scheduling, governance, or a runtime control plane.</p>
+              <dt>Use an orchestrator</dt>
+              <dd>You need persistent agent teams, budgets, leases, scheduling, governance, or a runtime control plane.</dd>
             </div>
-          </div>
+          </dl>
           <p><a href="compare/">See the full scenario comparison →</a></p>
         </div>
       </div>
@@ -137,13 +139,13 @@
           <article class="card" id="codex-install">
             <span class="card-kicker">OpenAI Codex</span>
             <h3>Install from the repository marketplace</h3>
-            <pre tabindex="0" aria-label="Codex installation commands"><code>codex plugin marketplace add mzored/SkipHow
+            <pre tabindex="0"><code>codex plugin marketplace add mzored/SkipHow
 codex plugin add skiphow@skiphow</code></pre>
           </article>
           <article class="card" id="claude-install">
             <span class="card-kicker">Claude Code</span>
             <h3>Install the same shared skill package</h3>
-            <pre tabindex="0" aria-label="Claude Code installation commands"><code>claude plugin marketplace add https://github.com/mzored/SkipHow.git
+            <pre tabindex="0"><code>claude plugin marketplace add https://github.com/mzored/SkipHow.git
 claude plugin install skiphow@skiphow</code></pre>
           </article>
         </div>

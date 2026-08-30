@@ -28,6 +28,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PLUGIN_ROOT = ROOT / "plugins/skiphow"
 SITE_ROOT = ROOT / "site"
 SITE_BASE_URL = "https://mzored.github.io/SkipHow/"
+REPOSITORY_URL = "https://github.com/mzored/SkipHow"
 SITE_PAGES = {
     "index.html": SITE_BASE_URL,
     "compare/index.html": f"{SITE_BASE_URL}compare/",
@@ -917,6 +918,10 @@ def validate_site() -> list[str]:
         descriptions.update(description)
         if _site_meta(document, "name", "robots") != ["index,follow"]:
             errors.append(f"site/{relative} must declare robots index,follow")
+        if _site_meta(document, "name", "viewport") != [
+            "width=device-width, initial-scale=1, viewport-fit=cover"
+        ]:
+            errors.append(f"site/{relative} must declare the responsive viewport")
 
         canonical_links = [
             attrs.get("href")
@@ -931,6 +936,10 @@ def validate_site() -> list[str]:
             values = _site_meta(document, "property", property_name)
             if len(values) != 1 or not values[0]:
                 errors.append(f"site/{relative} must have one nonempty {property_name}")
+        if _site_meta(document, "property", "og:image:alt") != [
+            "SkipHow: own the product, let the agent own the engineering."
+        ]:
+            errors.append(f"site/{relative} must describe its Open Graph image")
 
         scripts = document.attributes("script")
         if len(scripts) != 1 or scripts[0].get("type") != "application/ld+json":
@@ -957,6 +966,26 @@ def validate_site() -> list[str]:
 
         if len(document.attributes("h1")) != 1:
             errors.append(f"site/{relative} must contain exactly one h1")
+        for landmark in ("header", "nav", "main", "footer"):
+            if len(document.attributes(landmark)) != 1:
+                errors.append(f"site/{relative} must contain exactly one {landmark} landmark")
+        repository_links = [
+            attrs
+            for attrs in document.attributes("a")
+            if attrs.get("href") == REPOSITORY_URL
+        ]
+        if not repository_links:
+            errors.append(f"site/{relative} must link directly to the GitHub repository")
+        if relative == "index.html" and not any(
+            "button" in attrs.get("class", "").split() for attrs in repository_links
+        ):
+            errors.append("site/index.html must present GitHub as a homepage action")
+        for tag in ("div", "pre"):
+            for attrs in document.attributes(tag):
+                if attrs.get("aria-label") and not attrs.get("role"):
+                    errors.append(
+                        f"site/{relative} must not name a generic {tag} without a compatible role"
+                    )
         for tag, attribute in (("a", "href"), ("link", "href"), ("img", "src")):
             for attrs in document.attributes(tag):
                 value = attrs.get(attribute)
