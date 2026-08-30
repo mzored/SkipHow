@@ -2,6 +2,18 @@
 
 All notable changes to SkipHow 2.x appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 2.12.0 (2026-08-30)
+
+### Changed
+
+- `execution-health` now treats a healthy long-running lane as event-driven work. Once the host has a live handle and the lane remains inside its stated expectation, the root waits for completion, attention, an expectation breach, or a result that changes the next action. An expired bounded wait with unchanged state causes no inspection, narration, or fresh decision pass.
+- `delegation` now includes the working state a unit created in that unit's named end. Its final reconciliation follows the existing `finishing-a-branch` method and reports any branch or isolated checkout it could not retire, instead of declaring the delegated set finished while integrated state remains unaccounted for.
+
+### Evidence
+
+- Across the three largest installed Codex task roots examined for this release, 1,785 delegate waits included 855 timeouts that returned no activity. In the two roots with per-turn accounting, the 472 unchanged timeouts made the following turns process 62,931,387 input tokens, 99.4 per cent of them cached. This is repeated context traffic, not unique tokens. Only six root compactions occurred across roughly 43 hours, so repeated unchanged wakeups, not compaction alone, were the larger context cost. The new observation wording has not yet run in a comparable session and remains `UNVERIFIED`.
+- One installed task created 32 worktrees while delivering and integrating its delegated units, issued no worktree removal or prune command, and reported completion without disclosing the remaining working state. The authoritative cleanup method had reached context. The new reconciliation sentence restates the existing outcome at the point where the root closes the delegated set; whether it prevents accumulation remains `UNVERIFIED`.
+
 ## 2.11.2 (2026-08-30)
 
 ### Fixed
