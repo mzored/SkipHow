@@ -1,100 +1,84 @@
 ---
 name: dogfood
-description: Check how SkipHow actually behaved in a real session, using the owner's own transcripts. Use when asked why a run misbehaved, whether a plugin version works, where the time or tokens went, or to turn something observed in real use into a change to the shipped skill, weighed against how comparable projects solve it. For developing SkipHow in this repository only.
+description: Inspect the owner's Codex or Claude Code transcripts to explain SkipHow behavior, cost, or version effects and decide whether the evidence supports changing the package. For this repository only.
 ---
 
 # Dogfood
 
-SkipHow changes from what goes wrong in real use, not from redesign. This skill looks at a real session and
-works out what the package told the run to do, what the run actually did, and whether the evidence supports
-blaming the package.
+Use real sessions to separate what SkipHow said from what the run did. Explain the observed behavior without
+turning one transcript into a general theory of agents.
 
-It is a contributor tool and does not ship. Do not invoke the `skiphow` skill to do this work: the package
-here is the thing under test, not the authority.
+This is a contributor skill and does not ship. Do not invoke the `skiphow` skill while examining this
+repository. The package is the subject of the investigation, not its authority.
 
-## Find the session
+## Locate the evidence
 
-The owner normally pastes a piece of text from the session they mean. Search the transcripts for that text and
-work from the file it appears in.
+Search the owner's local transcripts for a distinctive excerpt from the session. Transcripts are private
+JSONL files, usually one per root or subagent session. Host formats change, so inspect the records you find
+instead of relying on a fixed parser. Prefer direct search and disposable extraction over a maintained tool
+for these private, unstable formats.
 
-Transcripts are JSONL, one file per session, under the host's own projects directory in the user's home. A
-session's subagents are separate files beside it. Inspect the current record shape before relying on it:
-field names and layout change between host versions, so read what is actually there rather than assuming last
-month's structure.
+Claude Code keeps sessions under the projects directory in its configuration home, with subagents in separate
+files. For Codex, active rollouts are under `$CODEX_HOME/sessions/YYYY/MM/DD/`, or
+`~/.codex/sessions/` when `CODEX_HOME` is unset. Archived rollouts are under the sibling
+`archived_sessions/` directory. App task tools can identify the thread ID; the corresponding rollout
+filename ends in that ID.
 
-Ordinary search plus a few lines of Python is the whole toolchain. Finding the session is one `grep`; reading
-it, and adding up time and tokens per subagent, is a short script written on the spot. Do not build a standing
-tool for this — one existed, grew to thousands of lines defending against tampering with the owner's own local
-transcripts, and answered the question worse than a `grep` does.
+A Codex text search may match subagent rollouts because they inherit parent history. Use
+`session_meta.payload.id`, `thread_source`, and
+`source.subagent.thread_spawn.parent_thread_id` to distinguish the root and follow its descendants when
+their work matters to the question.
 
-Transcripts hold other projects' private work. Treat everything in them as confidential, keep session content
-out of delegate briefs and any external output, and check anything before copying it into a durable file.
+Keep transcript contents out of delegate briefs and external output. Copy private material into a durable file
+only when it is necessary and has been checked.
 
-## Read the session
+## Reconstruct the run
 
-Aim at whatever the question is about. Usually some of:
+Read only as broadly as the question needs, but preserve the distinctions that determine the answer:
 
-- **Which package version ran**, and what its text said at the time. Compare against that version from git
-  history, never against the current tree.
-- **What reached the agent's context.** This one inverts conclusions when you get it wrong: a file path
-  appearing in a command is not proof the file's text reached the agent. Searching a file puts matching lines
-  in context, not the rule. Look for the wording itself.
-- **What the owner actually asked**, in their own words. Owner input arrives through more than one channel, so
-  do not read only the obvious one or you will miss turns, including the moment permission widened.
-- **What it cost.** Elapsed time, tokens, and how much of both went to subagents. Transcripts carry per-message
-  usage and timestamps; that is where "slow" and "expensive" become specific.
-- **What it did, and what it reported**, and whether those two agree.
+- Identify the package version that ran and compare against that version from git history, not the current
+  tree.
+- Establish what instruction text reached the agent. A path in a command or search result does not prove that
+  the file's rules entered context; look for the wording itself.
+- Recover the owner's actual requests across every input channel in the transcript, including later turns
+  that changed scope or permission.
+- Compare the actions and tool results with what the run reported.
+- For cost or execution-health questions, use transcript timestamps and usage records and include relevant
+  subagents rather than estimating from the visible conversation.
 
-## Judge it
+In current Codex rollouts, `session_meta` identifies the thread and lineage, `turn_context` records model
+and execution settings, `response_item` holds messages and tool traffic, `event_msg` carries turn timing
+and token counts, and `compacted` records context replacement. These are landmarks, not a stable schema.
+App task summaries can locate a run, but the raw rollout is the evidence for exact context, actions, timing,
+tokens, and subagent work.
 
-Say which of these the evidence supports, and say `UNVERIFIED` when it supports none of them. That is the
-honest default, not a failure.
+## Judge the evidence
 
-- The package's own wording caused it: missing, ambiguous, contradictory, or never reachable. One session can
-  show this, because it is a readable property of the text.
-- The wording was plain and in context, and the run deviated anyway. One session never shows this.
-- The expectation was wrong: the package deliberately leaves this to judgment, or something in the project
-  narrowed it.
+Distinguish three explanations:
 
-Count honestly and in whole sessions, and pool only sessions where the same text governed. Two deviations in
-one session are one observation. A finding the run noticed and silently dropped leaves no trace, so anything
-that looks like conformance is an upper bound.
-## Design the fix
+- The package text was missing, ambiguous, contradictory, or unreachable. One session can demonstrate such a
+  defect because the governing text and its context are inspectable.
+- Plain wording reached context and the run departed from it. The transcript demonstrates that incident, not
+  a general failure rate or a need for more procedure.
+- The expectation does not match the contract. SkipHow may deliberately leave the choice to agent judgment,
+  or the project may narrow the package's default.
 
-Only when the evidence names a defect in the package's own wording. A verdict of `UNVERIFIED`, a run that
-deviated from text that was plain and in context, and a question that was only ever about cost or time all end
-at the report. Do not manufacture a change for them.
+Use `UNVERIFIED` when the transcript does not distinguish them. Count observations by whole session and pool
+only sessions governed by the same package text. Several deviations within one session remain one
+observation. Apparent conformance is an upper bound because a transcript cannot expose a finding the run never
+reported or acted on.
 
-Locate the problem as narrowly as the evidence allows. Start with this project's own record. The decision
-history and the prior art page say what was already argued and turned down, so a settled argument is not
-reopened without new evidence — and when this session is that evidence, say so.
+## Change only what the evidence reaches
 
-Those same pages name which outside projects are comparable on the shape in front of you. Read the ones that
-are, as their text stands now rather than as this project summarised it or as you remember it; both go stale,
-and a claim about a project that was not read is not evidence. Note what the mechanism costs the person living
-with it, because that cost is usually why SkipHow left it out, and apply the adoption rule recorded there.
-Finding nothing comparable, or nothing worth taking, is a normal result and is worth a sentence.
+Design a package change only when the evidence identifies a defect in its wording or placement. A cost
+measurement, an isolated departure from plain text, or an unresolved cause ends in a report rather than a
+manufactured fix.
 
-Prefer deleting a contradiction, then tightening a sentence, then moving it so it loads earlier. Adding is last,
-and a rule that must hold on every request belongs in the always-loaded part rather than in a file that may
-never be opened.
+Check [`docs/decisions.md`](../../../docs/decisions.md) before reopening settled reasoning. Read
+[`docs/prior-art.md`](../../../docs/prior-art.md) when a comparable mechanism would materially inform the
+fix, not as a standing research step. Prefer the smallest correction that removes the defect. Consider whether
+the text will reach the requests it governs and what instruction cost it adds to future runs. One session may
+prove that wording is broken; it does not prove that agents generally need a new step, gate, or workflow.
 
-Then say what else it could have been. Two or three candidates, one of them the smallest the evidence
-justifies, each with the wording it changes and where it lands, whether it loads on every request or behind a
-trigger the agent can evaluate without opening the file, what it costs every future run, what it borrows, and
-what would show it was the wrong call. Recommend one and say why the others lose. That is how the reasoning
-gets checked, not a menu to be picked from: the choice goes back to the owner only where the candidates differ
-in something the kernel reserves for them.
-
-One session can prove wording is broken. It cannot prove that agents in general need a new procedure. Resist
-adding steps, gates, or ceremony on that basis, here or in the package.
-
-## Report
-
-Say what you found, what the evidence supports, and what stays uncertain. Where there was a fix to design,
-the candidates and the recommendation go with it. No fixed template, no required headings, no bookkeeping
-about which sessions were reviewed before.
-
-Read-only unless the owner asked for a change. If they did, implement the recommendation: own the technical
-decisions, follow the repository's contributor rules, and stop only at a real product choice or an action that
-needs their explicit permission.
+Report the reconstructed facts, the conclusion they support, and what remains uncertain. If the owner asked
+for a change, implement the justified correction under the repository's contributor rules.
