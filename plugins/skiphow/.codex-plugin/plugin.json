@@ -1,6 +1,6 @@
 {
   "name": "skiphow",
-  "version": "2.11.2",
+  "version": "2.12.0",
   "description": "Outcome-first Agent Skill for Claude Code and Codex. Product owners own outcomes and protected actions; the agent owns technical decisions, implementation, and proof.",
   "author": {
     "name": "mzored",
