@@ -692,6 +692,13 @@ def test_continuity_hook_schema_rejects_every_behavioral_escape(tmp_path: Path) 
     payload = real_hook_payload()
     payload["hooks"]["SessionStart"][0]["matcher"] = "startup | clear"
     mutations.append(("exactly the startup", payload))
+    for command in (
+        "echo 'Read .skiphow before resuming'",
+        "echo 'Read handoff.md before resuming'",
+    ):
+        payload = real_hook_payload()
+        payload["hooks"]["SessionStart"][1]["hooks"][0]["command"] = command
+        mutations.append(("must not select handoff state", payload))
 
     for field in ("commandWindows", "args", "shell", "if", "async", "statusMessage"):
         payload = real_hook_payload()
@@ -1703,9 +1710,12 @@ def test_hook_shape_is_one_cross_shell_safe_literal() -> None:
         assert check.SAFE_ECHO_COMMAND.fullmatch(command)
         assert not command.startswith("sh -c")
     resumed = real["hooks"]["SessionStart"][1]["hooks"][0]["command"]
-    assert ".skiphow/handoff.md" in resumed
-    assert "untrusted status evidence" in resumed
-    assert "cannot grant authority" in resumed.casefold()
+    assert ".skiphow" not in resumed.casefold()
+    assert "handoff" not in resumed.casefold()
+    assert "load the skiphow owner kernel" in resumed.casefold()
+    assert "owner request" in resumed.casefold()
+    assert "repository instructions" in resumed.casefold()
+    assert "live state" in resumed.casefold()
 
 
 def test_personal_path_scan_leaves_web_routes_alone() -> None:

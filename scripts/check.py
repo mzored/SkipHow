@@ -58,6 +58,7 @@ CONTINUITY_GROUPS = frozenset(
     }
 )
 SAFE_ECHO_COMMAND = re.compile(r"^echo '([A-Za-z0-9][A-Za-z0-9 .,/:_-]*)'$")
+HANDOFF_STATE_REFERENCE = re.compile(r"(?:\.skiphow\b|\bhandoff(?:\.[a-z0-9]+)?\b)", re.IGNORECASE)
 MARKDOWN_SUFFIXES = frozenset({".md", ".markdown"})
 CORE_PACKAGE_FILES = frozenset(
     {
@@ -1375,6 +1376,13 @@ def validate_continuity_hook(path: Path | None = None) -> list[str]:
             if SAFE_ECHO_COMMAND.fullmatch(command) is None:
                 errors.append(
                     f"{relative} handler must use the portable safe echo-literal command shape"
+                )
+            if (
+                source_group == frozenset({"compact", "resume"})
+                and HANDOFF_STATE_REFERENCE.search(command) is not None
+            ):
+                errors.append(
+                    f"{relative} compact|resume reminder must not select handoff state"
                 )
         if (
             isinstance(timeout, bool)

@@ -4,6 +4,10 @@ All notable changes to SkipHow 2.x appear in this file. Earlier release notes re
 
 ## 2.11.1 (2026-08-30)
 
+### Fixed
+
+- The unconditional resume and compaction reminder named `.skiphow/handoff.md` in every project, while the `continuity` method reserves that fallback for a project with no tracked-work destination. A genuine installed 2.11.1 compaction delivered the reminder as a developer message; the agent repeated it and probed the path on its next live-state read even though the project kept the active work elsewhere. The reminder now reloads the kernel, request, repository instructions, and live state without selecting a continuation store. The conditional handoff fallback is unchanged.
+
 ### Changed
 
 - The public skill description now says “product owner” rather than “nontechnical product owner,” states the outcome-first fit as ownership of the technical method so read-only work remains in scope, and excludes recommendations to adopt an owner-operated mandatory workflow or runtime orchestrator. It keeps requests to build those capabilities in the current project in scope. This corrects conflicts with the audience and read-only surface already stated in the README and makes adjacent negative categories explicit. The kernel body, authority boundary, and invoked runtime behavior are unchanged.
@@ -22,6 +26,7 @@ All notable changes to SkipHow 2.x appear in this file. Earlier release notes re
 ### Evidence
 
 - In nine isolated Claude Code sessions on the exact candidate, direct, indirect outcome-owner, indirect read-only, incomplete, and two current-project capability requests selected SkipHow; unrelated, owner-operated mandatory-workflow, and runtime-orchestrator adoption requests did not. One run per cell is not a precision rate. Exact-candidate Codex selection remains `UNVERIFIED` because a fresh isolated home had no authentication and credentials were not moved.
+- One installed Codex session running 2.11.1 reached a genuine compaction. The exact hook output reached the agent as a developer message, and the agent's next update and live-state read followed its unconditional handoff instruction. That proves the old wording caused the unnecessary probe. No genuine compaction has run on the corrected package, so its continuation behavior remains `UNVERIFIED`.
 - Package checks and visual inspection are recorded in the completion report for this change. The GitHub Pages site, repository description, homepage, and topics were published and verified after integration. The follow-up live-site audit found and corrected three invalid ARIA labels, added the missing prominent repository action, and aligned the measurement record with matched-cell comparisons and the data GitHub and Bing actually expose. The repository social preview and webmaster properties were not changed.
 
 ## 2.11.0 (2026-08-29)
