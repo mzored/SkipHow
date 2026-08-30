@@ -2,6 +2,16 @@
 
 All notable changes to SkipHow 2.x appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 2.11.2 (2026-08-30)
+
+### Fixed
+
+- The unconditional resume and compaction reminder named `.skiphow/handoff.md` in every project, while the `continuity` method reserves that fallback for a project with no tracked-work destination. A genuine installed 2.11.1 compaction delivered the reminder as a developer message; the agent repeated it and probed the path on its next live-state read even though the project kept the active work elsewhere. The reminder now reloads the kernel, request, repository instructions, and live state without selecting a continuation store. The conditional handoff fallback is unchanged.
+
+### Evidence
+
+- One installed Codex session running 2.11.1 reached a genuine compaction. The exact hook output reached the agent as a developer message, and the agent's next update and live-state read followed its unconditional handoff instruction. That proves the old wording caused the unnecessary probe. No genuine compaction has run on the corrected package, so its continuation behavior remains `UNVERIFIED`.
+
 ## 2.11.1 (2026-08-30)
 
 ### Changed

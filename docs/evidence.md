@@ -178,6 +178,12 @@ The failure is not that isolation was missing. It was requested and the mechanis
 
 One fact behind the second half of that clause was tested here rather than taken from a source. Two worktrees of one repository share a single stash stack: a stash pushed from either is listed by both, and a pop takes the top entry whichever tree created it. Git 2.50.1.
 
+### One genuine compaction selected the wrong continuation store
+
+One installed Codex session running SkipHow 2.11.1 reached a genuine context compaction. The host delivered the package's `compact|resume` hook output as a developer message. That output told the agent to inspect `.skiphow/handoff.md` if it existed. The agent repeated that instruction in its next update, then included a direct probe for the path in its first live-state read. The project already kept the active work in its own records, and the probe returned no handoff content.
+
+This is one whole-session observation. It proves that the package wording caused the probe because the wording reached the agent as a developer message and its next two actions followed it. It does not show that agents generally mishandle continuation, and it says nothing against the fallback itself. The focused method allows the file only where a project has no tracked-work destination. [Issue #79](https://github.com/mzored/SkipHow/issues/79) records the fix: the always-loaded reminder stops selecting a store, while `continuity` keeps the conditional fallback.
+
 ## Still unverified
 
 - The outside read of a consequential design decision. Ten runs made the decision well and none took an outside read. Codex had the method open in all five of its runs; no Claude session in the pass opened it at all. Three kernel wordings changed nothing on either host. The rule is stated and does not execute.
@@ -195,7 +201,7 @@ One fact behind the second half of that clause was tested here rather than taken
 - Whether the corrected plan destination puts a plan in the tracker. One installed session wrote a multi-unit plan and a launch brief to ignored local files under the old condition; no run has been made on the new one.
 - Stopping after three genuine attempts against one hypothesis, and the budget and anomaly rules around it. The intermittent-failure run is evidence for the surrounding discipline, not for the three-attempt rule.
 - Whether the asking rule over-asks in general. Sixteen negative-control sessions are a counterweight, not a bound.
-- Continuity across compaction. Resuming from a tracker in a fresh session is covered; resuming a compacted session is not. The smallest configurable auto-compaction window is a hundred thousand tokens, so provoking a genuine compaction costs a long run, and a simulated one would not be evidence.
+- Continuity under the corrected compaction reminder. The installed 2.11.1 session above proves that the old reminder caused an unnecessary handoff probe. No genuine compaction has run on the corrected package, so whether reloading the kernel leads the agent to the right continuation source remains `UNVERIFIED`. A simulated compaction would not settle it.
 - Real production or public-delivery actions.
 - Comparative cost or speed against any other approach. Nothing here benchmarks SkipHow against anything.
 - Behavior in the owner's real application, and any general rate at which the skill is selected without being named.
