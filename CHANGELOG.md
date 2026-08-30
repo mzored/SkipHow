@@ -10,7 +10,8 @@ All notable changes to SkipHow 2.x appear in this file. Earlier release notes re
 - The startup continuity reminder now defers to the skill description instead of requiring the kernel for every project request. A discovery receipt showed the old reminder overriding the description and selecting SkipHow for a mandatory owner-operated workflow. Resume and compaction reminders remain unconditional because they continue an already active request.
 - README, FAQ, host manifests, marketplace copy, and Codex display metadata now use one category and promise: an outcome-first Agent Skill for Claude Code and Codex in which the owner owns outcomes, tradeoffs, and protected actions while the agent owns technical decisions, implementation, and proof. The product now answers directly when to use the base agent, a spec/workflow framework, or a runtime orchestrator.
 - Popularity counts and volatile package-size counts have been removed from public positioning. Prior art now compares mechanisms and boundaries rather than stars.
-- README and FAQ now state that reliable trigger-based method loading remains `UNVERIFIED`. The site gives keyboard users explicit focus and labels for horizontally scrollable tables and command blocks, and keeps the primary action closer on mobile screens.
+- README and FAQ now state that reliable trigger-based method loading remains `UNVERIFIED`. The site gives keyboard users explicit focus for horizontally scrollable tables and command blocks, labels the tables, keeps the primary action closer on mobile screens, and exposes the GitHub repository as a homepage action.
+- The public pages now describe their social preview for assistive clients, use semantic term-description lists for fit and claim boundaries, and pass the W3C HTML validator. Deterministic site checks now protect the responsive viewport, landmarks, direct GitHub links, homepage repository action, Open Graph image description, and the invalid generic ARIA pattern found in the launch audit.
 
 ### Added
 
@@ -21,7 +22,7 @@ All notable changes to SkipHow 2.x appear in this file. Earlier release notes re
 ### Evidence
 
 - In nine isolated Claude Code sessions on the exact candidate, direct, indirect outcome-owner, indirect read-only, incomplete, and two current-project capability requests selected SkipHow; unrelated, owner-operated mandatory-workflow, and runtime-orchestrator adoption requests did not. One run per cell is not a precision rate. Exact-candidate Codex selection remains `UNVERIFIED` because a fresh isolated home had no authentication and credentials were not moved.
-- Package checks and visual inspection are recorded in the completion report for this change. The GitHub Pages site, repository description, homepage, and topics were published and verified after integration. The repository social preview and webmaster properties were not changed.
+- Package checks and visual inspection are recorded in the completion report for this change. The GitHub Pages site, repository description, homepage, and topics were published and verified after integration. The follow-up live-site audit found and corrected three invalid ARIA labels, added the missing prominent repository action, and aligned the measurement record with matched-cell comparisons and the data GitHub and Bing actually expose. The repository social preview and webmaster properties were not changed.
 
 ## 2.11.0 (2026-08-29)
 

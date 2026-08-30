@@ -46,7 +46,9 @@ The primary trend is the number of prompts with correct category and audience pl
 
 The owner supplied one ChatGPT answer from the Russian direct prompt on 2026-08-30. The product label and answer URL were not supplied. The answer called SkipHow an instruction layer for Claude Code and Codex rather than a runtime, identified the outcome-first fit, recommended it conditionally, said a capable base agent may already be enough, and cited the GitHub repository. It also stated the project's limited adoption and unverified delegation boundary accurately. This is one observation, not a baseline for ChatGPT as a product.
 
-The other eleven prompts and the Claude, Perplexity, and Copilot sessions were not run before launch because those fresh consumer sessions were unavailable in this environment. Record them as unavailable, not as passes. The first 30-day checkpoint will be the first complete comparison if those services are available then.
+The other eleven prompts and the Claude, Perplexity, and Copilot sessions were not run before launch because those fresh consumer sessions were unavailable in this environment. Record them as unavailable, not as passes. The owner-supplied answer is an anecdotal pre-launch observation, not a measurement baseline.
+
+The first complete snapshot becomes the benchmark. If all fixed prompts and products are available at day 30, compare only those same product-prompt cells at days 60 and 90. Report the passed count and fixed denominator by product, language, and intent. Do not compare a complete checkpoint with the single pre-launch observation or treat newly available cells as improvement.
 
 ## Search and referral measures
 
@@ -55,14 +57,14 @@ After launch, record at each checkpoint:
 - indexed status for all three canonical pages;
 - non-branded queries, impressions, clicks, and click-through rate;
 - citations and queries reported by Google's Generative AI performance report when the property is eligible;
-- GitHub referrals from the canonical site and search/answer engines;
-- cited pages and grounding queries reported by Bing AI Performance;
+- GitHub referrals from the canonical site and other sources that GitHub reports; GitHub excludes search engines and GitHub itself from this view;
+- total citations, average cited pages, page-level citation counts, trends, cited pages, and grounding queries reported by Bing AI Performance;
 - AI citations observed in the fixed prompt set;
 - factual errors and false recommendations in the negative scenario.
 
 GitHub exposes referring sites and popular content for only the previous 14 days. Capture that data weekly and summarize it at the 30-, 60-, and 90-day checkpoints; a checkpoint collected without the weekly snapshots covers only its final 14 days.
 
-The success condition at day 90 is directional: qualified recommendations and correct citations have increased relative to the available pre-launch observations, while false recommendations and factual errors have not increased.
+The success condition at day 90 is directional across matched cells: qualified recommendations and correct citations have increased relative to the first complete snapshot, while false recommendations and factual errors have not increased. Search Console and Bing Webmaster Tools carry search discovery measures that GitHub referral data excludes.
 
 ## Launch post draft
 
@@ -87,7 +89,7 @@ These are protected or human-account actions and are not performed by repository
 3. Upload the prepared social preview.
 4. Enable GitHub Pages from GitHub Actions and manually run `Publish site`.
 5. Confirm the live product, comparison, and evidence URLs return the committed pages.
-6. Verify the site in Google Search Console and Bing Webmaster Tools, submit `https://mzored.github.io/SkipHow/sitemap.xml`, and confirm all three URLs are indexed.
+6. Verify the site in Google Search Console and Bing Webmaster Tools, submit `https://mzored.github.io/SkipHow/sitemap.xml`, and confirm all three URLs are indexed. Where Search Console exposes the generative AI inclusion control, confirm that the `/SkipHow/` property is included and does not inherit an exclusion from a parent property.
 7. Publish one substantive launch post. Seek real reviews and independent case studies; do not buy links, manufacture stars, or create mass comparison pages.
 
 After the site and release have settled, evaluate submission to the official OpenAI plugin directory as a separate distribution phase. It requires its own listing, starter prompts, tests, and review; it is not part of this repository launch.
@@ -101,6 +103,7 @@ This project site cannot control `https://mzored.github.io/robots.txt`, and Goog
 - [GitHub repository topics](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/classifying-your-repository-with-topics), for repository discovery metadata
 - [Google sitemap guidance](https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview), for canonical URL discovery
 - [Google site-name guidance](https://developers.google.com/search/docs/appearance/site-names), for the project-site limitation
+- [Google generative AI inclusion control](https://support.google.com/webmasters/answer/16908024), for property-level eligibility in Google's generative AI features
 - [GitHub traffic](https://docs.github.com/en/repositories/viewing-activity-and-data-for-your-repository/viewing-traffic-to-a-repository), for the 14-day referral window
 - [Bing AI Performance](https://blogs.bing.com/webmaster/February-2026/Introducing-AI-Performance-in-Bing-Webmaster-Tools-Public-Preview), for citations, cited pages, and grounding queries
 - [OpenAI plugin submission](https://developers.openai.com/plugins/deploy/submission), for the separate official-directory phase

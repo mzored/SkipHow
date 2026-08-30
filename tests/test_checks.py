@@ -61,6 +61,45 @@ def test_local_package_and_document_checks_pass() -> None:
     assert check.validate_plugin_static() == []
 
 
+@pytest.mark.parametrize(
+    ("old", "new", "expected"),
+    [
+        (
+            '<meta property="og:image:alt" content="SkipHow: own the product, let the agent own the engineering.">',
+            "",
+            "must describe its Open Graph image",
+        ),
+        (
+            'class="button secondary repository-cta"',
+            'class="secondary repository-cta"',
+            "must present GitHub as a homepage action",
+        ),
+        (
+            '<div class="contract">',
+            '<div class="contract" aria-label="Responsibility split">',
+            "must not name a generic div",
+        ),
+        (
+            '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">',
+            "",
+            "must declare the responsive viewport",
+        ),
+    ],
+)
+def test_site_validator_rejects_public_contract_regressions(
+    tmp_path: Path, old: str, new: str, expected: str
+) -> None:
+    site = tmp_path / "site"
+    shutil.copytree(ROOT / "site", site)
+    homepage = site / "index.html"
+    text = homepage.read_text(encoding="utf-8")
+    assert old in text
+    homepage.write_text(text.replace(old, new, 1), encoding="utf-8")
+
+    with patch.object(check, "SITE_ROOT", site):
+        assert any(expected in error for error in check.validate_site())
+
+
 def write_skill(root: Path, name: str, *, description: str = "Handle a focused task.") -> Path:
     skill = root / name
     (skill / "agents").mkdir(parents=True)

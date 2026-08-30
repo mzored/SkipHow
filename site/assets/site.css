@@ -269,6 +269,7 @@ h3 {
   display: grid;
   gap: 0;
   margin: 2.5rem 0 0;
+  padding: 0;
   border-top: 1px solid var(--ink);
 }
 
@@ -280,12 +281,13 @@ h3 {
   border-bottom: 1px solid var(--line);
 }
 
-.decision strong {
+.decision dt {
   font-family: Georgia, "Times New Roman", serif;
   font-size: 1.15rem;
+  font-weight: 700;
 }
 
-.decision p {
+.decision dd {
   margin: 0;
 }
 
