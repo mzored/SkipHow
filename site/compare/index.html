@@ -3,30 +3,35 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Compare SkipHow with base agents, workflow frameworks, and orchestrators</title>
-  <meta name="description" content="Choose SkipHow, a base coding agent, a spec or workflow framework, or a runtime orchestrator by the job you need done.">
+  <title>Compare SkipHow outcome-first orchestration</title>
+  <meta name="description" content="Compare SkipHow's outcome-first orchestration with base coding agents, skill libraries, workflow frameworks such as Superpowers, and runtime orchestrators.">
   <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://mzored.github.io/SkipHow/compare/">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../assets/site.css">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="SkipHow">
-  <meta property="og:title" content="Which agent layer fits your job?">
-  <meta property="og:description" content="A scenario comparison without superiority claims: base agent, SkipHow, workflow framework, or runtime orchestrator.">
+  <meta property="og:title" content="Compare SkipHow outcome-first orchestration">
+  <meta property="og:description" content="Compare outcome-first orchestration with base agents, skill libraries, workflow frameworks, and runtimes by control model, without superiority claims.">
   <meta property="og:url" content="https://mzored.github.io/SkipHow/compare/">
   <meta property="og:image" content="https://mzored.github.io/SkipHow/assets/social-preview.png">
-  <meta property="og:image:alt" content="SkipHow: own the product, let the agent own the engineering.">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1280">
+  <meta property="og:image:height" content="640">
+  <meta property="og:image:alt" content="SkipHow: outcome-first orchestration for Claude Code and Codex.">
   <meta name="twitter:card" content="summary_large_image">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "SoftwareSourceCode",
-    "name": "SkipHow",
-    "description": "An outcome-first Agent Skill for Claude Code and Codex, compared by user scenario with base agents, workflow frameworks, and runtime orchestrators.",
+    "name": "SkipHow comparison",
+    "description": "An outcome-first orchestration layer for coding agents, compared by user scenario with base agents, skill libraries, workflow frameworks, and runtime orchestrators.",
     "codeRepository": "https://github.com/mzored/SkipHow",
     "url": "https://mzored.github.io/SkipHow/compare/",
     "license": "https://opensource.org/license/mit",
-    "runtimePlatform": ["Claude Code", "OpenAI Codex"]
+    "runtimePlatform": ["Claude Code", "OpenAI Codex"],
+    "programmingLanguage": "Markdown",
+    "author": {"@type": "Person", "name": "mzored", "url": "https://github.com/mzored"}
   }
   </script>
 </head>
@@ -48,23 +53,24 @@
     <section class="hero">
       <div class="shell">
         <p class="eyebrow">Scenario comparison · no benchmark claims</p>
-        <h1>Which layer fits the job you actually have?</h1>
-        <p class="lede">SkipHow is not a universal upgrade. Choose it when the missing piece is a stable decision boundary between a product owner and a strong coding agent.</p>
+        <h1>Choose who should control the engineering method.</h1>
+        <p class="lede">SkipHow's outcome-first orchestration is for a specific relationship with a coding agent: you own the product, the agent owns the engineering, and completion needs evidence. Other layers fit other kinds of control.</p>
       </div>
     </section>
 
     <section class="section" aria-labelledby="matrix-title">
       <div class="shell">
-        <p class="section-label">01 · Mechanism</p>
-        <h2 id="matrix-title">Four products for four different control needs.</h2>
-        <div class="comparison-wrap" role="region" aria-label="Comparison table" tabindex="0">
+        <p class="section-label">01 · Control model</p>
+        <h2 id="matrix-title">Five choices that solve different problems.</h2>
+        <div class="comparison-wrap wide-comparison" role="region" aria-label="Comparison table" tabindex="0">
           <table>
             <thead>
               <tr>
                 <th scope="col">Question</th>
                 <th scope="col">Base agent</th>
+                <th scope="col">Skill library</th>
                 <th scope="col">SkipHow</th>
-                <th scope="col">Spec / workflow framework</th>
+                <th scope="col">Spec or workflow framework</th>
                 <th scope="col">Runtime orchestrator</th>
               </tr>
             </thead>
@@ -72,44 +78,50 @@
               <tr>
                 <th scope="row">Primary job</th>
                 <td>General coding work</td>
-                <td>Outcome-to-verified-result ownership contract</td>
-                <td>Reviewable, staged development method</td>
-                <td>Operate persistent agents and shared resources</td>
+                <td>Offer reusable methods</td>
+                <td>Turn a product outcome into an owned, verified result</td>
+                <td>Run a visible development method</td>
+                <td>Operate agents and shared resources</td>
+              </tr>
+              <tr>
+                <th scope="row">Who chooses the method?</th>
+                <td>The current prompt and model</td>
+                <td>The user or host selects a skill</td>
+                <td>The agent selects internal methods from the work</td>
+                <td>The framework defines the path; people may approve gates</td>
+                <td>Code, configuration, or manager agents define the flow</td>
               </tr>
               <tr>
                 <th scope="row">Human role</th>
-                <td>Defined per prompt and host defaults</td>
-                <td>Own product outcome, tradeoffs, and protected actions</td>
+                <td>Defined per prompt</td>
+                <td>Find and invoke the right method</td>
+                <td>Own product decisions and protected actions</td>
                 <td>Inspect or approve specs, stages, tickets, or plans</td>
                 <td>Configure teams, policy, budgets, and governance</td>
               </tr>
               <tr>
                 <th scope="row">Agent role</th>
-                <td>Whatever the current prompt establishes</td>
-                <td>Own technical decisions, implementation, procedures, and proof</td>
-                <td>Execute within an explicit method and its artifacts</td>
-                <td>Work inside a managed runtime and coordination model</td>
+                <td>Whatever the prompt establishes</td>
+                <td>Follow the selected method</td>
+                <td>Own research, technical decisions, implementation, procedures, and proof</td>
+                <td>Execute within the framework's method and artifacts</td>
+                <td>Work inside managed execution and coordination</td>
               </tr>
               <tr>
                 <th scope="row">Persistent machinery</th>
                 <td>Host and repository only</td>
+                <td>Usually none beyond the host</td>
                 <td>None beyond the host and project</td>
-                <td>Usually specs, plans, commands, or state files</td>
-                <td>Server, database, scheduler, leases, or control plane</td>
+                <td>Often specs, plans, commands, or state files</td>
+                <td>Server, database, queue, scheduler, leases, or control plane</td>
               </tr>
               <tr>
                 <th scope="row">Best signal</th>
-                <td>The base agent already behaves as needed</td>
+                <td>The default behavior is already enough</td>
+                <td>You want methods available one by one</td>
                 <td>You want to stay at product-outcome level</td>
                 <td>You want the method visible and reviewable</td>
                 <td>You need durable multi-agent operations</td>
-              </tr>
-              <tr>
-                <th scope="row">Do not choose it for</th>
-                <td>A boundary the default behavior does not hold</td>
-                <td>Budgets, leases, deterministic phases, or added intelligence</td>
-                <td>A process-free owner experience</td>
-                <td>A thin instruction contract</td>
               </tr>
             </tbody>
           </table>
@@ -117,42 +129,57 @@
       </div>
     </section>
 
+    <section class="section" aria-labelledby="superpowers-title">
+      <div class="shell section-grid">
+        <div><p class="section-label">02 · Superpowers</p></div>
+        <div class="section-copy">
+          <h2 id="superpowers-title">Both orchestrate. They put control in different places.</h2>
+          <p><a href="https://github.com/obra/superpowers">Superpowers</a> describes itself as a complete software development methodology built from composable skills. Its basic workflow moves through brainstorming, design approval, implementation planning, TDD, review, and branch completion. Its subagent-driven path has a controller dispatch implementers and reviewers.</p>
+          <p>That is instruction-led orchestration inside the host, just as SkipHow runs inside Claude Code or Codex. The difference is the product boundary. Superpowers makes a disciplined development workflow explicit and mandatory. SkipHow keeps one owner-facing skill and lets the model compose internal methods around the requested result.</p>
+          <p>Choose Superpowers when you want its prescribed methodology. Choose SkipHow when you want the agent to decide how much process the work needs while you retain product decisions and protected actions. No controlled benchmark shows that either approach produces better engineering.</p>
+          <p><a href="https://github.com/mzored/SkipHow/blob/main/docs/prior-art.md">Read the full prior-art record →</a></p>
+        </div>
+      </div>
+    </section>
+
     <section class="section" aria-labelledby="cases-title">
-      <div class="shell">
-        <p class="section-label">02 · Selection cases</p>
-        <h2 id="cases-title">Start from the sentence you would say.</h2>
-        <div class="two-up">
-          <article class="card">
-            <span class="card-kicker">Use SkipHow</span>
-            <h3>"The checkout hangs after payment. Fix it without changing providers."</h3>
-            <p>You supplied the product result and a boundary. You want the agent to diagnose, choose the technical method, follow project rules, and prove the fix.</p>
-          </article>
-          <article class="card">
-            <span class="card-kicker">Use the base agent</span>
-            <h3>"Add this settled validation and run the existing test."</h3>
-            <p>If your agent already respects scope, does not offload technical decisions, and verifies the result, an extra contract may not improve the outcome.</p>
-          </article>
-          <article class="card">
-            <span class="card-kicker">Use a workflow framework</span>
-            <h3>"Draft a specification for the team to approve before implementation."</h3>
-            <p>The reviewable method is part of the desired product. Explicit artifacts and approval stages are a feature, not overhead.</p>
-          </article>
-          <article class="card">
-            <span class="card-kicker">Use a runtime orchestrator</span>
-            <h3>"Keep twenty agents running under budgets and durable leases."</h3>
-            <p>This needs persistent execution and coordination machinery. Instructions alone cannot provide scheduling, isolation, leases, or budget enforcement.</p>
-          </article>
+      <div class="shell section-grid">
+        <div><p class="section-label">03 · Selection cases</p></div>
+        <div>
+          <h2 id="cases-title">Start from the job you need done.</h2>
+          <dl class="decision-list">
+            <div class="decision">
+              <dt>Use SkipHow</dt>
+              <dd>"The checkout hangs after payment. Fix it without changing providers." You supplied the product result and a boundary; the agent owns the investigation and proof.</dd>
+            </div>
+            <div class="decision">
+              <dt>Use the base agent</dt>
+              <dd>"Add this settled validation and run the existing test." Your agent already respects scope, owns the mechanics, and verifies the result.</dd>
+            </div>
+            <div class="decision">
+              <dt>Use a skill library</dt>
+              <dd>"Run this security-review method against the diff." You already know which reusable method you want.</dd>
+            </div>
+            <div class="decision">
+              <dt>Use a workflow framework</dt>
+              <dd>"Draft a specification for the team to approve before implementation." The reviewable process is part of the result.</dd>
+            </div>
+            <div class="decision">
+              <dt>Use a runtime orchestrator</dt>
+              <dd>"Keep twenty agents running under budgets and durable leases." This requires execution and coordination infrastructure, not Markdown instructions.</dd>
+            </div>
+          </dl>
         </div>
       </div>
     </section>
 
     <section class="section" aria-labelledby="claim-title">
       <div class="shell section-grid">
-        <div><p class="section-label">03 · Claim boundary</p></div>
+        <div><p class="section-label">04 · Claim boundary</p></div>
         <div class="section-copy">
-          <h2 id="claim-title">A position, not a leaderboard.</h2>
-          <p>No controlled product benchmark has compared SkipHow with a base agent, spec framework, workflow framework, or runtime orchestrator. This page distinguishes mechanisms and user scenarios; it does not claim lower cost, higher speed, better reliability, or better engineering.</p>
-          <p>SkipHow's useful question is narrower: do you need a portable contract that keeps product decisions with the owner and engineering decisions with the agent?</p>
+          <h2 id="claim-title">A different contract, not a leaderboard.</h2>
+          <p>No controlled product benchmark has compared SkipHow with a base agent, skill library, workflow framework, Superpowers, or runtime orchestrator. This page distinguishes mechanisms and user scenarios. It does not claim lower cost, higher speed, better reliability, or better engineering.</p>
+          <p>SkipHow's useful question is narrower: do you want one portable contract that keeps product decisions with you and gives the agent responsibility for choosing and proving the engineering method?</p>
           <div class="actions">
             <a class="button" href="../#install">Install SkipHow</a>
             <a class="button secondary" href="../evidence/">Check the evidence</a>

@@ -34,6 +34,18 @@ The project built and removed Python runtime machinery. It duplicated host state
 
 Revisit this if supported hosts lose required durability, or verified demand appears for provider-neutral unattended work on hosts without native continuation.
 
+## Orchestration policy is not the execution runtime
+
+SkipHow is an adaptive, instruction-level orchestration layer. It tells the host agent how to understand the outcome, choose focused methods, plan, decompose, delegate, review, and reconcile work when those acts fit the request. Claude Code or Codex runs the model, tools, permissions, sessions, worktrees, and subagents. A control plane, where one exists, owns durable workers, queues, scheduling, leases, budgets, deployment, and operational state.
+
+Version 2.12.1 corrects the public category without changing the runtime contract. Earlier copy treated "orchestrator" as another name for a standalone runner or control plane and therefore denied orchestration outright. Current primary sources use the term more broadly. [OpenAI's Agents SDK](https://openai.github.io/openai-agents-python/multi_agent/) defines orchestration as the flow of agents in an application and explicitly allows the LLM or code to decide that flow. [Anthropic](https://www.anthropic.com/engineering/building-effective-agents) calls a central LLM that breaks down work, delegates it, and combines the results an orchestrator-workers workflow. [Google Cloud](https://cloud.google.com/resources/core-concepts-ai-agents) lists orchestration and runtime as separate parts of an agent system.
+
+Superpowers confirms why the distinction matters. Its [current README](https://github.com/obra/superpowers/tree/b36e0829c6d0140e93cfef2ca599b1b07d4a7797) calls it a software development methodology made from composable skills, not a runtime. Its mandatory workflow and subagent-driven method still direct a host agent to dispatch implementers and reviewers. Calling that instruction-led orchestration is accurate even though the host performs every model run. SkipHow belongs to the same broad category, with a different control model: one owner-facing entry and adaptive method composition rather than one required development chain.
+
+The package facts are deterministic. SkipHow ships the policy and no runner, scheduler, queue, worker service, lease manager, budget enforcer, or control plane. Model behavior is a separate claim. The controlled delegation case did not spawn workers, so reliable multi-agent orchestration under the shipped wording remains `UNVERIFIED`.
+
+Revisit this if agent platforms narrow orchestration to execution infrastructure, SkipHow begins shipping that infrastructure, or receipts establish a multi-agent behavior the public limits still mark unverified.
+
 ## Authority follows the requested outcome
 
 Read-only requests stay read-only. Record requests grant only the record. Project changes include edits, checks, a clean local commit, and the durable records the project keeps for that work: the agreed outcome, the state needed to resume it, and one carry-forward record for a material problem left unfixed. Shared delivery must be requested. Protected actions need an explicit grant.

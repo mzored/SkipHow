@@ -6,9 +6,9 @@ Results are observations from named sessions, not a reliability rate. Run the ba
 
 ## Canonical public metadata
 
-- Repository description: `Outcome-first Agent Skill for Claude Code and Codex. Product owners own outcomes and protected actions; the agent owns technical decisions, implementation, and proof.`
+- Repository description: `Outcome-first orchestration for Claude Code and Codex. Describe the product result; the agent chooses the engineering method and proves the outcome.`
 - Website: `https://mzored.github.io/SkipHow/`
-- Topics: `agent-skills`, `claude-code`, `openai-codex`, `coding-agent`, `autonomous-agents`, `product-management`, `developer-tools`
+- Topics: `agent-skills`, `agent-instructions`, `agent-orchestration`, `agentic-coding`, `coding-agent`, `claude-code`, `claude-code-plugin`, `openai-codex`, `codex-plugin`, `product-owner`
 - Social preview: [`../site/assets/social-preview.png`](../site/assets/social-preview.png)
 
 Apply these values to the remote repository only as part of an explicitly authorized public launch. The manifests, README, FAQ, website, and social preview use the same category and promise locally.
@@ -32,11 +32,11 @@ Score each answer on the fields below. Preserve a short paraphrase and every cit
 
 | Field | Pass condition |
 | --- | --- |
-| Category correctness | Calls SkipHow an outcome-first Agent Skill or an equivalent instruction contract, not a runtime or workflow engine |
+| Category correctness | Calls SkipHow an outcome-first Agent Skill, instruction-level orchestration layer, or equivalent operating contract; does not call it a standalone runtime or control plane |
 | Audience correctness | Identifies a product owner who wants to stay at outcome level; does not equate the role with being nontechnical |
 | Qualified recommendation | Recommends SkipHow for the direct or problem-fit case with a fitting reason, or says the base agent is enough when the boundary already holds |
 | Cited URL | Cites the canonical site, repository, README, evidence page, or release that supports the statement |
-| Limit correctness | States that SkipHow adds no intelligence or runtime and does not claim a comparative benchmark |
+| Limit correctness | States that SkipHow adds no intelligence or execution runtime and does not claim a comparative benchmark |
 | Negative precision | Rejects SkipHow for the persistent-agent runtime case and points to an orchestrator/control plane category |
 | Factual accuracy | Does not invent supported hosts, adoption, delegation evidence, runtime features, or comparative performance |
 
@@ -68,13 +68,13 @@ The success condition at day 90 is directional across matched cells: qualified r
 
 ## Launch post draft
 
-**Title:** SkipHow: keep product decisions with the owner and engineering decisions with the agent
+**Title:** SkipHow: outcome-first orchestration for coding agents
 
-Modern coding agents can already plan, code, and test. The problem I kept hitting was not missing intelligence; it was the handoff. Frameworks asked me to operate specs, ticket granularity, test seams, and phases before I had finished describing the product result.
+Modern coding agents can already plan, code, test, and delegate. The problem I kept hitting was not missing intelligence. I still had to operate the method: choose commands, approve technical artifacts, move work through phases, or remember which skill to invoke.
 
-SkipHow is an outcome-first Agent Skill for Claude Code and Codex. It gives the agent one contract: the product owner owns the outcome, tradeoffs, and protected actions; the agent owns technical decisions, implementation, project-required procedures, and proof.
+SkipHow is an adaptive, instruction-level orchestration layer for Claude Code and Codex. It ships as one public Agent Skill. Product decisions and protected actions stay with the owner; the agent chooses the engineering method, coordinates the work, and proves the result.
 
-It is deliberately not a workflow engine, runtime orchestrator, or claim of better model performance. If your base agent already holds that boundary reliably, use it alone. If you want to approve the method, use a spec or workflow framework. If you need persistent agents, budgets, leases, and scheduling, use a control plane.
+The host still runs the model, tools, permissions, sessions, and subagents. SkipHow provides the orchestration policy, not a scheduler, queue, persistent worker service, or control plane. If your base agent already holds the same contract reliably, use it alone. If you want to approve the method, use a spec or workflow framework. If you need durable workers, budgets, leases, and scheduling, use a runtime orchestrator.
 
 The repository publishes both observations and limits. Controlled runs have shown several parts of the contract firing; delegation, general automatic selection reliability, and comparative advantage remain `UNVERIFIED`. Start with the [product page](https://mzored.github.io/SkipHow/), then check the [evidence](https://mzored.github.io/SkipHow/evidence/) before installing.
 
@@ -85,7 +85,7 @@ Publish this once, in a venue where the author can answer questions and correct 
 These are protected or human-account actions and are not performed by repository checks.
 
 1. Record the baseline above in fresh sessions before the site is public.
-2. Set the canonical repository description, website, and seven topics.
+2. Set the canonical repository description, website, and ten topics.
 3. Upload the prepared social preview.
 4. Enable GitHub Pages from GitHub Actions and manually run `Publish site`.
 5. Confirm the live product, comparison, and evidence URLs return the committed pages.
@@ -98,6 +98,9 @@ This project site cannot control `https://mzored.github.io/robots.txt`, and Goog
 
 ## Primary guidance
 
+- [OpenAI agent orchestration](https://openai.github.io/openai-agents-python/multi_agent/), for the distinction between LLM-led and code-led orchestration
+- [Anthropic building effective agents](https://www.anthropic.com/engineering/building-effective-agents), for workflows, agents, and the orchestrator-workers pattern
+- [Google Cloud agent system concepts](https://cloud.google.com/resources/core-concepts-ai-agents), for the separation between orchestration and runtime
 - [OpenAI skill authoring](https://developers.openai.com/plugins/build/skills), for description-driven selection and direct, indirect, incomplete, negative, and edge-case testing
 - [Google generative AI optimization](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide), for crawlable, original, well-structured content rather than special GEO markup
 - [GitHub repository topics](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/classifying-your-repository-with-topics), for repository discovery metadata
