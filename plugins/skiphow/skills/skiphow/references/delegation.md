@@ -2,7 +2,7 @@
 
 Use this to run work through delegates or across several units. [Decomposition](decomposition.md) settles what the units are; this is how they run.
 
-Run the work as a graph, not a list. Take the blocking edges [decomposition](decomposition.md) established, or read them off work that arrived already split. A part is ready when nothing it needs is outstanding, whatever order you imagined for it. Start everything ready and reopen the set as each unit lands. Waiting for a whole tier to finish before opening the next one wastes most of the concurrency.
+Run the work as a graph, not a list. Take the blocking edges [decomposition](decomposition.md) established, or read them off work that arrived already split. A part is ready when nothing it needs is outstanding, whatever order you imagined for it. Readiness is not capacity. Start only ready units that the run can keep isolated, integrate as each lands, and revalidate against current live state without sibling work invalidating their evidence. Recompute the ready set and available capacity after each result. Do not wait for a whole tier, but do not fill every ready lane merely because it exists.
 
 Serialize parts that would change the same shared surface even when nothing else blocks them. Concurrent edits to one file, interface, schema, or migration cost more to reconcile than they save.
 

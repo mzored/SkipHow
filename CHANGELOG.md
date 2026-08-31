@@ -2,6 +2,22 @@
 
 All notable changes to SkipHow 2.x appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 2.13.0 (2026-08-31)
+
+### Changed
+
+- The new focused `campaign-direction` method responds when repeated repairs, competing implementations, post-target machinery growth, or overloaded integration show that recorded or active work no longer supports the requested result. It reuses the existing technical-design and deletion disciplines instead of asking the owner to choose an implementation.
+- Decomposition checks whether live evidence already contradicts the common direction inside its existing cold read. It adds no second review. Continuing tracked work opens campaign direction only on observed drift, and worsening execution stops only affected lanes while independent work continues.
+- Readiness no longer implies unlimited admission. Delegation starts only as many independent units as the current run can isolate, integrate, and revalidate without sibling work invalidating their evidence. The agent chooses that capacity from live state; the owner sets no technical work limit.
+- The kernel now states the reporting side of technical authority directly. Technical decisions are reported as settled, not offered to the owner for approval, reversal, or a request for the alternative. Only an unresolved product consequence, protected action, or human-only step becomes a question.
+
+### Evidence
+
+- Two owner-requested audits exposed long campaigns whose repair, testing, and delivery machinery grew faster than evidence of the product result. One also carried high concurrent work in progress and parallel business paths; the other extended certification after its internal performance target had passed. The audits establish those conditions, not that SkipHow caused them.
+- Reading the 2.12.1 contract found the narrower wording defect: no reached method owned the premise shared by a campaign, and delegation required every ready unit to start.
+- Five matched Claude fixtures showed the first candidate opening for three stale directions, preserving justified refund-recovery work, and staying closed on healthy product slices. The baseline also made the central corrections in all three positive cases. Review rejected both the unconditional trigger and the added decomposition gate. A later five-session candidate opened the method only for the three stale directions.
+- Candidate revisions made technical decisions but still invited the owner to reverse them. The released package moves that boundary into the kernel and limits owner reversal to product choices. Exact-package repeats of the release-runner and refund fixtures kept technical alternatives internal. Codex behavior is `UNVERIFIED` because a properly isolated profile required a human login, and credentials were not copied to bypass it.
+
 ## 2.12.1 (2026-08-31)
 
 ### Changed
