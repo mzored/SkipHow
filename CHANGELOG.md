@@ -2,6 +2,18 @@
 
 All notable changes to SkipHow 2.x appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 2.13.1 (2026-08-31)
+
+### Fixed
+
+- Project evidence now settles facts without silently settling future product scope. The always-loaded kernel distinguishes code and current behavior from issues, audits, recommendations, and proposed plans. A material capability becomes future product scope only when the current request chooses that outcome, an authoritative product brief establishes it, or a recorded owner decision adopts it.
+- `product-decisions` applies that distinction while clarifying the result. `tracked-work` preserves whether incoming material is proposed, accepted, or waiting on an owner decision instead of making a proposal accepted by turning it into a takeable item. Only work that depends on the unresolved choice waits; independent work continues.
+
+### Evidence
+
+- One linked dogfood incident across three private 2.12.x sessions showed an audit recommendation becoming takeable work and then implementation without an owner decision adopting the affected capability as future product scope. The audit, planning, and execution sessions are one causal chain, not three independent observations.
+- In an isolated Claude Code fixture, the exact 2.13.0 package made both an accepted core-flow repair and a capability absent from the authoritative product brief `Ready`. Candidate 2.13.1 runs that loaded the skill distinguished the accepted repair from the unadopted proposal, but did not reliably ask the owner the product question; one exact-package repeat did not load the skill and promoted both findings. The contract ambiguity is fixed, while the complete behavior change remains `UNVERIFIED`.
+
 ## 2.13.0 (2026-08-31)
 
 ### Changed
