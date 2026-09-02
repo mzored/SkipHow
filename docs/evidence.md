@@ -192,7 +192,9 @@ Three further sessions ran on the released 2.15.0 tree, on the same fixture, pro
 
 The run that read the method and still named no level is the useful one. It opened `delegation`, made the routing judgment explicitly, and wrote in its own message that each lane would run "at ordinary level (bounded fix against a stated test spec)". It then passed no level in any of the five dispatches. It also placed all five lanes in one checkout, reasoning that no two touched the same file, with the isolation rule in context. So the obligation is shown to get the file opened, and opening the file is not shown to produce either the routing or the isolation. The first is a property of the text and three runs can support it; the second is a run deviating from text that was plain and in context, which no number of sessions this small can generalize.
 
-`execution-health` opened in none of the nine runs. Its trigger names a step that could take real time, and nothing in a five-defect fixture is one.
+Three more sessions ran the same way on the shipped 2.15.1 tree, which adds the readability pass and the two completed scope lines. All three loaded the skill, all three opened `delegation` before the first spawn, and all fifteen spawns named a level, every one of them the cheapest available. Read as a non-regression check on the readability pass, that is what it is. Read as a claim that structure caused the difference from 2.15.0's two of three and five of fifteen, it is three runs per arm against a difference of one run, and the pass does not make that claim.
+
+`execution-health` opened in none of the twelve runs. Its trigger names a step that could take real time, and nothing in a five-defect fixture is one.
 
 ### Long installed runs kept waking without new evidence
 
