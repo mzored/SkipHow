@@ -4,7 +4,7 @@ Use this for multi-unit work, active or recorded, where live evidence shows any 
 
 - repeated repairs
 - competing implementations of one product behavior
-- internal machinery delaying the outcome it protects, or expanding after its stated target was met
+- internal machinery delaying the outcome it protects, or expanding after its target was met
 - technical and process growth without new evidence of the requested result
 - a unit that must create a new prerequisite of its own before it can finish
 - active work the current integration and verification path cannot absorb
