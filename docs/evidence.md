@@ -176,6 +176,14 @@ Delegates carried 54 per cent of output tokens and 68 per cent of cached input a
 
 These are the maintainer's own sessions, not controlled runs: version, repository and prompt all vary, and nothing is paired. They measure what reached the model and what the run cost. They do not show that the old wording caused the outcome, and the counts are an upper bound on conformance because a rule the run noticed and dropped leaves no trace.
 
+### Paired runs on 2.15.0 did not reproduce the delegate loading failure, or fix it
+
+Six isolated sessions ran on a throwaway five-defect fixture, three on 2.14.0 and three on the 2.15.0 candidate, in a fresh copy of the fixture per run, with the package passed as a session plugin and every setting source dropped. A first prompt that described five independent defects and asked for them in parallel produced no delegate in any of the six runs, on either package, and all six fixed the defects directly. A second prompt that named parallel lanes explicitly produced five delegates in every run on both packages.
+
+In those six dispatching runs, all thirty spawns named no level for the delegate, and no run on either package opened `delegation`, the routing text, or `execution-health`. The kernel loaded in every run. So the reworded method-list line did not fire in a clean session, exactly as 2.11.0's fixture runs failed to reproduce the loading failure they were built for, and this fixture does not discriminate between the packages.
+
+That result is why the kernel keeps one obligation at the point of use rather than relying on the method list alone. It is evidence against the sufficiency of the trigger rewrite and not evidence for it, and the pass reports it as such. The fixture is small, the sessions are short, and one prompt per cell separates nothing from noise.
+
 ### Long installed runs kept waking without new evidence
 
 A 2026-08-30 audit examined four large installed Codex task trees from the maintainer's own projects. The three largest roots made 1,785 delegate wait calls. Of those, 855 expired with an explicit timeout and no mailbox activity. For two roots, each timeout was joined by call identifier to its result and then to the next model turn, with any interval containing another message excluded. All 472 unchanged timeouts qualified. The following turns processed 62,931,387 input tokens, 62,568,704 of them cached. This is repeated context traffic, not unique tokens. Six root compactions occurred across roughly 43 hours, so the larger repeated cost was waking and reprocessing a large root context rather than compaction itself.
