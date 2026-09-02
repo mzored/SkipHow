@@ -2,6 +2,16 @@
 
 All notable changes to SkipHow 2.x appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 2.15.1 (2026-09-02)
+
+### Changed
+
+- Readability pass over the kernel and all twenty-three methods. No rule was added, removed, weakened, strengthened, or re-scoped. Every method now opens with a scope line stating when it applies, taken from the trigger `SKILL.md` already carries for it. Every file over roughly four hundred words carries sentence-case subheadings so a rule has an address. Long sentences and paragraphs are split, one idea to a sentence. Lists appear only where the content was already a set: the routing levels, `decomposition`'s check, `execution-health`'s anomaly conditions, `prioritization`'s factors, `technical-design`'s reuse ladder, `diagnosing-bugs`'s recurring-defect set.
+- The package drops 21 em dashes, 70 semicolons, 40 of its 44 sentences over forty words, and 29 of its 40 paragraphs over a hundred words. Thirteen files over four hundred words had no subheading; now none do. The text grew by 718 words, all of it scope lines, headings, and sentence splits, because this project has decided that method length is not the constraint.
+- Every file was checked against its previous version for rules lost in the rewrite. Six content words changed form across the whole package and each was verified by hand: two verb forms, two filler deletions, one metaphor noun replaced with the mechanism it named, and one ordering adverb replaced by the word "last". The skill description in the frontmatter is unchanged, because nine measured discovery runs settled its wording in 2.11.1 and punctuation there is not worth reopening that.
+
+Whether the structure changes what a run does is `UNVERIFIED`, and a pass whose stated goal is no behavior change cannot be proved by a receipt showing none.
+
 ## 2.15.0 (2026-09-02)
 
 ### Changed
