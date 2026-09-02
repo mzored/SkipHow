@@ -10,7 +10,7 @@ For an existing direction, count evidence produced or discovered since the premi
 
 ## The read
 
-When the signal appears during decomposition's existing cold read, include the direction there. Otherwise read the owner's outcome, live constraints, proposed or recorded units, recent repairs and conflicts, current product evidence, and relevant maintained capabilities without adopting the argument that produced the plan. Name the simplest coherent direction, which work to keep, replace, or retire, and what evidence would make that answer wrong. Do not add a second review pass. When the replacement adds or replaces something the project then keeps, use [technical design](technical-design.md)'s existing outside read for that decision.
+When the signal appears during decomposition's existing cold read, include the direction there. Otherwise read the owner's outcome, live constraints, proposed or recorded units, recent repairs and conflicts, current product evidence, and relevant maintained capabilities without adopting the argument that produced the plan. Name the simplest coherent direction, which work to keep, replace, or retire, and what evidence would make that answer wrong. Do not add a second review pass. When the replacement becomes something later work has to build on, use [technical design](technical-design.md)'s existing outside read for that decision.
 
 ## Choosing the direction
 

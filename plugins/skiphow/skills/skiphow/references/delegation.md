@@ -45,7 +45,7 @@ A delegate returns its result and evidence. Integrating the work, disposing of f
 
 Track every unit you accepted through to a named end, and reconcile the set against the request rather than against your memory of the run. A named end includes the working state the unit created. Once its result lands, reconcile its branch and isolated checkout under [finishing a branch](finishing-a-branch.md), and report any state that could not be retired. Do not call the set finished while integrated working state remains unaccounted for.
 
-Leaving a unit for later needs a reason the owner would accept. It is blocked, it needs a decision only they can make, or its authority was never granted. It also needs a record carrying what the work already established. Preferring not to do it is not such a reason, and a unit quietly absorbed into another is not finished. This is the failure that grows with the number of units.
+Leaving a unit for later needs a reason the owner would accept, and there are only three. It is blocked, it needs a decision only they can make, or its authority was never granted. It also needs a record carrying what the work already established. Preferring not to do it is not such a reason, and a unit quietly absorbed into another is not finished. This is the failure that grows with the number of units.
 
 ## Isolation
 

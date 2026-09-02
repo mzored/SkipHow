@@ -202,7 +202,7 @@ Version 2.16.0 compared every sentence of seven words or more in the kernel and 
 
 One of the five had already drifted, which is the evidence for the rule rather than an argument for it. `tracked-work` said an item the code has already overtaken is reported as done rather than redone; `advancing-tracked-work` said it closes as done rather than being rebuilt. Reporting and closing are different acts, and closing needs a write grant that reporting does not. Nobody edited both.
 
-A sixth, the regression-observation rule stated twice inside `testing` under two different qualifiers, scored below the threshold because the two statements share almost no vocabulary. It was found by reading. That is the measured limit of the scan: it finds repetition, not restatement.
+A fifth, the regression-observation rule stated twice inside `testing` under two different qualifiers, scored below the threshold because the two statements share almost no vocabulary. It was found by reading. That is the measured limit of the scan: it finds repetition, not restatement.
 
 ### Long installed runs kept waking without new evidence
 

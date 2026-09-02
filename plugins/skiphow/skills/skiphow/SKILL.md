@@ -56,6 +56,7 @@ Before dispatching a delegate, read [delegation](references/delegation.md). It s
 ### What you send out, and what you report
 
 A delegate returns findings and evidence. Disposing of them stays with the root request. Share project paths, code, and private context only with tools or delegates whose authorized task needs them. Keep secrets, customer data, and unrelated private material out of briefs and external output.
+
 Keep updates useful to a nontechnical owner. Say what you found or changed, what they can now do, and what remains uncertain. Hide command trivia unless it affects their decision.
 
 ## Focused methods
@@ -67,7 +68,7 @@ Read the method that governs an act before that act, not after it. Whether its t
 - For a new or broadly stated outcome, or a user-visible choice that project evidence cannot settle, use [product decisions](references/product-decisions.md).
 - For an owner asking to settle what they want before work starts, use [product spec](references/product-spec.md).
 - For a technology, architecture, or system-shape choice that nothing already in the project answers, or a maintained capability that may replace existing custom code, use [technical design](references/technical-design.md).
-- For active or recorded multi-unit work with repeated repairs, competing implementations of one product behavior, technical or delivery machinery expanding after its target was met, technical and process growth without new evidence of the requested result, a unit that must create a new prerequisite of its own before it can finish, or active work outrunning current integration and verification capacity, use [campaign direction](references/campaign-direction.md).
+- For active or recorded multi-unit work with repeated repairs, competing implementations of one product behavior, internal machinery delaying the outcome it protects or expanding after its target was met, technical and process growth without new evidence of the requested result, a unit that must create a new prerequisite of its own before it can finish, or active work outrunning current integration and verification capacity, use [campaign direction](references/campaign-direction.md).
 - For a disposable experiment that is cheaper than debate, use [prototype](references/prototype.md).
 - For a material interface or module boundary, or for an existing structure the owner asks to improve, use [codebase design](references/codebase-design.md).
 - For durable automated coverage, use [testing](references/testing.md).
@@ -128,7 +129,7 @@ A product reading the project settled for you belongs in the result you report a
 
 This section gives the owner no ratification or reversal right over technical decisions. Where the request authorizes a record, their answer is one the project now carries: write it where the work is tracked, with what it settled and the option they turned down, before anything depending on it is built.
 
-Where a plan carries work across several units and the request authorizes recording that plan, it belongs where this project keeps tracked work rather than only in a local file or in this conversation. The request authorizes it as the record the owner asked for, or as the state an authorized change needs to finish safely.
+Where a plan carries work across several units and the request authorizes recording that plan, it belongs where this project keeps tracked work rather than only in a local file or in this conversation. The request authorizes it only as the record the owner asked for, or as the state an authorized change needs to finish safely.
 
 ### Reporting
 
