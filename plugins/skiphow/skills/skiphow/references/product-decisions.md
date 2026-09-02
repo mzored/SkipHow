@@ -1,11 +1,31 @@
 # Product decisions
 
-Establish the result before building it. Ahead of substantial work, return a short restatement of the intended outcome and the criteria that would show it met, in the owner's own language. Ask only where different readings would produce a materially different product. Put every such question you can ask now into one round rather than one exchange at a time. A question is askable now when nothing you would need in order to put it correctly is still open; one whose options only exist under a particular answer is not, and belongs to the round after that answer arrives. Anything you could settle by reading the project, its records, or a current source is yours to settle, not theirs. Where project evidence already settles a reading, take it and name the reading you took. A small or obvious change needs no restatement.
+Use this for a new or broadly stated outcome, or for a user-visible choice that project evidence cannot settle. Establish the result before building it. Ahead of substantial work, return a short restatement of the intended outcome and the criteria that would show it met, in the owner's own language. Ask only where different readings would produce a materially different product. Put every such question you can ask now into one round rather than one exchange at a time.
+
+## What is askable now
+
+A question is askable now when nothing you would need to put it correctly is still open. One whose options only exist under a particular answer is not askable now. It belongs to the round after that answer arrives.
+
+## What the evidence settles
+
+Settle facts about current behavior, constraints, and recorded owner decisions by reading the project, its records, or a current source. Code and current behavior show what exists. Issues, audits, recommendations, and proposed plans show what was recorded or suggested.
+
+A request to audit, organize, plan, or carry those sources forward does not adopt every proposal in them. Treat one as future product intent only where the current request chooses that product outcome, an authoritative product brief, or a recorded owner decision adopts it. Where that evidence settles a reading, take it and name the reading you took. A small or obvious change needs no restatement.
+
+## Naming the choice
 
 Name the choice in terms of what a person will see, understand, or be able to do. Inspect the current product, surrounding language, prior decisions, and the owner's stated goal before asking anything.
 
+When current code or a proposal carries a capability that accepted product intent does not, ask whether the capability belongs in the product, not how to implement or consolidate it. Recommend the product outcome and keep the engineering choice internal.
+
+## When to decide and when to ask
+
 Decide from that evidence when one option clearly fits. Explain the visible result, not the internal mechanism.
 
-When the choice remains material, ask the smallest question that separates the outcomes. Recommend one option first and explain its consequence in plain language. Avoid technical option names unless the owner already uses them. Do not turn a reversible detail into a gate; being able to change something later is not what makes a choice yours. A reading the project settled is still theirs to overturn, so put it where they will read it and in the record, not only in the code. Where the choice is material and the project settles nothing, having no answer yet is not an answer, and recording what you picked does not stand in for asking.
+When the choice remains material, ask the smallest question that separates the outcomes. Recommend one option first and explain its consequence in plain language. Avoid technical option names unless the owner already uses them. Do not turn a reversible detail into a gate. Being able to change something later is not what makes a choice yours.
+
+A product reading the project settled is still theirs to overturn, so put it where they will read it and in the record, not only in the code. This does not apply to technical decisions. Where the choice is material and the project settles nothing, having no answer yet is not an answer, and recording what you picked does not stand in for asking.
+
+## After the answer
 
 After the answer, translate it into acceptance criteria that can be observed in the product, and read it for what it opened as well as what it closed. Where it makes material a choice that could not have been put to them before, ask that one the same way, with its recommendation, and carry on. Where it does not, build. Rounds end when nothing material is open, not after a fixed number of them, and work the project already defines starts none. Keep technical implementation decisions internal.

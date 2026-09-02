@@ -29,6 +29,7 @@ PLUGIN_ROOT = ROOT / "plugins/skiphow"
 SITE_ROOT = ROOT / "site"
 SITE_BASE_URL = "https://mzored.github.io/SkipHow/"
 REPOSITORY_URL = "https://github.com/mzored/SkipHow"
+SITE_CATEGORY = "outcome-first orchestration"
 SITE_PAGES = {
     "index.html": SITE_BASE_URL,
     "compare/index.html": f"{SITE_BASE_URL}compare/",
@@ -836,21 +837,29 @@ class SiteHTML(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.start_tags: list[tuple[str, dict[str, str]]] = []
         self.title_parts: list[str] = []
+        self.visible_parts: list[str] = []
         self._in_title = False
+        self._in_body = False
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         normalized = {key: value or "" for key, value in attrs}
         self.start_tags.append((tag.casefold(), normalized))
         if tag.casefold() == "title":
             self._in_title = True
+        elif tag.casefold() == "body":
+            self._in_body = True
 
     def handle_endtag(self, tag: str) -> None:
         if tag.casefold() == "title":
             self._in_title = False
+        elif tag.casefold() == "body":
+            self._in_body = False
 
     def handle_data(self, data: str) -> None:
         if self._in_title:
             self.title_parts.append(data)
+        elif self._in_body:
+            self.visible_parts.append(data)
 
     def attributes(self, tag: str) -> list[dict[str, str]]:
         return [attrs for candidate, attrs in self.start_tags if candidate == tag]
@@ -909,6 +918,8 @@ def validate_site() -> list[str]:
             errors.append(f"site/{relative} must have a nonempty title")
         elif title in titles:
             errors.append(f"site/{relative} duplicates another page title: {title}")
+        if SITE_CATEGORY not in title.casefold():
+            errors.append(f"site/{relative} title must name {SITE_CATEGORY}")
         titles.add(title)
 
         description = _site_meta(document, "name", "description")
@@ -916,7 +927,12 @@ def validate_site() -> list[str]:
             errors.append(f"site/{relative} must have one nonempty meta description")
         elif description[0] in descriptions:
             errors.append(f"site/{relative} duplicates another meta description")
+        if description and SITE_CATEGORY not in description[0].casefold():
+            errors.append(f"site/{relative} meta description must name {SITE_CATEGORY}")
         descriptions.update(description)
+        visible = " ".join(document.visible_parts).casefold()
+        if SITE_CATEGORY not in visible:
+            errors.append(f"site/{relative} visible copy must name {SITE_CATEGORY}")
         if _site_meta(document, "name", "robots") != ["index,follow"]:
             errors.append(f"site/{relative} must declare robots index,follow")
         if _site_meta(document, "name", "viewport") != [
@@ -933,12 +949,32 @@ def validate_site() -> list[str]:
             errors.append(f"site/{relative} canonical URL must be {canonical}")
         if _site_meta(document, "property", "og:url") != [canonical]:
             errors.append(f"site/{relative} Open Graph URL must match its canonical URL")
-        for property_name in ("og:title", "og:description", "og:image"):
+        for property_name in (
+            "og:title",
+            "og:description",
+            "og:image",
+            "og:image:type",
+            "og:image:width",
+            "og:image:height",
+        ):
             values = _site_meta(document, "property", property_name)
             if len(values) != 1 or not values[0]:
                 errors.append(f"site/{relative} must have one nonempty {property_name}")
+        for property_name in ("og:title", "og:description"):
+            values = _site_meta(document, "property", property_name)
+            if values and SITE_CATEGORY not in values[0].casefold():
+                errors.append(
+                    f"site/{relative} {property_name} must name {SITE_CATEGORY}"
+                )
+        for property_name, expected in (
+            ("og:image:type", "image/png"),
+            ("og:image:width", "1280"),
+            ("og:image:height", "640"),
+        ):
+            if _site_meta(document, "property", property_name) != [expected]:
+                errors.append(f"site/{relative} {property_name} must be {expected}")
         if _site_meta(document, "property", "og:image:alt") != [
-            "SkipHow: own the product, let the agent own the engineering."
+            "SkipHow: outcome-first orchestration for Claude Code and Codex."
         ]:
             errors.append(f"site/{relative} must describe its Open Graph image")
 
@@ -964,6 +1000,11 @@ def validate_site() -> list[str]:
                     errors.append(f"site/{relative} JSON-LD must use SoftwareSourceCode")
                 if structured.get("url") != canonical:
                     errors.append(f"site/{relative} JSON-LD URL must match its canonical URL")
+                structured_description = structured.get("description")
+                if not isinstance(structured_description, str) or SITE_CATEGORY not in structured_description.casefold():
+                    errors.append(
+                        f"site/{relative} JSON-LD description must name {SITE_CATEGORY}"
+                    )
 
         if len(document.attributes("h1")) != 1:
             errors.append(f"site/{relative} must contain exactly one h1")

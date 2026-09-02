@@ -1,7 +1,7 @@
 {
   "name": "skiphow",
-  "version": "2.11.2",
-  "description": "Outcome-first Agent Skill for Claude Code and Codex. Product owners own outcomes and protected actions; the agent owns technical decisions, implementation, and proof.",
+  "version": "2.16.0",
+  "description": "Outcome-first orchestration for Claude Code and Codex. Describe the product result; the agent chooses the engineering method and proves the outcome.",
   "author": {
     "name": "mzored",
     "url": "https://github.com/mzored"
@@ -11,18 +11,21 @@
   "license": "MIT",
   "keywords": [
     "agent-skills",
-    "claude-code",
-    "openai-codex",
+    "agent-instructions",
+    "agent-orchestration",
+    "agentic-coding",
     "coding-agent",
-    "autonomous-agents",
-    "product-management",
-    "developer-tools"
+    "claude-code",
+    "claude-code-plugin",
+    "openai-codex",
+    "codex-plugin",
+    "product-owner"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "SkipHow",
-    "shortDescription": "Outcome-first work for product owners",
-    "longDescription": "An outcome-first Agent Skill for product owners using Claude Code or Codex. The owner decides the product outcome, tradeoffs, and protected actions. The agent owns research, technical decisions, implementation, project-required procedures, and proof. SkipHow adds no runtime or intelligence; it makes that boundary explicit and portable.",
+    "shortDescription": "Outcome-first orchestration for coding agents",
+    "longDescription": "SkipHow is an adaptive instruction-level orchestration layer for product owners using Claude Code or Codex. One public skill keeps product decisions and protected actions with the owner while the agent chooses the engineering method, coordinates authorized work, and proves the result. The host supplies the model, tools, permissions, sessions, and subagents; SkipHow supplies no standalone runtime or control plane.",
     "developerName": "mzored",
     "category": "Developer Tools",
     "capabilities": [],

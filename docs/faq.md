@@ -4,15 +4,29 @@ Short answers about installing and using SkipHow. The [owner guide](guide.md) ha
 
 ## What is SkipHow?
 
-SkipHow is an outcome-first Agent Skill for Claude Code and OpenAI Codex. It gives the agent one contract: the product owner owns the outcome, tradeoffs, and protected actions; the agent owns technical decisions, implementation, and proof. It ships as a plugin containing a single skill: no server, no database, no separate runtime.
+SkipHow is an adaptive, instruction-level orchestration layer for Claude Code and OpenAI Codex. It ships as one public Agent Skill. Product decisions and protected actions stay with the owner; the agent chooses the engineering method, coordinates the work, and proves the result.
+
+The host runs the model, tools, permissions, sessions, and any subagents. SkipHow supplies the authority, method-selection, and completion policy, not a server or separate runtime.
 
 ## Do modern agents already do this?
 
-They already plan, write code, run tests, and often make sound technical choices. SkipHow does not make a model smarter. It makes the decision and authority boundary explicit and portable, then requires an evidence-backed finish. If your base agent already keeps that boundary reliably, SkipHow adds little.
+They already plan, write code, run tests, and often make sound technical choices. SkipHow does not make a model smarter. It makes the decision, authority, method-selection, and completion boundary explicit and portable. If your base agent already keeps that boundary reliably, SkipHow adds little.
+
+## Does SkipHow orchestrate agents?
+
+Yes, at the instruction level. It tells the host agent how to choose methods, plan, decompose, delegate, monitor, review, and reconcile work when the request calls for it. This matches the modern use of orchestration for deciding which agents or tools run, in what order, and how the next step is chosen.
+
+Reliable multi-agent delegation under that policy remains `UNVERIFIED`. The package design can be inspected deterministically; model compliance needs receipts.
+
+## Is SkipHow a standalone orchestrator?
+
+No. Claude Code or Codex runs the model, tools, permissions, sessions, worktrees, and subagents. SkipHow has no scheduler, queue, persistent worker service, lease manager, budget enforcement, or control plane.
+
+A runtime orchestrator can still use SkipHow as the behavioral contract inside an agent. The two layers solve different problems.
 
 ## Should I use SkipHow?
 
-Use it when you own a product outcome, work in a repository through Claude Code or Codex, and want the agent to own the engineering method. Do not install it merely to make an agent “more autonomous.” Install it when you want to stay at the level of behavior, tradeoffs, and protected actions.
+Use it when you own a product outcome, work in a repository through Claude Code or Codex, and want the agent to own the engineering method. Do not install it merely to make an agent "more autonomous." Install it when you want to stay at the level of behavior, tradeoffs, and protected actions.
 
 ## Which agents does it work with?
 
@@ -28,11 +42,13 @@ No. The owner can be technical, but their job in this contract is to decide the 
 
 ## When should I use something else?
 
-Use the base agent alone if it already maintains the boundary and verifies completion reliably. Use a spec or workflow framework when you want people to inspect and approve specifications, phases, tickets, or the development method. Use a runtime orchestrator when you need persistent agent teams, budgets, leases, scheduling, or a control plane.
+Use the base agent alone if it already maintains the boundary and verifies completion reliably. Use a skill library when you want to discover and invoke methods one by one. Use a spec or workflow framework when you want people to inspect and approve specifications, phases, tickets, or the development method. Use a runtime orchestrator when you need persistent agent teams, queues, budgets, leases, scheduling, or a control plane.
 
 ## How is SkipHow different from OpenSpec, BMAD, or Superpowers?
 
-Those frameworks give you a workflow to drive: commands, phases, specs, tickets, approval gates. SkipHow states a contract and leaves the sequence to the agent, so there is nothing for you to operate. The tradeoff is real. If you want to control the method yourself, one of those projects fits you better. [Prior art](prior-art.md) records what SkipHow borrowed from each and what it dropped.
+OpenSpec and BMAD make specifications, artifacts, or staged work part of the product. Superpowers describes itself as a complete development methodology with mandatory workflows for brainstorming, design approval, planning, TDD, review, and branch completion.
+
+SkipHow makes a different choice. It keeps one owner-facing skill and lets the model compose internal methods around the requested result. Choose the other systems when you want their visible process. Choose SkipHow when you want the agent to decide how much process the work needs while you keep product decisions and protected actions. No controlled benchmark shows that SkipHow produces better engineering. [Prior art](prior-art.md) records what it borrowed from each project and what it left out.
 
 ## Will it push, merge or deploy without asking?
 

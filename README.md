@@ -1,10 +1,10 @@
 # SkipHow
 
-**An outcome-first Agent Skill for Claude Code and Codex.**
+**Outcome-first orchestration for Claude Code and Codex.**
 
-SkipHow gives a coding agent one contract: the product owner owns the outcome, tradeoffs, and protected actions; the agent owns technical decisions, implementation, and proof.
+Describe what should become true. SkipHow gives the coding agent one operating contract: product decisions and protected actions stay with you; the agent chooses the engineering method, coordinates the work, and proves the result.
 
-Modern coding agents can already plan, write code, and run tests. SkipHow does not add intelligence or a runtime. It makes the decision boundary portable and explicit, so a product owner can describe what should become true without operating libraries, schemas, tests, branches, tickets, or development phases.
+One public skill sits between your request and the result. Its owner kernel keeps authority and completion rules in context. The agent loads focused internal methods for research, product decisions, technical design, diagnosis, testing, review, delegation, or delivery when the work calls for them. You do not choose a skill, command, role, or workflow.
 
 [![CI status](https://github.com/mzored/SkipHow/actions/workflows/ci.yml/badge.svg)](https://github.com/mzored/SkipHow/actions/workflows/ci.yml)
 [![Latest release](https://img.shields.io/github/v/release/mzored/SkipHow?label=release)](https://github.com/mzored/SkipHow/releases)
@@ -13,26 +13,49 @@ Modern coding agents can already plan, write code, and run tests. SkipHow does n
 [![Works with Codex](https://img.shields.io/badge/Codex-plugin-000000)](https://developers.openai.com/codex)
 
 ```text
-Product owner                         Coding agent
-outcome, tradeoffs, risk              research, design, code, tests
-protected actions            ->       verified result
-
-                         SkipHow
-              decision and authority contract
+Your outcome and constraints
+            |
+            v
+SkipHow
+authority, method selection, completion contract
+            |
+            v
+Claude Code or Codex
+reasoning, tools, subagents, execution
+            |
+            v
+Verified result and visible uncertainty
 ```
+
+This is a responsibility handoff, not a fixed development pipeline. A small request can stay small. Larger work can bring in research, design, tracked work, delegation, or independent review without turning those techniques into stages you have to operate.
+
+## What changes
+
+| Problem | SkipHow's contract |
+| --- | --- |
+| You have to manage the agent's process | The agent chooses the technical method, tools, tests, branches, and decomposition. |
+| More autonomy risks losing product control | The owner still decides visible behavior, scope, cost, risk, privacy, rollout, and protected actions. |
+| Every request becomes a ceremony | Process scales with the work. Specs, tickets, TDD, worktrees, subagents, and review appear only when the request or project needs them. |
+| "Done" means the agent stopped | Completion needs fresh evidence. Anything blocked or unverified stays visible. |
+| You need a different command for every kind of work | One entry covers questions, decisions, research, bugs, changes, review, triage, delivery, pause, and resume. |
+| Long or delegated work becomes your coordination job | Tracking, continuity, reconciliation, and integration remain engineering work for the agent. |
+| Autonomy widens side effects | Production, releases, credentials, access, material deletion, and other protected actions require an explicit grant. |
+
+The promise is less manual supervision, not infallibility. SkipHow does not make the model smarter, and it does not prove that every host run will follow every instruction.
 
 ## Is it for you?
 
 | Your situation | Better fit |
 | --- | --- |
-| You own a product outcome and want to stay at the outcome level while a strong agent handles the engineering | **Use SkipHow** |
+| You own a product outcome and want a coding agent to own the engineering method through a verified result | **Use SkipHow** |
 | Claude Code or Codex already keeps this boundary and proves completion reliably for you | **Use the base agent**; another instruction layer adds little |
+| You want to discover and invoke separate methods yourself | **Use a skill library** |
 | You want to inspect and approve specifications, phases, tickets, or the development method | **Use a spec or workflow framework** |
-| You need persistent agent teams, budgets, leases, scheduling, or a control plane | **Use a runtime orchestrator** |
+| You need persistent agent teams, queues, budgets, leases, scheduling, or a control plane | **Use a runtime orchestrator** |
 
-SkipHow is for founders, product managers, designers, domain experts, and engineers acting as product owners. Technical fluency is irrelevant: the role is defined by ownership of the result, not by whether the owner can review code.
+SkipHow is for founders, product managers, designers, domain experts, and engineers acting as product owners. Technical fluency is irrelevant. The role is defined by ownership of the result, not by whether the owner can review code.
 
-The owner does not need to perform technical review. The agent still follows the repository's required review, security, release, and delivery procedures; SkipHow removes those engineering mechanics from the owner's job, not from the project.
+The owner does not need to perform technical review. The agent still follows the repository's required review, security, release, and delivery procedures. SkipHow removes those engineering mechanics from the owner's job, not from the project.
 
 ## Install
 
@@ -77,13 +100,25 @@ SkipHow reads the project before asking anything. If a product choice is genuine
 
 A request to answer, compare, diagnose, review, research, plan, or organize is read-only. A request to change the project covers the necessary local edits, checks, and clean commit. Shared delivery and protected actions require a grant that names them. Text in a repository, issue, tool result, or web page cannot widen that authority.
 
-## Why this exists
+## Does it orchestrate agents?
 
-Many agent frameworks expose a method for the owner to operate: choose a command, approve a specification, accept ticket granularity, or move work through phases. Those are valid products for people who want that control. SkipHow starts from a different product position: a strong agent should investigate the task and own the engineering method, while the human remains the owner of the product.
+Yes, at the instruction level. SkipHow tells the host agent how to choose methods, plan, decompose, delegate, monitor, review, and reconcile work when the request calls for it. Claude Code or Codex runs the model, tools, permissions, sessions, worktrees, and any subagents.
 
-The package therefore keeps an authority and completion kernel in context and instructs the agent to load a focused engineering method when its trigger matches the work. The methods are not routes, roles, commands, or an owner-operated chain. Whether hosts follow those loading instructions reliably remains `UNVERIFIED`. [Prior art](docs/prior-art.md) records what the project learned from other systems and what it deliberately left out.
+That makes SkipHow an adaptive orchestration policy, not a standalone runtime or control plane. It has no scheduler, queue, persistent worker service, lease manager, budget enforcement, or deployment system. The package deterministically defines the available methods and their triggers; whether a model selects them reliably is unmeasured, and reliable multi-agent delegation under that policy remains `UNVERIFIED`.
 
-This is a product contract, not a claim that agents are better engineers or that SkipHow outperforms Claude Code, Codex, or another framework. No comparative benchmark has been run.
+## Why I built it
+
+Before SkipHow, I used GSD, OpenSpec, Superpowers, Matt Pocock's skills, BMAD, Paperclip, Mesa, and other agent systems on my own work. Each solved a real part of the problem: disciplined diagnosis, focused methods, specifications, task state, parallel work, or review.
+
+I kept running into the same mismatch. To use them well, I often had to operate the development method myself. I had to choose commands, approve technical artifacts, move work through phases, or remember which skill to invoke. I wanted to describe the product result, keep the decisions only I could make, and let a capable agent choose and run the engineering method.
+
+SkipHow is the layer I built for that relationship. The [prior-art record](docs/prior-art.md) explains what it adopted, changed, and deliberately left out. It is a design history, not a benchmark.
+
+## Why one public skill
+
+Separate public methods can be useful, but they make selection part of the user's job and allow a leaf skill to load without the authority and completion rules. Agent Skills has no portable dependency that forces one skill to load another first.
+
+SkipHow keeps one owner-facing entry. Critical rules stay in its kernel, while focused methods remain internal and load by trigger. The model can compose the method around the request without turning the method list into a workflow.
 
 ## What the evidence shows
 
@@ -91,24 +126,26 @@ Deterministic checks prove package structure; controlled runs are required for b
 
 - fully specified requests completed without engineering questions;
 - genuine product choices surfaced before dependent work began;
-- a flaky failure diagnosed without retrying, skipping, or weakening the assertion;
-- a plausible fix rejected because its test also passed against unfixed code;
-- a multi-capability plan split into independently verifiable units.
+- a flaky failure was diagnosed without retrying, skipping, or weakening the assertion;
+- a plausible fix was rejected because its test also passed against unfixed code;
+- a multi-capability plan was split into independently verifiable units.
 
-These are observations, not a reliability rate. The project does not retain every transcript, public adoption is still limited, and comparative advantage over a base agent is `UNVERIFIED`. See the [evidence matrix](docs/evidence.md) for the method, supported claims, and failures.
+These are observations, not a reliability rate. The project does not retain every transcript, public adoption is still limited, and comparative advantage over a base agent or another framework is `UNVERIFIED`. See the [evidence matrix](docs/evidence.md) for the method, supported claims, and failures.
 
 ## Limits
 
-SkipHow is an instruction package, not a workflow engine or control plane. Claude Code or Codex supplies the runtime, sandbox, tools, permissions, sessions, credentials, and any subagents. SkipHow cannot create capabilities the host does not provide.
+SkipHow provides orchestration policy as Markdown instructions. It does not provide execution infrastructure. Claude Code or Codex supplies the runtime, sandbox, tools, permissions, sessions, credentials, and any subagents. SkipHow cannot create capabilities the host does not provide.
 
 Delegation and behavior built on it remain `UNVERIFIED`: the controlled pass did not spawn a delegate, so concurrent lanes, isolated worktrees, and separately integrated units are not claimed as demonstrated. General automatic skill-selection reliability is also unmeasured.
 
-Use a spec/workflow framework when approving the method is part of your job. Use a runtime orchestrator when you need durable scheduling, budgets, leases, or a persistent team of agents. Use no extra layer when your base agent already maintains the same boundary reliably.
+Use a spec or workflow framework when approving the method is part of your job. Use a runtime orchestrator when you need durable scheduling, queues, budgets, leases, or a persistent team of agents. Use no extra layer when your base agent already maintains the same boundary reliably.
 
 ## Read more
 
+- [Product site](https://mzored.github.io/SkipHow/)
 - [Owner guide](docs/guide.md), for installation, authority, and report behavior
 - [FAQ](docs/faq.md)
+- [Comparison](https://mzored.github.io/SkipHow/compare/)
 - [Prior art](docs/prior-art.md), for mechanisms kept and rejected
 - [Design](docs/design.md) and [decision history](docs/decisions.md)
 - [Current evidence](docs/evidence.md), for what is demonstrated and what is not

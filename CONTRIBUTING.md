@@ -28,7 +28,7 @@ python scripts/check.py --pytest tests/test_package.py -q
 - Update `docs/decisions.md` when evidence changes architecture, the product contract, or security policy. Update `docs/evidence.md` when supported claims or known limits change. Link to durable source material instead of adding one file per run or release.
 - `scripts/check.py` validates one top-level owner skill, recursive reachability of every Markdown file under its `references/` library, the required continuity-hook metadata and accepted command shape, aligned versions, and the personal-path and provider-model-ID boundaries it scans. Do not reintroduce fixed method counts, role sets, model tiers, prose spellings, or word budgets. Record package-invariant changes and their evidence in `docs/decisions.md`, then update the check in the same change.
 - Preserve upstream license, copyright, path, and inspected revision whenever a method copies or adapts source text. Record borrowed ideas and rejected alternatives in [the design](docs/design.md) and [decision history](docs/decisions.md).
-- Write direct English prose. Use active voice, sentence-case headings, straight quotes, and concrete claims.
+- Write direct English prose. Use active voice, sentence-case headings, straight quotes, and concrete claims. Open each method with a scope line repeating the trigger `SKILL.md` carries for it, give any file over roughly four hundred words subheadings, keep one idea to a sentence, and use a list only where the content is already a set. No em dashes; prefer two sentences to a semicolon.
 
 ## Verify a pull request
 

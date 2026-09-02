@@ -1,6 +1,6 @@
 # Design
 
-SkipHow is a small instruction package for strong coding agents. It is not a scheduler, database, model router, or replacement for host permissions.
+SkipHow is an adaptive, instruction-level orchestration layer for strong coding agents. It supplies the policy for understanding an outcome, choosing the engineering method, coordinating work, and proving completion. It is not a scheduler, database, model runner, control plane, or replacement for host permissions.
 
 ## Package shape
 
@@ -28,7 +28,9 @@ Methods are not routes or stages. The owner does not choose them. The agent can 
 
 ## Host boundary
 
-Codex and Claude Code supply execution, permissions, tools, credentials, sessions, and continuation. SkipHow uses those capabilities without pretending to provide them.
+Codex and Claude Code supply execution, permissions, tools, credentials, sessions, subagents, and continuation. SkipHow uses those capabilities without pretending to provide them.
+
+This separates orchestration policy from the runtime. SkipHow tells the host agent how to plan, select methods, decompose, delegate, review, and reconcile when the request calls for those acts. The host runs the model and tools. A control plane, if one exists, owns durable workers, queues, scheduling, leases, budgets, and deployment.
 
 The package includes one continuity hook. It prints a short load or reload reminder for startup, clear, compact, and resume events. The hook does not load the skill, restore context, write project state, or change permissions.
 

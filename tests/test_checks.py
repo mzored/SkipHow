@@ -65,9 +65,14 @@ def test_local_package_and_document_checks_pass() -> None:
     ("old", "new", "expected"),
     [
         (
-            '<meta property="og:image:alt" content="SkipHow: own the product, let the agent own the engineering.">',
+            '<meta property="og:image:alt" content="SkipHow: outcome-first orchestration for Claude Code and Codex.">',
             "",
             "must describe its Open Graph image",
+        ),
+        (
+            '<meta property="og:image:width" content="1280">',
+            '<meta property="og:image:width" content="1200">',
+            "og:image:width must be 1280",
         ),
         (
             'class="button secondary repository-cta"',
@@ -83,6 +88,11 @@ def test_local_package_and_document_checks_pass() -> None:
             '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">',
             "",
             "must declare the responsive viewport",
+        ),
+        (
+            "Outcome-first orchestration for coding agents",
+            "Method selection for coding agents",
+            "title must name outcome-first orchestration",
         ),
     ],
 )
