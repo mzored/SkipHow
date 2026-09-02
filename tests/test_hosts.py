@@ -89,6 +89,7 @@ def test_plain_marketplace_matches_exact_candidate_and_rejects_repositories(
     tmp_path: Path,
 ) -> None:
     source = hosts._plain_marketplace(tmp_path / "plain", "codex")
+    assert not (source / ".agents/skills").exists()
     assert hosts.verify_plain_marketplace_source(str(source), "codex")[0]
     (source / ".git").mkdir()
     passed, output = hosts.verify_plain_marketplace_source(str(source), "codex")
