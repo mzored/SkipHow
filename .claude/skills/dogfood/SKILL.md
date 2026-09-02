@@ -36,9 +36,13 @@ Aim at whatever the question is about. Usually some of:
 
 - **Which package version ran**, and what its text said at the time. Compare against that version from git
   history, never against the current tree.
-- **What reached the agent's context.** This one inverts conclusions when you get it wrong: a file path
-  appearing in a command is not proof the file's text reached the agent. Searching a file puts matching lines
-  in context, not the rule. Look for the wording itself.
+- **What reached the agent's context.** This one inverts conclusions when you get it wrong, in both
+  directions. A file path appearing in a command is not proof the file's text reached the agent, and searching
+  a file puts matching lines in context rather than the rule. The other direction is easier to miss: a path
+  pattern under-counts, because `cd .../references && cat tracked-work.md` never contains the string
+  `references/tracked-work.md`. Search for the file's own opening sentence instead. A path-based scan once
+  reported zero loads where there were several, and the wrong number was already in front of the owner before
+  it was caught.
 - **What the owner actually asked**, in their own words. Owner input arrives through more than one channel, so
   do not read only the obvious one or you will miss turns, including the moment permission widened.
 - **What it cost.** Elapsed time, tokens, and how much of both went to subagents. Transcripts carry per-message
@@ -59,6 +63,28 @@ honest default, not a failure.
 Count honestly and in whole sessions, and pool only sessions where the same text governed. Two deviations in
 one session are one observation. A finding the run noticed and silently dropped leaves no trace, so anything
 that looks like conformance is an upper bound.
+## Reproduce before naming a cause
+
+A pattern across installed sessions is an observation, not a cause. Before saying which sentence produced it,
+run the failing case with everything held fixed but the package, and run it on the unchanged package too. It
+may not reproduce: a field failure seen in eighteen long sessions loaded fine in every isolated run of the same
+package, which located the cause somewhere in what those sessions carry and not in the wording that was about
+to be changed. That is a result worth having and it is cheaper than shipping the wrong fix.
+
+Two mechanics that are easy to get wrong and quietly invalidate the run:
+
+- **Prove the candidate is the package under test, from the transcript.** Do not take the model's own
+  inventory of what it loaded: asked, it went and read the disk and named the installed plugin path, which
+  says nothing about what was in its context. The base directory the skill itself reports is the evidence,
+  and it must point at the candidate rather than the host's plugin cache.
+- **Isolate the other host before asking it to review.** Pointing only its own home at a scratch directory is
+  not enough; it also reads a host-agnostic user skill directory, so it will load the maintainer's personal
+  skills and the installed package it is supposed to be judging. Point the operating system home there as
+  well, copy in only the credentials, and check the session header before trusting the output.
+
+A cross-host review round converges when it is told what earlier rounds settled and what was refused, and told
+not to raise those again. Without that it re-proposes them, and the rounds do not end.
+
 ## Design the fix
 
 Only when the evidence names a defect in the package's own wording. A verdict of `UNVERIFIED`, a run that
@@ -88,6 +114,27 @@ in something the kernel reserves for them.
 
 One session can prove wording is broken. It cannot prove that agents in general need a new procedure. Resist
 adding steps, gates, or ceremony on that basis, here or in the package.
+
+## Review it on the other host
+
+A change to the shipped instructions gets a review from Codex before it is finished. The mechanics are
+settled; do not re-derive them each time.
+
+    codex exec --sandbox read-only -c model_reasoning_effort=high "$(cat prompt.md)" </dev/null > out.log 2>&1
+
+The `</dev/null` is required or it waits on stdin forever. Do not pass `-m`: a named model is refused on a
+ChatGPT account, and the default is the working one. `timeout` does not exist on this machine. Read the
+verdict from the `codex` marker in the log to the end; everything above it is the session banner and the
+tool calls.
+
+Give it the branch and let it read the files itself rather than pasting a diff. Put the qualifying and
+disqualifying bars from `AGENTS.md` in the prompt, because without them it returns rephrasings. Ask for
+where, which category, and what breaks.
+
+Confirm every finding against the file yourself before acting, and check the history rather than the current
+tree: `git log -S "<the sentence>"` tells you which release a sentence entered, which is how you find out
+that the run you are blaming ran on text that did not exist yet. Record what was confirmed and what was
+refused, with the reason, in the release notes.
 
 ## Report
 

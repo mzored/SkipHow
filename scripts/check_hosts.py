@@ -129,12 +129,12 @@ def _marketplace_manifest(host: str) -> tuple[str, Path]:
 
 
 def _plain_marketplace(destination: Path, host: str) -> Path:
-    _marketplace_manifest(host)
-    metadata = ".agents" if host == "codex" else ".claude-plugin"
-    _payload(ROOT / metadata)
+    manifest, candidate_manifest = _marketplace_manifest(host)
     _payload(PLUGIN_ROOT)
     destination.mkdir(parents=True, exist_ok=False)
-    shutil.copytree(ROOT / metadata, destination / metadata, symlinks=True)
+    destination_manifest = destination / manifest
+    destination_manifest.parent.mkdir(parents=True, exist_ok=False)
+    shutil.copy2(candidate_manifest, destination_manifest)
     shutil.copytree(PLUGIN_ROOT, destination / "plugins/skiphow", symlinks=True)
     _payload(destination)
     return destination
