@@ -1,6 +1,6 @@
 # Campaign direction
 
-Use this for a multi-unit technical direction when live evidence shows repeated repairs, competing implementations of one product behavior, or internal machinery delaying the outcome it protects or expanding after its stated target was met. It also opens on technical and process growth without new evidence of the requested result, on a unit that must create a new prerequisite of its own before it can finish, and when the current integration and verification path cannot absorb the active work. Measure the direction against the owner's requested result. Inspect only the proposed or active work. Do not turn this check into a repository survey or absorb adjacent cleanup.
+Use this for multi-unit work, active or recorded, where live evidence shows repeated repairs, competing implementations of one product behavior, or internal machinery delaying the outcome it protects or expanding after its stated target was met. It also opens on technical and process growth without new evidence of the requested result, on a unit that must create a new prerequisite of its own before it can finish, and when the current integration and verification path cannot absorb the active work. Measure the direction against the owner's requested result. Inspect only the proposed or active work. Do not turn this check into a repository survey or absorb adjacent cleanup.
 
 ## Recovering the premise
 
