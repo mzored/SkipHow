@@ -13,7 +13,7 @@ All notable changes to SkipHow 2.x appear in this file. Earlier release notes re
 
 - `execution-health` states that a wait holding the root's own turn open is a stop rather than a wait. The method already preferred the host's event mechanism to repeated status reads. One session blocked twice on a foreground sleep loop, for roughly fifty-four minutes with six delegates live, which is thirty-five per cent of its span, and the owner stopped it.
 
-Whether these triggers change what later runs load remains `UNVERIFIED`. The field scan measures the old wording's reach, not the new wording's effect.
+Three sessions on the released tree, differing from the candidate arm in one file, put `delegation` in context before the first spawn in two of three and in both that selected the skill, against none of three for the method-list line alone. Five of fifteen spawns named a level, against none. One run opened the method, named "ordinary level" in its own message, and passed no level in any of its five dispatches, so the obligation is measured to get the file opened and not to produce the routing. Whether the method's rules hold once it is open stays `UNVERIFIED`. See `docs/evidence.md`.
 
 ## 2.14.0 (2026-09-02)
 
