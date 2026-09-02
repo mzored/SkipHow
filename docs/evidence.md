@@ -196,6 +196,14 @@ Three more sessions ran the same way on the shipped 2.15.1 tree, which adds the 
 
 `execution-health` opened in none of the twelve runs. Its trigger names a step that could take real time, and nothing in a five-defect fixture is one.
 
+### One rule with two homes had already drifted
+
+Version 2.16.0 compared every sentence of seven words or more in the kernel and the twenty-three methods against every other, 865 sentences and 373,680 pairs, ranked by shared vocabulary. Forty-nine pairs passed the threshold and four were one rule with two homes. Of the remaining forty-five, nineteen pair a method-list trigger with the scope line that repeats it, thirteen pair a kernel invariant with the technique beneath it, and thirteen are two methods stating adjacent rules in their own terms.
+
+One of the five had already drifted, which is the evidence for the rule rather than an argument for it. `tracked-work` said an item the code has already overtaken is reported as done rather than redone; `advancing-tracked-work` said it closes as done rather than being rebuilt. Reporting and closing are different acts, and closing needs a write grant that reporting does not. Nobody edited both.
+
+A sixth, the regression-observation rule stated twice inside `testing` under two different qualifiers, scored below the threshold because the two statements share almost no vocabulary. It was found by reading. That is the measured limit of the scan: it finds repetition, not restatement.
+
 ### Long installed runs kept waking without new evidence
 
 A 2026-08-30 audit examined four large installed Codex task trees from the maintainer's own projects. The three largest roots made 1,785 delegate wait calls. Of those, 855 expired with an explicit timeout and no mailbox activity. For two roots, each timeout was joined by call identifier to its result and then to the next model turn, with any interval containing another message excluded. All 472 unchanged timeouts qualified. The following turns processed 62,931,387 input tokens, 62,568,704 of them cached. This is repeated context traffic, not unique tokens. Six root compactions occurred across roughly 43 hours, so the larger repeated cost was waking and reprocessing a large root context rather than compaction itself.

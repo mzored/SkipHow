@@ -16,11 +16,11 @@ Write the failing test first when it provides a useful red signal and the needed
 
 ## Regression tests
 
-A regression test should close the class of bug, not the one reproduction. Observe it failing against the unfixed code before trusting it. Confirm the failure message names the invariant that was violated rather than reporting that something was not true. Assert the rule the defect broke rather than the literal inputs that exposed it, and place the test at the lowest layer that owns that rule. When a bad value crossed several boundaries, cover each boundary it crossed.
+A regression test should close the class of bug, not the one reproduction. Observe it failing against the unfixed code before trusting it. Where reproducing the defect is unsafe or impractical, say so rather than assuming the test would have failed. Confirm the failure message names the invariant that was violated rather than reporting that something was not true. Assert the rule the defect broke rather than the literal inputs that exposed it, and place the test at the lowest layer that owns that rule. When a bad value crossed several boundaries, cover each boundary it crossed.
 
 ## How much to run
 
-Run the focused test and any broader suite the change can realistically affect. Confirm a regression test would have failed without the fix when that check is safe and practical. Keep tests that protect behavior. Remove only temporary harnesses and implementation-coupled checks owned by this work.
+Run the focused test and any broader suite the change can realistically affect. Keep tests that protect behavior. Remove only temporary harnesses and implementation-coupled checks owned by this work.
 
 Scale verification to what the change can reach rather than rerunning everything after every edit. Start with the smallest targeted check that covers the change. Widen to the affected module or contract, then to cross-boundary behavior where the change crosses one. Widen last to whatever the repository requires before the work is integrated. Rerun anything a rebase, merge, dependency change, or generated artifact has invalidated.
 

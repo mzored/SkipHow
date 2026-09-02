@@ -118,7 +118,13 @@ Version 1.12 had this as cross-host escalation with named commands, and 2.0 remo
 
 Version 2.4.2 tried to make the rule execute and failed, which is worth recording so the next attempt starts further along. Ten runs on an order service that charges the card inside the same transaction as the warehouse call — a decision that commits the project to a schema, a retry loop, and an operational dependency — produced ten sound transactional-outbox designs and not one outside read, five runs on each host, with `technical-design` demonstrably open in all five on Codex. Three kernel wordings were tried and discarded: the read as a condition of finishing, the same with the host's own delegate named, and the same as a step before building on the decision. None changed the behavior on either host, and none of the runs mentioned the rule. What the runs did say points at the trigger rather than the wording: each treated its own choice as ordinary and cheap to reverse, and one listed its remaining choices as "both reversible". "Expensive to undo" is the agent's own estimate of its own decision, which is the shape 1.9.0 identified as unusable. So nothing was promoted, the rule stays where it was, and the behavior stays `UNVERIFIED`. A future attempt should replace the trigger, not restate the duty.
 
-Revisit this if a trigger appears that a run can evaluate without grading its own decision, if receipts show the outside read returning agreement without finding anything, or if its cost exceeds the rework it prevents.
+Version 2.16.0 makes that replacement. The read is owed whenever the choice adds or replaces something the project then keeps: a dependency, a service, a schema, a data migration, a public interface, or custom code chosen over a maintained alternative. Each of those is a fact about the change in hand rather than a grade the run gives its own judgment, and the method's own trigger already bounds when the question arises at all, so the rule reaches no further than it did. The sentence also gains an actor. It read "a decision that is expensive to undo gets one read", which told nobody to take one; it now tells the agent to take it. `campaign-direction` keyed its pointer to the same estimate and now keys it to the same fact.
+
+The new evidence that reopens a settled argument comes from this release's own delegate receipts rather than from the design area. A rule keyed to an act fired where the same rule keyed to a judgment about work shape did not, measured three runs to three. That is the same distinction the 2.4.2 note asked a future attempt to make, in a different part of the package.
+
+Recording a decision still keys on being expensive to reverse. That rule has no receipts against it, and widening it to every kept dependency would add a record to ordinary work on nothing but symmetry.
+
+Revisit this if receipts show the outside read returning agreement without finding anything, if it fires on work too small to be worth it, or if its cost exceeds the rework it prevents.
 
 ## Ordering applies only to work that competes
 
@@ -343,6 +349,18 @@ The project removed a live evaluation harness because it could mutate repositori
 Version 2.4.0 produced the first receipts since 2.0 by holding the package fixed and varying nothing else: a throwaway fixture repository per run, a host home containing only the candidate skill tree, no user-level skills, and the same prompt before and after a change. That is enough to show a defect and to show it gone. It is not a reliability rate, and one host's behavior is not the other's.
 
 Revisit automated evaluation when a host offers repository-preserving runs against an exact installed package with trustworthy receipts.
+
+## One rule, one home, and a pointer at the point of use
+
+A rule stated in two files drifts at the first edit to either. Version 2.16.0 applied the package's own rule to the package. A cross-file scan of every normative sentence found five rules with two homes: the kernel's isolated-checkout invariant repeated word for word in a method, the stop-and-resume rule for an anomalous work stream in two methods, item reconciliation stated in both tracked-work methods and already drifted between closing an overtaken item and reporting it, the stalled-lane rule in three places, and the regression-observation rule twice inside one method with two different qualifiers.
+
+Each now has one home and, where the act happens somewhere else, a pointer at the act rather than a copy of the rule. The distinction the scan settles on is whether a sentence carries the rule's content or names the rule and says where it lives. The second is not a second home, and it is what keeps a rule reachable from the file that actually opens at the moment it applies. The first is what drifts.
+
+The verbatim kernel repetition is the clearest case and the one that shows the cost: the kernel is always loaded, so a method restating a kernel invariant word for word buys nothing and can only fall out of step with it.
+
+Two kernel rules that `tracked-work` restates were deliberately left in place: an item exists before the branch, and an item closes on integration. Each opens the section whose mechanics depend on it, 2.8.0 argued that placement as three options and chose it, the copies do not disagree, and nothing shows them drifting. Symmetry with the four fixed here is not new evidence, and reopening a settled argument without new evidence is what this record exists to prevent.
+
+Revisit this if a pointer is found to have left a rule unreachable, or if a scan finds new duplication that a release introduced.
 
 ## Keep the current tree current
 

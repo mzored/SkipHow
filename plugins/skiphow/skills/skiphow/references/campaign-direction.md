@@ -10,7 +10,7 @@ For an existing direction, count evidence produced or discovered since the premi
 
 ## The read
 
-When the signal appears during decomposition's existing cold read, include the direction there. Otherwise read the owner's outcome, live constraints, proposed or recorded units, recent repairs and conflicts, current product evidence, and relevant maintained capabilities without adopting the argument that produced the plan. Name the simplest coherent direction, which work to keep, replace, or retire, and what evidence would make that answer wrong. Do not add a second review pass. When replacing the direction would be expensive to undo, use [technical design](technical-design.md)'s existing independent read for that replacement decision.
+When the signal appears during decomposition's existing cold read, include the direction there. Otherwise read the owner's outcome, live constraints, proposed or recorded units, recent repairs and conflicts, current product evidence, and relevant maintained capabilities without adopting the argument that produced the plan. Name the simplest coherent direction, which work to keep, replace, or retire, and what evidence would make that answer wrong. Do not add a second review pass. When the replacement adds or replaces something the project then keeps, use [technical design](technical-design.md)'s existing outside read for that decision.
 
 ## Choosing the direction
 
@@ -32,4 +32,4 @@ Readiness does not create admission capacity. Admit only as many independent uni
 
 When a direction signal appears, stop affected lanes at their next safe boundary, keep independent work moving, and reconcile what active lanes established. Do not interrupt a non-idempotent external action halfway through.
 
-Where the request authorizes the affected records, correct or supersede them before recomputing the frontier. Otherwise report what the evidence invalidated. If the evidence opens a product choice, leave dependent records blocked on the owner's answer instead of rewriting the product outcome. Resume only after the technical cause is addressed, at the capacity current evidence supports. Without new evidence, continue without re-arguing settled direction.
+Where the request authorizes the affected records, correct or supersede them before recomputing the frontier. Otherwise report what the evidence invalidated. If the evidence opens a product choice, leave dependent records blocked on the owner's answer instead of rewriting the product outcome. Resume under [execution health](execution-health.md), which owns stopping a stream and starting it again. Without new evidence, continue without re-arguing settled direction.

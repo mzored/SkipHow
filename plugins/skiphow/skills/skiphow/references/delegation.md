@@ -6,7 +6,7 @@ Use this before dispatching a delegate, and for work run across several units. [
 
 Run the work as a graph, not a list. Take the blocking edges [decomposition](decomposition.md) established, or read them off work that arrived already split. A part is ready when nothing it needs is outstanding, whatever order you imagined for it.
 
-Readiness is not capacity. Start only ready units that the run can keep isolated, integrate as each lands, and revalidate against current live state without sibling work invalidating their evidence. Recompute the ready set and the available capacity after each result. A lane that has stopped making measurable progress is stopped and diagnosed, not waited on. Do not wait for a whole tier, and do not fill every ready lane merely because it exists.
+Readiness is not capacity. Start only ready units that the run can keep isolated, integrate as each lands, and revalidate against current live state without sibling work invalidating their evidence. Recompute the ready set and the available capacity after each result. Stop and diagnose a lane that has stopped making measurable progress, under [execution health](execution-health.md), rather than waiting on it. Do not wait for a whole tier, and do not fill every ready lane merely because it exists.
 
 Serialize parts that would change the same shared surface even when nothing else blocks them. Concurrent edits to one file, interface, schema, or migration cost more to reconcile than they save.
 
@@ -20,7 +20,7 @@ A delegate knows only what its brief says, so a rule you did not write into the 
 
 ## The level each delegate runs at
 
-Match the capability and effort each delegate runs at to its own work rather than to whatever the host would pick for it. The session runs on what the owner chose. A delegate runs on what its own work needs, named explicitly. Check what this host does with a delegate whose level is unset before relying on it. Where the default is to inherit the session, saying nothing is not neutral: the level chosen for the hardest judgment in a request silently becomes the floor for every mechanical lane under it.
+Match the capability and effort each delegate runs at to its own work rather than to whatever the host would pick for it. The session runs on what the owner chose. A delegate runs on what its own work needs, set in the dispatch itself. Naming the level in your own message is not setting it. Check what this host does with a delegate whose level is unset before relying on it. Where the default is to inherit the session, saying nothing is not neutral: the level chosen for the hardest judgment in a request silently becomes the floor for every mechanical lane under it.
 
 Match the level to what the work demands, not to how important the change feels.
 
@@ -31,7 +31,7 @@ Match the level to what the work demands, not to how important the change feels.
 
 A weaker level on ambiguous work can spend more turns than the level it saved, and return something that reads finished. Where a brief cannot state its own completion condition precisely, raise the level or split the work rather than routing it down. Routing down is a judgment about how well the work is specified, not a budget target.
 
-Hosts expose this differently, so read the control the current one actually offers instead of assuming. Where a host takes a per-delegate model, name it. Where it takes only a reasoning or effort setting, that setting carries the routing and the levels above collapse onto it. Where it exposes no per-delegate control at all, the levels are not available and the choice is only whether to delegate.
+Hosts expose this differently, so read the control the current one actually offers instead of assuming. Where a host takes a per-delegate model, set it in the call. Where it takes only a reasoning or effort setting, that setting carries the routing and the levels above collapse onto it. Where it exposes no per-delegate control at all, the levels are not available and the choice is only whether to delegate.
 
 ## What comes back
 

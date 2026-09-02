@@ -2,6 +2,22 @@
 
 All notable changes to SkipHow 2.x appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 2.16.0 (2026-09-02)
+
+### Changed
+
+- The outside read on a consequential technical decision names an actor and fires on a fact. `technical-design` said that a decision expensive to undo "gets one read from a context that did not produce it", which told nobody to take one and keyed the duty to the run's own estimate of its own choice. Ten runs in 2.4.2 produced ten sound designs and no outside read, each judging its decision cheap to reverse, and three kernel rewordings changed nothing. The read is now owed whenever the choice adds or replaces something the project then keeps: a dependency, a service, a schema, a data migration, a public interface, or custom code chosen over a maintained alternative. `campaign-direction` keyed its pointer to the same estimate and now keys it to the same fact.
+- `delegation` says to set the delegate's level in the dispatch rather than to name it, and to set the host's per-delegate control rather than to name the model. In the 2.15.0 receipts one run opened the method, wrote that each lane would run at ordinary level, and passed no level in any of its five dispatches. "Named explicitly" was satisfied by saying it.
+- Five rules that had two homes now have one, found by scanning every normative sentence in the package against every other. The kernel's isolated-checkout invariant was repeated word for word in `advancing-tracked-work`. Stopping and resuming an anomalous work stream was stated in both `execution-health` and `campaign-direction`. Reconciling an item was stated in both tracked-work methods and had already drifted, one saying an item the code has overtaken closes as done and the other that it is reported as done. The stalled-lane rule stood in three files. `testing` stated the regression-observation rule in two sections under two different qualifiers.
+- Where the act happens in a different file from the rule's home, the point of use now carries a pointer rather than a copy. `testing` keeps the regression rule once, in the section that owns regression tests, and says what to do when reproducing the defect is unsafe or impractical instead of leaving that as an escape clause attached to a second copy.
+
+### Evidence
+
+- The duplication was found mechanically and every disposition was made by hand. Every sentence of seven words or more in the kernel and the twenty-three methods was compared with every other, 865 sentences and 373,680 pairs. Forty-nine pairs passed the similarity threshold and four of them were second homes. Of the rest, nineteen are the intended pairing between a method-list trigger and the scope line repeating it, thirteen are a kernel invariant with the technique under it, and thirteen are two methods stating adjacent rules in their own terms. The fifth fix, the regression duplication inside `testing`, scored below the threshold because its two statements share almost no vocabulary; it was found by reading, which is where the scan ends.
+- Two kernel rules that `tracked-work` restates as the premise of its own sections were left alone: an item exists before the branch, and an item closes on integration. Version 2.8.0 argued that placement as three options and chose it, the two copies do not disagree, and no receipt shows them drifting. Reopening it on symmetry alone is what this project's own record tells a release not to do.
+- No receipt covers the new outside-read trigger. The failure it answers is measured, ten runs to zero on both hosts, and the replacement is reasoning from the text. Whether naming a fact rather than a self-estimate gets the read taken is `UNVERIFIED`.
+- Package checks: `scripts/check.py` passed and `git diff --check` is clean. Claude package validation passed. Codex package validation is `UNVERIFIED`; this machine has no Codex plugin validator.
+
 ## 2.15.1 (2026-09-02)
 
 ### Changed

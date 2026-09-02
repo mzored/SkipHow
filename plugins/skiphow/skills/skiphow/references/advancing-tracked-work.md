@@ -20,7 +20,7 @@ A recorded order you believe is wrong is a reason to run [prioritization](priori
 
 Reconcile the technical direction as well as the items before taking the frontier. When live state shows repeated repairs at one boundary, competing implementations of one product behavior, or growing technical and delivery machinery without new evidence of the requested result, apply [campaign direction](campaign-direction.md) before admitting more work. Supersede affected technical records and recompute the frontier before executing more of that direction. Do not reopen settled direction without one of those signals. Recorded work is evidence of intent, not proof that its technical direction is still right.
 
-Reconcile each item before acting too. An item the code has already overtaken closes as done rather than being rebuilt. An item whose stated outcome no longer matches live project state is corrected in the record before work starts, not after. An item the project has marked as waiting on a decision belongs to whoever makes that decision. Check whether the current product settles it, and where it does not, leave it and move on. Supplying the answer yourself is the failure this rule exists to prevent, and clearing the note while doing it hides that it happened.
+Reconcile each item before acting too. Correct an item in the record before work starts, not after, where its stated outcome no longer matches live project state. Take an item the code has already overtaken, and one the project has marked as waiting on a decision, to [tracked work](tracked-work.md), which settles both.
 
 ## Leaving the frontier
 
@@ -30,7 +30,7 @@ Closing lands on integration under the kernel's rule. In a project that integrat
 
 ## Running items in parallel
 
-Independent frontier items may run concurrently, one delegate each, under [delegation](delegation.md), but independence does not prove admission capacity. Use [campaign direction](campaign-direction.md) when active work is outrunning integration and verification. Concurrent writing lanes each need their own isolated checkout. Do not run two items that touch the same behavior in parallel, however independent their records claim to be. The tracker records intent, not the code they will both edit.
+Independent frontier items may run concurrently, one delegate each, under [delegation](delegation.md), but independence does not prove admission capacity. Use [campaign direction](campaign-direction.md) when active work is outrunning integration and verification. Do not run two items that touch the same behavior in parallel, however independent their records claim to be. The tracker records intent, not the code they will both edit.
 
 ## What the pass may change
 
@@ -40,6 +40,6 @@ An item's stated outcome bounds what this pass delivers. It does not decide what
 
 Stop when the frontier is empty, or when everything on it that reaches the result is blocked on a decision only the owner can make, an action only they can grant, or an external party. Do not stop at the first such block. Set it aside, carry on with what remains takeable and still reaches the result, and bring the accumulated questions back in one round rather than one at a time.
 
-When nothing takeable reaches the result, the run ends there with the batch. Filling that wait with enabling work the request did not name is the failure this rule exists to prevent, and the report says what was deliberately not taken and why. A lane that has stopped making measurable progress is stopped and diagnosed under [execution health](execution-health.md), not waited on and not retried a fourth time.
+When nothing takeable reaches the result, the run ends there with the batch. Filling that wait with enabling work the request did not name is the failure this rule exists to prevent, and the report says what was deliberately not taken and why. Stop and diagnose a lane that has stopped making measurable progress, under [execution health](execution-health.md), rather than waiting on it.
 
 Report the run as one reconciliation against what the owner asked for: what closed or reached review and on what evidence, what is blocked and on whom, what was newly recorded, and what is still takeable. A list of items touched is not that report, because it does not say whether the owner can now do anything they could not do before.
