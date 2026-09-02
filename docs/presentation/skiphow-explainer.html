@@ -1,0 +1,2175 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Как работает SkipHow</title>
+<style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit}iframe{display:block;width:100%;height:calc(100vh - 2rem);margin:0 auto;border:0}</style>
+</head>
+<body>
+<iframe sandbox="allow-scripts" referrerpolicy="no-referrer" title="Как работает SkipHow" srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;ru&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27;; style-src &#x27;unsafe-inline&#x27;; img-src data:; frame-src &#x27;none&#x27;; object-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;&quot;&gt;
+&lt;title&gt;Как работает SkipHow&lt;/title&gt;
+&lt;style&gt;:root {
+  color-scheme: light dark;
+  background-color: var(
+    --background,
+    var(--color-background-primary, light-dark(rgb(255 255 255), rgb(24 24 24)))
+  ) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: var(
+    --color-background-primary,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --card: color-mix(in oklab, var(--foreground) 5%, var(--background));
+  --card-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --popover: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255), rgb(45 45 45))
+  );
+  --popover-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --primary: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --primary-foreground: var(
+    --color-text-inverse,
+    light-dark(rgb(255 255 255), rgb(13 13 13))
+  );
+  --secondary: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%))
+  );
+  --secondary-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: var(
+    --color-text-secondary,
+    light-dark(rgb(26 28 31 / 49.4%), rgb(255 255 255 / 49.8%))
+  );
+  --accent: var(
+    --color-background-info,
+    light-dark(rgb(229 242 255), rgb(13 39 63))
+  );
+  --accent-foreground: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --destructive: var(
+    --color-text-warning,
+    light-dark(rgb(226 85 7), rgb(255 133 73))
+  );
+  --border: var(
+    --color-border-secondary,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+  --input: var(
+    --color-border-primary,
+    light-dark(
+      rgb(26 28 31 / 11.8%),
+      color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+    )
+  );
+  --ring: var(
+    --color-ring-primary,
+    light-dark(rgb(51 156 255), rgb(131 195 255 / 76%))
+  );
+  --font-size-base: var(--font-text-md-size, 14px);
+  --blue: light-dark(rgb(51 156 255), rgb(51 156 255));
+  --orange: light-dark(rgb(226 85 7), rgb(251 106 34));
+  --green: light-dark(rgb(0 162 64), rgb(64 201 119));
+  --red: light-dark(rgb(224 46 42), rgb(255 103 100));
+  --purple: light-dark(rgb(146 79 247), rgb(173 123 249));
+  --yellow: light-dark(rgb(255 195 0), rgb(255 210 64));
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, &quot;Segoe UI&quot;, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, &quot;Liberation Mono&quot;,
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --radius: var(--border-radius-lg, 12.5px);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 17 17&#x27;%3E%3Cpath d=&#x27;M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z&#x27;/%3E%3C/svg%3E&quot;);
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+}
+
+:root[data-theme=&quot;light&quot;] {
+  color-scheme: light;
+}
+
+:root[data-theme=&quot;dark&quot;] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html &gt; body {
+  /* Preserve MCP aliases for older inline renderers without creating :root cycles. */
+  --color-background-primary: var(
+    --background,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --color-text-primary: var(
+    --foreground,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --color-border-secondary: var(
+    --border,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+
+  margin: 0;
+  padding: 5px;
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans) !important;
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: pointer;
+  font-weight: var(--font-weight-medium, 500);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+}
+
+.table :is(th, td) {
+  padding-block: 10px;
+  padding-inline: 0 24px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.table-responsive &gt; .table :is(th, td) {
+  overflow-wrap: break-word;
+}
+
+.table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.table :is(caption, thead th) {
+  font-weight: 600;
+}
+
+.table thead th {
+  padding-block: 8px;
+  border-bottom-color: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+
+.table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+
+.table.table-sm :is(th, td) {
+  padding-block: 6px;
+}
+
+.table.table-sm :is(th, td):not(:last-child) {
+  padding-inline-end: 16px;
+}
+
+.table :is(.text-end, [align=&quot;right&quot;]) {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.table :is(.text-center, [align=&quot;center&quot;]) {
+  text-align: center;
+}
+
+.table .text-nowrap {
+  white-space: nowrap;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: superellipse(1.5);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget &gt; :not(.card, .progress) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.progress {
+  display: flex;
+  height: 6px;
+  margin-block: calc((var(--line-height-normal, 1.5em) - 6px) / 2);
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+}
+
+.progress-bar {
+  height: 100%;
+  flex-shrink: 0;
+  border: 0;
+  background: var(--viz-series-1);
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls &gt; .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls &gt; .form-label &gt; :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type=&quot;file&quot;] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type=&quot;file&quot;]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type=&quot;file&quot;]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type=&quot;color&quot;] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: superellipse(1.5);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: &quot;&quot;;
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type=&quot;radio&quot;] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type=&quot;radio&quot;]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: &quot;&quot;;
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+  [aria-pressed=&quot;true&quot;],
+  [aria-selected=&quot;true&quot;],
+  .is-selected
+) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed=&quot;true&quot;], [aria-selected=&quot;true&quot;], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+@media (pointer: coarse) {
+  .btn,
+  .form-control,
+  .form-select {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .form-control,
+  .form-select {
+    font-size: max(16px, var(--font-size-normal));
+  }
+
+  .form-control[type=&quot;file&quot;]::file-selector-button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .form-control-color[type=&quot;color&quot;] {
+    width: 44px;
+    height: 44px;
+  }
+
+  .form-control:is(
+    [type=&quot;date&quot;],
+    [type=&quot;datetime-local&quot;],
+    [type=&quot;month&quot;],
+    [type=&quot;time&quot;],
+    [type=&quot;week&quot;]
+  ) {
+    min-width: 0;
+    max-width: 100%;
+    padding-block: 8px;
+  }
+
+  .form-check {
+    min-height: 44px;
+    padding-inline: 15px;
+  }
+
+  .form-check-input {
+    position: relative;
+  }
+
+  .form-check-input::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    content: &quot;&quot;;
+    transform: translate(-50%, -50%);
+  }
+
+  .form-check-label {
+    display: inline-flex;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+  }
+
+  .form-range {
+    height: 44px;
+    touch-action: pan-y;
+  }
+
+  .form-range::-webkit-slider-runnable-track {
+    height: 44px;
+  }
+
+  .form-range::-moz-range-track {
+    height: 44px;
+  }
+
+  .form-range::-webkit-slider-thumb {
+    margin-top: 12px;
+  }
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget &gt; svg {
+  width: 100%;
+}
+
+/* Model-authored chart rules can otherwise stretch icons after these styles load. */
+svg.lucide {
+  display: block;
+  width: 16px !important;
+  height: 16px !important;
+  flex: none;
+  margin: 0 !important;
+  stroke-width: 1.6;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html&gt;body{padding:0}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;section id=&quot;skiphow-explainer&quot; lang=&quot;ru&quot; aria-labelledby=&quot;sh-title&quot;&gt;
+  &lt;style&gt;
+    #skiphow-explainer {
+      --sh-ink: #1a1916;
+      --sh-canvas: #f5f0e8;
+      --sh-paper: #fbf8f3;
+      --sh-soft: #ebe4d8;
+      --sh-line: #b9ae9e;
+      --sh-accent: #d94b2b;
+      --sh-accent-text: #b43c20;
+      --sh-accent-soft: rgb(217 75 43 / 0.1);
+      --muted-foreground: #514c44;
+      color-scheme: light;
+      color: var(--sh-ink);
+      background: var(--sh-canvas);
+      width: 100%;
+      min-height: 100%;
+      scrollbar-color: var(--sh-accent) var(--sh-soft);
+    }
+
+    #skiphow-explainer * { box-sizing: border-box; }
+
+    #skiphow-explainer ::selection {
+      background: rgb(217 75 43 / 0.2);
+      color: var(--sh-ink);
+    }
+
+    #skiphow-explainer .sh-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--sh-line);
+    }
+
+    #skiphow-explainer .sh-head h2 {
+      margin: 0;
+      font-family: &quot;Iowan Old Style&quot;, &quot;Palatino Linotype&quot;, Palatino, serif;
+      font-weight: 500;
+      letter-spacing: -0.035em;
+    }
+
+    #skiphow-explainer .sh-mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      color: var(--sh-accent-text);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    #skiphow-explainer .sh-mark svg { width: 28px; height: 20px; }
+
+    #skiphow-explainer .sh-tabs,
+    #skiphow-explainer .sh-case-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.15rem 1.15rem;
+      padding: 0.8rem 0 0.7rem;
+      border-bottom: 1px solid var(--sh-line);
+    }
+
+    #skiphow-explainer button {
+      min-height: 40px;
+      padding: 0;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      border-radius: 0;
+      background: transparent;
+      color: var(--muted-foreground);
+      font: inherit;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    #skiphow-explainer button[aria-pressed=&quot;true&quot;] {
+      border-bottom-color: var(--sh-accent);
+      color: var(--sh-ink);
+    }
+
+    #skiphow-explainer button:hover {
+      border-bottom-color: rgb(217 75 43 / 0.5);
+      color: var(--sh-ink);
+    }
+
+    #skiphow-explainer button:focus-visible {
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--sh-accent) 28%, transparent);
+    }
+
+    #skiphow-explainer .sh-panel { padding-top: 1.2rem; }
+    #skiphow-explainer .sh-panel[hidden] { display: none; }
+
+    #skiphow-explainer .sh-caption {
+      margin: 0 0 1rem;
+      max-width: 72ch;
+      color: var(--muted-foreground);
+    }
+
+    #skiphow-explainer .sh-contract {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 64px minmax(0, 1fr);
+      align-items: stretch;
+      gap: 0.7rem;
+    }
+
+    #skiphow-explainer .sh-party,
+    #skiphow-explainer .sh-kernel,
+    #skiphow-explainer .sh-methods,
+    #skiphow-explainer .sh-host,
+    #skiphow-explainer .sh-boundary-band {
+      border: 1px solid var(--sh-line);
+      border-radius: 14px;
+      background: var(--sh-paper);
+    }
+
+    #skiphow-explainer .sh-party { padding: 1.15rem; }
+    #skiphow-explainer .sh-party h3,
+    #skiphow-explainer .sh-kernel h3,
+    #skiphow-explainer .sh-methods h3,
+    #skiphow-explainer .sh-host h3,
+    #skiphow-explainer .sh-boundary-band h3 {
+      margin: 0 0 0.65rem;
+      font-family: &quot;Iowan Old Style&quot;, &quot;Palatino Linotype&quot;, Palatino, serif;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+
+    #skiphow-explainer .sh-party ul,
+    #skiphow-explainer .sh-methods ul {
+      display: grid;
+      gap: 0.55rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    #skiphow-explainer .sh-party li,
+    #skiphow-explainer .sh-methods li {
+      padding-top: 0.55rem;
+      border-top: 1px solid var(--sh-line);
+    }
+
+    #skiphow-explainer .sh-party li:first-child,
+    #skiphow-explainer .sh-methods li:first-child { padding-top: 0; border-top: 0; }
+
+    #skiphow-explainer .sh-arrow {
+      display: grid;
+      place-items: center;
+      color: var(--sh-accent);
+    }
+
+    #skiphow-explainer .sh-arrow svg { width: 56px; height: 24px; overflow: visible; }
+
+    #skiphow-explainer .sh-contract-note {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      align-items: center;
+      gap: 0.8rem;
+      color: var(--muted-foreground);
+      text-align: center;
+    }
+
+    #skiphow-explainer .sh-contract-note::before,
+    #skiphow-explainer .sh-contract-note::after {
+      content: &quot;&quot;;
+      height: 1px;
+      background: var(--sh-line);
+    }
+
+    #skiphow-explainer .sh-architecture {
+      display: grid;
+      grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.45fr);
+      gap: 1rem;
+      align-items: stretch;
+    }
+
+    #skiphow-explainer .sh-host {
+      display: grid;
+      align-content: start;
+      gap: 0.8rem;
+      padding: 1.1rem;
+      border-style: dashed;
+    }
+
+    #skiphow-explainer .sh-host-items {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.45rem;
+    }
+
+    #skiphow-explainer .sh-host-items span,
+    #skiphow-explainer .sh-method-chip {
+      padding: 0.48rem 0.6rem;
+      border-radius: 9px;
+      background: var(--sh-soft);
+    }
+
+    #skiphow-explainer .sh-skill-stack {
+      display: grid;
+      gap: 0.7rem;
+      position: relative;
+    }
+
+    #skiphow-explainer .sh-kernel {
+      padding: 1.1rem;
+      border-color: var(--sh-accent);
+      background: var(--sh-accent-soft);
+    }
+
+    #skiphow-explainer .sh-kernel-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.4rem;
+    }
+
+    #skiphow-explainer .sh-kernel-grid span {
+      padding-top: 0.5rem;
+      border-top: 2px solid var(--sh-accent);
+    }
+
+    #skiphow-explainer .sh-methods { padding: 1.1rem; }
+
+    #skiphow-explainer .sh-method-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    #skiphow-explainer .sh-method-chip { color: var(--muted-foreground); }
+    #skiphow-explainer .sh-method-chip.sh-active {
+      background: var(--sh-accent-soft);
+      color: var(--sh-ink);
+      box-shadow: inset 0 0 0 1px var(--sh-accent);
+    }
+
+    #skiphow-explainer .sh-pull-note {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-top: 0.8rem;
+      color: var(--muted-foreground);
+    }
+
+    #skiphow-explainer .sh-pull-note svg { width: 42px; height: 18px; color: var(--sh-accent); }
+
+    #skiphow-explainer .sh-case-tabs { padding-top: 0; }
+
+    #skiphow-explainer .sh-case-flow {
+      display: grid;
+      grid-template-columns: repeat(11, minmax(0, 1fr));
+      align-items: center;
+      gap: 0.4rem;
+      padding-top: 1rem;
+    }
+
+    #skiphow-explainer .sh-case-node {
+      grid-column: span 2;
+      min-height: 132px;
+      padding: 0.9rem;
+      border: 1px solid var(--sh-line);
+      border-radius: 12px;
+      background: var(--sh-paper);
+    }
+
+    #skiphow-explainer .sh-case-node[data-state=&quot;accent&quot;] {
+      border-color: var(--sh-accent);
+      background: var(--sh-accent-soft);
+    }
+
+    #skiphow-explainer .sh-case-node .sh-node-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--muted-foreground);
+    }
+
+    #skiphow-explainer .sh-case-node strong { font-weight: 500; }
+
+    #skiphow-explainer .sh-case-arrow {
+      grid-column: span 1;
+      color: var(--sh-accent);
+    }
+
+    #skiphow-explainer .sh-case-arrow svg { width: 100%; height: 22px; overflow: visible; }
+
+    #skiphow-explainer .sh-case-result {
+      margin-top: 1rem;
+      padding: 0.85rem 1rem;
+      border-top: 1px solid var(--sh-line);
+      color: var(--muted-foreground);
+    }
+
+    #skiphow-explainer .sh-boundaries { display: grid; gap: 0.7rem; }
+
+    #skiphow-explainer .sh-boundary-band {
+      display: grid;
+      grid-template-columns: minmax(150px, 0.45fr) minmax(0, 1.55fr);
+      gap: 1rem;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    #skiphow-explainer .sh-boundary-band h3 { margin: 0; }
+    #skiphow-explainer .sh-boundary-band p { margin: 0; }
+
+    #skiphow-explainer .sh-boundary-band.sh-core {
+      border-color: var(--sh-accent);
+      background: var(--sh-accent-soft);
+    }
+
+    #skiphow-explainer .sh-protected {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 54px minmax(0, 1fr);
+      align-items: center;
+      gap: 0.65rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--sh-line);
+    }
+
+    #skiphow-explainer .sh-lock {
+      display: grid;
+      place-items: center;
+      color: var(--sh-accent);
+    }
+
+    #skiphow-explainer .sh-lock svg { width: 34px; height: 34px; }
+
+    #skiphow-explainer .sh-protected strong { font-weight: 500; }
+    #skiphow-explainer .sh-protected span { color: var(--muted-foreground); }
+
+    #skiphow-explainer .sh-tech {
+      display: grid;
+      gap: 1.2rem;
+    }
+
+    #skiphow-explainer .sh-tech-entry {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 38px minmax(0, 1fr) 38px minmax(0, 1fr) 38px minmax(0, 1fr);
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    #skiphow-explainer .sh-tech-node {
+      grid-column: span 1;
+      min-height: 118px;
+      padding: 0.85rem;
+      border: 1px solid var(--sh-line);
+      border-radius: 12px;
+      background: var(--sh-paper);
+    }
+
+    #skiphow-explainer .sh-tech-node.sh-tech-core {
+      border-color: var(--sh-accent);
+      background: var(--sh-accent-soft);
+    }
+
+    #skiphow-explainer .sh-tech-node span,
+    #skiphow-explainer .sh-lane span,
+    #skiphow-explainer .sh-parallel-step span {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--muted-foreground);
+    }
+
+    #skiphow-explainer .sh-tech-node strong,
+    #skiphow-explainer .sh-lane strong,
+    #skiphow-explainer .sh-parallel-step strong { font-weight: 500; }
+
+    #skiphow-explainer .sh-tech-link {
+      color: var(--sh-accent);
+    }
+
+    #skiphow-explainer .sh-tech-link svg {
+      display: block;
+      width: 100%;
+      min-width: 24px;
+      height: 22px;
+      overflow: visible;
+    }
+
+    #skiphow-explainer .sh-decision-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(190px, 0.46fr) minmax(0, 1fr);
+      align-items: center;
+      gap: 0.8rem;
+      color: var(--muted-foreground);
+      text-align: center;
+    }
+
+    #skiphow-explainer .sh-decision-row::before,
+    #skiphow-explainer .sh-decision-row::after {
+      content: &quot;&quot;;
+      height: 1px;
+      background: var(--sh-line);
+    }
+
+    #skiphow-explainer .sh-decision {
+      padding: 0.9rem 1rem;
+      border: 1px solid var(--sh-accent);
+      background: var(--sh-accent-soft);
+      clip-path: polygon(8% 0, 92% 0, 100% 50%, 92% 100%, 8% 100%, 0 50%);
+      color: var(--sh-ink);
+      font-weight: 500;
+    }
+
+    #skiphow-explainer .sh-lanes {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.8rem;
+    }
+
+    #skiphow-explainer .sh-lane {
+      position: relative;
+      padding: 1rem;
+      border-top: 2px solid var(--sh-line);
+      background: color-mix(in srgb, var(--sh-paper) 68%, transparent);
+    }
+
+    #skiphow-explainer .sh-lane.sh-lane-change { border-top-color: var(--sh-accent); }
+
+    #skiphow-explainer .sh-lane h3,
+    #skiphow-explainer .sh-tech-result h3,
+    #skiphow-explainer .sh-parallel h3 {
+      margin: 0 0 0.65rem;
+      font-family: &quot;Iowan Old Style&quot;, &quot;Palatino Linotype&quot;, Palatino, serif;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+
+    #skiphow-explainer .sh-lane ol {
+      display: grid;
+      gap: 0.6rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    #skiphow-explainer .sh-lane li {
+      padding-top: 0.6rem;
+      border-top: 1px solid var(--sh-line);
+    }
+
+    #skiphow-explainer .sh-loop {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 0.55rem;
+      align-items: center;
+      margin-top: 0.85rem;
+      padding-top: 0.75rem;
+      border-top: 1px dashed var(--sh-accent);
+      color: var(--sh-accent-text);
+    }
+
+    #skiphow-explainer .sh-loop svg { width: 42px; height: 30px; }
+
+    #skiphow-explainer .sh-tech-result {
+      display: grid;
+      grid-template-columns: minmax(0, 0.65fr) minmax(0, 1.35fr);
+      gap: 1rem;
+      align-items: center;
+      padding: 1rem;
+      border: 1px solid var(--sh-accent);
+      border-radius: 12px;
+      background: var(--sh-accent-soft);
+    }
+
+    #skiphow-explainer .sh-tech-result h3,
+    #skiphow-explainer .sh-tech-result p { margin: 0; }
+
+    #skiphow-explainer .sh-parallel {
+      padding-top: 0.2rem;
+    }
+
+    #skiphow-explainer .sh-parallel &gt; p {
+      margin: 0 0 1rem;
+      max-width: 72ch;
+      color: var(--muted-foreground);
+    }
+
+    #skiphow-explainer .sh-parallel-map {
+      display: grid;
+      grid-template-columns: minmax(140px, 0.65fr) 38px minmax(0, 1.65fr) 38px minmax(140px, 0.65fr);
+      gap: 0.55rem;
+      align-items: center;
+      min-height: 460px;
+    }
+
+    #skiphow-explainer .sh-parallel-step {
+      padding: 1.2rem;
+      border: 1px solid var(--sh-line);
+      border-radius: 12px;
+      background: var(--sh-paper);
+    }
+
+    #skiphow-explainer .sh-parallel-lanes {
+      display: grid;
+      gap: 0.85rem;
+      padding: 1rem 0.5rem;
+      border-block: 1px solid var(--sh-line);
+    }
+
+    #skiphow-explainer .sh-parallel-lane {
+      display: grid;
+      grid-template-columns: minmax(95px, 0.65fr) minmax(0, 1.35fr);
+      gap: 0.65rem;
+      align-items: center;
+      min-height: 84px;
+      padding: 1rem;
+      background: color-mix(in srgb, var(--sh-paper) 76%, transparent);
+    }
+
+    #skiphow-explainer .sh-parallel-lane strong { font-weight: 500; }
+    #skiphow-explainer .sh-parallel-lane span { color: var(--muted-foreground); }
+
+    #skiphow-explainer .sh-parallel-note {
+      margin-top: 0.85rem;
+      max-width: 72ch;
+      color: var(--muted-foreground);
+    }
+
+    #skiphow-explainer .sh-live { min-height: 1.3em; }
+
+    @media (max-width: 980px) {
+      #skiphow-explainer .sh-tech-entry {
+        grid-template-columns: minmax(0, 1fr) 42px minmax(0, 1fr);
+        grid-template-rows: auto 36px auto;
+      }
+      #skiphow-explainer [data-tech-node=&quot;0&quot;] { grid-column: 1; grid-row: 1; }
+      #skiphow-explainer [data-tech-link=&quot;1&quot;] { grid-column: 2; grid-row: 1; }
+      #skiphow-explainer [data-tech-node=&quot;1&quot;] { grid-column: 3; grid-row: 1; }
+      #skiphow-explainer [data-tech-link=&quot;2&quot;] { grid-column: 3; grid-row: 2; transform: rotate(90deg); }
+      #skiphow-explainer [data-tech-node=&quot;2&quot;] { grid-column: 3; grid-row: 3; }
+      #skiphow-explainer [data-tech-link=&quot;3&quot;] { grid-column: 2; grid-row: 3; transform: rotate(180deg); }
+      #skiphow-explainer [data-tech-node=&quot;3&quot;] { grid-column: 1; grid-row: 3; }
+    }
+
+    @media (max-width: 820px) and (min-width: 641px) {
+      #skiphow-explainer .sh-case-flow {
+        grid-template-columns: minmax(0, 1fr) 42px minmax(0, 1fr);
+        grid-template-rows: auto 36px auto;
+      }
+      #skiphow-explainer [data-case-node=&quot;0&quot;] { grid-column: 1; grid-row: 1; }
+      #skiphow-explainer [data-arrow=&quot;1&quot;] { grid-column: 2; grid-row: 1; }
+      #skiphow-explainer [data-case-node=&quot;1&quot;] { grid-column: 3; grid-row: 1; }
+      #skiphow-explainer [data-arrow=&quot;2&quot;] { grid-column: 3; grid-row: 2; transform: rotate(90deg); }
+      #skiphow-explainer [data-case-node=&quot;2&quot;] { grid-column: 3; grid-row: 3; }
+      #skiphow-explainer [data-arrow=&quot;3&quot;] { grid-column: 2; grid-row: 3; transform: rotate(180deg); }
+      #skiphow-explainer [data-case-node=&quot;3&quot;] { grid-column: 1; grid-row: 3; }
+    }
+
+    @media (max-width: 640px) {
+      #skiphow-explainer .sh-head { align-items: start; }
+      #skiphow-explainer .sh-mark span { display: none; }
+      #skiphow-explainer .sh-tabs { gap: 0.1rem 0.8rem; }
+      #skiphow-explainer .sh-contract,
+      #skiphow-explainer .sh-architecture,
+      #skiphow-explainer .sh-protected,
+      #skiphow-explainer .sh-tech-result { grid-template-columns: 1fr; }
+      #skiphow-explainer .sh-arrow svg,
+      #skiphow-explainer .sh-case-arrow svg { transform: rotate(90deg); width: 38px; }
+      #skiphow-explainer .sh-contract-note { grid-column: auto; }
+      #skiphow-explainer .sh-kernel-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      #skiphow-explainer .sh-case-flow { grid-template-columns: 1fr; }
+      #skiphow-explainer .sh-case-node,
+      #skiphow-explainer .sh-case-arrow { grid-column: auto; min-height: auto; }
+      #skiphow-explainer [data-arrow] { grid-row: auto; transform: none; }
+      #skiphow-explainer .sh-case-arrow { display: grid; place-items: center; min-height: 34px; }
+      #skiphow-explainer .sh-boundary-band { grid-template-columns: 1fr; gap: 0.35rem; }
+      #skiphow-explainer .sh-lock { min-height: 42px; }
+      #skiphow-explainer .sh-tech-entry,
+      #skiphow-explainer .sh-lanes,
+      #skiphow-explainer .sh-parallel-map { grid-template-columns: 1fr; }
+      #skiphow-explainer .sh-parallel-map { min-height: 0; }
+      #skiphow-explainer .sh-tech-node,
+      #skiphow-explainer .sh-tech-link { grid-column: auto; grid-row: auto; min-height: auto; }
+      #skiphow-explainer [data-tech-link] { transform: none; }
+      #skiphow-explainer .sh-tech-link { display: grid; place-items: center; min-height: 34px; }
+      #skiphow-explainer .sh-tech-link svg { width: 38px; transform: rotate(90deg); }
+      #skiphow-explainer .sh-decision-row { grid-template-columns: 1fr; }
+      #skiphow-explainer .sh-decision-row::before,
+      #skiphow-explainer .sh-decision-row::after { display: none; }
+      #skiphow-explainer .sh-parallel-lane { grid-template-columns: 1fr; gap: 0.25rem; }
+    }
+
+    @media (max-width: 520px) {
+      #skiphow-explainer .sh-tabs {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.15rem 1rem;
+      }
+      #skiphow-explainer .sh-tabs button { text-align: left; }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      #skiphow-explainer .sh-panel:not([hidden]) { animation: sh-reveal 360ms cubic-bezier(.16, 1, .3, 1); }
+      #skiphow-explainer .sh-case-node { transition: background-color 220ms ease-out, border-color 220ms ease-out; }
+      @keyframes sh-reveal {
+        from { opacity: 0; filter: blur(4px); transform: translateY(5px); }
+        to { opacity: 1; filter: blur(0); transform: translateY(0); }
+      }
+    }
+  &lt;/style&gt;
+
+  &lt;header class=&quot;sh-head&quot;&gt;
+    &lt;h2 id=&quot;sh-title&quot;&gt;Как работает SkipHow&lt;/h2&gt;
+    &lt;div class=&quot;sh-mark&quot; aria-label=&quot;Один навык, два поддерживаемых хоста&quot;&gt;
+      &lt;svg viewBox=&quot;0 0 32 22&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;M2 6h14v10h14M22 10l8 6-8 6&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;
+      &lt;span&gt;один навык · две среды&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/header&gt;
+
+  &lt;nav class=&quot;sh-tabs&quot; aria-label=&quot;Разделы схемы&quot;&gt;
+    &lt;button type=&quot;button&quot; aria-pressed=&quot;true&quot; aria-controls=&quot;sh-contract&quot; id=&quot;sh-tab-contract&quot; data-panel=&quot;sh-contract&quot;&gt;Идея&lt;/button&gt;
+    &lt;button type=&quot;button&quot; aria-pressed=&quot;false&quot; aria-controls=&quot;sh-anatomy&quot; id=&quot;sh-tab-anatomy&quot; data-panel=&quot;sh-anatomy&quot;&gt;Устройство&lt;/button&gt;
+    &lt;button type=&quot;button&quot; aria-pressed=&quot;false&quot; aria-controls=&quot;sh-cases&quot; id=&quot;sh-tab-cases&quot; data-panel=&quot;sh-cases&quot;&gt;Кейсы&lt;/button&gt;
+    &lt;button type=&quot;button&quot; aria-pressed=&quot;false&quot; aria-controls=&quot;sh-tech&quot; id=&quot;sh-tab-tech&quot; data-panel=&quot;sh-tech&quot;&gt;Техпоток&lt;/button&gt;
+    &lt;button type=&quot;button&quot; aria-pressed=&quot;false&quot; aria-controls=&quot;sh-parallel-panel&quot; id=&quot;sh-tab-parallel&quot; data-panel=&quot;sh-parallel-panel&quot;&gt;Параллельно&lt;/button&gt;
+    &lt;button type=&quot;button&quot; aria-pressed=&quot;false&quot; aria-controls=&quot;sh-limits&quot; id=&quot;sh-tab-limits&quot; data-panel=&quot;sh-limits&quot;&gt;Границы&lt;/button&gt;
+  &lt;/nav&gt;
+
+  &lt;div class=&quot;sh-panel&quot; id=&quot;sh-contract&quot; role=&quot;region&quot; aria-labelledby=&quot;sh-tab-contract&quot;&gt;
+    &lt;p class=&quot;sh-caption&quot;&gt;Владелец формулирует, что должно стать правдой. Агент сам выбирает инженерный путь и отвечает за доказанный результат.&lt;/p&gt;
+    &lt;div class=&quot;sh-contract&quot;&gt;
+      &lt;section class=&quot;sh-party&quot; aria-labelledby=&quot;sh-owner-title&quot;&gt;
+        &lt;h3 id=&quot;sh-owner-title&quot;&gt;Владелец продукта&lt;/h3&gt;
+        &lt;ul&gt;
+          &lt;li&gt;Результат и видимое поведение&lt;/li&gt;
+          &lt;li&gt;Приоритет, стоимость и риск&lt;/li&gt;
+          &lt;li&gt;Защищённые действия&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/section&gt;
+      &lt;div class=&quot;sh-arrow&quot; aria-hidden=&quot;true&quot;&gt;
+        &lt;svg viewBox=&quot;0 0 64 24&quot;&gt;&lt;path d=&quot;M2 12h54M48 4l10 8-10 8&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+      &lt;section class=&quot;sh-party&quot; aria-labelledby=&quot;sh-agent-title&quot;&gt;
+        &lt;h3 id=&quot;sh-agent-title&quot;&gt;Агент-разработчик&lt;/h3&gt;
+        &lt;ul&gt;
+          &lt;li&gt;Исследование и техническое решение&lt;/li&gt;
+          &lt;li&gt;Код, тесты и ветки&lt;/li&gt;
+          &lt;li&gt;Проверка и честный отчёт&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/section&gt;
+      &lt;div class=&quot;sh-contract-note&quot;&gt;SkipHow держит границу решений и полномочий&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;sh-panel&quot; id=&quot;sh-anatomy&quot; role=&quot;region&quot; aria-labelledby=&quot;sh-tab-anatomy&quot; hidden&gt;
+    &lt;p class=&quot;sh-caption&quot;&gt;SkipHow не заменяет агента и его среду. Контракт велит агенту открывать только нужные методы. Насколько надёжно среды следуют этому правилу, пока не доказано.&lt;/p&gt;
+    &lt;div class=&quot;sh-architecture&quot;&gt;
+      &lt;section class=&quot;sh-host&quot; aria-labelledby=&quot;sh-host-title&quot;&gt;
+        &lt;h3 id=&quot;sh-host-title&quot;&gt;Claude Code или Codex&lt;/h3&gt;
+        &lt;div class=&quot;sh-host-items&quot;&gt;
+          &lt;span&gt;модели&lt;/span&gt;&lt;span&gt;инструменты&lt;/span&gt;&lt;span&gt;разрешения&lt;/span&gt;&lt;span&gt;сессии&lt;/span&gt;&lt;span&gt;доступы&lt;/span&gt;&lt;span&gt;подагенты&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;span class=&quot;text-small&quot;&gt;Среда запускает работу и даёт агенту технические возможности.&lt;/span&gt;
+      &lt;/section&gt;
+      &lt;div class=&quot;sh-skill-stack&quot; aria-label=&quot;Один публичный навык SkipHow&quot;&gt;
+        &lt;section class=&quot;sh-kernel&quot;&gt;
+          &lt;h3&gt;Один навык. Ядро правил всегда в контексте&lt;/h3&gt;
+          &lt;div class=&quot;sh-kernel-grid&quot;&gt;
+            &lt;span&gt;полномочия&lt;/span&gt;&lt;span&gt;автономность&lt;/span&gt;&lt;span&gt;сохранность&lt;/span&gt;&lt;span&gt;доказательства&lt;/span&gt;
+          &lt;/div&gt;
+        &lt;/section&gt;
+        &lt;section class=&quot;sh-methods&quot;&gt;
+          &lt;h3&gt;Фокусные методы по ситуации&lt;/h3&gt;
+          &lt;div class=&quot;sh-method-grid&quot;&gt;
+            &lt;span class=&quot;sh-method-chip sh-active&quot;&gt;диагностика&lt;/span&gt;
+            &lt;span class=&quot;sh-method-chip&quot;&gt;исследование&lt;/span&gt;
+            &lt;span class=&quot;sh-method-chip sh-active&quot;&gt;тестирование&lt;/span&gt;
+            &lt;span class=&quot;sh-method-chip&quot;&gt;доставка&lt;/span&gt;
+            &lt;span class=&quot;sh-method-chip&quot;&gt;делегирование&lt;/span&gt;
+            &lt;span class=&quot;sh-method-chip&quot;&gt;продолжение работы&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;sh-pull-note&quot;&gt;
+            &lt;svg viewBox=&quot;0 0 48 18&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;M46 9H6M14 2L5 9l9 7&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;
+            &lt;span&gt;По правилам SkipHow, задача определяет нужный метод. Это не обязательный конвейер.&lt;/span&gt;
+          &lt;/div&gt;
+        &lt;/section&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;sh-panel&quot; id=&quot;sh-cases&quot; role=&quot;region&quot; aria-labelledby=&quot;sh-tab-cases&quot; hidden&gt;
+    &lt;div class=&quot;sh-case-tabs&quot; role=&quot;group&quot; aria-label=&quot;Выберите пример&quot;&gt;
+      &lt;button type=&quot;button&quot; aria-pressed=&quot;true&quot; data-case=&quot;bug&quot;&gt;Исправить баг&lt;/button&gt;
+      &lt;button type=&quot;button&quot; aria-pressed=&quot;false&quot; data-case=&quot;research&quot;&gt;Сравнить варианты&lt;/button&gt;
+      &lt;button type=&quot;button&quot; aria-pressed=&quot;false&quot; data-case=&quot;choice&quot;&gt;Открытый продуктовый выбор&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;sh-case-flow&quot; aria-live=&quot;polite&quot;&gt;
+      &lt;div class=&quot;sh-case-node&quot; data-case-node=&quot;0&quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;sh-case-arrow&quot; data-arrow=&quot;1&quot; aria-hidden=&quot;true&quot;&gt;&lt;svg viewBox=&quot;0 0 40 22&quot;&gt;&lt;path d=&quot;M2 11h31M27 5l7 6-7 6&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&quot;sh-case-node&quot; data-case-node=&quot;1&quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;sh-case-arrow&quot; data-arrow=&quot;2&quot; aria-hidden=&quot;true&quot;&gt;&lt;svg viewBox=&quot;0 0 40 22&quot;&gt;&lt;path d=&quot;M2 11h31M27 5l7 6-7 6&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&quot;sh-case-node&quot; data-case-node=&quot;2&quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;sh-case-arrow&quot; data-arrow=&quot;3&quot; aria-hidden=&quot;true&quot;&gt;&lt;svg viewBox=&quot;0 0 40 22&quot;&gt;&lt;path d=&quot;M2 11h31M27 5l7 6-7 6&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div class=&quot;sh-case-node&quot; data-case-node=&quot;3&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;sh-case-result sh-live&quot; aria-live=&quot;polite&quot; id=&quot;sh-case-result&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;sh-panel&quot; id=&quot;sh-tech&quot; role=&quot;region&quot; aria-labelledby=&quot;sh-tab-tech&quot; hidden&gt;
+    &lt;p class=&quot;sh-caption&quot;&gt;Это поток инструкций и полномочий, а не встроенный оркестратор. Работу исполняет Codex или Claude Code средствами, которые доступны в проекте.&lt;/p&gt;
+    &lt;div class=&quot;sh-tech&quot;&gt;
+      &lt;div class=&quot;sh-tech-entry&quot; aria-label=&quot;Вход в технический поток&quot;&gt;
+        &lt;div class=&quot;sh-tech-node&quot; data-tech-node=&quot;0&quot;&gt;
+          &lt;span&gt;Запрос владельца&lt;/span&gt;
+          &lt;strong&gt;Результат, ограничения и важный риск обычным языком&lt;/strong&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;sh-tech-link&quot; data-tech-link=&quot;1&quot; aria-hidden=&quot;true&quot;&gt;
+          &lt;svg viewBox=&quot;0 0 44 22&quot;&gt;&lt;path d=&quot;M2 11h34M30 5l7 6-7 6&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;sh-tech-node&quot; data-tech-node=&quot;1&quot;&gt;
+          &lt;span&gt;Выбор навыка&lt;/span&gt;
+          &lt;strong&gt;Среда пытается выбрать &lt;code&gt;skiphow&lt;/code&gt; автоматически. Если промахнулась, навык вызывают явно&lt;/strong&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;sh-tech-link&quot; data-tech-link=&quot;2&quot; aria-hidden=&quot;true&quot;&gt;
+          &lt;svg viewBox=&quot;0 0 44 22&quot;&gt;&lt;path d=&quot;M2 11h34M30 5l7 6-7 6&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;sh-tech-node sh-tech-core&quot; data-tech-node=&quot;2&quot;&gt;
+          &lt;span&gt;Ядро SkipHow&lt;/span&gt;
+          &lt;strong&gt;Полномочия, автономность, сохранность чужой работы и доказательства&lt;/strong&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;sh-tech-link&quot; data-tech-link=&quot;3&quot; aria-hidden=&quot;true&quot;&gt;
+          &lt;svg viewBox=&quot;0 0 44 22&quot;&gt;&lt;path d=&quot;M2 11h34M30 5l7 6-7 6&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;sh-tech-node&quot; data-tech-node=&quot;3&quot;&gt;
+          &lt;span&gt;Контекст проекта&lt;/span&gt;
+          &lt;strong&gt;Агент читает инструкции, код, решения и текущее состояние рабочих копий&lt;/strong&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;sh-decision-row&quot;&gt;
+        &lt;div class=&quot;sh-decision&quot;&gt;Что именно разрешает этот запрос?&lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;sh-lanes&quot;&gt;
+        &lt;section class=&quot;sh-lane&quot;&gt;
+          &lt;h3&gt;Только анализ&lt;/h3&gt;
+          &lt;ol&gt;
+            &lt;li&gt;&lt;span&gt;Тип запроса&lt;/span&gt;&lt;strong&gt;Ответ, сравнение, диагностика, обзор или план&lt;/strong&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;span&gt;Граница&lt;/span&gt;&lt;strong&gt;Никаких изменений, сообщений и доставки наружу&lt;/strong&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;span&gt;Финиш&lt;/span&gt;&lt;strong&gt;Вывод с фактами, источниками и честной неопределённостью&lt;/strong&gt;&lt;/li&gt;
+          &lt;/ol&gt;
+        &lt;/section&gt;
+
+        &lt;section class=&quot;sh-lane sh-lane-change&quot;&gt;
+          &lt;h3&gt;Локальное изменение&lt;/h3&gt;
+          &lt;ol&gt;
+            &lt;li&gt;&lt;span&gt;Метод&lt;/span&gt;&lt;strong&gt;Агент открывает подходящую дисциплину: диагностику, тестирование или другую&lt;/strong&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;span&gt;Исполнение&lt;/span&gt;&lt;strong&gt;Сам выбирает архитектуру, код, тесты, ветки и нужные инструменты&lt;/strong&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;span&gt;Проверка&lt;/span&gt;&lt;strong&gt;Запускает проверки проекта на финальном состоянии и делает чистый локальный коммит&lt;/strong&gt;&lt;/li&gt;
+          &lt;/ol&gt;
+          &lt;div class=&quot;sh-loop&quot;&gt;
+            &lt;svg viewBox=&quot;0 0 48 34&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;M39 27H16a10 10 0 0 1 0-20h21M31 2l7 5-7 5&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;
+            &lt;strong&gt;Проверка не прошла: найти причину, исправить и запустить снова. Тест не ослаблять.&lt;/strong&gt;
+          &lt;/div&gt;
+        &lt;/section&gt;
+
+        &lt;section class=&quot;sh-lane&quot;&gt;
+          &lt;h3&gt;Нужен владелец&lt;/h3&gt;
+          &lt;ol&gt;
+            &lt;li&gt;&lt;span&gt;Остановка&lt;/span&gt;&lt;strong&gt;Открыт продуктовый выбор или требуется защищённое действие&lt;/strong&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;span&gt;Вопрос&lt;/span&gt;&lt;strong&gt;Агент объясняет видимые последствия и рекомендует один вариант&lt;/strong&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;span&gt;Возврат&lt;/span&gt;&lt;strong&gt;После ответа или точного разрешения работа продолжается по подходящей дорожке&lt;/strong&gt;&lt;/li&gt;
+          &lt;/ol&gt;
+        &lt;/section&gt;
+      &lt;/div&gt;
+
+      &lt;section class=&quot;sh-tech-result&quot;&gt;
+        &lt;h3&gt;Один итог для владельца&lt;/h3&gt;
+        &lt;p&gt;Что стало правдой, чем это проверено, что осталось неопределённым и какое действие всё ещё требует человека.&lt;/p&gt;
+      &lt;/section&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;sh-panel&quot; id=&quot;sh-parallel-panel&quot; role=&quot;region&quot; aria-labelledby=&quot;sh-tab-parallel&quot; hidden&gt;
+    &lt;p class=&quot;sh-caption&quot;&gt;Параллельная работа не включается по умолчанию. Она уместна, когда части задачи можно закончить, проверить и принять независимо друг от друга.&lt;/p&gt;
+    &lt;section class=&quot;sh-parallel&quot;&gt;
+        &lt;h3&gt;Несколько дорожек, один исходный результат&lt;/h3&gt;
+        &lt;p&gt;Каждая дорожка получает отдельную рабочую копию, один результат и свою проверку.&lt;/p&gt;
+        &lt;div class=&quot;sh-parallel-map&quot;&gt;
+          &lt;div class=&quot;sh-parallel-step&quot;&gt;
+            &lt;span&gt;Разбиение&lt;/span&gt;
+            &lt;strong&gt;Один проверяемый результат на дорожку&lt;/strong&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;sh-tech-link&quot; aria-hidden=&quot;true&quot;&gt;
+            &lt;svg viewBox=&quot;0 0 44 22&quot;&gt;&lt;path d=&quot;M2 11h34M30 5l7 6-7 6&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;sh-parallel-lanes&quot;&gt;
+            &lt;div class=&quot;sh-parallel-lane&quot;&gt;&lt;strong&gt;Рабочая копия A&lt;/strong&gt;&lt;span&gt;отдельная часть → своя проверка&lt;/span&gt;&lt;/div&gt;
+            &lt;div class=&quot;sh-parallel-lane&quot;&gt;&lt;strong&gt;Рабочая копия B&lt;/strong&gt;&lt;span&gt;отдельная часть → своя проверка&lt;/span&gt;&lt;/div&gt;
+            &lt;div class=&quot;sh-parallel-lane&quot;&gt;&lt;strong&gt;Рабочая копия C&lt;/strong&gt;&lt;span&gt;отдельная часть → своя проверка&lt;/span&gt;&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;sh-tech-link&quot; aria-hidden=&quot;true&quot;&gt;
+            &lt;svg viewBox=&quot;0 0 44 22&quot;&gt;&lt;path d=&quot;M2 11h34M30 5l7 6-7 6&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/&gt;&lt;/svg&gt;
+          &lt;/div&gt;
+          &lt;div class=&quot;sh-parallel-step&quot;&gt;
+            &lt;span&gt;Сведение&lt;/span&gt;
+            &lt;strong&gt;Проверить вместе, интегрировать и закрыть исходный результат&lt;/strong&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;p class=&quot;sh-parallel-note&quot;&gt;Изолированные рабочие копии и подагенты даёт среда. SkipHow задаёт правила их использования. Надёжность делегирования в контролируемых запусках пока не доказана.&lt;/p&gt;
+    &lt;/section&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;sh-panel&quot; id=&quot;sh-limits&quot; role=&quot;region&quot; aria-labelledby=&quot;sh-tab-limits&quot; hidden&gt;
+    &lt;p class=&quot;sh-caption&quot;&gt;SkipHow отвечает только за правила поведения. Технические возможности даёт среда, а продуктовые решения остаются у человека.&lt;/p&gt;
+    &lt;div class=&quot;sh-boundaries&quot;&gt;
+      &lt;section class=&quot;sh-boundary-band&quot;&gt;
+        &lt;h3&gt;Codex или Claude Code&lt;/h3&gt;
+        &lt;p&gt;Запускает модель, даёт изолированную среду, инструменты, разрешения, сессии и доступы.&lt;/p&gt;
+      &lt;/section&gt;
+      &lt;section class=&quot;sh-boundary-band sh-core&quot;&gt;
+        &lt;h3&gt;SkipHow&lt;/h3&gt;
+        &lt;p&gt;Держит границу ответственности, подбирает дисциплину задачи и требует проверяемый результат.&lt;/p&gt;
+      &lt;/section&gt;
+      &lt;section class=&quot;sh-boundary-band&quot;&gt;
+        &lt;h3&gt;Проект&lt;/h3&gt;
+        &lt;p&gt;Задаёт архитектуру, проверки, безопасность, выпуск и правила доставки.&lt;/p&gt;
+      &lt;/section&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;sh-protected&quot;&gt;
+      &lt;div&gt;&lt;strong&gt;Обычная локальная работа&lt;/strong&gt;&lt;br&gt;&lt;span&gt;агент продолжает сам&lt;/span&gt;&lt;/div&gt;
+      &lt;div class=&quot;sh-lock&quot; aria-hidden=&quot;true&quot;&gt;
+        &lt;svg viewBox=&quot;0 0 40 40&quot;&gt;&lt;rect x=&quot;7&quot; y=&quot;17&quot; width=&quot;26&quot; height=&quot;19&quot; rx=&quot;5&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot;/&gt;&lt;path d=&quot;M13 17v-5a7 7 0 0 1 14 0v5M20 24v6&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+      &lt;div&gt;&lt;strong&gt;Продакшен, доступы, секреты, удаление&lt;/strong&gt;&lt;br&gt;&lt;span&gt;нужно точное разрешение владельца&lt;/span&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;script&gt;
+    (() =&gt; {
+      const root = document.getElementById(&#x27;skiphow-explainer&#x27;);
+      if (!root) return;
+
+      const tabButtons = [...root.querySelectorAll(&#x27;.sh-tabs [data-panel]&#x27;)];
+      const panels = [...root.querySelectorAll(&#x27;.sh-panel&#x27;)];
+      tabButtons.forEach((button) =&gt; {
+        button.addEventListener(&#x27;click&#x27;, () =&gt; {
+          tabButtons.forEach((item) =&gt; item.setAttribute(&#x27;aria-pressed&#x27;, String(item === button)));
+          panels.forEach((panel) =&gt; { panel.hidden = panel.id !== button.dataset.panel; });
+        });
+      });
+
+      const cases = {
+        bug: {
+          nodes: [
+            [&#x27;Запрос&#x27;, &#x27;«Итоги перекрываются на маленьком экране. Найди причину и исправь.»&#x27;],
+            [&#x27;Разбор&#x27;, &#x27;Агент читает проект, воспроизводит дефект и открывает методы диагностики и тестирования.&#x27;],
+            [&#x27;Работа&#x27;, &#x27;Сам выбирает техническое решение, правит код и не ослабляет проверку.&#x27;],
+            [&#x27;Доказательство&#x27;, &#x27;Проверяет исправленный экран и отчётливо называет, что показал тест.&#x27;]
+          ],
+          accent: [1, 3],
+          result: &#x27;Владелец получает исправленное поведение, а не список технических решений для согласования.&#x27;
+        },
+        research: {
+          nodes: [
+            [&#x27;Запрос&#x27;, &#x27;«Сравни варианты кэширования и порекомендуй один. Код не меняй.»&#x27;],
+            [&#x27;Граница&#x27;, &#x27;SkipHow видит, что нужен только анализ. Изменения проекта не разрешены.&#x27;],
+            [&#x27;Работа&#x27;, &#x27;Агент проверяет актуальные первичные источники и сравнивает варианты в контексте проекта.&#x27;],
+            [&#x27;Результат&#x27;, &#x27;Даёт рекомендацию, основания и остающуюся неопределённость.&#x27;]
+          ],
+          accent: [1, 2],
+          result: &#x27;Фраза «код не меняй» остаётся жёсткой границей, даже если агент уже понимает, как всё реализовать.&#x27;
+        },
+        choice: {
+          nodes: [
+            [&#x27;Запрос&#x27;, &#x27;«Сделай onboarding проще.»&#x27;],
+            [&#x27;Проверка&#x27;, &#x27;Агент читает продукт и отделяет решённые факты от реального выбора поведения.&#x27;],
+            [&#x27;Вопрос владельцу&#x27;, &#x27;Кратко показывает видимые последствия, рекомендует вариант и ждёт ответа.&#x27;],
+            [&#x27;После ответа&#x27;, &#x27;Сам решает инженерные детали, строит, проверяет и сообщает результат.&#x27;]
+          ],
+          accent: [2],
+          result: &#x27;Владелец принимает только продуктовый выбор. Библиотеки, схемы и тестовая стратегия остаются у агента.&#x27;
+        }
+      };
+
+      const caseButtons = [...root.querySelectorAll(&#x27;[data-case]&#x27;)];
+      const caseNodes = [...root.querySelectorAll(&#x27;[data-case-node]&#x27;)];
+      const caseResult = root.querySelector(&#x27;#sh-case-result&#x27;);
+
+      function renderCase(key) {
+        const selected = cases[key];
+        caseButtons.forEach((button) =&gt; button.setAttribute(&#x27;aria-pressed&#x27;, String(button.dataset.case === key)));
+        caseNodes.forEach((node, index) =&gt; {
+          const content = selected.nodes[index];
+          node.innerHTML = &#x27;&lt;span class=&quot;sh-node-label&quot;&gt;&#x27; + content[0] + &#x27;&lt;/span&gt;&lt;strong&gt;&#x27; + content[1] + &#x27;&lt;/strong&gt;&#x27;;
+          node.dataset.state = selected.accent.includes(index) ? &#x27;accent&#x27; : &#x27;neutral&#x27;;
+        });
+        caseResult.textContent = selected.result;
+      }
+
+      caseButtons.forEach((button) =&gt; button.addEventListener(&#x27;click&#x27;, () =&gt; renderCase(button.dataset.case)));
+      renderCase(&#x27;bug&#x27;);
+    })();
+  &lt;/script&gt;
+&lt;/section&gt;
+
+&lt;script&gt;
+(() =&gt; {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set([&quot;top&quot;, &quot;right&quot;, &quot;bottom&quot;, &quot;left&quot;]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+  let lastPointerWasTouch = false;
+  let pinnedByTouch = false;
+
+  const getTrigger = (target) =&gt;
+    target?.nodeType === Node.ELEMENT_NODE
+      ? target.closest(&quot;[data-tooltip]&quot;)
+      : null;
+  const containsTarget = (trigger, target) =&gt;
+    target?.nodeType != null &amp;&amp; trigger.contains(target);
+  const getContent = (trigger) =&gt;
+    trigger.getAttribute(&quot;data-tooltip&quot;)?.trim() ?? &quot;&quot;;
+  const getPlacement = (trigger) =&gt; {
+    const placement = trigger.getAttribute(&quot;data-tooltip-placement&quot;);
+    return tooltipPlacements.has(placement) ? placement : &quot;top&quot;;
+  };
+  const getTooltip = () =&gt; {
+    if (tooltip == null) {
+      tooltip = document.createElement(&quot;div&quot;);
+      tooltip.id = tooltipId;
+      tooltip.className = &quot;tooltip&quot;;
+      tooltip.setAttribute(&quot;role&quot;, &quot;tooltip&quot;);
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) =&gt; {
+    const ids = new Set(
+      (trigger.getAttribute(&quot;aria-describedby&quot;) ?? &quot;&quot;)
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute(&quot;aria-describedby&quot;);
+    } else {
+      trigger.setAttribute(&quot;aria-describedby&quot;, [...ids].join(&quot; &quot;));
+    }
+  };
+  const clearOpenTimeout = () =&gt; {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) =&gt; {
+    clearOpenTimeout();
+    pinnedByTouch = false;
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) =&gt; {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-width&quot;,
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-height&quot;,
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: &quot;fixed&quot;,
+    })
+      .then(({ x, y }) =&gt; {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = &quot;visible&quot;;
+      })
+      .catch(() =&gt; {
+        if (activeTrigger === trigger &amp;&amp; request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) =&gt; {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = &quot;hidden&quot;;
+    floating.style.transform = &quot;translate(0, 0)&quot;;
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () =&gt; {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) =&gt; {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() &lt; skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() =&gt; {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) =&gt; {
+    if (event.pointerType === &quot;touch&quot;) {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handlePointer = (event) =&gt; {
+    lastPointerWasTouch =
+      event.type === &quot;pointerdown&quot; &amp;&amp; event.pointerType === &quot;touch&quot;;
+  };
+  const handleTouchClick = (event) =&gt; {
+    const isTouch = event.pointerType === &quot;touch&quot; || lastPointerWasTouch;
+    lastPointerWasTouch = false;
+    if (!isTouch || event.detail === 0) {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (
+      trigger == null ||
+      !trigger.isConnected ||
+      getContent(trigger).length === 0 ||
+      (pinnedByTouch &amp;&amp; activeTrigger === trigger)
+    ) {
+      if (pinnedByTouch) {
+        closeTooltip();
+      }
+      return;
+    }
+    openTooltip(trigger);
+    pinnedByTouch = activeTrigger === trigger;
+    window.setTimeout(() =&gt; {
+      if (activeTrigger === trigger &amp;&amp; !trigger.isConnected) {
+        closeTooltip(false);
+      }
+    }, 0);
+  };
+  const handleLeave = (event) =&gt; {
+    if (pinnedByTouch) {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger?.matches(&quot;:focus-visible&quot;)) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) =&gt; {
+    if (event.key === &quot;Escape&quot;) {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) =&gt; {
+    lastPointerWasTouch = false;
+    const trigger = getTrigger(event.target);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const destroy = () =&gt; {
+    closeTooltip(false);
+    lastPointerWasTouch = false;
+    document.removeEventListener(&quot;pointerover&quot;, handlePointerOpen);
+    document.removeEventListener(&quot;pointerdown&quot;, handlePointer);
+    document.removeEventListener(&quot;pointercancel&quot;, handlePointer);
+    document.removeEventListener(&quot;click&quot;, handleTouchClick);
+    document.removeEventListener(&quot;pointerout&quot;, handleLeave);
+    document.removeEventListener(&quot;focusin&quot;, handleFocusIn);
+    document.removeEventListener(&quot;focusout&quot;, handleLeave);
+    document.removeEventListener(&quot;keydown&quot;, handleKeyDown);
+    document.removeEventListener(&quot;contextmenu&quot;, handleContextMenu);
+    tooltip = null;
+  };
+
+  document.addEventListener(&quot;pointerover&quot;, handlePointerOpen);
+  document.addEventListener(&quot;pointerdown&quot;, handlePointer);
+  document.addEventListener(&quot;pointercancel&quot;, handlePointer);
+  document.addEventListener(&quot;click&quot;, handleTouchClick);
+  document.addEventListener(&quot;pointerout&quot;, handleLeave);
+  document.addEventListener(&quot;focusin&quot;, handleFocusIn);
+  document.addEventListener(&quot;focusout&quot;, handleLeave);
+  document.addEventListener(&quot;keydown&quot;, handleKeyDown);
+  document.addEventListener(&quot;contextmenu&quot;, handleContextMenu);
+  window.addEventListener(&quot;pagehide&quot;, destroy, { once: true });
+})();
+&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  const initialize = () =&gt; {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById(&quot;codex-visualization-lucide&quot;)
+    ?.addEventListener(&quot;load&quot;, initialize, { once: true });
+})();
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+</body>
+</html>
