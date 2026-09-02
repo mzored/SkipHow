@@ -1,6 +1,6 @@
 # Prototype
 
-Build only when the requested outcome authorizes project changes or explicitly asks for an artifact. Otherwise describe the useful experiment without changing the project. State what the prototype must answer and choose the least fidelity that lets the owner judge it in real use.
+Use this for a disposable experiment that is cheaper than debate. Build only when the requested outcome authorizes project changes or explicitly asks for an artifact. Otherwise describe the useful experiment without changing the project. State what the prototype must answer and choose the least fidelity that lets the owner judge it in real use.
 
 For a UI question, place alternatives in the real screen and data context when practical. Make alternatives differ in the decision under test, not in decoration alone. When the choice genuinely belongs to the owner, keep comparison easy enough that they can judge without setup help. Otherwise evaluate the alternatives against the requested outcome and current product evidence yourself.
 
