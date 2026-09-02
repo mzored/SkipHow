@@ -4,8 +4,8 @@
 
 | Version | Supported |
 | --- | --- |
-| 2.13.x | Yes |
-| 2.12.x and earlier | No |
+| 2.16.x | Yes |
+| 2.15.x and earlier | No |
 
 Security review covers the packaged owner skill, its linked methods, host manifests,
 marketplace metadata, continuity hook, release checks, and documented authority

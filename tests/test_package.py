@@ -76,6 +76,17 @@ def test_marketplaces_publish_only_the_plugin_directory() -> None:
     assert claude["plugins"][0]["source"] == "./plugins/skiphow"
 
 
+def test_dogfood_skill_is_repo_scoped_and_shared_by_codex_and_claude() -> None:
+    claude = ROOT / ".claude/skills/dogfood"
+    codex = ROOT / ".agents/skills/dogfood"
+
+    assert claude.is_dir() and not claude.is_symlink()
+    assert codex.is_symlink()
+    assert codex.readlink() == Path("../../.claude/skills/dogfood")
+    assert codex.resolve(strict=True) == claude.resolve(strict=True)
+    assert frontmatter(codex / "SKILL.md")["name"] == "dogfood"
+
+
 def test_release_metadata_uses_one_version() -> None:
     release = read("VERSION").strip()
     codex = json_object("plugins/skiphow/.codex-plugin/plugin.json")

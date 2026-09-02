@@ -1,5 +1,7 @@
 # Research
 
+Use this for current external facts, standards, APIs, or comparisons.
+
 Turn the request into a concrete question and identify which facts would change the answer. Inspect relevant local versions and configuration before searching so the research matches the project that will use it.
 
 Prefer first-party documentation, specifications, source code, release notes, and official APIs. Use secondary sources only to find primary material or to represent a viewpoint that has no primary owner. Check dates and versions for facts that can change.

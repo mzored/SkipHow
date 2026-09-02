@@ -1,5 +1,7 @@
 # Writing for agents
 
+Use this for instructions consumed by coding agents.
+
 Start with the behavior the instruction must change and the evidence that the default behavior is insufficient. Write outcomes, authority boundaries, and hard invariants. Leave tools and implementation choices to the agent unless a specific mechanism is itself required.
 
 For an automatically discovered skill, make the description a precise trigger. Name the situations that should load it and the nearby situations that should not. Keep universally needed rules in the main file. Move conditional material behind a clear pointer only when the branch saves attention without hiding a requirement.
