@@ -1,6 +1,6 @@
 # Execution health
 
-Use this before starting a step that could take real time, and for a stalled lane, a repeated failure, or a work stream accumulating repairs.
+Use this before starting a step that could take real time, and for a stalled lane, a repeated failure, or a work stream accumulating repairs, integration conflicts, sibling invalidation, or delivery and process work without new evidence of the requested result.
 
 Long or delegated work fails quietly more often than it fails loudly. Give every long-running step an expectation, and treat a breach as information rather than a reason to wait longer.
 
