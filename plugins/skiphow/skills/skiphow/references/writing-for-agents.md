@@ -20,17 +20,17 @@ Structure proportionately. Markdown headings carry a static policy with one sema
 
 ## State each instruction once
 
-Give each rule one authoritative home. Repeated instructions and duplicated tool descriptions spend context and measurably reduce task performance; prefer deleting an obsolete rule to qualifying it in three places. Remove contradictions when behavior changes, and do not copy facts the agent can read from configuration, source, or command help.
+Give each rule one authoritative home. Repeated instructions and duplicated tool descriptions spend context and raise the risk of contradiction; prefer deleting an obsolete rule to qualifying it in three places. Remove contradictions when behavior changes, and do not copy facts the agent can read from configuration, source, or command help.
 
-Repetition of an approval instruction backfires in particular: restating "ask first", "do not mutate", or "wait for approval" produces approval requests for safe, expected actions. Keep the autonomy policy compact and in one place.
+Define action semantics once — what an inspect-and-report request, a change request, an exact grant, an owner question, and an agent decision each cover — and keep that policy compact and in one place. Restating "ask first", "do not mutate", or "wait for approval" produces approval requests for safe, expected actions, and asking for a question whenever anything is ambiguous does the same; ask only where a reading changes an owner-owned consequence.
 
 ## What not to ask for
 
 Avoid fixed counts, magic phrases, provider-specific commands, and mandatory process unless evidence proves the constraint necessary.
 
-No reasoning rituals. Telling a model to think harder, reveal its reasoning, produce candidate answers by default, or follow an authored reasoning script gains nothing the host's own model and effort controls do not. Ask for observable analysis quality: evidence, alternatives weighed, result.
+No reasoning rituals. Use the host's own model and effort controls, evaluated on representative tasks, rather than telling a model to think harder, reveal its reasoning, produce candidate answers by default, or follow an authored reasoning script. Ask for observable analysis quality: decision, alternatives weighed, evidence, uncertainty, failure conditions, final verification.
 
-No universal self-review. A mandatory second pass, verifier delegate, cold read, or double-check step buys over-verification and cost without quality gain, and current models already self-correct. Require proof of the final state; use a separate review only where risk or repository policy justifies it.
+No universal self-review. Require proof of the final state; add a second pass, verifier delegate, or cold read where risk, evidence of a recurring miss, or repository policy justifies it, not as a standing step.
 
 No forceful framing on ordinary guidance. Blanket defaults such as "always use this", "if in doubt, use it", or "you MUST" make a capability fire when it should not. Reserve imperative force for high-consequence boundaries.
 
@@ -40,10 +40,10 @@ For an automatically discovered skill, make the description a precise trigger: t
 
 In a delegate's brief, a link to a policy file changes nothing unless the host demonstrably preloads it. The kernel states what that brief carries in its own text.
 
-Examples are targeted instruments: use one to encode a product requirement or repair a measured failure. Keep the smallest set that closes the gap, include positive and negative cases, and vary edge conditions enough to prevent accidental pattern matching. How many is an empirical choice, not a fixed rule.
+Examples are targeted instruments: use one to encode a product requirement, demonstrate a strict output schema, separate close positive and negative cases, or repair a measured failure. Keep the smallest set that closes the gap and vary edge conditions enough to prevent accidental pattern matching; a large permanent example set can overfit behavior. Where software consumes the result, use the host's schema or structured-output mechanism rather than prose asking for valid output.
 
 ## Check the result
 
 Write completion conditions the agent can verify, explain uncommon terms once, and keep related rules together. Read the finished document as an instruction system: trigger, authority, action, stopping condition, and conflicts with nearby or higher-priority instructions. Validate syntax and links.
 
-When model behavior matters, treat real runs as evidence and deterministic lint as package evidence only.
+When model behavior matters, treat real runs as evidence and deterministic lint as package evidence only. Model behavior is established by current representative runs; a provider- or version-specific finding belongs in an evidence record, not in timeless policy. A prompt change that alters authority, default side effects, owner questions, or completion claims is a product change: name the failure it repairs, hold everything else fixed, compare outcome and cost, keep the receipt, and remove wording that did not work rather than layering qualifiers on it.

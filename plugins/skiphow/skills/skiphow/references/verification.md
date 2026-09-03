@@ -6,7 +6,7 @@ Open this when a change needs durable automated coverage, or when a review has b
 
 For a read-only design or coverage request, propose the tests without changing the project. Test observable behavior through the narrowest stable interface that gives confidence in the requested result, rather than internal shape. Follow the repository's existing test layout and vocabulary.
 
-Choose the cheapest test that can fail for the real defect or requirement. Prefer an integration-style path when isolated units would mock the behavior being proved. Mock only true boundaries such as external systems, time, and randomness, and only when a real substitute is impractical; avoid mocking internal collaborators or asserting call order and private state.
+Use the narrowest stable test that would catch the real defect and remain useful. Prefer real integration across the behavior being proved; introduce mocks or internal seams only where they materially improve isolation, determinism, cost, or safety — external systems, time, and randomness are the usual cases, and a legacy or tightly coupled system may need more — without asserting call order, private state, or other implementation trivia.
 
 Derive the expected value independently of the implementation under test. A test that repeats the production algorithm can agree with the same bug.
 
@@ -18,7 +18,7 @@ Write the failing test first when it gives a useful red signal and the interface
 
 ## Regression tests
 
-A regression test should close the class of bug, not the one reproduction. Assert the rule the defect broke rather than the literal inputs that exposed it, place the test at the lowest layer that owns that rule, and confirm its failure message names the violated invariant. When a bad value crossed several boundaries, cover each boundary it crossed.
+A regression test should close the class of bug, not the one reproduction. Assert the rule the defect broke rather than the literal inputs that exposed it, place the test at the lowest layer that owns that rule, and confirm its failure message names the violated invariant. When a bad value crossed several boundaries, cover the boundaries where a check would have stopped it.
 
 Observe the test failing against the unfixed code before trusting it. Where reproducing the defect is unsafe or impractical, rebuild the broken condition at the layer that owns the rule, exercise that layer instead, and say which part of the real path went unexercised. Do not assume the test would have failed.
 
@@ -40,4 +40,4 @@ Look for incorrect behavior, missing cases, scope creep, security or data risks,
 
 Verify a suspected issue before reporting it when a focused check can settle it. Distinguish a real defect from a preference: a finding names a concrete defect, and a reviewer who cannot point at what breaks is reporting taste. State each actionable finding with its location, triggering scenario, and impact, most consequential first. If there are no material findings, say so and name any important area that remained unverified.
 
-Fix what is wrong or unsafe before going further, and do not carry an important defect forward as accepted. When the owner asked for fixes as well as review, repair confirmed findings within the granted scope and recheck the final diff.
+On a read-only review, report confirmed defects without modifying the project; urgency, including a security finding, does not widen the request, and a sensitive finding stays private unless disclosure is granted. When repair is authorized, fix confirmed in-scope defects before completion and verify the repaired final state, and do not carry an important defect forward as accepted.
