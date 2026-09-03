@@ -12,7 +12,7 @@ Security, reliability, operability, performance, cost, and reversibility are len
 
 ## Reuse before custom code
 
-Before introducing a subsystem, abstraction, dependency, infrastructure component, or service, work outward in this order and stop at the first level that genuinely fits — and again whenever existing custom code looks like it duplicates something mature.
+Prefer existing, maintained capabilities over custom machinery. Before introducing a subsystem, abstraction, dependency, infrastructure component, or service, look outward roughly in this order — and again whenever existing custom code looks like it duplicates something mature:
 
 - Capabilities the repository already has.
 - Primitives in the language, framework, or platform.
@@ -21,6 +21,8 @@ Before introducing a subsystem, abstraction, dependency, infrastructure componen
 - Managed services.
 - A bounded spike.
 - Only then, custom code.
+
+The order is a presumption, not a law. Compare materially different options when cost, privacy, reliability, security, lock-in, operational burden, or reversibility could change the result; a managed service is not automatically preferable to a bounded experiment or a small custom implementation when it brings owner-visible cost, privacy exposure, vendor commitment, or lock-in, and those consequences are the owner's choice under [product](product.md).
 
 Building your own carries the burden of proof. Choose it when maintained alternatives fail a material requirement or carry greater total risk or cost, and say which requirement they fail. Then build the smallest stable surface and do not recreate the surrounding ecosystem.
 
@@ -48,7 +50,7 @@ Prefer first-party documentation, specifications, source code, and release notes
 
 A disposable experiment is right when measurement is cheaper than debate. Say up front what result would settle the question, and choose the least fidelity that produces it. Make alternatives differ in the decision under test, not in decoration alone: place a screen question in real data and context where practical, and expose the state a logic question turns on.
 
-Keep it cheap to run with the project's existing tools and cheap to discard — no production mutations, no persistent data, no abstractions built for later, no polish beyond the question. Throw the prototype away once it has answered, and implement the validated behavior properly rather than promoting the experiment.
+Keep it cheap to run with the project's existing tools and cheap to discard — no production mutations, no persistent data, no abstractions built for later, no polish beyond the question. An experiment's shortcuts do not become production architecture by staying in place. Discard it when its assumptions or implementation quality make it unsuitable; harden it in place only deliberately, when that is the smallest honest implementation, the resulting design meets production requirements, and its remaining consequences are authorized.
 
 ## When an independent read earns its cost
 

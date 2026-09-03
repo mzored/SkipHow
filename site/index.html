@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>SkipHow: Outcome-first orchestration for coding agents</title>
-  <meta name="description" content="Outcome-first orchestration for Claude Code and Codex: one Agent Skill that lets the agent choose the engineering method, coordinate the work, and prove the result.">
+  <meta name="description" content="An owner–agent contract for verified project outcomes on Claude Code and Codex: one Agent Skill that lets the agent choose the engineering method, coordinate the work, and show fresh evidence before it reports completion.">
   <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://mzored.github.io/SkipHow/">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
@@ -12,7 +12,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="SkipHow">
   <meta property="og:title" content="SkipHow: Outcome-first orchestration for coding agents">
-  <meta property="og:description" content="Outcome-first orchestration: describe the product result, then let the agent choose the engineering method, coordinate the work, and prove the outcome.">
+  <meta property="og:description" content="Outcome-first orchestration policy at the instruction layer: describe the product result, then let the agent choose the engineering method, coordinate the work, and show fresh evidence before it reports completion.">
   <meta property="og:url" content="https://mzored.github.io/SkipHow/">
   <meta property="og:image" content="https://mzored.github.io/SkipHow/assets/social-preview.png">
   <meta property="og:image:type" content="image/png">
@@ -54,7 +54,7 @@
       <div class="shell">
         <p class="eyebrow">Outcome-first orchestration · Claude Code + Codex</p>
         <h1>Own the product.<br>Let the agent own the engineering.</h1>
-        <p class="lede">Describe what should become true. SkipHow gives the coding agent one operating contract: product decisions and protected actions stay with you; the agent chooses the engineering method, coordinates the work, and proves the result.</p>
+        <p class="lede">Describe what should become true. SkipHow gives the coding agent one operating contract: product decisions and protected actions stay with you; the agent chooses the engineering method, coordinates the work, and must show fresh evidence before it reports completion.</p>
         <p class="mechanism-line">One public skill. Focused methods selected as needed. No workflow for you to operate.</p>
         <div class="actions">
           <a class="button" href="#codex-install">Install for Codex</a>
@@ -74,7 +74,7 @@
           <li>
             <span class="flow-order">You</span>
             <h3>Outcome and constraints</h3>
-            <p>Describe the product result, the tradeoffs that matter, and any protected action you are willing to take.</p>
+            <p>Describe the product result, the product choices that matter, and any protected action you are willing to take.</p>
           </li>
           <li>
             <span class="flow-order">SkipHow</span>
@@ -89,7 +89,7 @@
           <li>
             <span class="flow-order">Result</span>
             <h3>Evidence and uncertainty</h3>
-            <p>The agent returns what changed, what proves it, and anything that remains blocked or unverified.</p>
+            <p>The agent returns what changed, the evidence behind it, and anything that remains blocked or unverified.</p>
           </li>
         </ol>
       </div>
@@ -188,7 +188,7 @@
             </div>
             <div class="decision">
               <dt>Use the base agent</dt>
-              <dd>Your agent already maintains this authority boundary and proves completion reliably. Another instruction layer adds little.</dd>
+              <dd>Your agent already maintains this authority boundary and verifies completion reliably. Another instruction layer adds little.</dd>
             </div>
             <div class="decision">
               <dt>Use a skill library</dt>
@@ -226,7 +226,7 @@ codex plugin add skiphow@skiphow</code></pre>
 claude plugin install skiphow@skiphow</code></pre>
           </article>
         </div>
-        <p>Start a new session after installation. If automatic selection misses, invoke <code>$skiphow</code> in Codex or <code>/skiphow:skiphow</code> in Claude Code. Updates and uninstall steps are in the <a href="https://github.com/mzored/SkipHow/blob/main/docs/guide.md">owner guide</a>.</p>
+        <p>Start a new session after installation, then name the skill in your request: <code>$skiphow</code> in Codex, <code>/skiphow:skiphow</code> in Claude Code. Explicit invocation is the reliable portable mode. Automatic selection exists on both hosts but its reliability is unmeasured, and the session hook prints a reminder without guaranteeing activation. Updates and uninstall steps are in the <a href="https://github.com/mzored/SkipHow/blob/main/docs/guide.md">owner guide</a>; the dated host support matrix is in the <a href="https://github.com/mzored/SkipHow/blob/main/SECURITY.md">security policy</a>.</p>
       </div>
     </section>
 

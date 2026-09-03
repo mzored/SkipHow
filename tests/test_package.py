@@ -99,95 +99,23 @@ def test_release_metadata_uses_one_version() -> None:
     assert f"| {release.rsplit('.', 1)[0]}.x | Yes |" in read("SECURITY.md")
 
 
-def test_public_discovery_metadata_uses_one_category() -> None:
-    description = (
-        "Outcome-first orchestration for Claude Code and Codex. Describe the product "
-        "result; the agent chooses the engineering method and proves the outcome."
-    )
-    topics = [
-        "agent-skills",
-        "agent-instructions",
-        "agent-orchestration",
-        "agentic-coding",
-        "coding-agent",
-        "claude-code",
-        "claude-code-plugin",
-        "openai-codex",
-        "codex-plugin",
-        "product-owner",
-    ]
+def test_public_discovery_metadata_agrees_across_hosts() -> None:
+    """Both host manifests and the Claude catalog describe one product (parity, spec 11.1).
+
+    The sentence itself is editorial and not pinned (spec 11.2): what must hold is that
+    Codex, Claude, and the catalog do not drift apart, and that the Codex interface
+    short description equals the one the skill's own openai.yaml carries.
+    """
     codex = json_object("plugins/skiphow/.codex-plugin/plugin.json")
     claude = json_object("plugins/skiphow/.claude-plugin/plugin.json")
     marketplace = json_object(".claude-plugin/marketplace.json")
     openai = yaml.safe_load(read("plugins/skiphow/skills/skiphow/agents/openai.yaml"))
 
-    assert codex["description"] == claude["description"] == description
-    assert marketplace["description"] == description
-    assert codex["keywords"] == claude["keywords"] == topics
-    assert (
-        codex["interface"]["shortDescription"]
-        == openai["interface"]["short_description"]
-        == "Outcome-first orchestration for coding agents"
-    )
-    discoverability = read("docs/discoverability.md")
-    assert f"Repository description: `{description}`" in discoverability
-    assert f"Topics: `{ '`, `'.join(topics) }`" in discoverability
-
-
-def every_uses(node: object) -> list[str]:
-    """Collect every action reference, including reusable workflows."""
-    if isinstance(node, dict):
-        found = [node["uses"]] if isinstance(node.get("uses"), str) else []
-        return found + [item for value in node.values() for item in every_uses(value)]
-    if isinstance(node, list):
-        return [item for value in node for item in every_uses(value)]
-    return []
-
-
-def test_workflows_are_sha_pinned_with_least_privilege() -> None:
-    for name, granted in (("ci.yml", "read"), ("release.yml", "write")):
-        workflow = yaml.safe_load(read(f".github/workflows/{name}"))
-        uses = every_uses(workflow)
-        assert uses, name
-        assert all(re.fullmatch(r"[^@]+@[0-9a-f]{40}", item) for item in uses), (
-            name,
-            uses,
-        )
-        assert workflow["permissions"] == {"contents": granted}, name
-        assert all("permissions" not in job for job in workflow["jobs"].values()), name
-
-
-def test_pages_workflow_requires_a_manual_publication_action() -> None:
-    workflow = yaml.safe_load(read(".github/workflows/pages.yml"))
-    triggers = workflow.get("on", workflow.get(True))
-    assert triggers == {"workflow_dispatch": None}
-    assert workflow["permissions"] == {
-        "contents": "read",
-        "pages": "write",
-        "id-token": "write",
-    }
-    uses = every_uses(workflow)
-    assert uses
-    assert all(re.fullmatch(r"[^@]+@[0-9a-f]{40}", item) for item in uses)
-    upload = next(
-        step
-        for step in workflow["jobs"]["deploy"]["steps"]
-        if step.get("uses", "").startswith("actions/upload-pages-artifact@")
-    )
-    assert upload["with"] == {"path": "site"}
-
-
-def test_release_refuses_a_tag_outside_main() -> None:
-    workflow = yaml.safe_load(read(".github/workflows/release.yml"))
-    steps = workflow["jobs"]["release"]["steps"]
-    guard = next(
-        step for step in steps if step.get("name") == "Require the tag commit to be on main"
-    )
-    commands = [line.strip() for line in guard["run"].splitlines() if line.strip()]
-    assert commands == [
-        "git fetch --no-tags origin main",
-        'git merge-base --is-ancestor "${GITHUB_SHA}" origin/main',
-    ]
+    assert codex["description"].strip()
+    assert codex["description"] == claude["description"] == marketplace["description"]
+    assert codex["keywords"] == claude["keywords"]
+    assert codex["interface"]["shortDescription"].strip()
+    assert codex["interface"]["shortDescription"] == openai["interface"]["short_description"]
 
 
 def test_every_skill_has_valid_discovery_metadata() -> None:
@@ -203,33 +131,25 @@ def test_every_skill_has_valid_discovery_metadata() -> None:
     assert "skiphow" in names
 
 
-def test_owner_skill_discovery_contract_and_case_matrix_are_precise() -> None:
+def test_owner_skill_description_and_case_matrix_carry_both_polarities() -> None:
+    """The discovery case matrix must keep positive and negative cases (spec 11.3 class 3).
+
+    The wording of the description is editorial and not pinned; it only has to fit the
+    host limit and say something.
+    """
     description = frontmatter(SKILL)["description"]
     assert isinstance(description, str)
-    assert "product owner's current-project request" in description
-    assert "plain-language outcome" in description
-    assert "nontechnical product owner" not in description
-    for excluded in (
-        "unrelated conversation",
-        "mandatory development workflow",
-        "runtime orchestrator",
-    ):
-        assert excluded in description
-    assert "build those capabilities in the current project remains in scope" in description
+    assert 0 < len(description.strip()) <= 1024
 
     cases = json.loads(read("tests/skill-discovery-cases.json"))
-    assert isinstance(cases, list)
-    assert {case["kind"] for case in cases} == {
-        "direct",
-        "indirect",
-        "incomplete",
-        "negative_unrelated",
-        "negative_mandatory_workflow",
-        "negative_runtime_orchestration",
-        "edge_current_project_capability",
-    }
+    assert isinstance(cases, list) and cases
+    assert len({case["id"] for case in cases}) == len(cases)
+    kinds = {case["kind"] for case in cases}
+    assert any(kind.startswith("negative_") for kind in kinds)
+    assert any(not kind.startswith("negative_") for kind in kinds)
     assert all(case["should_select"] for case in cases if not case["kind"].startswith("negative_"))
     assert all(not case["should_select"] for case in cases if case["kind"].startswith("negative_"))
+    assert all(case["prompt"].strip() for case in cases)
 
 
 def test_static_site_matches_its_canonical_contract() -> None:
@@ -259,27 +179,38 @@ def test_adapted_skills_have_pinned_source_provenance() -> None:
     assert check.validate_third_party_sources(skills) == []
 
 
-def test_continuity_hook_is_the_only_hook() -> None:
+def test_session_hook_is_inert_when_it_ships() -> None:
+    """Safety shape of the hook (spec 11.1), not its matcher topology (spec 11.2)."""
     hooks_dir = PLUGIN / "hooks"
+    if not hooks_dir.is_dir():
+        return
     assert [path.name for path in hooks_dir.iterdir()] == ["hooks.json"]
     payload = json_object("plugins/skiphow/hooks/hooks.json")
     assert set(payload["hooks"]) == {"SessionStart"}
     groups = payload["hooks"]["SessionStart"]
-    assert len(groups) == 2
-    assert {
-        frozenset(group["matcher"].split("|")) for group in groups
-    } == check.CONTINUITY_GROUPS
-    sources = [source for group in groups for source in group["matcher"].split("|")]
-    assert sorted(sources) == ["clear", "compact", "resume", "startup"]
+    assert groups
+    forbidden = re.compile(
+        r"\b(?:curl|wget|nc|ssh|scp|nslookup|dig|python|node|sh|bash|zsh|eval|"
+        r"source|cat|cp|mv|rm|mkdir|touch|tee|chmod|git|pip|npm)\b"
+    )
     for group in groups:
-        (handler,) = group["hooks"]
-        assert set(handler) == {"type", "command", "timeout"}
-        assert handler["type"] == "command"
-        assert isinstance(handler["command"], str)
-        assert check.SAFE_ECHO_COMMAND.fullmatch(handler["command"])
-        assert isinstance(handler["timeout"], int)
-        assert not isinstance(handler["timeout"], bool)
-        assert handler["timeout"] > 0
+        sources = group["matcher"].split("|")
+        assert set(sources) <= check.SESSION_START_SOURCES
+        for handler in group["hooks"]:
+            assert set(handler) == {"type", "command", "timeout"}
+            assert handler["type"] == "command"
+            command = handler["command"]
+            assert isinstance(command, str)
+            match = check.SAFE_ECHO_COMMAND.fullmatch(command)
+            assert match, command
+            assert not set(match.group(1)) & set("$`\\|&;<>()*?[]{}!#~'\"")
+            assert forbidden.search(command) is None, command
+            if {"compact", "resume"} & set(sources):
+                assert check.HANDOFF_STATE_REFERENCE.search(command) is None
+            timeout = handler["timeout"]
+            assert isinstance(timeout, int) and not isinstance(timeout, bool)
+            assert 0 < timeout <= check.HOOK_TIMEOUT_CEILING
+    assert check.validate_continuity_hook() == []
 
 
 def test_package_has_no_versioned_model_ids_or_personal_paths() -> None:

@@ -91,35 +91,26 @@ def test_local_package_and_document_checks_pass() -> None:
     ("old", "new", "expected"),
     [
         (
-            '<meta property="og:image:alt" content="SkipHow: outcome-first orchestration for Claude Code and Codex.">',
-            "",
-            "must describe its Open Graph image",
+            '<link rel="canonical" href="https://mzored.github.io/SkipHow/">',
+            '<link rel="canonical" href="https://mzored.github.io/SkipHow/other/">',
+            "canonical URL must be",
         ),
         (
-            '<meta property="og:image:width" content="1280">',
-            '<meta property="og:image:width" content="1200">',
-            "og:image:width must be 1280",
+            '<script type="application/ld+json">',
+            '<script src="https://cdn.example.test/runtime.js"></script><script type="application/ld+json">',
+            "no client runtime",
         ),
         (
-            'class="button secondary repository-cta"',
-            'class="secondary repository-cta"',
-            "must present GitHub as a homepage action",
-        ),
-        (
-            '<div class="contract">',
-            '<div class="contract" aria-label="Responsibility split">',
-            "must not name a generic div",
-        ),
-        (
-            '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">',
-            "",
-            "must declare the responsive viewport",
+            'href="assets/site.css"',
+            'href="assets/missing.css"',
+            "broken site link",
         ),
     ],
 )
-def test_site_validator_rejects_public_contract_regressions(
+def test_site_validator_rejects_structural_regressions(
     tmp_path: Path, old: str, new: str, expected: str
 ) -> None:
+    """Hard failures are what a reader or a host depends on (spec 11.3 classes 1 and 2)."""
     site = tmp_path / "site"
     shutil.copytree(ROOT / "site", site)
     homepage = site / "index.html"
@@ -131,21 +122,56 @@ def test_site_validator_rejects_public_contract_regressions(
         assert any(expected in error for error in check.validate_site())
 
 
-def test_site_must_still_name_its_category_somewhere_a_reader_meets_it(tmp_path: Path) -> None:
-    """The category is a page-level discovery claim, not a required sentence per slot."""
+@pytest.mark.parametrize(
+    ("old", "new", "expected"),
+    [
+        (
+            '<meta property="og:image:alt" content="',
+            '<meta property="og:image:alt" content="" data-was="',
+            "og:image:alt",
+        ),
+        (
+            '<div class="contract">',
+            '<div class="contract" aria-label="Responsibility split">',
+            "should not name a generic div",
+        ),
+        (
+            '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">',
+            "",
+            "responsive viewport",
+        ),
+    ],
+)
+def test_site_presentation_preferences_are_non_blocking_lint(
+    tmp_path: Path, old: str, new: str, expected: str
+) -> None:
+    """Presentation details are lint, never a failed run (spec 11.2, 11.3 class 4)."""
     site = tmp_path / "site"
     shutil.copytree(ROOT / "site", site)
     homepage = site / "index.html"
     text = homepage.read_text(encoding="utf-8")
-    assert check.SITE_CATEGORY in text.casefold()
-    # Editorial wording may move between the title, the description and the body.
-    # Dropping it from every surface at once is the regression worth catching.
-    stripped = re.sub(check.SITE_CATEGORY, "method selection", text, flags=re.IGNORECASE)
-    homepage.write_text(stripped, encoding="utf-8")
+    assert old in text
+    homepage.write_text(text.replace(old, new, 1), encoding="utf-8")
 
+    lint: list[str] = []
     with patch.object(check, "SITE_ROOT", site):
-        errors = check.validate_site()
-    assert any("must name outcome-first orchestration" in error for error in errors)
+        errors = check.validate_site(lint)
+    assert errors == []
+    assert any(expected in warning for warning in lint), lint
+
+
+def test_site_copy_is_not_pinned_to_a_category_phrase(tmp_path: Path) -> None:
+    """A search-positioning phrase is not a package or host contract (spec 11.2)."""
+    site = tmp_path / "site"
+    shutil.copytree(ROOT / "site", site)
+    for page in site.rglob("*.html"):
+        text = page.read_text(encoding="utf-8")
+        page.write_text(
+            re.sub("outcome-first orchestration", "method selection", text, flags=re.IGNORECASE),
+            encoding="utf-8",
+        )
+    with patch.object(check, "SITE_ROOT", site):
+        assert check.validate_site() == []
 
 
 def write_skill(root: Path, name: str, *, description: str = "Handle a focused task.") -> Path:
@@ -716,13 +742,19 @@ def test_continuity_hook_rejects_other_events_and_unsafe_commands(tmp_path: Path
     unsafe["hooks"]["SessionStart"][0]["hooks"][0]["command"] = "curl https://example.test"
     assert any("safe echo-literal" in error for error in validate_hook_payload(tmp_path, unsafe))
 
+    # Matcher topology is editorial: regrouping the four sources is accepted, an
+    # unknown source or a duplicated one is not.
     mixed = real_hook_payload()
     mixed["hooks"]["SessionStart"][0]["matcher"] = "startup|compact"
     mixed["hooks"]["SessionStart"][1]["matcher"] = "clear|resume"
-    assert any(
-        "exactly the startup|clear and compact|resume matcher groups" in error
-        for error in validate_hook_payload(tmp_path, mixed)
-    )
+    assert validate_hook_payload(tmp_path, mixed) == []
+    one_group = real_hook_payload()
+    one_group["hooks"]["SessionStart"] = one_group["hooks"]["SessionStart"][:1]
+    one_group["hooks"]["SessionStart"][0]["matcher"] = "startup|clear|compact|resume"
+    assert validate_hook_payload(tmp_path, one_group) == []
+    unknown = real_hook_payload()
+    unknown["hooks"]["SessionStart"][0]["matcher"] = "startup|PreToolUse"
+    assert any("distinct SessionStart sources" in error for error in validate_hook_payload(tmp_path, unknown))
 
 
 def test_continuity_hook_schema_rejects_every_behavioral_escape(tmp_path: Path) -> None:
@@ -739,7 +771,7 @@ def test_continuity_hook_schema_rejects_every_behavioral_escape(tmp_path: Path) 
     mutations.append(("unsupported fields", payload))
     payload = real_hook_payload()
     payload["hooks"]["SessionStart"][0]["matcher"] = "startup | clear"
-    mutations.append(("exactly the startup", payload))
+    mutations.append(("distinct SessionStart sources", payload))
     for command in (
         "echo 'Read .skiphow before resuming'",
         "echo 'Read handoff.md before resuming'",
@@ -752,7 +784,7 @@ def test_continuity_hook_schema_rejects_every_behavioral_escape(tmp_path: Path) 
         payload = real_hook_payload()
         payload["hooks"]["SessionStart"][0]["hooks"][0][field] = True
         mutations.append(("unsupported fields", payload))
-    for timeout in (True, 0, -1, "10"):
+    for timeout in (True, 0, -1, "10", check.HOOK_TIMEOUT_CEILING + 1):
         payload = real_hook_payload()
         payload["hooks"]["SessionStart"][0]["hooks"][0]["timeout"] = timeout
         mutations.append(("positive integer", payload))
@@ -1757,15 +1789,16 @@ def test_hook_shape_is_one_cross_shell_safe_literal() -> None:
         command = group["hooks"][0]["command"]
         assert check.SAFE_ECHO_COMMAND.fullmatch(command)
         assert not command.startswith("sh -c")
-    matchers = [group["matcher"] for group in real["hooks"]["SessionStart"]]
-    assert frozenset(frozenset(m.split("|")) for m in matchers) == check.CONTINUITY_GROUPS
-    resumed = real["hooks"]["SessionStart"][1]["hooks"][0]["command"]
-    assert ".skiphow" not in resumed.casefold()
-    assert "handoff" not in resumed.casefold()
-    # The wording of either reminder is editorial and may change. What must hold is
-    # that the hook stays an inert literal: one echo of a single-quoted payload with
-    # no shell metacharacter, no reader or writer, and no network client.
-    for command in (real["hooks"]["SessionStart"][0]["hooks"][0]["command"], resumed):
+    for group in real["hooks"]["SessionStart"]:
+        if {"compact", "resume"} & set(group["matcher"].split("|")):
+            resumed = group["hooks"][0]["command"]
+            assert ".skiphow" not in resumed.casefold()
+            assert "handoff" not in resumed.casefold()
+    # The wording of either reminder and the grouping of the four sources are
+    # editorial and may change. What must hold is that the hook stays an inert
+    # literal: one echo of a single-quoted payload with no shell metacharacter, no
+    # reader or writer, and no network client.
+    for command in (group["hooks"][0]["command"] for group in real["hooks"]["SessionStart"]):
         payload = check.SAFE_ECHO_COMMAND.fullmatch(command).group(1)
         assert not set(payload) & set("$`\\|&;<>()*?[]{}!#~'\"")
         assert not re.search(

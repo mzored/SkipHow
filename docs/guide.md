@@ -20,9 +20,13 @@ claude plugin marketplace add https://github.com/mzored/SkipHow.git
 claude plugin install skiphow@skiphow
 ```
 
-Start a new session after installing or updating. If the owner skill does not load automatically, add `$skiphow` in Codex or `/skiphow:skiphow` in Claude Code.
+Start a new session after installing or updating.
 
-The two hosts treat hooks differently. Claude Code enables a plugin's hooks along with the plugin, while Codex asks you to review and trust each hook definition before it runs, so installing here does not by itself make the session reminder fire on Codex.
+## Activate it
+
+Name the skill in your request: `$skiphow` in Codex, `/skiphow:skiphow` in Claude Code. Explicit invocation is the reliable, portable mode and the one every documented behavior assumes. Both hosts can also select the skill on their own from its description; that path exists, but how reliably it fires for an ordinary request has not been measured, so it is `UNVERIFIED` and not something to lean on.
+
+The package ships a session-start hook that prints a one-line reminder at startup, clear, compaction, and resume. It does not load the skill, restore context, grant authority, or guarantee activation. The two hosts treat it differently: Claude Code enables a plugin's hooks along with the plugin, while Codex asks you to review and trust each hook definition before it runs, so installing on Codex does not by itself make the reminder fire. The dated, per-capability host matrix is in the [security policy](../SECURITY.md#host-support-as-of-2026-09-04).
 
 Update Codex:
 

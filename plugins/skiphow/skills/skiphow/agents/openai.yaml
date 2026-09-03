@@ -1,6 +1,6 @@
 interface:
   display_name: "SkipHow"
-  short_description: "Outcome-first orchestration for coding agents"
-  default_prompt: "Use $skiphow for this product outcome. Own technical decisions, implementation, and proof; leave tradeoffs and protected actions with me."
+  short_description: "Owner–agent contract for verified project outcomes"
+  default_prompt: "Use $skiphow for this product outcome. Own technical decisions, implementation, and verification; leave product choices and protected actions with me."
 policy:
   allow_implicit_invocation: true

@@ -1,6 +1,6 @@
 # Design
 
-SkipHow is an adaptive, instruction-level orchestration layer for strong coding agents. It supplies the policy for understanding an outcome, choosing the engineering method, coordinating work, and proving completion. It is not a scheduler, database, model runner, control plane, or replacement for host permissions.
+SkipHow is an owner–agent operating contract for verified project outcomes, shipped as an outcome-first orchestration policy at the instruction layer for strong coding agents. When selected or loaded, it supplies the policy for understanding an outcome, choosing the engineering method, instructing the host agent to coordinate work, and requiring fresh evidence before completion is reported. It is not a scheduler, database, model runner, control plane, or replacement for host permissions, and it proves nothing itself.
 
 ## Package shape
 
@@ -40,9 +40,11 @@ Authoritative project instructions may narrow scope, require safeguards, and def
 
 Instruction-level policy is probabilistic. It raises the odds that an agent behaves correctly and guarantees nothing, so a host-enforced control is preferred wherever the host provides one. Read-only profiles, sandboxes, permission prompts, and isolated checkouts do work that prose cannot.
 
-The package includes one continuity hook. It prints a short load or reload reminder for startup, clear, compact, and resume events. The compact and resume reminder applies only where SkipHow is already governing the request. The hook does not load the skill, restore context, write project state, or change permissions.
+The package includes one continuity hook. It prints a short load or reload reminder for startup, clear, compact, and resume events. The compact and resume reminder applies only where SkipHow is already governing the request. The hook does not load the skill, restore context, write project state, change permissions, or guarantee activation; on Codex it does not run until the user trusts it. Explicit invocation is the reliable portable mode, and implicit selection is `UNVERIFIED`. The deterministic check validates the hook's safety shape, an echo-only command with a bounded timeout, and not its matcher topology.
 
 ## Public site visual system
+
+Historical, non-normative: presentation collateral kept for reference. The deterministic check no longer fails on any of it; site presentation is a non-blocking lint.
 
 The canonical site is a static editorial proof surface, not a second product specification. Its visible claims summarize and link back to the README, evidence, decisions, releases, and installation instructions.
 

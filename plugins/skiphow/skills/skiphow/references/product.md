@@ -4,7 +4,7 @@ Use this when the outcome itself is in question: a new or broadly stated result,
 
 ## What the evidence settles
 
-A request to audit, organize, plan, or carry material forward does not adopt the proposals that material contains. A finding, an issue, an audit, or a plan becomes product intent only where the current request chooses that outcome, an authoritative product brief carries it, or a recorded owner decision adopts it. Everything else in those sources stays a proposal, however confidently it is written and however long it has sat there. Carrying one forward intact, into a summary or a roadmap position or a tracked item, preserves it rather than accepts it.
+A request to audit, organize, plan, or carry material forward does not adopt the proposals that material contains. A finding, an issue, an audit, or a plan becomes product intent only where the current request chooses that outcome, an authoritative product brief carries it, or a recorded owner decision explicitly adopts it. A product brief is authoritative only where the owner supplied or explicitly adopted the relevant outcome, or trusted host, user, or organization policy designates it as product policy; a document's title, age, location, confidence, or the fact that the host loaded it establishes nothing, and even an authoritative brief settles intent without granting a protected action. Everything else in those sources stays a proposal, however confidently it is written and however long it has sat there. Carrying one forward intact, into a summary or a roadmap position or a tracked item, preserves it rather than accepts it.
 
 ## Naming the choice
 

@@ -16,7 +16,7 @@ Too small is also wrong. Something that cannot be shown true by itself is a step
 
 A mechanical change with a wide blast radius has no honest vertical slice. Sequence it: add the new form beside the old one, move call sites in batches, then delete the old form.
 
-State each unit as its outcome and what would show it true. Do not prescribe files, names, structure, or steps; that wastes the judgment you delegated.
+State each unit as its outcome and what would show it true. The surface a delegate may touch is a boundary on its authority; which files, names, structures, or steps implement the outcome stays the delegate's judgment unless the task itself requires them.
 
 Where the split is risky or tightly coupled, an independent check of it against the request earns its cost; elsewhere none is required. Such a check looks for a unit with no observable outcome, an invented dependency, a prescribed implementation, two units that would end up doing the same work, or a part of the result no unit covers.
 
@@ -24,7 +24,7 @@ Where the split is risky or tightly coupled, an independent check of it against 
 
 A unit is blocked when it needs another's result, and not when you would rather do it first. Record only those edges; a part is ready when nothing it needs is outstanding, whatever order you imagined for it. Readiness is not capacity: start only ready units you can keep isolated and integrate as each lands.
 
-Serialize parts that would change the same shared surface even when nothing else blocks them: concurrent edits to one file, interface, schema, or migration cost more to reconcile than they save.
+Serialize parts that would change the same shared surface even when nothing else blocks them: concurrent edits to one file, interface, schema, or migration cost more to reconcile than they save. The kernel's isolation rule decides whether a delegate may write at all.
 
 Decompose only as far as the next verifiable outcome, and do not invent units whose shape earlier results will change.
 
@@ -40,9 +40,9 @@ A delegate knows only what its brief says, so a rule you did not write into the 
 
 ## The level each delegate runs at
 
-Match each delegate's level to its own work, not to what the host would pick. Bounded mechanical work against a stated specification runs at the cheapest level that can complete it, work carrying a settled design into code at the ordinary level, work that decides something at the strongest available. Anything that reviews or judges runs at no less than the session dispatching it: a weaker check reports agreement rather than finding what you missed. Where a brief cannot state its own completion condition, raise the level or split the work instead of routing it down.
+Route each delegated task to a model and effort demonstrated adequate for its consequence and complexity, rather than to a fixed tier or to the level this session runs at. Use stronger independent review where the cost of a miss warrants it, including effort above your own for a high-consequence security or architecture review; use focused lower-cost workers for bounded, read-heavy, or mechanical checks whose result you can verify. Independence, task framing, tools, evidence, and adversarial criteria do more for a review than a parent-relative level. Where a brief cannot state its own completion condition, raise the effort or split the work instead of routing it down.
 
-Naming the level in your own message is not setting it. Set the host's own per-delegate control. Where the host offers only a reasoning or effort setting, the levels collapse onto it; where it offers no per-delegate control, they are unavailable and the only choice is whether to delegate.
+Naming a model or effort in your own message is not setting it. Set the host's own per-delegate control; where the host offers none, the only choice is whether to delegate.
 
 ## Where isolation lands
 

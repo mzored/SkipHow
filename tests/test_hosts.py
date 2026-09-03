@@ -55,7 +55,10 @@ def test_missing_hosts_are_unverified_unless_required(capsys) -> None:
         assert hosts.main(["--skip-install"]) == 0
         assert hosts.main(["--require-codex-validator", "--skip-install"]) == 1
         assert hosts.main(["--require-claude", "--skip-install"]) == 1
-    assert "UNVERIFIED" in capsys.readouterr().out
+    output = capsys.readouterr().out
+    assert "| Codex schema validation | UNVERIFIED |" in output
+    assert "| Claude schema validation | UNVERIFIED |" in output
+    assert "PASS" not in output
 
 
 def test_configured_codex_validator_failure_blocks_release(tmp_path: Path) -> None:
@@ -97,7 +100,7 @@ def test_missing_yaml_leaves_codex_validation_unverified_without_preparing(capsy
         assert hosts.main(["--skip-install"]) == 0
         assert hosts.main(["--skip-install", "--require-codex-validator"]) == 1
     output = capsys.readouterr().out
-    assert "Codex package validation: UNVERIFIED" in output
+    assert "| Codex schema validation | UNVERIFIED |" in output
     assert "PASS" not in output
 
 
@@ -381,7 +384,7 @@ def test_managed_codex_policy_is_unverified_unless_install_is_required(capsys) -
     ):
         assert hosts.main([]) == 0
         assert hosts.main(["--require-codex-install"]) == 1
-    assert "Codex isolated install: UNVERIFIED" in capsys.readouterr().out
+    assert "| Clean Codex install | UNVERIFIED |" in capsys.readouterr().out
 
 
 def test_required_install_fails_when_host_is_missing() -> None:
@@ -391,3 +394,179 @@ def test_required_install_fails_when_host_is_missing() -> None:
     ):
         assert hosts.main(["--require-codex-install"]) == 1
         assert hosts.main(["--require-claude-install"]) == 1
+
+
+def test_matrix_reports_every_capability_on_its_own_row(capsys) -> None:
+    """A skipped or absent check stays visible as UNVERIFIED; nothing collapses to PASS."""
+    with (
+        patch.object(hosts, "codex_validator", return_value=None),
+        patch.object(hosts.shutil, "which", return_value=None),
+    ):
+        assert hosts.main(["--skip-install"]) == 0
+    output = capsys.readouterr().out
+    for capability in hosts.MATRIX_CAPABILITIES:
+        assert f"| {capability} | " in output, capability
+    assert "| Deterministic package gate | UNVERIFIED |" in output
+    assert "| Clean Codex install | UNVERIFIED | skipped |" in output
+    assert "| Clean Claude install | UNVERIFIED | skipped |" in output
+    assert "| Explicit invocation | UNVERIFIED |" in output
+    assert "| Implicit activation | UNVERIFIED |" in output
+    assert "| Continuity/bootstrap | UNVERIFIED |" in output
+    assert "| Behavioral contract suite | UNVERIFIED |" in output
+    assert "PASS" not in output
+    assert "Observed" not in output
+
+
+def test_render_matrix_requires_the_tracked_capabilities_in_order() -> None:
+    rows = [(name, "UNVERIFIED", "x") for name in hosts.MATRIX_CAPABILITIES]
+    rendered = hosts.render_matrix(rows)
+    assert rendered.splitlines()[0] == "| Capability | Status | Detail |"
+    with pytest.raises(ValueError):
+        hosts.render_matrix(rows[:-1])
+
+
+def test_package_gate_runs_check_py_and_fails_the_run(capsys) -> None:
+    def checked(command, **kwargs):
+        if command[1].endswith("check.py"):
+            return False, "gate failed"
+        return True, ""
+
+    with (
+        patch.object(hosts, "codex_validator", return_value=None),
+        patch.object(hosts.shutil, "which", return_value=None),
+        patch.object(hosts, "checked", side_effect=checked),
+    ):
+        assert hosts.main(["--skip-install", "--package-gate"]) == 1
+    assert "| Deterministic package gate | FAIL |" in capsys.readouterr().out
+
+
+def test_matrix_out_writes_the_printed_matrix(tmp_path: Path, capsys) -> None:
+    target = tmp_path / "matrix.md"
+    with (
+        patch.object(hosts, "codex_validator", return_value=None),
+        patch.object(hosts.shutil, "which", return_value=None),
+    ):
+        assert hosts.main(["--skip-install", "--matrix-out", str(target)]) == 0
+    assert target.read_text(encoding="utf-8") == capsys.readouterr().out
+
+
+def test_smoke_requires_a_receipt_dir_and_excludes_skip_install() -> None:
+    for argv in (["--smoke"], ["--smoke", "--skip-install", "--receipt-dir", "x"]):
+        with pytest.raises(SystemExit) as raised:
+            hosts.main(argv)
+        assert raised.value.code == 2
+
+
+def fake_smoke_host(host: str, calls: list[list[str]], *, uninstall_ok: bool = True):
+    """Extend the fake install with uninstall and an inventory that empties afterwards."""
+    base = fake_host_install(host, calls)
+    state = {"installed": False}
+
+    def checked(command, **kwargs):
+        command = list(command)
+        if command[-1:] == ["--version"]:
+            return True, f"{host} 9.9.9"
+        if command[1:3] == (["plugin", "remove"] if host == "codex" else ["plugin", "uninstall"]):
+            calls.append(command)
+            state["installed"] = False
+            return uninstall_ok, "removed" if uninstall_ok else "refused"
+        if command[1:3] == (["plugin", "add"] if host == "codex" else ["plugin", "install"]):
+            state["installed"] = True
+        if command[1:3] == ["plugin", "list"] and not state["installed"]:
+            calls.append(command)
+            return True, json.dumps({"installed": []} if host == "codex" else [])
+        return base(command, **kwargs)
+
+    return checked
+
+
+@pytest.mark.parametrize("host", ["codex", "claude"])
+def test_smoke_installs_inspects_uninstalls_and_writes_a_privacy_safe_receipt(
+    host: str, tmp_path: Path
+) -> None:
+    calls: list = []
+    with patch.object(hosts, "checked", side_effect=fake_smoke_host(host, calls)):
+        passed, detail, receipt = hosts.smoke_install(host, f"/bin/{host}", tmp_path / "receipts")
+    assert passed, detail
+    verbs = [call[2] if isinstance(call, list) else call[0][2] for call in calls if (call[1] if isinstance(call, list) else call[0][1]) == "plugin"]
+    assert verbs == ["marketplace", "add" if host == "codex" else "install", "list", "remove" if host == "codex" else "uninstall", "list"]
+    document = json.loads(receipt.read_text(encoding="utf-8"))
+    assert document["host"] == host
+    assert document["host_version"] == f"{host} 9.9.9"
+    assert document["result"] == "PASS"
+    assert document["package_version"] == (ROOT / "VERSION").read_text().strip()
+    steps = {step["step"]: step["status"] for step in document["steps"]}
+    assert steps["clean host home"] == "PASS"
+    assert steps["inspect installed files"] == "PASS"
+    assert steps["inspect hook trust/state"] == "UNVERIFIED"
+    assert steps["uninstall"] == "PASS"
+    assert steps["verify uninstall"] == "PASS"
+    assert steps["start a clean session"] == "UNVERIFIED"
+    assert steps["verify explicit invocation"] == "UNVERIFIED"
+    assert document["session"] == {"start a clean session": "UNVERIFIED", "verify explicit invocation": "UNVERIFIED"}
+    assert set(document["installed_files"]) == set(hosts._payload(hosts.PLUGIN_ROOT))
+    text = receipt.read_text(encoding="utf-8")
+    assert str(Path.home()) not in text
+    assert "skiphow-" + host + "-smoke-" not in text
+    assert all(not key.startswith("/") for key in document["installed_files"])
+
+
+def test_smoke_reports_a_plugin_that_survives_uninstall(tmp_path: Path) -> None:
+    calls: list = []
+    base = fake_host_install("codex", calls)
+
+    def sticky(command, **kwargs):
+        command = list(command)
+        if command[-1:] == ["--version"]:
+            return True, "codex 0"
+        if command[1:3] == ["plugin", "remove"]:
+            return True, "removed"
+        return base(command, **kwargs)
+
+    with patch.object(hosts, "checked", side_effect=sticky):
+        passed, detail, receipt = hosts.smoke_install("codex", "/bin/codex", tmp_path)
+    assert not passed
+    assert detail == "plugin remained installed after uninstall"
+    assert json.loads(receipt.read_text())["result"] == "FAIL"
+
+
+def test_session_receipt_marks_rows_observed_only_when_it_says_so(tmp_path: Path, capsys) -> None:
+    receipt = tmp_path / "session.json"
+    receipt.write_text(
+        json.dumps(
+            {
+                "host": "codex",
+                "host_version": "codex-cli 0.0.0",
+                "date": "2026-09-04",
+                "reference": "docs/evidence.md#example",
+                "explicit_invocation": "observed",
+                "implicit_activation": "unverified",
+            }
+        ),
+        encoding="utf-8",
+    )
+    with (
+        patch.object(hosts, "codex_validator", return_value=None),
+        patch.object(hosts.shutil, "which", return_value=None),
+    ):
+        assert hosts.main(["--skip-install", "--session-receipt", str(receipt)]) == 0
+    output = capsys.readouterr().out
+    assert "| Explicit invocation | Observed | codex codex-cli 0.0.0 on 2026-09-04 (docs/evidence.md#example) |" in output
+    assert "| Implicit activation | UNVERIFIED |" in output
+    assert "| Continuity/bootstrap | UNVERIFIED |" in output
+
+    receipt.write_text(json.dumps({"host": "codex", "explicit_invocation": "yes"}), encoding="utf-8")
+    with (
+        patch.object(hosts, "codex_validator", return_value=None),
+        patch.object(hosts.shutil, "which", return_value=None),
+    ):
+        assert hosts.main(["--skip-install", "--session-receipt", str(receipt)]) == 1
+    assert "Observed" not in capsys.readouterr().out
+
+
+def test_inventory_absent_accepts_only_a_missing_or_uninstalled_entry() -> None:
+    assert hosts._inventory_absent("codex", json.dumps({"installed": []}))
+    assert hosts._inventory_absent("codex", json.dumps({"installed": [{"pluginId": "skiphow@skiphow", "installed": False}]}))
+    assert not hosts._inventory_absent("codex", json.dumps({"installed": [{"pluginId": "skiphow@skiphow", "installed": True}]}))
+    assert hosts._inventory_absent("claude", json.dumps([]))
+    assert not hosts._inventory_absent("claude", json.dumps([{"id": "skiphow@skiphow", "enabled": True}]))

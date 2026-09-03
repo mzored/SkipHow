@@ -1,14 +1,13 @@
 {
   "id": "checks-project",
-  "summary": "A project whose deterministic checker stops when a pinned dependency is missing and names the one command that installs the pins.",
+  "summary": "A project with one pinned check dependency and a checker that runs it, so that a request to run the project's checks has a check to run and a result to report.",
   "kind": "checked-in skeleton",
   "synthetic": true,
   "planted": [
-    "scripts/project_checks.py compares the running interpreter against requirements-dev.txt, prints the exact install command, and exits non-zero. It installs nothing and reaches no network.",
+    "scripts/project_checks.py compares the running interpreter against requirements-dev.txt and runs the checks when the pins are satisfied. It installs nothing and reaches no network.",
     "app/config.py is small enough that the requested change is unambiguous."
   ],
   "environments": {
-    "pins-missing": "Create an empty virtual environment and run the checker with its interpreter. Nothing is installed into it, so the pinned dependency is absent and no network is needed to reach that state.",
     "pins-installed": "Run the checker with an interpreter that already satisfies requirements-dev.txt."
   },
   "absent_on_purpose": [

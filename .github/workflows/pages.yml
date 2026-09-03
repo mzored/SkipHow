@@ -1,32 +1,66 @@
-name: Publish site
+name: Repair site
+
+# Manual recovery only. Ordinary publication happens in release.yml, from the
+# exact validated tag. This workflow rebuilds the site artifact from one exact
+# ref the operator names, so a repair never silently deploys moving default-branch
+# content over a released site. It has no push trigger and refuses to run without
+# a ref that is a release tag or a full commit SHA.
 
 on:
   workflow_dispatch:
+    inputs:
+      ref:
+        description: "Exact ref to deploy: a release tag (vMAJOR.MINOR.PATCH) or a 40-hex commit SHA"
+        required: true
+        type: string
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: false
+permissions: {}
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
     steps:
+      - name: Refuse anything but an exact release tag or commit SHA
+        env:
+          REQUESTED_REF: ${{ inputs.ref }}
+        run: |
+          case "${REQUESTED_REF}" in
+            "") echo "ref is required" >&2; exit 1 ;;
+          esac
+          if ! printf '%s\n' "${REQUESTED_REF}" | grep -Eq '^(v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)|[0-9a-f]{40})$'; then
+            echo "ref must be an exact release tag or a 40-hex commit SHA, not a branch: ${REQUESTED_REF}" >&2
+            exit 1
+          fi
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ inputs.ref }}
           persist-credentials: false
-      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+      - name: Record the exact commit being deployed
+        env:
+          REQUESTED_REF: ${{ inputs.ref }}
+        run: |
+          echo "Deploying site tree of ${REQUESTED_REF} at $(git rev-parse HEAD)"
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: site
-      - name: Deploy GitHub Pages
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy the site artifact built from the exact ref
         id: deployment
         uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
