@@ -1,6 +1,6 @@
 {
   "name": "skiphow",
-  "version": "2.16.0",
+  "version": "2.16.1",
   "description": "Outcome-first orchestration for Claude Code and Codex. Describe the product result; the agent chooses the engineering method and proves the outcome.",
   "author": {
     "name": "mzored",

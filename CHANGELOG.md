@@ -2,6 +2,21 @@
 
 All notable changes to SkipHow 2.x appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 2.16.1 (2026-09-03)
+
+Documentation and receipts. The shipped instructions are byte-identical to 2.16.0; nothing a project installs behaves differently.
+
+### Evidence
+
+- Plan mode on its own is not the reason methods go unread in long installed sessions. It was the one candidate the 2026-09-02 audit of two installed CI-cost sessions named, because both began in plan mode and its host reminder opens by telling the run to dispatch Explore agents in parallel, with the agent type already chosen. Eleven isolated sessions ran on exact unmodified `v2.16.0` with plan mode as the only variable, each plan-mode session resumed into execution so the shape matched the field, five of them under a per-session spending limit and six in an earlier unbudgeted pass that agrees with them. The arms are the same: all eleven opened `delegation` before their first spawn, and every spawn named a level, forty-nine of forty-nine with plan mode and forty of forty without. The one asymmetry runs the wrong way for the hypothesis, `execution-health` opening in four of the six plan-mode sessions and none of the five without. Because the clean fixture never reproduced the failure, this bounds plan mode as a sole cause and not as one term in an interaction. The cause stays `UNVERIFIED` and no candidate replaces it.
+- A fixture measures delegation only where delegation earns its cost. Twenty sessions on a documentation-reconciliation fixture, in three sizes, opened a method in three of them and dispatched one delegate between them, because a templated docs set is reconciled by writing one script and every run said so before doing it. Six on an eight-defect service opened `diagnosing-bugs` and `testing` and delegated nothing. One delegate across those twenty-six against eight or nine in every session on the prompt that named parallel lanes, which is consistent with the prompt shape the 2.15.0 pass recorded without making it the necessary condition.
+- Isolation was proven by a control run carrying no package, which listed the host's own built-ins and showed no kernel text, no method text, and no trace of the maintainer's own instruction files. Each run confirmed the candidate from its own transcript by the base directory the skill reports, which three of the twenty documentation sessions did not, so they count as sessions that never carried it.
+
+### Changed
+
+- `AGENTS.md` bounds what a receipt may cost, because this pass settled one yes-or-no question with forty sessions across fifty-one invocations, $165 and nearly five hours while the four sessions that carried the answer cost under six dollars. Name the observable before running and stop each session once it lands, which for a receipt about the dispatch means not paying for the delegates to finish. Pilot one session per arm, run one more, and stop; keep one fixture and fix a prompt that produces nothing from the record rather than by running another batch. Set a per-session spending limit and a ceiling for the whole receipt, cap the sessions in flight, give every run its own fixture directory and log, and read transcript write times before calling a run stuck.
+- `AGENTS.md` also records that disabling every setting source keeps the maintainer's own instruction files out of a session's context but does not stop the session from reading them with a shell command, so a transcript is searched for those files as well as for the package. One run in this pass did exactly that fifteen seconds in.
+
 ## 2.16.0 (2026-09-02)
 
 ### Changed
