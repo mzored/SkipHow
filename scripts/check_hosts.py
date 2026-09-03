@@ -66,18 +66,19 @@ def codex_validator() -> Path | None:
 
 
 def validator_python() -> tuple[str | None, str]:
-    """Choose a Python interpreter with the validator's YAML dependency."""
+    """Report whether this interpreter already has the validator's YAML dependency.
+
+    This never installs anything. Preparing dependencies on the caller's behalf
+    would reach a package index from an ordinary check, so an interpreter without
+    PyYAML leaves the Codex validator unrun rather than silently provisioned.
+    """
     available, _ = checked([sys.executable, "-c", "import yaml"], timeout=30)
     if available:
         return sys.executable, "current Python"
-    prepared, output = checked(
-        [sys.executable, "scripts/check.py", "--prepare-only"],
-        timeout=300,
+    return None, (
+        "this Python lacks the validator's PyYAML dependency; install it yourself, "
+        "then rerun: python -m pip install -r requirements-dev.txt"
     )
-    managed = Path(output.splitlines()[-1]) if output else Path()
-    if prepared and managed.is_file():
-        return str(managed), "repository-managed Python"
-    return None, output or "could not prepare repository-managed Python"
 
 
 def _payload(root: Path) -> dict[str, str]:
@@ -339,12 +340,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     else:
         python, detail = validator_python()
         if python is None:
-            passed, output = False, detail
+            print(f"Codex package validation: UNVERIFIED ({detail})")
+            if args.require_codex_validator:
+                errors.append(detail)
         else:
             passed, output = checked([python, str(validator), str(PLUGIN_ROOT)])
-        print(f"Codex package validation: {'PASS' if passed else 'FAIL'}")
-        if not passed:
-            errors.append(output or "Codex plugin validator failed without output")
+            print(f"Codex package validation: {'PASS' if passed else 'FAIL'}")
+            if not passed:
+                errors.append(output or "Codex plugin validator failed without output")
 
     if claude is None:
         print("Claude package validation: UNVERIFIED")

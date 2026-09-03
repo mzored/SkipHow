@@ -74,15 +74,31 @@ def test_configured_codex_validator_failure_blocks_release(tmp_path: Path) -> No
         assert hosts.main(["--skip-install"]) == 1
 
 
-def test_codex_validator_can_use_the_managed_python(tmp_path: Path) -> None:
-    managed = tmp_path / "python"
-    managed.write_text("", encoding="utf-8")
-    with patch.object(
-        hosts,
-        "checked",
-        side_effect=[(False, "missing yaml"), (True, str(managed))],
+def test_missing_yaml_leaves_codex_validation_unverified_without_preparing(capsys) -> None:
+    """A validator interpreter is never provisioned on the caller's behalf.
+
+    The fallback used to run `scripts/check.py --prepare-only`, which reached a
+    package index by proxy. An interpreter without PyYAML now leaves that one
+    category unrun and says how to install it.
+    """
+    with patch.object(hosts, "checked", return_value=(False, "missing yaml")) as checked:
+        python, detail = hosts.validator_python()
+    assert python is None
+    assert "python -m pip install -r requirements-dev.txt" in detail
+    assert checked.call_count == 1
+    assert "--prepare-only" not in " ".join(checked.call_args[0][0])
+
+    validator = Path(__file__)
+    with (
+        patch.object(hosts, "codex_validator", return_value=validator),
+        patch.object(hosts, "validator_python", return_value=(None, detail)),
+        patch.object(hosts.shutil, "which", return_value=None),
     ):
-        assert hosts.validator_python() == (str(managed), "repository-managed Python")
+        assert hosts.main(["--skip-install"]) == 0
+        assert hosts.main(["--skip-install", "--require-codex-validator"]) == 1
+    output = capsys.readouterr().out
+    assert "Codex package validation: UNVERIFIED" in output
+    assert "PASS" not in output
 
 
 def test_plain_marketplace_matches_exact_candidate_and_rejects_repositories(

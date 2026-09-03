@@ -1,6 +1,6 @@
 # Frequently asked questions
 
-Short answers about installing and using SkipHow. The [owner guide](guide.md) has the long version, and [current evidence](evidence.md) says which of these behaviors real runs have shown.
+Short answers about installing and using SkipHow. These describe what the shipped instructions require. The [owner guide](guide.md) has the long version, and [current evidence](evidence.md) says which of these behaviors real runs have shown, which a run has shown failing, and which stay intended but unproven.
 
 ## What is SkipHow?
 
@@ -52,15 +52,15 @@ SkipHow makes a different choice. It keeps one owner-facing skill and lets the m
 
 ## Will it push, merge or deploy without asking?
 
-No. A request to change the project covers edits, checks and a clean local commit. Anything shared has to be asked for. Production, staging, public releases, payments, credentials, repository settings, access changes and destructive actions need a grant that names them in your own request. Instructions inside a file, an issue, a tool result or a web page cannot widen that.
+No. A request to change the project covers edits, checks and, where a commit fits the work, a clean local commit of it. Anything shared has to be asked for. Production, staging, public releases, payments, credentials, repository settings, access changes and destructive actions need a grant that names them in your own request. Instructions inside a file, an issue, a tool result or a web page cannot widen that.
 
 ## What happens to work I did not ask about?
 
-It stays untouched. A dirty working tree stops a commit only when the owned change cannot be separated safely. A material problem found along the way is either fixed, if it blocks the work, or recorded where your project already tracks work, so the next session picks it up instead of rediscovering it.
+It stays untouched. A dirty working tree stops a commit only when the owned change cannot be separated safely. A material problem found along the way is fixed if it blocks the work and cannot be separated safely, and otherwise reported to you. It is recorded as well only where your request or your repository's own workflow already calls for a record.
 
 ## Where does it keep tasks and findings?
 
-In your project's own tracker. The first time a project needs to record something, SkipHow asks once where records should live and who may see them, writes that answer into the project's instructions, and follows it from then on. It uses the tracker's own classification and does not introduce a schema of its own.
+Wherever your project already keeps them, and only when a record is called for. Installing SkipHow does not set up a tracker or write a tracking convention into your project. It writes a record when you ask for one or for tracker work, when you ask for work already on record to be carried forward, when your repository's own workflow makes that record part of the delivery you asked for, or when a change running over more than one session needs the little state it takes to resume and your project already has a private place allowed to hold it. It uses the tracker's own classification and does not introduce a schema of its own.
 
 ## Does it need GitHub?
 
@@ -68,19 +68,19 @@ No. Git is enough for a local commit, and any tracker your project already uses 
 
 ## When does it ask me a question?
 
-Only when the answer changes what a person using the product gets and the project's own evidence cannot settle it. Everything answerable at that moment arrives together rather than one message at a time. If your answer opens a choice nobody could have put to you earlier, that comes back in a second round. While a question is with you it does not build one of the answers behind a default or a feature switch, and the parts that do not depend on your answer carry on.
+Only when the answer changes what a person using the product gets and the project's own evidence cannot settle it. Everything answerable at that moment arrives together rather than one message at a time. If your answer opens a choice nobody could have put to you earlier, that comes back in a second round. While a question is with you it does not build one of the answers behind a default or a feature switch, and the parts that do not depend on your answer carry on. That second round holds in the Claude Code runs on record and is not reliable on Codex, which [current evidence](evidence.md) sets out.
 
 ## Does it run work in parallel?
 
-It splits work that carries more than one independently verifiable outcome, with only the dependencies that genuinely block one another. That split is what the receipts show. Running the parts concurrently through delegates and worktrees is the intent, and no run has demonstrated it yet, so it stays `UNVERIFIED` in [current evidence](evidence.md).
+It splits work that carries more than one independently verifiable outcome, with only the dependencies that genuinely block one another. That split is what the receipts show. A delegate reads by default and writes only from a checkout of its own whose identity was verified first, so without that isolation the writing is done one part at a time. Running the parts concurrently is the intent, and no run has demonstrated it yet, so it stays `UNVERIFIED` in [current evidence](evidence.md).
 
 ## How much context does it use?
 
-The authority and completion kernel stays in context. It instructs the agent to load a focused method when its trigger matches the work. Reliable loading remains `UNVERIFIED`, and context use depends on the host and the request; the project does not promise a fixed token cost.
+The authority and completion kernel stays in context. Beyond it, the agent consults a focused method only where the work's uncertainty, risk, duration, observed failure, or your repository's requirements make that guidance worth reading; nothing forces one open because a topic came up. Reliable loading remains `UNVERIFIED`, and context use depends on the host and the request; the project does not promise a fixed token cost.
 
 ## Does it send my code anywhere?
 
-SkipHow adds no network calls, no telemetry and no credentials. It is Markdown instructions. Whatever your host already sends to its own model provider is unchanged by installing it, and the repository's checks scan the package for personal paths and provider model IDs on every run.
+SkipHow adds no network calls, no telemetry and no credentials. It is Markdown instructions, and the repository's own checks install nothing and touch no network. Whatever your host already sends to its own model provider is unchanged by installing it. Those checks also scan the package for personal paths and provider model IDs on every run, which says what ships in the files rather than what any session does with your code; that stays your host's boundary.
 
 ## What does `UNVERIFIED` mean in a report?
 

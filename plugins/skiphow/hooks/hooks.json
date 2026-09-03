@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'SkipHow resumed. Load the skiphow owner kernel, then re-read the owner request, repository instructions, and live state before acting.'",
+            "command": "echo 'If SkipHow governed this request, reload its owner kernel and current authoritative context before continuing.'",
             "timeout": 10
           }
         ]

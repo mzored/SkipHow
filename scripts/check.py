@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 from html.parser import HTMLParser
 from html import unescape as html_unescape
 from importlib.metadata import PackageNotFoundError, version
@@ -16,11 +15,9 @@ import re
 import stat
 import subprocess
 import sys
-import tempfile
 from typing import Iterable
 import unicodedata
 from urllib.parse import unquote, urlsplit
-import venv
 import xml.etree.ElementTree as ET
 
 
@@ -209,23 +206,6 @@ def regular_file_problem(path: Path, label: str) -> str | None:
     return None
 
 
-def managed_env_path() -> Path:
-    """Keep check dependencies outside the repository."""
-    cache_root = Path(
-        os.environ.get(
-            "SKIPHOW_CHECK_CACHE_DIR",
-            str(Path(tempfile.gettempdir()) / "skiphow-check"),
-        )
-    )
-    repository_key = hashlib.sha256(str(ROOT.resolve()).encode()).hexdigest()[:16]
-    python_key = f"python-{sys.version_info.major}.{sys.version_info.minor}"
-    return cache_root / repository_key / python_key
-
-
-MANAGED_ENV = managed_env_path()
-DEPENDENCY_STAMP = MANAGED_ENV / ".skiphow-requirements"
-
-
 def pinned_requirements() -> dict[str, str]:
     """Read the exact versions used by local checks."""
     result: dict[str, str] = {}
@@ -246,61 +226,6 @@ def requirements_satisfied() -> bool:
         return all(version(name) == expected for name, expected in pinned_requirements().items())
     except PackageNotFoundError:
         return False
-
-
-def managed_python() -> Path:
-    return MANAGED_ENV / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
-
-
-def bootstrap_dependencies() -> int:
-    """Prepare pinned dependencies outside the checkout, then restart this command."""
-    try:
-        fingerprint = hashlib.sha256(REQUIREMENTS.read_bytes()).hexdigest()
-    except OSError as exc:
-        print(f"cannot read {REQUIREMENTS.relative_to(ROOT)}: {exc}", file=sys.stderr)
-        return 2
-    python = managed_python()
-    if not python.is_file():
-        print("preparing cached environment for repository checks", flush=True)
-        try:
-            venv.EnvBuilder(with_pip=True).create(MANAGED_ENV)
-        except OSError as exc:
-            print(f"cannot create check environment: {exc}", file=sys.stderr)
-            return 2
-    try:
-        installed_fingerprint = DEPENDENCY_STAMP.read_text(encoding="utf-8").strip()
-    except OSError:
-        installed_fingerprint = ""
-    current_is_managed = Path(sys.executable).resolve() == python.resolve()
-    if current_is_managed or installed_fingerprint != fingerprint:
-        try:
-            completed = subprocess.run(
-                [
-                    str(python),
-                    "-m",
-                    "pip",
-                    "install",
-                    "--disable-pip-version-check",
-                    "-r",
-                    str(REQUIREMENTS),
-                ],
-                cwd=ROOT,
-                capture_output=True,
-                text=True,
-                timeout=300,
-                check=False,
-            )
-        except subprocess.TimeoutExpired:
-            print("installing check dependencies timed out after 300 seconds", file=sys.stderr)
-            return 2
-        if completed.returncode:
-            print(completed.stdout + completed.stderr, file=sys.stderr)
-            return 2
-        DEPENDENCY_STAMP.write_text(fingerprint + "\n", encoding="utf-8")
-    environment = os.environ.copy()
-    environment["SKIPHOW_CHECK_BOOTSTRAPPED"] = "1"
-    os.execve(str(python), [str(python), str(Path(__file__).resolve()), *sys.argv[1:]], environment)
-    return 2
 
 
 def checked(
@@ -373,7 +298,7 @@ def load_json_text(text: str) -> object:
 
 
 def yaml_library():
-    """Import the prepared YAML dependency only after bootstrap has run."""
+    """Import the pinned YAML dependency the deterministic checks require."""
     import yaml
 
     return yaml
@@ -918,8 +843,6 @@ def validate_site() -> list[str]:
             errors.append(f"site/{relative} must have a nonempty title")
         elif title in titles:
             errors.append(f"site/{relative} duplicates another page title: {title}")
-        if SITE_CATEGORY not in title.casefold():
-            errors.append(f"site/{relative} title must name {SITE_CATEGORY}")
         titles.add(title)
 
         description = _site_meta(document, "name", "description")
@@ -927,12 +850,19 @@ def validate_site() -> list[str]:
             errors.append(f"site/{relative} must have one nonempty meta description")
         elif description[0] in descriptions:
             errors.append(f"site/{relative} duplicates another meta description")
-        if description and SITE_CATEGORY not in description[0].casefold():
-            errors.append(f"site/{relative} meta description must name {SITE_CATEGORY}")
         descriptions.update(description)
+        # The category is the project's discovery claim, so each page states it
+        # somewhere a reader or a crawler meets. Which surface carries it is
+        # editorial: requiring the same sentence in six slots froze repeated copy
+        # without protecting anything a host depends on.
         visible = " ".join(document.visible_parts).casefold()
-        if SITE_CATEGORY not in visible:
-            errors.append(f"site/{relative} visible copy must name {SITE_CATEGORY}")
+        discovery_surfaces = [title.casefold(), visible]
+        discovery_surfaces += [value.casefold() for value in description]
+        if not any(SITE_CATEGORY in surface for surface in discovery_surfaces):
+            errors.append(
+                f"site/{relative} must name {SITE_CATEGORY} in its title, "
+                "meta description, or visible copy"
+            )
         if _site_meta(document, "name", "robots") != ["index,follow"]:
             errors.append(f"site/{relative} must declare robots index,follow")
         if _site_meta(document, "name", "viewport") != [
@@ -960,12 +890,6 @@ def validate_site() -> list[str]:
             values = _site_meta(document, "property", property_name)
             if len(values) != 1 or not values[0]:
                 errors.append(f"site/{relative} must have one nonempty {property_name}")
-        for property_name in ("og:title", "og:description"):
-            values = _site_meta(document, "property", property_name)
-            if values and SITE_CATEGORY not in values[0].casefold():
-                errors.append(
-                    f"site/{relative} {property_name} must name {SITE_CATEGORY}"
-                )
         for property_name, expected in (
             ("og:image:type", "image/png"),
             ("og:image:width", "1280"),
@@ -1001,9 +925,9 @@ def validate_site() -> list[str]:
                 if structured.get("url") != canonical:
                     errors.append(f"site/{relative} JSON-LD URL must match its canonical URL")
                 structured_description = structured.get("description")
-                if not isinstance(structured_description, str) or SITE_CATEGORY not in structured_description.casefold():
+                if not isinstance(structured_description, str) or not structured_description.strip():
                     errors.append(
-                        f"site/{relative} JSON-LD description must name {SITE_CATEGORY}"
+                        f"site/{relative} JSON-LD needs a nonempty description"
                     )
 
         if len(document.attributes("h1")) != 1:
@@ -2102,34 +2026,50 @@ def offline_checks(base: str | None = None) -> list[str]:
     return errors + validate_diff(base)
 
 
+def missing_requirements() -> list[str]:
+    """Name every pinned check dependency this interpreter does not satisfy."""
+    missing: list[str] = []
+    for name, expected in pinned_requirements().items():
+        try:
+            installed = version(name)
+        except PackageNotFoundError:
+            missing.append(f"{name}=={expected} (not installed)")
+            continue
+        if installed != expected:
+            missing.append(f"{name}=={expected} (found {installed})")
+    return missing
+
+
+def report_missing_requirements() -> None:
+    """Explain the unsatisfied pins and the one explicit command that fixes them."""
+    print(
+        "repository checks did not run: this interpreter does not satisfy the pins in "
+        f"{REQUIREMENTS.name}.",
+        file=sys.stderr,
+    )
+    for item in missing_requirements():
+        print(f"- {item}", file=sys.stderr)
+    print(
+        "Install them yourself, then rerun this command: "
+        f"python -m pip install -r {REQUIREMENTS.name}",
+        file=sys.stderr,
+    )
+
+
 def main(argv: list[str] | None = None) -> int:
     raw_args = list(sys.argv[1:] if argv is None else argv)
     if not requirements_satisfied():
-        if "--offline" in raw_args:
-            print(
-                "repository checks UNVERIFIED: pinned dependencies are absent from the "
-                f"prepared cache at {MANAGED_ENV}",
-                file=sys.stderr,
-            )
-            return 2
-        if os.environ.get("SKIPHOW_CHECK_BOOTSTRAPPED") == "1":
-            print("managed check environment does not satisfy requirements-dev.txt", file=sys.stderr)
-            return 2
-        return bootstrap_dependencies()
+        report_missing_requirements()
+        return 2
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--base", help="base commit for candidate-diff validation")
     parser.add_argument(
         "--pytest",
         nargs=argparse.REMAINDER,
-        help="run pytest with the remaining arguments inside the managed environment",
+        help="run pytest with the remaining arguments",
     )
-    parser.add_argument("--prepare-only", action="store_true")
-    parser.add_argument("--offline", action="store_true")
     args = parser.parse_args(raw_args)
-    if args.prepare_only:
-        print(sys.executable)
-        return 0
     if args.pytest is not None:
         environment = os.environ.copy()
         environment["PYTHONDONTWRITEBYTECODE"] = "1"

@@ -73,7 +73,7 @@
               <tr>
                 <th scope="row">Fully specified request</th>
                 <td>Work proceeded without asking the owner to choose engineering mechanics.</td>
-                <td>Observed in isolated fixtures; not a general selection rate.</td>
+                <td>Observed in isolated fixtures. Consulting a method is proportional to the work, so no general selection rate follows.</td>
               </tr>
               <tr>
                 <th scope="row">Open product choice</th>
@@ -93,7 +93,7 @@
               <tr>
                 <th scope="row">Multi-outcome plan</th>
                 <td>A larger build was split into independently verifiable units with only a genuine dependency edge.</td>
-                <td>The split was observed; concurrent delegated execution was not.</td>
+                <td>The split was observed; execution of the parts concurrently, in verified isolated checkouts, was not.</td>
               </tr>
             </tbody>
           </table>
@@ -110,7 +110,7 @@
           <p>The run must execute through the host's own permissions and budget controls. Isolation is confirmed from the session transcript, not by asking the model what it can see. A failing case runs before the candidate as well as after it.</p>
           <div class="callout">
             <h3>Deterministic checks are necessary, not behavioral evidence</h3>
-            <p>They verify the package layout, reachable resources, metadata, versions, links, portability, and site structure. They do not start a model and cannot prove how a model will act.</p>
+            <p>They verify the package layout, reachable resources, metadata, versions, links, portability, and site structure. They prepare no environment and reach no network; they run against the interpreter they are given. They do not start a model and cannot prove how a model will act.</p>
           </div>
         </div>
       </div>
@@ -128,7 +128,7 @@
             </div>
             <div class="decision">
               <dt>Delegation</dt>
-              <dd>No controlled pass has demonstrated concurrent lanes, isolated worktrees, or separately integrated delegated units.</dd>
+              <dd>Controlled runs do dispatch delegates. No run has demonstrated a lane running concurrently in a verified isolated checkout, a worktree created for one, or a unit integrated separately as it landed.</dd>
             </div>
             <div class="decision">
               <dt>Automatic selection</dt>

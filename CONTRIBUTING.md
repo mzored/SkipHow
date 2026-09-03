@@ -6,13 +6,15 @@ Read the [Code of Conduct](CODE_OF_CONDUCT.md) and use the [private security pro
 
 ## Set up checks
 
-The repository uses pinned Python dependencies in a cached environment outside the checkout. Prepare it and print its interpreter path:
+The repository pins its check dependencies. Install them yourself, into whatever environment you run the checks from:
 
 ```sh
-python scripts/check.py --prepare-only
+python -m pip install -r requirements-dev.txt
 ```
 
-Run a focused test through that environment:
+The checks never install anything and never reach a package index. An interpreter that does not satisfy the pins stops the run and names this command.
+
+Run a focused test:
 
 ```sh
 python scripts/check.py --pytest tests/test_package.py -q
