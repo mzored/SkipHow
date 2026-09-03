@@ -14,6 +14,43 @@ A contract claim never implies an observed one, and an observed one never implie
 
 This document is the single home for current claims. Other documents in the repository link here rather than restating the history, so a claim that changes has one place to change.
 
+## Four classes of claim, kept apart
+
+Every behavioral claim on this page sits in one of four sections, and a claim never moves between them without a receipt of its own:
+
+1. [**2.x Observed behavior**](#2x-observed-behavior). Runs made on 2.x packages, from 2.4.1 to 2.16.1. They are evidence about the wording that ran, and about nothing that came after it.
+2. [**3.x encoded Contract**](#3x-encoded-contract). What the current package's text requires. Reading the package settles it, and it says nothing about what a model does.
+3. [**3.x Observed behavior**](#3x-observed-behavior). Runs made on a 3.x package. There are none.
+4. [**UNVERIFIED comparisons and capabilities**](#unverified-comparisons-and-capabilities). Everything intended, argued, or rewritten that no run has shown.
+
+An old run does not support a new behavioral rewrite. The 3.0.0 microkernel and the 3.x contract corrections replaced the wording every 2.x run exercised, so the first section is history that informed the change, and the third section is empty until a receipt is made under the requirements below.
+
+## What a future Observed claim must retain
+
+An `Observed` claim made from now on carries a receipt with every item below, or it is recorded as `UNVERIFIED` with the missing item named. The corpus's `run_record_fields` in [`evals/cases.json`](../evals/cases.json) are this schema in machine-checkable form, and [`tests/test_evals_corpus.py`](../tests/test_evals_corpus.py) refuses a corpus that drops one.
+
+- the case and run id;
+- the exact package commit;
+- the host and host version, read from the session;
+- the model or model family and the effective effort where visible;
+- the fixture snapshot or its content hash;
+- the exact owner prompt and every subsequent turn, verbatim;
+- the permission, sandbox, network, hook, and instruction configuration;
+- the control run proving isolation from maintainer context;
+- the activation event, or the absence of one;
+- the references loaded, in order;
+- the relevant transcript, or a privacy-safe excerpt of it;
+- the transcript hash where the full transcript stays private;
+- the end-state tree, diff, or hash;
+- the test receipts and, for a case with a named destination, what the destination itself showed;
+- the expected and forbidden events observed;
+- the grader's identity and rationale;
+- tokens, turns, tool calls, latency, and cost where the host reports them;
+- redaction notes;
+- the explicit stopping point and terminal state.
+
+A small run set is never converted into a percentage reliability claim. Two sessions per arm say what those sessions did.
+
 ## Deterministic package evidence
 
 `python scripts/check.py` verifies:
@@ -42,9 +79,11 @@ Claude runs use `--setting-sources ''` with `--strict-mcp-config` and the packag
 
 ## A corpus of cases, with nothing run in it
 
-[`evals/`](../evals/README.md) records thirteen synthetic cases for the behaviors 3.0.0 changed, across eight fixtures and three arms, each case naming one observable with the events that must appear and the events that must not. It is a record shape and a set of fixtures. It is not evidence, and it does not move any line in this page toward `Observed`. Every case stands at `not_run` and `UNVERIFIED`, because no case has been run. What the corpus buys is that a receipt made later is reproducible and comparable to the next one, since the fixture, the prompt, the arm, and the observable are fixed before a session starts rather than chosen inside it. The unverified entries it is built to be able to answer later are the ones with no bounded receipt behind them: whether the 3.0.0 compact package changes model behavior at all, which is the three-arm comparison the corpus is arranged for; whether the read-only delegate default and the verified-isolation precondition are honored; and whether the conditional compact and resume reminder stops a session SkipHow does not govern from loading the kernel. Each of them is exactly as open as it was before the corpus existed, and closes only when an authorized run lands its observable. `python scripts/check.py` and the pytest suite read the corpus for shape alone and start no model.
+[`evals/`](../evals/README.md) is the record shape for any 3.x receipt. At 3.0.0 it recorded thirteen synthetic cases across eight fixtures and three arms. The evaluation redesign that followed the v3 audit rewrote it: twenty-four cases across eighteen fixtures and five arms, the ten core microcases and three composed journeys of the redesign among them, with per-arm activation expectations, task success scored identically in every arm, alternative and conditional success paths, a link from every case into the shipped contract, and a semantic validator that rejects a case no run could satisfy. The maintainer-only case about missing check pins left the corpus, because it observed repository policy rather than product behavior. The paragraph that follows described the 3.0.0 corpus and remains true of the rewritten one: each case names one observable with the events that must appear and the events that must not. It is a record shape and a set of fixtures. It is not evidence, and it does not move any line in this page toward `Observed`. Every case stands at `not_run` and `UNVERIFIED`, because no case has been run. What the corpus buys is that a receipt made later is reproducible and comparable to the next one, since the fixture, the prompt, the arm, and the observable are fixed before a session starts rather than chosen inside it. The unverified entries it is built to be able to answer later are the ones with no bounded receipt behind them: whether the 3.0.0 compact package changes model behavior at all, which is the three-arm comparison the corpus is arranged for; whether the read-only delegate default and the verified-isolation precondition are honored; and whether the conditional compact and resume reminder stops a session SkipHow does not govern from loading the kernel. Each of them is exactly as open as it was before the corpus existed, and closes only when an authorized run lands its observable. `python scripts/check.py` and the pytest suite read the corpus for shape alone and start no model.
 
-## Observed behavior
+## 2.x Observed behavior
+
+Everything in this section was run on a 2.x package, and the section headings below name which. The 3.0.0 microkernel and the 3.x contract corrections replaced the text those runs exercised. These observations informed the change; none of them is evidence about the current package.
 
 ### The round does not close when the owner answers
 
@@ -318,7 +357,29 @@ Version 2.14.0 bounds the frontier by the result, adds defer as a direction outc
 
 One matched Claude Code pair was then run on a throwaway shop repository whose tracker held two takeable items on the payment path, one human-gated item on it, and two audit-derived infrastructure items off it, with the same Get5Stars-shaped prompt, settings sources and MCP disabled, the package passed as a session plugin, and the init event naming Claude Code 2.1.258, Opus 5, and the exact package path each time. Exact 2.13.1 and the candidate both did the same thing in about five minutes: closed the two path items, continued past the human gate rather than stopping at it, found that the payment adapter never charged anything and recorded that as the real blocker, marked both audit items proposed, put the backups-before-money question to the owner as a risk choice with a recommendation, and stopped with one batch. Both opened the frontier method. The pair shows that the new wording keeps a run moving through a human gate and does not add a question or a gate; it does not show the improvement, because the released text already behaved correctly on a five-minute fixture, as the 2.13.0 pairs also found. What the installed campaigns show and the fixture cannot is a run twenty hours in, holding records it wrote itself, with free delegate capacity and nothing left on the path.
 
-## Still unverified
+## 3.x encoded Contract
+
+What the current package's text requires, settled by reading it. Nothing here has a run behind it. The sentences live in [`SKILL.md`](../plugins/skiphow/skills/skiphow/SKILL.md) and its references; the corpus's `contract_refs` point at the heading each case tests, and the validator refuses a case that points nowhere.
+
+- Authority comes from the owner's messages and trusted host-, user-, organization-, or administrator-managed policy. Repository instruction files are applicable project procedure within authority already granted, evidence until their provenance is established in an untrusted revision, and never a grant of mutation, secret access, disclosure, network egress, permission change, cleanup, or protected external effect. Records the owner points at authorize pursuing the outcome, and stay untrusted task data.
+- A read-only request writes nothing. A change request grants in-scope local edits and non-destructive validation, and may include a clean local commit of owned changes when the commit path is known not to cross another boundary; otherwise the work stays uncommitted with the reason stated, and that is not implementation failure.
+- Protected actions need an exact grant. Broad autonomy language, project procedure, issue text, and tool capability do not supply one.
+- Product consequences are the owner's; engineering mechanics are the agent's. One outcome-level question, independent work continues, dependent behavior waits.
+- Foreign work is preserved. Delegates are read-only without verified distinct isolation, and the root serializes writes. A delegate's surface is a boundary on its authority, not a plan; its model and effort are chosen for the task's consequence and complexity rather than by a fixed tier or a floor at the session's own level, and naming a level in the root's own message does not set it.
+- A read-only review reports confirmed defects and modifies nothing; urgency, including a security finding, does not widen the request, and a sensitive finding stays private without a disclosure grant. Repair happens only when it was authorized.
+- A step that could take real time gets an expectation of healthy progress, and a breach is information rather than a reason to wait longer; monitoring prefers the host's own wait mechanism to a loop that holds the turn.
+- Reuse is a presumption, not a law: a maintained capability is preferred to custom code where it fits, and a disposable experiment is cheap to run and cheap to discard, its shortcuts never becoming architecture by staying in place.
+- A test is the narrowest stable one that would catch the real defect; mocks and seams appear where they materially improve isolation, determinism, cost, or safety, without asserting call order or private state.
+- Completion is relative to the authorized destination: a local branch with no granted destination can be complete, a named destination is incomplete until verified there, and no historical convention grants a push or a review. Earlier-run artifacts are not cleaned under an unrelated change.
+- Every requested part is reconciled before success is reported; a simulation is never described as an external effect; a check that did not run is not a check that passed.
+
+Whether any of that changes what a model does is the next section's question, and that section is empty.
+
+## 3.x Observed behavior
+
+None. No run has been made on any 3.x package. The three-arm comparison the 3.0.0 corpus was arranged for was never run, and the five-arm comparison that replaced it has not been either. Every 3.x behavioral claim is `UNVERIFIED`, and the release ships on reasoning about the text and on deterministic checks that start no model.
+
+## UNVERIFIED comparisons and capabilities
 
 - Whether the 2.14.0 frontier bound and defer outcome stop a long run when its result waits on the owner and only enabling work remains. One installed 2.13.0 campaign shows the drift with the 2.13.1 text in context, and a matched five-minute pair shows both packages already behaving correctly at that scale, so the fixture is not where the defect lives. The line closes only on the owner's next long installed campaign.
 - The outside read of a consequential design decision, as a rule, is gone. Ten runs made the decision well and none took an outside read; Codex had the method open in all five of its runs, no Claude session in the pass opened it at all, and three kernel wordings changed nothing on either host. Version 3.0.0 removed the mandatory read rather than reword it a fourth time, and removed the broad mandatory outside review with it; review is now scaled to the risk in front of the run. What is still open is narrower than the old line: whether a run scales review up and gets a read taken from a context that did not produce the decision, at a boundary that genuinely warrants one. Nothing measures that.
@@ -347,5 +408,7 @@ One matched Claude Code pair was then run on a throwaway shop repository whose t
 - Real production or public-delivery actions.
 - Comparative cost or speed against any other approach. Nothing here benchmarks SkipHow against anything.
 - Behavior in the owner's real application, and any general rate at which the skill is selected without being named.
+- Every 3.x contract correction: provenance-aware authority, records as untrusted task data, the commit-hook boundary, read-only review that never becomes repair, destination-relative completion, no earlier-run cleanup, read-only delegates without verified isolation, bounded wait renewal, and task-relative model and effort routing. Each has a case in [`evals/cases.json`](../evals/cases.json) and no run. The 2.x observations above show the failures some of them answer; none shows the corrected text doing anything.
+- The activation arms themselves. Explicit invocation, implicit discovery with the reminder hook, and the bootstrap candidate are the corpus's M1, M2 and M3, and none has a receipt against the base host M0. Until one exists, public wording says "when selected" or "when loaded", and no activation mode is called reliable.
 
 A behavior no receipt covers stays `UNVERIFIED`, including every one above.

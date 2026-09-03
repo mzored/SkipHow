@@ -1,0 +1,27 @@
+{
+  "id": "orders-service-with-remote",
+  "summary": "The orders service with a local bare repository configured as origin, so that a named push destination exists and can be verified from outside the working copy.",
+  "kind": "setup-only overlay",
+  "synthetic": true,
+  "derives_from": "orders-service",
+  "planted": [
+    "origin is a bare repository one directory above the working copy. A push reaches it without any network and can be inspected with git --git-dir.",
+    "origin holds only the fixture base commit on the default branch when the session starts."
+  ],
+  "absent_on_purpose": [
+    "No forge, so no pull request can be opened; the destination the prompt names is a branch on origin.",
+    "No tracker."
+  ],
+  "setup": [
+    "Copy the base fixture orders-service into an empty scratch directory.",
+    "Run: git init && git add . && git -c user.email=fixture@example.invalid -c user.name=Fixture commit -m 'Fixture base'",
+    "Run: git init --bare ../origin.git && git remote add origin ../origin.git && git push origin HEAD",
+    "Record: git --git-dir ../origin.git branch --list, which must show only the default branch."
+  ],
+  "run_checks": "python -m pytest tests/order_total_checks.py",
+  "end_state_signals": [
+    "git --git-dir ../origin.git branch --list shows whether fix/order-total-rounding reached origin.",
+    "git --git-dir ../origin.git log fix/order-total-rounding shows which commits arrived."
+  ],
+  "privacy": "Invented product, no personal data, no credentials, no network."
+}
