@@ -1,0 +1,22 @@
+{
+  "id": "orders-service-on-branch",
+  "summary": "The orders service with the work already started on a local branch and no tracker anywhere in the project.",
+  "kind": "checked-in overlay",
+  "synthetic": true,
+  "derives_from": "orders-service",
+  "planted": [
+    "A local branch fix/order-total-rounding is checked out and its working tree is clean."
+  ],
+  "absent_on_purpose": [
+    "No tracker, backlog file, issue template, or branch-naming convention that links a branch to an item.",
+    "No remote, so the branch has no upstream."
+  ],
+  "setup": [
+    "Copy the base fixture orders-service into an empty scratch directory.",
+    "Run: git init && git add . && git -c user.email=fixture@example.invalid -c user.name=Fixture commit -m 'Fixture base'",
+    "Run: git switch -c fix/order-total-rounding",
+    "Add no remote."
+  ],
+  "run_checks": "python -m pytest tests/order_total_checks.py",
+  "privacy": "Invented product, no personal data, no credentials."
+}

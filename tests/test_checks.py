@@ -31,23 +31,49 @@ check = load("skiphow_check", "scripts/check.py")
 hosts = load("skiphow_check_hosts", "scripts/check_hosts.py")
 
 
-def test_local_dependencies_are_pinned_and_kept_outside_the_repo() -> None:
+def test_local_dependencies_are_pinned() -> None:
     pins = check.pinned_requirements()
     assert {"pytest", "PyYAML", "markdown-it-py"} <= set(pins)
     assert all(re.fullmatch(r"\d+(?:\.\d+)*", value) for value in pins.values())
-    assert not check.MANAGED_ENV.is_relative_to(ROOT)
-    assert check.MANAGED_ENV.name == f"python-{sys.version_info.major}.{sys.version_info.minor}"
 
 
+def test_checker_never_installs_dependencies_or_reaches_a_package_index() -> None:
+    """Ordinary checks must not provision anything.
 
-def test_offline_mode_never_bootstraps_missing_dependencies(capsys) -> None:
+    The checker used to build a virtual environment and run `pip install` when a
+    pin was unsatisfied, which put a package index on the path of an ordinary
+    deterministic check. It now fails fast and names the one explicit command.
+    """
+    source = (ROOT / "scripts/check.py").read_text(encoding="utf-8")
+    assert "import venv" not in source
+    assert "EnvBuilder" not in source
+    assert "execve" not in source
+    # The only surviving mention of pip is the instruction handed to the operator.
+    assert source.count("pip") == 1
+    assert "python -m pip install -r {REQUIREMENTS.name}" in source
+    assert not hasattr(check, "bootstrap_dependencies")
+    assert not hasattr(check, "managed_python")
+    assert not hasattr(check, "MANAGED_ENV")
+
+
+def test_unsatisfied_pins_fail_fast_with_the_explicit_setup_command(capsys) -> None:
+    def refuse(*args, **kwargs):
+        raise AssertionError("the checker ran a subprocess for missing dependencies")
+
     with (
         patch.object(check, "requirements_satisfied", return_value=False),
-        patch.object(check, "bootstrap_dependencies") as bootstrap,
+        patch.object(
+            check,
+            "pinned_requirements",
+            return_value={"skiphow-absent-package": "9.9.9"},
+        ),
+        patch.object(check.subprocess, "run", refuse),
     ):
-        assert check.main(["--offline"]) == 2
-    bootstrap.assert_not_called()
-    assert "UNVERIFIED" in capsys.readouterr().err
+        assert check.main([]) == 2
+    error = capsys.readouterr().err
+    assert "python -m pip install -r requirements-dev.txt" in error
+    assert "skiphow-absent-package==9.9.9" in error
+    assert "not installed" in error
 
 
 def test_local_package_and_document_checks_pass() -> None:
@@ -89,11 +115,6 @@ def test_local_package_and_document_checks_pass() -> None:
             "",
             "must declare the responsive viewport",
         ),
-        (
-            "Outcome-first orchestration for coding agents",
-            "Method selection for coding agents",
-            "title must name outcome-first orchestration",
-        ),
     ],
 )
 def test_site_validator_rejects_public_contract_regressions(
@@ -108,6 +129,23 @@ def test_site_validator_rejects_public_contract_regressions(
 
     with patch.object(check, "SITE_ROOT", site):
         assert any(expected in error for error in check.validate_site())
+
+
+def test_site_must_still_name_its_category_somewhere_a_reader_meets_it(tmp_path: Path) -> None:
+    """The category is a page-level discovery claim, not a required sentence per slot."""
+    site = tmp_path / "site"
+    shutil.copytree(ROOT / "site", site)
+    homepage = site / "index.html"
+    text = homepage.read_text(encoding="utf-8")
+    assert check.SITE_CATEGORY in text.casefold()
+    # Editorial wording may move between the title, the description and the body.
+    # Dropping it from every surface at once is the regression worth catching.
+    stripped = re.sub(check.SITE_CATEGORY, "method selection", text, flags=re.IGNORECASE)
+    homepage.write_text(stripped, encoding="utf-8")
+
+    with patch.object(check, "SITE_ROOT", site):
+        errors = check.validate_site()
+    assert any("must name outcome-first orchestration" in error for error in errors)
 
 
 def write_skill(root: Path, name: str, *, description: str = "Handle a focused task.") -> Path:
@@ -1719,13 +1757,22 @@ def test_hook_shape_is_one_cross_shell_safe_literal() -> None:
         command = group["hooks"][0]["command"]
         assert check.SAFE_ECHO_COMMAND.fullmatch(command)
         assert not command.startswith("sh -c")
+    matchers = [group["matcher"] for group in real["hooks"]["SessionStart"]]
+    assert frozenset(frozenset(m.split("|")) for m in matchers) == check.CONTINUITY_GROUPS
     resumed = real["hooks"]["SessionStart"][1]["hooks"][0]["command"]
     assert ".skiphow" not in resumed.casefold()
     assert "handoff" not in resumed.casefold()
-    assert "load the skiphow owner kernel" in resumed.casefold()
-    assert "owner request" in resumed.casefold()
-    assert "repository instructions" in resumed.casefold()
-    assert "live state" in resumed.casefold()
+    # The wording of either reminder is editorial and may change. What must hold is
+    # that the hook stays an inert literal: one echo of a single-quoted payload with
+    # no shell metacharacter, no reader or writer, and no network client.
+    for command in (real["hooks"]["SessionStart"][0]["hooks"][0]["command"], resumed):
+        payload = check.SAFE_ECHO_COMMAND.fullmatch(command).group(1)
+        assert not set(payload) & set("$`\\|&;<>()*?[]{}!#~'\"")
+        assert not re.search(
+            r"\b(?:curl|wget|nc|ssh|scp|nslookup|dig|python|node|sh|bash|zsh|eval|"
+            r"source|cat|cp|mv|rm|mkdir|touch|tee|chmod|git|pip|npm)\b",
+            command,
+        )
 
 
 def test_personal_path_scan_leaves_web_routes_alone() -> None:

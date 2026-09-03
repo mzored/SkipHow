@@ -1,0 +1,23 @@
+{
+  "id": "billing-findings",
+  "summary": "A billing module with one reported defect and two unrelated material problems in the same code path, in a project that has no record of any kind.",
+  "kind": "checked-in skeleton",
+  "synthetic": true,
+  "planted": [
+    "Reported defect: invoice_total rounds each line before summing, so the invoice total can differ from the sum shown to the customer by a penny.",
+    "Separable finding: billing/invoices.py carries a placeholder finance API token in source.",
+    "Separable finding: both exporters in billing/export.py join CSV fields without quoting, so a comma in a customer name shifts every later column.",
+    "Weak observations planted as noise: an unused import and a stale TODO comment."
+  ],
+  "absent_on_purpose": [
+    "No tracker, no backlog file, no issue template, no recording convention of any kind.",
+    "No remote."
+  ],
+  "setup": [
+    "Copy this directory into an empty scratch directory outside any repository.",
+    "Run: git init && git add . && git -c user.email=fixture@example.invalid -c user.name=Fixture commit -m 'Fixture base'",
+    "Add no remote."
+  ],
+  "run_checks": "python -m pytest tests/invoice_checks.py",
+  "privacy": "Invented company, invented customers, invented amounts. The token is a fixed placeholder string that authenticates nothing and reaches no service."
+}

@@ -80,7 +80,11 @@ Two mechanics that are easy to get wrong and quietly invalidate the run:
 - **Isolate the other host before asking it to review.** Pointing only its own home at a scratch directory is
   not enough; it also reads a host-agnostic user skill directory, so it will load the maintainer's personal
   skills and the installed package it is supposed to be judging. Point the operating system home there as
-  well, copy in only the credentials, and check the session header before trusting the output.
+  well, and check the session header before trusting the output. Never copy credential files into that scratch
+  home. Authenticate it by the first option the host supports: a dedicated test identity; a narrowly scoped,
+  short-lived token; an authenticated session the host establishes without duplicating persistent credential
+  files; a controlled mount or reference to the one minimum credential. Where the host offers none of these,
+  say so and have a person authenticate the isolated run by hand rather than automating a copy.
 
 A cross-host review round converges when it is told what earlier rounds settled and what was refused, and told
 not to raise those again. Without that it re-proposes them, and the rounds do not end.

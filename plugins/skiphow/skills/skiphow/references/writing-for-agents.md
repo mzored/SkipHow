@@ -1,13 +1,49 @@
 # Writing for agents
 
-Use this for instructions consumed by coding agents.
+Open this when writing or revising instructions a coding agent will read: a skill, a reference, a project policy, or a delegate brief.
 
-Start with the behavior the instruction must change and the evidence that the default behavior is insufficient. Write outcomes, authority boundaries, and hard invariants. Leave tools and implementation choices to the agent unless a specific mechanism is itself required.
+## Start from a behavior change
 
-For an automatically discovered skill, make the description a precise trigger. Name the situations that should load it and the nearby situations that should not. Keep universally needed rules in the main file. Move conditional material behind a clear pointer only when the branch saves attention without hiding a requirement.
+Start with the behavior the instruction must change and the evidence that the default behavior is insufficient. Leave tools and implementation to the agent unless a mechanism is itself required.
 
-Give each rule one authoritative home. Remove contradictions and obsolete text when behavior changes. Do not copy facts the agent can cheaply read from configuration, source, or command help. Avoid fixed counts, magic phrases, provider-specific commands, and mandatory process unless evidence proves the constraint is necessary.
+Define success before tuning wording: the behavioral criterion, the current text and its observed failure, and a realistic check on representative cases. Change one variable at a time and compare quality and cost. Wording is not always the mechanism; host enforcement, a better tool contract, clearer project state, or a different model often is.
 
-Write completion conditions the agent can verify. Prefer positive, direct instructions in project language. Explain uncommon terms once and keep related rules together.
+## Shape
 
-Check the final document as an instruction system: trigger, authority, action, stopping condition, and conflicts with higher-priority or nearby instructions. Validate syntax and links. When model behavior matters, treat real runs as evidence and deterministic lint as package evidence only.
+Write outcome-first: the goal, the context that matters, the hard constraints and invariants, the authority or approval boundary, the evidence required, the success criteria, and the shape of the report. Do not prescribe a long method a capable model can choose for itself.
+
+Use steps only where order is part of correctness: release mechanics, a bounded migration, an installation sequence, a reproducible evaluation. Not as a universal development lifecycle.
+
+Prefer positive, concrete instructions in project language over a collection of prohibitions. Negative rules stay appropriate for high-consequence boundaries, such as taking no protected action without an exact grant.
+
+Structure proportionately. Markdown headings carry a static policy with one semantic layer; heavier delimiters earn their place when a prompt mixes large dynamic documents, instructions, examples, and variable inputs. In long multi-document analysis, put the sources first and the question and output requirements last.
+
+## State each instruction once
+
+Give each rule one authoritative home. Repeated instructions and duplicated tool descriptions spend context and measurably reduce task performance; prefer deleting an obsolete rule to qualifying it in three places. Remove contradictions when behavior changes, and do not copy facts the agent can read from configuration, source, or command help.
+
+Repetition of an approval instruction backfires in particular: restating "ask first", "do not mutate", or "wait for approval" produces approval requests for safe, expected actions. Keep the autonomy policy compact and in one place.
+
+## What not to ask for
+
+Avoid fixed counts, magic phrases, provider-specific commands, and mandatory process unless evidence proves the constraint necessary.
+
+No reasoning rituals. Telling a model to think harder, reveal its reasoning, produce candidate answers by default, or follow an authored reasoning script gains nothing the host's own model and effort controls do not. Ask for observable analysis quality: evidence, alternatives weighed, result.
+
+No universal self-review. A mandatory second pass, verifier delegate, cold read, or double-check step buys over-verification and cost without quality gain, and current models already self-correct. Require proof of the final state; use a separate review only where risk or repository policy justifies it.
+
+No forceful framing on ordinary guidance. Blanket defaults such as "always use this", "if in doubt, use it", or "you MUST" make a capability fire when it should not. Reserve imperative force for high-consequence boundaries.
+
+## Triggers, briefs, examples
+
+For an automatically discovered skill, make the description a precise trigger: the situations that should load it and the nearby ones that should not. Keep universally needed rules in the main file, and move conditional material behind a clear pointer only when the branch saves attention without hiding a requirement.
+
+In a delegate's brief, a link to a policy file changes nothing unless the host demonstrably preloads it. The kernel states what that brief carries in its own text.
+
+Examples are targeted instruments: use one to encode a product requirement or repair a measured failure. Keep the smallest set that closes the gap, include positive and negative cases, and vary edge conditions enough to prevent accidental pattern matching. How many is an empirical choice, not a fixed rule.
+
+## Check the result
+
+Write completion conditions the agent can verify, explain uncommon terms once, and keep related rules together. Read the finished document as an instruction system: trigger, authority, action, stopping condition, and conflicts with nearby or higher-priority instructions. Validate syntax and links.
+
+When model behavior matters, treat real runs as evidence and deterministic lint as package evidence only.

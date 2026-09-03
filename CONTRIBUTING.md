@@ -6,17 +6,21 @@ Read the [Code of Conduct](CODE_OF_CONDUCT.md) and use the [private security pro
 
 ## Set up checks
 
-The repository uses pinned Python dependencies in a cached environment outside the checkout. Prepare it and print its interpreter path:
+The repository pins its check dependencies. Install them yourself, into whatever environment you run the checks from:
 
 ```sh
-python scripts/check.py --prepare-only
+python -m pip install -r requirements-dev.txt
 ```
 
-Run a focused test through that environment:
+The checks never install anything and never reach a package index. An interpreter that does not satisfy the pins stops the run and names this command.
+
+Run a focused test:
 
 ```sh
 python scripts/check.py --pytest tests/test_package.py -q
 ```
+
+The behavioral eval corpus in [`evals/`](evals/README.md) holds the cases for the behaviors 3.0.0 changed: the fixture, the prompt, and the events each case expects and forbids. Its shape is checked by `python scripts/check.py --pytest tests/test_evals_corpus.py -q`, which is deterministic, offline, and starts no model. Running a case is a different thing. It costs a real paid session, it gates nothing and no pull request needs one, and it happens only under the run limits in `evals/README.md` and with the owner's explicit authorization. Do not run one to check your own change.
 
 ## Change the canonical package
 

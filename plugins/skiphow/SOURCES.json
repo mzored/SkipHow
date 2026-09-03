@@ -36,21 +36,13 @@
           ],
           "files": [
             "SKILL.md",
-            "references/advancing-tracked-work.md",
-            "references/codebase-design.md",
-            "references/decomposition.md",
             "references/delegation.md",
-            "references/diagnosing-bugs.md",
-            "references/product-decisions.md",
-            "references/project-setup.md",
-            "references/prototype.md",
-            "references/research.md",
-            "references/resolving-merge-conflicts.md",
-            "references/reviewing-changes.md",
+            "references/diagnosis.md",
+            "references/integration.md",
+            "references/product.md",
             "references/technical-design.md",
-            "references/testing.md",
             "references/tracked-work.md",
-            "references/wizard.md",
+            "references/verification.md",
             "references/writing-for-agents.md"
           ]
         }
