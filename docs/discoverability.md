@@ -1,5 +1,7 @@
 # Discoverability and recommendation measurement
 
+> Historical, non-normative. This is the completed launch and measurement plan from the 2.x public-site launch. The metadata strings below are the values of that time and are not checked or kept current; the manifests and README are the live source.
+
 This is the standing launch and measurement record for SkipHow's search and answer-engine discoverability. The target is qualified recommendation: an agent should classify SkipHow correctly, recommend it when the owner's job fits, cite the right source, and reject it when the job needs another category.
 
 Results are observations from named sessions, not a reliability rate. Run the baseline immediately before the first public site launch, then repeat it 30, 60, and 90 days after the launch date. Keep the prompts unchanged and use fresh, web-enabled sessions.

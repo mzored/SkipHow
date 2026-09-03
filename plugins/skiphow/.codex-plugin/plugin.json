@@ -1,7 +1,7 @@
 {
   "name": "skiphow",
-  "version": "3.0.0",
-  "description": "Outcome-first orchestration for Claude Code and Codex. Describe the product result; the agent chooses the engineering method and proves the outcome.",
+  "version": "3.0.1",
+  "description": "Owner–agent contract for verified project outcomes, for Claude Code and Codex. Describe the product result; the agent owns the engineering method and must show fresh evidence before it reports completion.",
   "author": {
     "name": "mzored",
     "url": "https://github.com/mzored"
@@ -24,8 +24,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "SkipHow",
-    "shortDescription": "Outcome-first orchestration for coding agents",
-    "longDescription": "SkipHow is an adaptive instruction-level orchestration layer for product owners using Claude Code or Codex. One public skill keeps product decisions and protected actions with the owner while the agent chooses the engineering method, coordinates authorized work, and proves the result. The host supplies the model, tools, permissions, sessions, and subagents; SkipHow supplies no standalone runtime or control plane.",
+    "shortDescription": "Owner–agent contract for verified project outcomes",
+    "longDescription": "SkipHow is an owner–agent operating contract for product owners using Claude Code or Codex, delivered as one public skill: an outcome-first orchestration policy at the instruction layer. When selected or loaded, it keeps product choices and protected actions with the owner, instructs the host agent to own the engineering method and coordinate authorized work, and requires fresh evidence before completion is reported. The host supplies the model, tools, permissions, sessions, and subagents; SkipHow supplies no runtime, control plane, enforcement, or subagents of its own.",
     "developerName": "mzored",
     "category": "Developer Tools",
     "capabilities": [],

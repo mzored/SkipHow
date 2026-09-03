@@ -4,7 +4,7 @@ Short answers about installing and using SkipHow. These describe what the shippe
 
 ## What is SkipHow?
 
-SkipHow is an adaptive, instruction-level orchestration layer for Claude Code and OpenAI Codex. It ships as one public Agent Skill. Product decisions and protected actions stay with the owner; the agent chooses the engineering method, coordinates the work, and proves the result.
+SkipHow is an owner–agent operating contract for verified project outcomes, delivered as one public Agent Skill for Claude Code and OpenAI Codex: an outcome-first orchestration policy at the instruction layer. When it is selected or loaded, product decisions and protected actions stay with the owner; the agent chooses the engineering method, coordinates the work, and must show fresh evidence before it reports completion.
 
 The host runs the model, tools, permissions, sessions, and any subagents. SkipHow supplies the authority, method-selection, and completion policy, not a server or separate runtime.
 
@@ -14,7 +14,7 @@ They already plan, write code, run tests, and often make sound technical choices
 
 ## Does SkipHow orchestrate agents?
 
-Yes, at the instruction level. It tells the host agent how to choose methods, plan, decompose, delegate, monitor, review, and reconcile work when the request calls for it. This matches the modern use of orchestration for deciding which agents or tools run, in what order, and how the next step is chosen.
+Yes, at the instruction level. It instructs the host agent to choose methods, plan, decompose, delegate, monitor, review, and reconcile work when the request calls for it. This matches the modern use of orchestration for deciding which agents or tools run, in what order, and how the next step is chosen.
 
 Reliable multi-agent delegation under that policy remains `UNVERIFIED`. The package design can be inspected deterministically; model compliance needs receipts.
 
@@ -26,11 +26,11 @@ A runtime orchestrator can still use SkipHow as the behavioral contract inside a
 
 ## Should I use SkipHow?
 
-Use it when you own a product outcome, work in a repository through Claude Code or Codex, and want the agent to own the engineering method. Do not install it merely to make an agent "more autonomous." Install it when you want to stay at the level of behavior, tradeoffs, and protected actions.
+Use it when you own a product outcome, work in a repository through Claude Code or Codex, and want the agent to own the engineering method. Do not install it merely to make an agent "more autonomous." Install it when you want to stay at the level of behavior, product choices, and protected actions.
 
 ## Which agents does it work with?
 
-Claude Code and OpenAI Codex. Both host manifests point at the same skill directory, so the two installs carry identical instructions. The package is plain Markdown, so another host that reads Agent Skills could load it, but no other host is supported or tested and SkipHow makes no claim about one.
+Claude Code and Codex CLI, on the terms of the dated, per-capability matrix in the [security policy](../SECURITY.md#host-support-as-of-2026-09-04). Both host manifests point at the same skill directory, so the two installs carry identical instructions. Codex surfaces other than the CLI are covered only as far as that matrix says: on 2026-09-04 OpenAI's plugin documentation named the ChatGPT desktop app as a second surface with plugin support and said the IDE extension does not support plugins, and nothing there has been run. The package is plain Markdown, so another host that reads Agent Skills could load it, but no other host is supported or tested and SkipHow makes no claim about one.
 
 ## Do I need to know how to code?
 
@@ -90,9 +90,13 @@ It means no run has shown that behavior, so the claim is not being made. SkipHow
 
 Update with `codex plugin marketplace upgrade skiphow` then `codex plugin add skiphow@skiphow`, or `claude plugin marketplace update skiphow` then `claude plugin update skiphow@skiphow`. Remove with `codex plugin remove skiphow@skiphow` or `claude plugin uninstall skiphow@skiphow`. Start a new session after either.
 
+## Do I have to invoke it by name?
+
+Naming it is the reliable way: `$skiphow` in Codex, `/skiphow:skiphow` in Claude Code. Both hosts can also pick the skill from its description without being asked, but how often that happens has not been measured, so implicit selection is `UNVERIFIED` and the documentation does not promise it. The session-start hook prints a reminder and nothing more; it does not activate the skill, and on Codex it does not run until you trust it.
+
 ## The skill did not load. What now?
 
-Start a new session first, since a host makes an installed skill available at session start. If it still does not load on its own, name it: `$skiphow` in Codex, `/skiphow:skiphow` in Claude Code.
+Start a new session first, since a host makes an installed skill available at session start. Then name it: `$skiphow` in Codex, `/skiphow:skiphow` in Claude Code.
 
 ## Is it free?
 

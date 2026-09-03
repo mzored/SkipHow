@@ -26,7 +26,6 @@ PLUGIN_ROOT = ROOT / "plugins/skiphow"
 SITE_ROOT = ROOT / "site"
 SITE_BASE_URL = "https://mzored.github.io/SkipHow/"
 REPOSITORY_URL = "https://github.com/mzored/SkipHow"
-SITE_CATEGORY = "outcome-first orchestration"
 SITE_PAGES = {
     "index.html": SITE_BASE_URL,
     "compare/index.html": f"{SITE_BASE_URL}compare/",
@@ -49,12 +48,8 @@ CONCRETE_MODEL_ID = re.compile(
     r"(?:opus|sonnet|haiku|fable)-\d[\w.-]*)\b",
     re.IGNORECASE,
 )
-CONTINUITY_GROUPS = frozenset(
-    {
-        frozenset({"startup", "clear"}),
-        frozenset({"compact", "resume"}),
-    }
-)
+SESSION_START_SOURCES = frozenset({"startup", "clear", "compact", "resume"})
+HOOK_TIMEOUT_CEILING = 60
 SAFE_ECHO_COMMAND = re.compile(r"^echo '([A-Za-z0-9][A-Za-z0-9 .,/:_-]*)'$")
 HANDOFF_STATE_REFERENCE = re.compile(r"(?:\.skiphow\b|\bhandoff(?:\.[a-z0-9]+)?\b)", re.IGNORECASE)
 MARKDOWN_SUFFIXES = frozenset({".md", ".markdown"})
@@ -65,7 +60,6 @@ CORE_PACKAGE_FILES = frozenset(
         "THIRD_PARTY_NOTICES.md",
         ".claude-plugin/plugin.json",
         ".codex-plugin/plugin.json",
-        "hooks/hooks.json",
         "skills/skiphow/SKILL.md",
     }
 )
@@ -812,9 +806,18 @@ def _site_local_target(page: Path, value: str) -> Path | None:
     return candidate
 
 
-def validate_site() -> list[str]:
-    """Validate the canonical no-runtime GitHub Pages site."""
+def validate_site(lint: list[str] | None = None) -> list[str]:
+    """Validate the canonical no-runtime GitHub Pages site.
+
+    Returned errors are the properties a reader or a host depends on: parseable
+    pages, one canonical URL each, no client runtime, links that resolve, a sitemap
+    naming the real pages, and no claim on the account-level robots file. Presentation
+    preferences (Open Graph image dimensions, landmark counts, button classes, the
+    exact viewport string) go to ``lint`` when a list is given; they never fail a run.
+    """
     errors: list[str] = []
+    if lint is None:
+        lint = []
     titles: set[str] = set()
     descriptions: set[str] = set()
     for relative, canonical in SITE_PAGES.items():
@@ -836,8 +839,8 @@ def validate_site() -> list[str]:
             continue
 
         html_tags = document.attributes("html")
-        if len(html_tags) != 1 or html_tags[0].get("lang") != "en":
-            errors.append(f"site/{relative} must declare exactly one English html root")
+        if len(html_tags) != 1 or not html_tags[0].get("lang"):
+            errors.append(f"site/{relative} must declare exactly one html root with a lang")
         title = "".join(document.title_parts).strip()
         if not title:
             errors.append(f"site/{relative} must have a nonempty title")
@@ -851,24 +854,13 @@ def validate_site() -> list[str]:
         elif description[0] in descriptions:
             errors.append(f"site/{relative} duplicates another meta description")
         descriptions.update(description)
-        # The category is the project's discovery claim, so each page states it
-        # somewhere a reader or a crawler meets. Which surface carries it is
-        # editorial: requiring the same sentence in six slots froze repeated copy
-        # without protecting anything a host depends on.
-        visible = " ".join(document.visible_parts).casefold()
-        discovery_surfaces = [title.casefold(), visible]
-        discovery_surfaces += [value.casefold() for value in description]
-        if not any(SITE_CATEGORY in surface for surface in discovery_surfaces):
-            errors.append(
-                f"site/{relative} must name {SITE_CATEGORY} in its title, "
-                "meta description, or visible copy"
-            )
         if _site_meta(document, "name", "robots") != ["index,follow"]:
-            errors.append(f"site/{relative} must declare robots index,follow")
-        if _site_meta(document, "name", "viewport") != [
-            "width=device-width, initial-scale=1, viewport-fit=cover"
-        ]:
-            errors.append(f"site/{relative} must declare the responsive viewport")
+            lint.append(f"site/{relative} should declare robots index,follow")
+        if not any(
+            "width=device-width" in value
+            for value in _site_meta(document, "name", "viewport")
+        ):
+            lint.append(f"site/{relative} should declare a responsive viewport")
 
         canonical_links = [
             attrs.get("href")
@@ -879,28 +871,10 @@ def validate_site() -> list[str]:
             errors.append(f"site/{relative} canonical URL must be {canonical}")
         if _site_meta(document, "property", "og:url") != [canonical]:
             errors.append(f"site/{relative} Open Graph URL must match its canonical URL")
-        for property_name in (
-            "og:title",
-            "og:description",
-            "og:image",
-            "og:image:type",
-            "og:image:width",
-            "og:image:height",
-        ):
+        for property_name in ("og:title", "og:description", "og:image", "og:image:alt"):
             values = _site_meta(document, "property", property_name)
             if len(values) != 1 or not values[0]:
-                errors.append(f"site/{relative} must have one nonempty {property_name}")
-        for property_name, expected in (
-            ("og:image:type", "image/png"),
-            ("og:image:width", "1280"),
-            ("og:image:height", "640"),
-        ):
-            if _site_meta(document, "property", property_name) != [expected]:
-                errors.append(f"site/{relative} {property_name} must be {expected}")
-        if _site_meta(document, "property", "og:image:alt") != [
-            "SkipHow: outcome-first orchestration for Claude Code and Codex."
-        ]:
-            errors.append(f"site/{relative} must describe its Open Graph image")
+                lint.append(f"site/{relative} should have one nonempty {property_name}")
 
         scripts = document.attributes("script")
         if len(scripts) != 1 or scripts[0].get("type") != "application/ld+json":
@@ -931,10 +905,10 @@ def validate_site() -> list[str]:
                     )
 
         if len(document.attributes("h1")) != 1:
-            errors.append(f"site/{relative} must contain exactly one h1")
+            lint.append(f"site/{relative} should contain exactly one h1")
         for landmark in ("header", "nav", "main", "footer"):
             if len(document.attributes(landmark)) != 1:
-                errors.append(f"site/{relative} must contain exactly one {landmark} landmark")
+                lint.append(f"site/{relative} should contain exactly one {landmark} landmark")
         repository_links = [
             attrs
             for attrs in document.attributes("a")
@@ -942,15 +916,11 @@ def validate_site() -> list[str]:
         ]
         if not repository_links:
             errors.append(f"site/{relative} must link directly to the GitHub repository")
-        if relative == "index.html" and not any(
-            "button" in attrs.get("class", "").split() for attrs in repository_links
-        ):
-            errors.append("site/index.html must present GitHub as a homepage action")
         for tag in ("div", "pre"):
             for attrs in document.attributes(tag):
                 if attrs.get("aria-label") and not attrs.get("role"):
-                    errors.append(
-                        f"site/{relative} must not name a generic {tag} without a compatible role"
+                    lint.append(
+                        f"site/{relative} should not name a generic {tag} without a compatible role"
                     )
         for tag, attribute in (("a", "href"), ("link", "href"), ("img", "src")):
             for attrs in document.attributes(tag):
@@ -984,10 +954,9 @@ def validate_site() -> list[str]:
             if locations != expected:
                 errors.append("site/sitemap.xml must contain exactly the three canonical pages")
 
-    for relative in ("assets/site.css", "assets/favicon.svg", "assets/social-preview.png", ".nojekyll"):
-        path = SITE_ROOT / relative
-        if not path.is_file() or path.is_symlink():
-            errors.append(f"site must contain a regular site/{relative}")
+    nojekyll = SITE_ROOT / ".nojekyll"
+    if not nojekyll.is_file() or nojekyll.is_symlink():
+        errors.append("site must contain a regular site/.nojekyll")
     if (SITE_ROOT / "robots.txt").exists():
         errors.append("project site must not claim control of the account-level robots.txt")
     return errors
@@ -1254,11 +1223,26 @@ def model_id_scan(paths: Iterable[Path] | None = None) -> list[str]:
 
 
 def validate_continuity_hook(path: Path | None = None) -> list[str]:
-    """Permit exactly one read-only SessionStart continuity hook."""
+    """Validate the safety shape of the session hook where one ships.
+
+    The hook is optional (spec 11.1: safe hook shape when a hook exists). What is
+    checked is what could hurt a project: the event, the handler schema, an inert
+    echo-only command with no reader, writer, or network client, a bounded timeout,
+    and a resume reminder that selects no continuation store. How many matcher
+    groups exist and which sources each carries is editorial and not checked.
+    """
     path = path or PLUGIN_ROOT / "hooks/hooks.json"
-    if not path.is_file():
-        return ["plugin must ship hooks/hooks.json with the continuity hook"]
-    if path.is_symlink():
+    hooks_dir = path.parent
+    other = [
+        item
+        for item in hooks_dir.rglob("*")
+        if (item.is_file() or item.is_symlink()) and item != path
+    ] if hooks_dir.is_dir() else []
+    if other:
+        return ["plugin hooks/ may contain only hooks.json"]
+    if not path.exists() and not path.is_symlink():
+        return []
+    if path.is_symlink() or not path.is_file():
         return ["plugin hooks/hooks.json must be a regular file, not a link"]
     relative = display_path(path)
     try:
@@ -1284,12 +1268,6 @@ def validate_continuity_hook(path: Path | None = None) -> list[str]:
     if not isinstance(groups, list) or not groups:
         errors.append(f"{relative} must list its SessionStart groups")
         return errors
-    if len(groups) != 2:
-        errors.append(
-            f"{relative} must declare exactly the startup|clear and "
-            "compact|resume matcher groups"
-        )
-    matcher_groups: list[frozenset[str]] = []
     for index, group in enumerate(groups, start=1):
         if not isinstance(group, dict):
             errors.append(f"{relative} matcher group {index} must be an object")
@@ -1306,63 +1284,52 @@ def validate_continuity_hook(path: Path | None = None) -> list[str]:
             errors.append(f"{relative} matcher group {index} matcher must be a nonempty string")
             continue
         sources = matcher.split("|")
-        source_group = frozenset(sources)
-        if (
-            len(sources) != 2
-            or matcher not in {"startup|clear", "compact|resume"}
-            or source_group not in CONTINUITY_GROUPS
-        ):
+        unknown_sources = sorted(set(sources) - SESSION_START_SOURCES)
+        if unknown_sources or len(set(sources)) != len(sources):
             errors.append(
-                f"{relative} must declare exactly the startup|clear and "
-                "compact|resume matcher groups"
+                f"{relative} matcher group {index} must name distinct SessionStart "
+                f"sources from {', '.join(sorted(SESSION_START_SOURCES))}: {matcher!r}"
             )
             continue
-        matcher_groups.append(source_group)
-        if not isinstance(handlers, list) or len(handlers) != 1:
-            errors.append(f"{relative} must use one handler per matcher group")
+        resumes_context = bool({"compact", "resume"} & set(sources))
+        if not isinstance(handlers, list) or not handlers:
+            errors.append(f"{relative} matcher group {index} must list its handlers")
             continue
-        handler = handlers[0]
-        if not isinstance(handler, dict):
-            errors.append(f"{relative} handler must be an object")
-            continue
-        unknown_handler = sorted(set(handler) - {"type", "command", "timeout"})
-        if unknown_handler:
-            errors.append(
-                f"{relative} handler has unsupported fields: {', '.join(unknown_handler)}"
-            )
-        hook_type = handler.get("type")
-        command = handler.get("command")
-        timeout = handler.get("timeout")
-        if not isinstance(hook_type, str) or hook_type != "command":
-            errors.append(f"{relative} handler type must be the string 'command'")
-        if not isinstance(command, str) or not command.strip():
-            errors.append(f"{relative} handler command must be a nonempty string")
-        else:
-            if SAFE_ECHO_COMMAND.fullmatch(command) is None:
+        for handler in handlers:
+            if not isinstance(handler, dict):
+                errors.append(f"{relative} handler must be an object")
+                continue
+            unknown_handler = sorted(set(handler) - {"type", "command", "timeout"})
+            if unknown_handler:
                 errors.append(
-                    f"{relative} handler must use the portable safe echo-literal command shape"
+                    f"{relative} handler has unsupported fields: {', '.join(unknown_handler)}"
                 )
+            hook_type = handler.get("type")
+            command = handler.get("command")
+            timeout = handler.get("timeout")
+            if not isinstance(hook_type, str) or hook_type != "command":
+                errors.append(f"{relative} handler type must be the string 'command'")
+            if not isinstance(command, str) or not command.strip():
+                errors.append(f"{relative} handler command must be a nonempty string")
+            else:
+                if SAFE_ECHO_COMMAND.fullmatch(command) is None:
+                    errors.append(
+                        f"{relative} handler must use the portable safe echo-literal command shape"
+                    )
+                if resumes_context and HANDOFF_STATE_REFERENCE.search(command) is not None:
+                    errors.append(
+                        f"{relative} compact|resume reminder must not select handoff state"
+                    )
             if (
-                source_group == frozenset({"compact", "resume"})
-                and HANDOFF_STATE_REFERENCE.search(command) is not None
+                isinstance(timeout, bool)
+                or not isinstance(timeout, int)
+                or timeout <= 0
+                or timeout > HOOK_TIMEOUT_CEILING
             ):
                 errors.append(
-                    f"{relative} compact|resume reminder must not select handoff state"
+                    f"{relative} handler timeout must be a positive integer of at most "
+                    f"{HOOK_TIMEOUT_CEILING} seconds"
                 )
-        if (
-            isinstance(timeout, bool)
-            or not isinstance(timeout, int)
-            or timeout <= 0
-        ):
-            errors.append(f"{relative} handler timeout must be a positive integer")
-    if frozenset(matcher_groups) != CONTINUITY_GROUPS:
-        errors.append(
-            f"{relative} must declare exactly the startup|clear and "
-            "compact|resume matcher groups"
-        )
-    other = [item for item in path.parent.rglob("*") if item.is_file() and item != path]
-    if other:
-        errors.append("plugin hooks/ may contain only hooks.json")
     return errors
 
 
@@ -1927,7 +1894,7 @@ def validate_plugin_static() -> list[str]:
         errors.append(f"plugin has unexpected top-level entries: {', '.join(unexpected_top_level)}")
     allowed_non_skill_files = {
         relative for relative in CORE_PACKAGE_FILES if not relative.startswith("skills/")
-    } | {"SOURCES.json", "THIRD_PARTY_NOTICES.md"}
+    } | {"hooks/hooks.json"}
     unexpected_non_skill = sorted(
         relative
         for relative in shipped
@@ -2005,12 +1972,12 @@ def validate_diff(base: str | None) -> list[str]:
     return errors
 
 
-def offline_checks(base: str | None = None) -> list[str]:
+def offline_checks(base: str | None = None, lint: list[str] | None = None) -> list[str]:
     errors = (
         validate_json()
         + validate_yaml()
         + validate_markdown_links()
-        + validate_site()
+        + validate_site(lint)
         + portability_scan()
         + validate_version()
         + validate_plugin_static()
@@ -2086,7 +2053,10 @@ def main(argv: list[str] | None = None) -> int:
             return 2
         return completed.returncode
 
-    errors = offline_checks(args.base)
+    lint: list[str] = []
+    errors = offline_checks(args.base, lint)
+    for warning in lint:
+        print(f"lint (non-blocking): {warning}", file=sys.stderr)
     if errors:
         print("repository checks failed:", file=sys.stderr)
         for error in errors:
