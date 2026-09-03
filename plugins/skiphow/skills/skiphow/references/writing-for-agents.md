@@ -38,7 +38,7 @@ No forceful framing on ordinary guidance. Blanket defaults such as "always use t
 
 For an automatically discovered skill, make the description a precise trigger: the situations that should load it and the nearby ones that should not. Keep universally needed rules in the main file, and move conditional material behind a clear pointer only when the branch saves attention without hiding a requirement.
 
-A delegate does not inherit the dispatcher's policy. Its brief carries the outcome, the proof, the boundary, the authority, the prohibited actions, and the return contract in its own text; a link to a policy file changes nothing unless the host demonstrably preloads it.
+In a delegate's brief, a link to a policy file changes nothing unless the host demonstrably preloads it. The kernel states what that brief carries in its own text.
 
 Examples are targeted instruments: use one to encode a product requirement or repair a measured failure. Keep the smallest set that closes the gap, include positive and negative cases, and vary edge conditions enough to prevent accidental pattern matching. How many is an empirical choice, not a fixed rule.
 
@@ -46,4 +46,4 @@ Examples are targeted instruments: use one to encode a product requirement or re
 
 Write completion conditions the agent can verify, explain uncommon terms once, and keep related rules together. Read the finished document as an instruction system: trigger, authority, action, stopping condition, and conflicts with nearby or higher-priority instructions. Validate syntax and links.
 
-Measure size before and after a material change, references and tool definitions included. Track end state, forbidden side effects, interaction quality, and cost separately; lower cost is an improvement only when the result and its evidence still pass. When model behavior matters, treat real runs as evidence and deterministic lint as package evidence only.
+When model behavior matters, treat real runs as evidence and deterministic lint as package evidence only.

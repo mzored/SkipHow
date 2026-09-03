@@ -1,0 +1,20 @@
+{
+  "id": "research-notes",
+  "summary": "A notes directory and a request that is not a project change, used to see what a session does when the continuity hook speaks at a resume or a compaction.",
+  "kind": "checked-in skeleton",
+  "synthetic": true,
+  "planted": [
+    "The request is writing work over prose, not a change to a software project, so nothing in it matches the owner skill's description.",
+    "The notes are long enough that a session can be resumed or compacted part way through the work."
+  ],
+  "absent_on_purpose": [
+    "No source code, no checks, no tracker, no remote."
+  ],
+  "setup": [
+    "Copy this directory into an empty scratch directory outside any repository.",
+    "Install the package under test so its continuity hook is active for the session.",
+    "Start the session, let it begin the summarizing work, then resume or compact it so the hook's compact and resume line is printed."
+  ],
+  "run_checks": "none",
+  "privacy": "Invented workshop, invented figures, no personal data, no real customers, no credentials."
+}

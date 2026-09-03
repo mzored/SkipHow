@@ -6,9 +6,9 @@ Landing work is two things, and the second is the one that gets dropped: carryin
 
 ## Where the work lands
 
-Read the integration path and the target branch off the project's own recent history, rather than asking for them or inventing a path of your own. Where that history merges work straight into an integration branch, do that; where work lands through review instead, the change reaches that review in the state it should be reviewed in, and this branch is finished there. Merging past a gate the project keeps is not finishing faster, and a failed guard is never bypassed to manufacture delivery.
+Read the integration path and the target branch off the project's own recent history, rather than asking for them or inventing a path of your own. That history settles the path and never the grant: reaching a shared branch or a review is shared delivery, which happens only where the owner's own request names that destination. Where that history merges work straight into an integration branch, do that; where work lands through review instead, the change reaches that review in the state it should be reviewed in, and this branch is finished there. Merging past a gate the project keeps is not finishing faster, and a failed guard is never bypassed to manufacture delivery.
 
-Where the request or the repository's workflow puts this work in a tracker, the item closes as the change integrates — see [tracked work](tracked-work.md). Where it could not be integrated at all, say what blocks it and leave the branch alone.
+Where the request or the repository's workflow puts this work in a tracker, [tracked work](tracked-work.md) governs when that item closes and what goes into it. Where it could not be integrated at all, say what blocks it and leave the branch alone.
 
 ## Verifying the integrated state
 
@@ -22,7 +22,7 @@ Recover what each side was trying to do before choosing between them, from the a
 
 Resolve each hunk so the combined result preserves both intents where they are compatible. Where they genuinely oppose each other, choose the behavior matching the stated integration goal and the current product contract, without inventing unrelated behavior while reconciling code. A resolution that silently drops the other side's change is a defect, not a resolution, however cleanly it makes the conflict disappear. Say afterwards which intent could not be preserved, and the evidence behind the choice.
 
-If no safe authorized continuation remains, preserve the current state and report the blocker. Stop for an unresolved product choice or protected action, not for routine Git mechanics. Otherwise run the relevant checks on the resolved state, inspect the resulting diff, and carry the operation through to completion.
+Do not abort, skip, or discard commits where that could lose unique or foreign work, without the exact grant the kernel requires. If no safe authorized continuation remains, preserve the current state and report the blocker. Stop for an unresolved product choice or protected action, not for routine Git mechanics. Otherwise run the relevant checks on the resolved state, inspect the resulting diff, and carry the operation through to completion.
 
 ## Clearing away what the work created
 
@@ -32,7 +32,7 @@ Order matters: removing before arrival is established is how work is lost.
 2. Confirm nothing still holds it. An open review means the work is not integrated yet, and its branch and checkout are still in use.
 3. Remove only what your own work created; a workspace the host itself owns is cleaned up by the host.
 
-A refusal to remove a branch or a checkout is a question to answer, never an obstacle to force past on the way to a tidy result. Read what it is actually about: commits whose change arrived nowhere, files that were never committed, a lock, a checkout still in use. One that merely reflects a merge which rewrote the work tells you nothing new once arrival is established, and removal may proceed. One that reflects work existing only there stops you — show what is at stake and settle it rather than discarding it.
+A refusal to remove a branch or a checkout is a question to answer, never an obstacle to force past on the way to a tidy result. Read what it is actually about: commits whose change arrived nowhere, files that were never committed, a lock, a checkout still in use. One that merely reflects a merge which rewrote the work tells you nothing new once arrival is established, and removal may proceed. One that reflects work existing only there stops you — show what is at stake and settle it rather than discarding it. Deleting unintegrated work, rewriting shared history, or removing a ref you do not own needs the exact grant the kernel requires for material deletion.
 
 ### Retiring what earlier runs left
 

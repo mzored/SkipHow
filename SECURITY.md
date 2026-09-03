@@ -18,6 +18,11 @@ Host behavior changes. This matrix states what each host supported on the date i
 heading, and it is only as current as that date. Check the hosts' own documentation
 again before relying on any row.
 
+The rows were written against Claude Code 2.1.259 and Codex CLI 0.151.0, the versions
+`claude --version` and `codex --version` reported where this matrix was written. Those
+are two observed versions and not a tested range; no earlier or later release of either
+host is claimed to behave the same way.
+
 The rows are separate claims and must not be read as one. A host that validates the
 package schema is not thereby shown to activate the skill; a host that activates the
 skill is not thereby shown to isolate a delegate; and none of these rows says anything

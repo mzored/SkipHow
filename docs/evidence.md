@@ -40,6 +40,10 @@ The Codex isolation described in 2.4.1 was insufficient, and this release correc
 
 Claude runs use `--setting-sources ''` with `--strict-mcp-config` and the package passed as a session plugin, which drops user settings, skills, plugins, hooks, and MCP servers while leaving authentication alone. Its control run listed the owner skill and Claude's own built-ins, and no `CLAUDE.md`, `AGENTS.md`, or user instruction file reached the context.
 
+## A corpus of cases, with nothing run in it
+
+[`evals/`](../evals/README.md) records thirteen synthetic cases for the behaviors 3.0.0 changed, across eight fixtures and three arms, each case naming one observable with the events that must appear and the events that must not. It is a record shape and a set of fixtures. It is not evidence, and it does not move any line in this page toward `Observed`. Every case stands at `not_run` and `UNVERIFIED`, because no case has been run. What the corpus buys is that a receipt made later is reproducible and comparable to the next one, since the fixture, the prompt, the arm, and the observable are fixed before a session starts rather than chosen inside it. The unverified entries it is built to be able to answer later are the ones with no bounded receipt behind them: whether the 3.0.0 compact package changes model behavior at all, which is the three-arm comparison the corpus is arranged for; whether the read-only delegate default and the verified-isolation precondition are honored; and whether the conditional compact and resume reminder stops a session SkipHow does not govern from loading the kernel. Each of them is exactly as open as it was before the corpus existed, and closes only when an authorized run lands its observable. `python scripts/check.py` and the pytest suite read the corpus for shape alone and start no model.
+
 ## Observed behavior
 
 ### The round does not close when the owner answers

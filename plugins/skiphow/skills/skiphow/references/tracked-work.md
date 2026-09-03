@@ -1,12 +1,12 @@
 # Tracked work
 
-Open this when the owner asked for a record or for work already on record, when the repository's own delivery path writes to a tracker, or when a pause or session boundary could lose work.
+Open this when the owner asked for a record or for work already on record, when the repository's own delivery path writes to a tracker, or when a pause, resume, or session boundary could lose work.
 
 ## When a tracker write is allowed
 
 A tracker write rests on one of four grounds, and on nothing else: the owner asked for a record or for tracker work; the owner asked to carry existing tracked work forward; an authoritative repository workflow makes that tracker mutation part of the delivery path the request asked for; or a multi-session authorized change genuinely needs minimal continuity state and the project already has an authorized private destination for it.
 
-Ordinary engineering reaches none of those grounds by itself. A branch, a worktree, a review, or a change big enough to run over several sittings is a mechanic, and none of them implies an item existed first. A generic request to change code implies no write to a remote or shared tracker at all. Do not establish a tracker, publish a record, or invent a tracking convention because this skill is installed; a project that keeps no record of its work has already answered the question.
+Ordinary engineering reaches none of those grounds by itself. A generic request to change code implies no write to a remote or shared tracker at all. Do not establish a tracker, publish a record, or invent a tracking convention because this skill is installed; a project that keeps no record of its work has already answered the question.
 
 ## Where a record goes
 
@@ -24,19 +24,19 @@ Search closed records as well as open ones before writing a new one. Merge repor
 
 A record is acted on when it reaches the front of the work, and the code will have moved by then. State the behavior the project should have rather than the edit that would produce it, naming types, commands, and observable conditions rather than file paths and line numbers, which go stale and send the next session to the wrong place with confidence. Beyond the problem and what would show it resolved, carry its impact, what surfaced it, the evidence already gathered, and the explanations already ruled out, so a capable agent with no history can act on it; omitting what was already tried is what makes a later session repeat the investigation.
 
-An idea, an audit recommendation, or a proposed plan stays proposed when recorded, and making it takeable is not acceptance. Where recording one would commit product scope the request has not settled, keep the open decision in the record and take it to [product](product.md) before dependent work. Do not invent certainty, labels, owners, deadlines, or implementation detail; where the tracker already carries an order, that order is the project's answer.
+The kernel's rule on records decides what a recorded idea, audit recommendation, or proposed plan establishes. Where recording one would commit product scope the request has not settled, keep the open decision in the record and take it to [product](product.md) before dependent work. Do not invent certainty, labels, owners, deadlines, or implementation detail; where the tracker already carries an order, that order is the project's answer.
 
 ## Working from records the owner points at
 
 Where the owner points at recorded work, those records are the request. Take what the request actually reaches — one item is one item, not an audit of the tracker — and reconcile each against live state before acting. A record's claim about what remains is a claim to check rather than a fact: an item the code has already overtaken is reconciled honestly rather than re-implemented, an item with no observable outcome gets one you can defend from the request, and an item waiting on a decision belongs to whoever makes that decision unless the current product settles it. A part of the owner's stated result that no item covers is work to do, not a question to ask.
 
-Where concurrent sessions on the project are genuinely possible, claim an item before investigating it, using whatever the tracker provides: an assignee, a status, a label. The claim is what stops a second session from starting the same work. An item another session holds is not takeable, and a claim that loses means somebody else has it rather than that the claim is worth retrying.
+Where a tracker write is already authorized on one of the four grounds above and concurrent sessions on the project are genuinely possible, claim an item before investigating it, using whatever the tracker provides: an assignee, a status, a label. A request only to read, diagnose, review, or report on an item claims nothing, because a claim is a write and that request grants none. The claim is what stops a second session from starting the same work. An item another session holds is not available to take, and a claim that loses means somebody else has it rather than that the claim is worth retrying.
 
 ## Closing what the tracker carries
 
-Where work did land in a tracker, close it on integration rather than on verification of the branch that carries it, so the record says what the project actually has. Write into it what the work established before it gets there: the cause, the evidence that the outcome now holds, and any reading you had to assume. A one-line fix closes in a line, and a report that turns out not to reproduce closes as not reproducible, naming what you checked and against what state, rather than as fixed. Stripping an item back to its title on the way out discards the investigation the project just paid for and sends the next session through it again.
+Where work did land in a tracker, close it on integration rather than on verification of the branch that carries it, so the record says what the project actually has. Where the tracker performs that closure itself through the link the change carries, confirm it happened rather than assuming it did. Write into it what the work established before it gets there: the cause, the evidence that the outcome now holds, and any reading you had to assume. A one-line fix closes in a line, and a report that turns out not to reproduce closes as not reproducible, naming what you checked and against what state, rather than as fixed. Stripping an item back to its title on the way out discards the investigation the project just paid for and sends the next session through it again.
 
-The run that opens an item often cannot close it, for the same reason it cannot retire its own branch. An item whose change was integrated but which the tracker never closed is a stale record rather than working state, and not yours to clear away on a later, unrelated request: say that it is there and what shows its work arrived, and close it only where the current request reaches it.
+The run that opens an item often cannot close it, because integration usually lands after the run has ended. An item whose change was integrated but which the tracker never closed is a stale record rather than working state, and not yours to clear away on a later, unrelated request: say that it is there and what shows its work arrived, and close it only where the current request reaches it.
 
 ## Resuming across a boundary
 

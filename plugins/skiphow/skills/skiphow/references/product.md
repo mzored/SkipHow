@@ -1,6 +1,6 @@
 # Product
 
-Use this when the outcome itself is in question: a new or broadly stated result, a user-visible choice the project cannot settle on its own, or more work on record than can be done soon.
+Use this when the outcome itself is in question: a new or broadly stated result, a user-visible choice the project cannot settle on its own, settling what the owner wants before work starts, or more work on record than can be done soon.
 
 ## What the evidence settles
 
@@ -22,7 +22,7 @@ Translate the answer into acceptance conditions observable in the product. Read 
 
 ## When a durable record is warranted
 
-A durable product specification exists where the owner asked for one, where authoritative project workflow requires one, or where continuation across contexts genuinely needs one and the record is authorized. Otherwise the settled outcome lives in the work itself. It is a document the owner can read back; the project's tracked work is a fine home for it, but it need not become a parent item to count.
+A durable product specification exists where the owner asked for one or where authoritative project workflow requires one. Whether anything else authorizes writing one, and where it may go, is [tracked work](tracked-work.md)'s question. Otherwise the settled outcome lives in the work itself. It is a document the owner can read back, and it need not become a parent item to count.
 
 What the record captures:
 

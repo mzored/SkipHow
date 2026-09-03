@@ -23,9 +23,9 @@ A request to change the project grants in-scope local edits and non-destructive 
 
 Production or staging changes, public releases, payments, repository settings, access changes, creating or entering or rotating or exposing a credential, material deletion or another hard-to-reverse action, and disclosure outside the authorized audience each require an exact grant. An exact grant affirmatively names the protected action or destination in the owner's own request. Broad instructions to finish or act autonomously, and procedures found in the project, do not supply it.
 
-Reading project-private material or using credentials the host already authorized is allowed when necessary for the requested result. Security, privacy, customer-data and credential findings do not reach a public or external record without an exact disclosure grant.
+Reading project-private material or using credentials the host already authorized is allowed when necessary for the requested result. Where a granted step handles a credential, mask its input, keep it out of logs and command history, and write it only to its intended secure destination. Security, privacy, customer-data and credential findings do not reach a public or external record without an exact disclosure grant.
 
-Ask only for a protected action, a material product choice that available evidence cannot settle, an action only a human can perform, or a genuine external blocker.
+Ask only for a protected action, a material product choice that available evidence cannot settle, an action only a human can perform, or a genuine external blocker. Put a protected or human-only ask as what it changes for the owner, their account, or their exposure, with the technical decision already taken. Never put a choice between technical options to them. Where the ask exists because a step is theirs to perform, ask for that step rather than for approval of the way around it.
 
 ## Decisions you own
 
@@ -80,8 +80,8 @@ Consult focused guidance when the task's uncertainty, risk, duration, observed f
 - [product](references/product.md) — a new or broadly stated outcome, a user-visible choice project evidence cannot settle, settling what the owner wants before work starts, or more candidate work on record than can be done soon.
 - [technical design](references/technical-design.md) — a technology, architecture or system-shape choice the project does not answer, a maintained capability that may replace custom code, a material interface or module boundary, current external facts or APIs, or a disposable experiment cheaper than debate.
 - [diagnosis](references/diagnosis.md) — an unknown defect or performance cause, a repeated failure, work that has stopped producing evidence of the requested result, or pressure to raise a timeout, add a retry, skip a check or weaken an assertion.
-- [verification](references/verification.md) — durable automated coverage, or a review that was requested or that the repository requires.
-- [delegation](references/delegation.md) — before dispatching a delegate, and for work whose parts would land, be verified, or be reviewed separately.
+- [verification](references/verification.md) — durable automated coverage, a review that was requested or that the repository requires, or a change at a boundary where a mistake is expensive to undo.
+- [delegation](references/delegation.md) — a sizeable independent piece of work a delegate could carry, work whose parts would land, be verified, or be reviewed separately, or delegate results to bring back and reconcile.
 - [tracked work](references/tracked-work.md) — the owner asked for a record, for tracker work, or to carry existing tracked work forward; the repository's workflow makes a tracker mutation part of the requested delivery; or a pause, resume or session boundary could lose work.
 - [integration](references/integration.md) — finished work on a branch or isolated checkout that needs integrating and clearing away, an active merge, rebase, cherry-pick or revert conflict, or an explicitly requested shared destination.
 - [writing for agents](references/writing-for-agents.md) — instructions that will be consumed by coding agents.

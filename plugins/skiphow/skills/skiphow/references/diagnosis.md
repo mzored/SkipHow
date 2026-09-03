@@ -1,10 +1,10 @@
 # Diagnosis
 
-Open this when the cause of a failure is unknown, when the same problem survives repeated attempts, or when work keeps running without new evidence of the result the owner asked for.
+Open this when the cause of a failure is unknown, when the same problem survives repeated attempts, when work keeps running without new evidence of the result the owner asked for, or under pressure to raise a timeout, add a retry, skip a check or weaken an assertion.
 
 ## Build a signal before naming a cause
 
-Start from the reported symptom and inspect the real path that produces it. Build the tightest practical signal that separates the broken behavior from the expected one: a focused test, a repeatable command, a captured input, an interaction, a trace, or a measurement. Confirm the signal represents the owner's problem before trusting it, then reduce the noise around it.
+Start from the reported symptom and inspect the real path that produces it. Build the tightest practical signal that separates the broken behavior from the expected one: a focused test, a repeatable command, a captured input, an interaction, a trace, or a measurement. Confirm the signal represents the owner's problem before trusting it, then reduce the noise around it. Divergence between local results, the shared branch, and any external system is itself an anomaly to explain, not a discrepancy to settle by trusting one of them.
 
 Prefer the smallest reproducer that still fails. Reducing the case usually costs less than reasoning about the large one, and it often names the cause on its own. For an intermittent failure, raise the reproduction rate or gather enough repetitions to compare explanations; an intermittent failure is a defect, not something to retry past. For a performance problem, measure a baseline before changing anything.
 
@@ -45,6 +45,6 @@ Fix the cause rather than the symptom, then rerun the original signal and not on
 
 ## Long work that stops producing evidence
 
-Give a step that could take real time an expectation of what healthy progress looks like, and treat a breach as information rather than a reason to wait longer. Prefer the host's own wait or event mechanism to repeated status reads, and never hold your own turn open to poll: a sleep loop or a blocking command that occupies the root while delegated work runs is not a wait but a stop, and it costs the run every minute it holds. An expired wait over unchanged state is not new evidence.
+Give a step that could take real time an expectation of what healthy progress looks like, and treat a breach as information rather than a reason to wait longer. Prefer the host's own wait or event mechanism to repeated status reads, and never hold your own turn open to poll: a sleep loop or a blocking command that occupies the root while delegated work runs is not a wait but a stop, and it costs the run every minute it holds. An expired wait over unchanged state is not new evidence, so renew it without another inspection, narration, or decision pass.
 
 Reassess direction when repairs, integration conflicts, or process work keep growing while evidence of the owner's requested result does not. The question to ask of the next piece of work is whether it removes a named obstacle to that result, proves a needed part of it, or only extends the mechanism and the assurance around the mechanism. Work that only extends the mechanism is a reason to change direction, not to continue more carefully. This is a judgment made when the signal appears, not a state anything tracks for you. Stop affected work at its next safe boundary, keep independent work moving, and reconcile what it established. Do not add a second review pass to decide it.

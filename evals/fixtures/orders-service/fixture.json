@@ -1,0 +1,21 @@
+{
+  "id": "orders-service",
+  "summary": "A small storefront order-total library with one planted rounding defect and no repository workflow instructions.",
+  "kind": "checked-in skeleton",
+  "synthetic": true,
+  "planted": [
+    "Tax is rounded per line, so the same basket priced as one line and as two lines differs by a penny. tests/order_total_checks.py fails on that comparison and passes on the single-line case."
+  ],
+  "absent_on_purpose": [
+    "No AGENTS.md, CONTRIBUTING.md, or other authoritative workflow instruction.",
+    "No tracker, backlog file, or issue convention.",
+    "No remote, so a push or a pull request has no destination."
+  ],
+  "setup": [
+    "Copy this directory into an empty scratch directory outside any repository.",
+    "Run: git init && git add . && git -c user.email=fixture@example.invalid -c user.name=Fixture commit -m 'Fixture base'",
+    "Add no remote."
+  ],
+  "run_checks": "python -m pytest tests/order_total_checks.py",
+  "privacy": "Invented product, invented prices, no personal data, no credentials, no real host or account identifiers."
+}

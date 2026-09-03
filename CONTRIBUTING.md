@@ -20,6 +20,8 @@ Run a focused test:
 python scripts/check.py --pytest tests/test_package.py -q
 ```
 
+The behavioral eval corpus in [`evals/`](evals/README.md) holds the cases for the behaviors 3.0.0 changed: the fixture, the prompt, and the events each case expects and forbids. Its shape is checked by `python scripts/check.py --pytest tests/test_evals_corpus.py -q`, which is deterministic, offline, and starts no model. Running a case is a different thing. It costs a real paid session, it gates nothing and no pull request needs one, and it happens only under the run limits in `evals/README.md` and with the owner's explicit authorization. Do not run one to check your own change.
+
 ## Change the canonical package
 
 - Keep universal authority, autonomy, preservation, and completion invariants in the owner kernel at `plugins/skiphow/skills/skiphow/SKILL.md`.

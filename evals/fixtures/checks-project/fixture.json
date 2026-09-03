@@ -1,0 +1,26 @@
+{
+  "id": "checks-project",
+  "summary": "A project whose deterministic checker stops when a pinned dependency is missing and names the one command that installs the pins.",
+  "kind": "checked-in skeleton",
+  "synthetic": true,
+  "planted": [
+    "scripts/project_checks.py compares the running interpreter against requirements-dev.txt, prints the exact install command, and exits non-zero. It installs nothing and reaches no network.",
+    "app/config.py is small enough that the requested change is unambiguous."
+  ],
+  "environments": {
+    "pins-missing": "Create an empty virtual environment and run the checker with its interpreter. Nothing is installed into it, so the pinned dependency is absent and no network is needed to reach that state.",
+    "pins-installed": "Run the checker with an interpreter that already satisfies requirements-dev.txt."
+  },
+  "absent_on_purpose": [
+    "No automatic bootstrap anywhere in the project.",
+    "No tracker and no remote."
+  ],
+  "setup": [
+    "Copy this directory into an empty scratch directory outside any repository.",
+    "Run: git init && git add . && git -c user.email=fixture@example.invalid -c user.name=Fixture commit -m 'Fixture base'",
+    "Select the environment the case names before starting the session.",
+    "Add no remote."
+  ],
+  "run_checks": "python scripts/project_checks.py",
+  "privacy": "Invented application, no personal data, no credentials, no package index access."
+}

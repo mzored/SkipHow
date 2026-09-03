@@ -1,6 +1,6 @@
 # Delegation
 
-Work is about to go out to a delegate, or a request holds parts that would land or be verified separately.
+Open this when work holds a sizeable independent piece a delegate could carry, when its parts would land, be verified, or be reviewed separately, or when a delegate's results have to come back and be reconciled.
 
 ## Whether to split at all
 
@@ -18,7 +18,7 @@ A mechanical change with a wide blast radius has no honest vertical slice. Seque
 
 State each unit as its outcome and what would show it true. Do not prescribe files, names, structure, or steps; that wastes the judgment you delegated.
 
-Read the split back against the request for a unit with no observable outcome, an invented dependency, a prescribed implementation, or a part of the result no unit covers. Where the split is risky or tightly coupled, an independent check of it earns its cost; elsewhere none is required.
+Where the split is risky or tightly coupled, an independent check of it against the request earns its cost; elsewhere none is required. Such a check looks for a unit with no observable outcome, an invented dependency, a prescribed implementation, two units that would end up doing the same work, or a part of the result no unit covers.
 
 ## Order and readiness
 
@@ -34,7 +34,7 @@ Having a delegate available is not a reason to use one. Keep simple work, anythi
 
 ## The brief
 
-A delegate carries one outcome it can demonstrate on its own, verifiable alone and reviewable in one pass. Do not hand one several. One handed an open-ended body of work runs until it exhausts its room.
+The kernel states the minimum contract every brief carries. A delegate handed several outcomes, or an open-ended body of work, runs until it exhausts its room.
 
 A delegate knows only what its brief says, so a rule you did not write into the brief does not reach it. A delegate that cannot state its own completion condition will invent one. Rules and the completion condition belong in the brief. The material they apply to is pointed at, not copied: name the record, the prior change, or the file to read.
 
@@ -46,7 +46,7 @@ Naming the level in your own message is not setting it. Set the host's own per-d
 
 ## Where isolation lands
 
-Prefer the host's own worktree mechanism, which owns placement and cleanup. Otherwise put it where this repository already ignores, confirmed rather than assumed, or failing that under the temporary area. Never beside the repository: a sibling directory is invisible to the project's own ignore rules and cleanup, and accumulates until someone finds it by accident. Isolation is not total either: separate worktrees share one stash stack, so a stash pushed in one is poppable from the others.
+Prefer the host's own worktree mechanism, which owns placement and cleanup. Otherwise put it where this repository already ignores, confirmed rather than assumed. The kernel's placement rule closes the list there. Isolation is not total: separate worktrees share one stash stack, so a stash pushed in one is poppable from the others.
 
 ## What comes back
 
@@ -58,8 +58,8 @@ Bring each result back and confirm it against current state rather than trusting
 
 ## Reconciling the set
 
-Track every unit you accepted through to a named end, and reconcile the set against the request rather than your memory of the run. A named end includes the working state the unit created, so report what could not be retired.
+Track every unit you accepted through to a named end. A named end includes the working state the unit created, so report what could not be retired.
 
-Leaving a unit for later needs a reason the owner would accept, and there are only three. It is blocked, it needs a decision only they can make, or its authority was never granted, and it needs a record carrying what the work already established. Preferring not to do it is not such a reason, and a unit quietly absorbed into another is not finished. That failure grows with the number of units.
+Leaving a unit for later needs a reason the owner would accept, and there are only three. It is blocked, it needs a decision only they can make, or its authority was never granted, and it needs a record carrying what the work already established. A unit quietly absorbed into another is not finished. That failure grows with the number of units.
 
-Where the request authorizes it and the project keeps tracked work, record the split in the tracker's own hierarchy rather than only in the conversation, under [tracked work](tracked-work.md); a request only to plan or advise records nothing.
+Where the request authorizes it and the project keeps tracked work, record the split there rather than only in the conversation, under [tracked work](tracked-work.md); a request only to plan or advise records nothing.

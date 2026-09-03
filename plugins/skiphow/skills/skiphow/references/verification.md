@@ -28,7 +28,7 @@ Keep tests that protect behavior; remove only temporary harnesses and implementa
 
 Scale the run to what the change can reach rather than rerunning everything after every edit. Start with the smallest targeted check that covers the change. Widen to the affected module or contract, then to cross-boundary behavior where the change crosses one, then to whatever the repository requires before integration. Rerun anything a rebase, merge, dependency change, or generated artifact has invalidated.
 
-A retry is diagnostic information, not permission to call an unexplained failure a pass. An intermittent test is a defect or an explicit blocker until it is classified; [diagnosis](diagnosis.md) covers that.
+An intermittent test is a defect or an explicit blocker until it is classified; [diagnosis](diagnosis.md) covers that.
 
 ## Reviewing a change
 
