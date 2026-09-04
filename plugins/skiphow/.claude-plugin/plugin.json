@@ -1,7 +1,7 @@
 {
   "name": "skiphow",
-  "version": "3.0.1",
-  "description": "Owner–agent contract for verified project outcomes, for Claude Code and Codex. Describe the product result; the agent owns the engineering method and must show fresh evidence before it reports completion.",
+  "version": "4.0.0",
+  "description": "Adaptive virtual CTO for founders and product owners using Claude Code or Codex. Describe the product outcome; SkipHow owns the technical lifecycle through verified completion.",
   "author": {
     "name": "mzored",
     "url": "https://github.com/mzored"

@@ -2,7 +2,7 @@
 
 SkipHow includes original adaptations of selected ideas from [`mattpocock/skills`](https://github.com/mattpocock/skills) at commit `6654f6b60cd9d5be8b54c6fafe44346dabeb3b76`.
 
-The adapted SkipHow method references are `delegation`, `diagnosis`, `integration`, `product`, `technical-design`, `tracked-work`, `verification`, and `writing-for-agents`. Version 3.0.0 consolidated twenty-three references into these eight; the adapted material was carried into them rather than dropped. The owner kernel `SKILL.md` adapts the decision-frontier idea from the upstream `grilling` skill. SkipHow rewrites and narrows the source material for autonomous use by product owners. It does not vendor the upstream skill files. Exact source paths are recorded in [`SOURCES.json`](SOURCES.json).
+The seven adapted SkipHow references are `delegation`, `diagnosis`, `integration`, `product`, `technical-design`, `tracked-work`, and `verification`. Version 3.0.0 consolidated twenty-three references; version 4.0.0 moved contributor-only prompt-writing guidance out of the runtime and added the original `operations` playbook. The owner kernel `SKILL.md` adapts the decision-frontier idea from the upstream `grilling` skill. SkipHow rewrites and narrows the source material for autonomous use by product owners. It does not vendor the upstream skill files. Exact source paths and adapted destination files are recorded in [`SOURCES.json`](SOURCES.json).
 
 The upstream work is licensed under the MIT License:
 

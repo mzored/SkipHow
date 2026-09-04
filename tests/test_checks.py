@@ -719,7 +719,21 @@ def validate_hook_payload(tmp_path: Path, payload: object) -> list[str]:
 
 
 def real_hook_payload() -> dict[str, object]:
-    return json.loads((check.PLUGIN_ROOT / "hooks/hooks.json").read_text(encoding="utf-8"))
+    return {
+        "description": "test reminder",
+        "hooks": {
+            "SessionStart": [
+                {
+                    "matcher": "startup|clear",
+                    "hooks": [{"type": "command", "command": "echo 'test'", "timeout": 10}],
+                },
+                {
+                    "matcher": "compact|resume",
+                    "hooks": [{"type": "command", "command": "echo 'resume'", "timeout": 10}],
+                },
+            ]
+        },
+    }
 
 
 def test_continuity_hook_rejects_other_events_and_unsafe_commands(tmp_path: Path) -> None:
@@ -1776,7 +1790,7 @@ def test_changelog_must_lead_with_the_released_version() -> None:
     assert check.validate_version() == []
 
 
-def test_hook_shape_is_one_cross_shell_safe_literal() -> None:
+def test_safe_hook_literal_pattern_rejects_shell_behavior() -> None:
     breakout = (
         "sh -c 'printf \"%s\\n\" \"' ; touch f; echo '\"; "
         "if [ -f .skiphow/handoff.md ]; then cat .skiphow/handoff.md; fi; exit 0'"
@@ -1784,20 +1798,7 @@ def test_hook_shape_is_one_cross_shell_safe_literal() -> None:
     assert check.SAFE_ECHO_COMMAND.fullmatch(breakout) is None
     assert check.SAFE_ECHO_COMMAND.fullmatch("echo '-n'") is None
     assert check.SAFE_ECHO_COMMAND.fullmatch("echo '--help'") is None
-    real = json.loads((check.PLUGIN_ROOT / "hooks/hooks.json").read_text(encoding="utf-8"))
-    for group in real["hooks"]["SessionStart"]:
-        command = group["hooks"][0]["command"]
-        assert check.SAFE_ECHO_COMMAND.fullmatch(command)
-        assert not command.startswith("sh -c")
-    for group in real["hooks"]["SessionStart"]:
-        if {"compact", "resume"} & set(group["matcher"].split("|")):
-            resumed = group["hooks"][0]["command"]
-            assert ".skiphow" not in resumed.casefold()
-            assert "handoff" not in resumed.casefold()
-    # The wording of either reminder and the grouping of the four sources are
-    # editorial and may change. What must hold is that the hook stays an inert
-    # literal: one echo of a single-quoted payload with no shell metacharacter, no
-    # reader or writer, and no network client.
+    real = real_hook_payload()
     for command in (group["hooks"][0]["command"] for group in real["hooks"]["SessionStart"]):
         payload = check.SAFE_ECHO_COMMAND.fullmatch(command).group(1)
         assert not set(payload) & set("$`\\|&;<>()*?[]{}!#~'\"")

@@ -1,6 +1,6 @@
 # Verification
 
-Open this when a change needs durable automated coverage, or when a review has been asked for or the repository requires one.
+Open this for tests, final review, security, privacy, reliability, migration, rollback, observability, or operational readiness.
 
 ## Choosing the test
 
@@ -32,7 +32,7 @@ An intermittent test is a defect or an explicit blocker until it is classified; 
 
 ## Reviewing a change
 
-A review is warranted when the owner asked for one, when repository policy requires it, or when the change sits at a boundary where a mistake is expensive to undo. Ordinary work does not earn a separate pass. A justified review earns its cost by starting from a different account of the change than the one that produced it, whether it runs here or through a delegate.
+Every change gets a fresh review of the final diff and behavior. For a small, clear, low-risk edit, a cold self-review plus targeted evidence is enough. Use an independent reviewer for substantive, user-visible, multi-file, dependency, or integration changes. Add stronger architecture or security challenge where a mistake could affect authentication, payments, privacy, migrations, concurrency, public compatibility, or production operations. Independence earns its cost by starting from a different account of the change than the one that produced it.
 
 Establish the exact change under review and the request, issue, or specification it should satisfy. Read the repository's applicable standards and inspect the diff in its surrounding code. Review the change against those requirements and that diff rather than against the author's summary of it. Tool output supports review but does not replace reading the change.
 
@@ -41,3 +41,9 @@ Look for incorrect behavior, missing cases, scope creep, security or data risks,
 Verify a suspected issue before reporting it when a focused check can settle it. Distinguish a real defect from a preference: a finding names a concrete defect, and a reviewer who cannot point at what breaks is reporting taste. State each actionable finding with its location, triggering scenario, and impact, most consequential first. If there are no material findings, say so and name any important area that remained unverified.
 
 On a read-only review, report confirmed defects without modifying the project; urgency, including a security finding, does not widen the request, and a sensitive finding stays private unless disclosure is granted. When repair is authorized, fix confirmed in-scope defects before completion and verify the repaired final state, and do not carry an important defect forward as accepted.
+
+## Security, reliability, and operations
+
+Review the boundaries the change actually crosses. Check authorization and data handling when trust changes, compatibility and migration when stored state or public interfaces change, rollback when failure could strand users, and observability and failure handling when the system must be operated after delivery. Apply these in proportion to the risk; do not turn the list into ceremony for a local text edit.
+
+Static checks prove only the properties they inspect. A schema validator proves shape, not model behavior. A dry run proves the simulated path, not publication or deployment. Keep activation, policy adherence, product task success, technical quality, proportionality, and completion honesty as separate evidence claims.

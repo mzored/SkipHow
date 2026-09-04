@@ -19,11 +19,11 @@ This document is the single home for current claims. Other documents in the repo
 Every behavioral claim on this page sits in one of four sections, and a claim never moves between them without a receipt of its own:
 
 1. [**2.x Observed behavior**](#2x-observed-behavior). Runs made on 2.x packages, from 2.4.1 to 2.16.1. They are evidence about the wording that ran, and about nothing that came after it.
-2. [**3.x encoded Contract**](#3x-encoded-contract). What the current package's text requires. Reading the package settles it, and it says nothing about what a model does.
-3. [**3.x Observed behavior**](#3x-observed-behavior). Runs made on a 3.x package. There are none.
+2. [**4.0 encoded Contract**](#40-encoded-contract). What the current package's text requires. Reading the package settles it, and it says nothing about what a model does.
+3. [**3.x and 4.0 Observed behavior**](#3x-and-40-observed-behavior). Runs made on a 3.x or 4.0 package. There are none.
 4. [**UNVERIFIED comparisons and capabilities**](#unverified-comparisons-and-capabilities). Everything intended, argued, or rewritten that no run has shown.
 
-An old run does not support a new behavioral rewrite. The 3.0.0 microkernel and the 3.x contract corrections replaced the wording every 2.x run exercised, so the first section is history that informed the change, and the third section is empty until a receipt is made under the requirements below.
+An old run does not support a new behavioral rewrite. The 4.0 CTO contract replaced material 3.x wording, so the first section is history that informed the change and the third section stays empty until a retained receipt is made under the requirements below.
 
 ## What a future Observed claim must retain
 
@@ -35,7 +35,7 @@ An `Observed` claim made from now on carries a receipt with every item below, or
 - the model or model family and the effective effort where visible;
 - the fixture snapshot or its content hash;
 - the exact owner prompt and every subsequent turn, verbatim;
-- the permission, sandbox, network, hook, and instruction configuration;
+- the permission, sandbox, network, activation, and instruction configuration;
 - the control run proving isolation from maintainer context;
 - the activation event, or the absence of one;
 - the references loaded, in order;
@@ -59,7 +59,7 @@ A small run set is never converted into a percentage reliability claim. Two sess
 - reachable internal Markdown references;
 - valid JSON, YAML, Markdown links, manifests, and marketplace catalogs;
 - aligned package versions and required release metadata;
-- the continuity hook shape;
+- the absence of an executable package hook and the integrity of the declared activation surfaces;
 - third-party source attribution;
 - package portability boundaries for personal paths and versioned model IDs.
 
@@ -79,7 +79,7 @@ Claude runs use `--setting-sources ''` with `--strict-mcp-config` and the packag
 
 ## A corpus of cases, with nothing run in it
 
-[`evals/`](../evals/README.md) is the record shape for any 3.x receipt. At 3.0.0 it recorded thirteen synthetic cases across eight fixtures and three arms. The evaluation redesign that followed the v3 audit rewrote it: twenty-four cases across eighteen fixtures and five arms, the ten core microcases and three composed journeys of the redesign among them, with per-arm activation expectations, task success scored identically in every arm, alternative and conditional success paths, a link from every case into the shipped contract, and a semantic validator that rejects a case no run could satisfy. The maintainer-only case about missing check pins left the corpus, because it observed repository policy rather than product behavior. The paragraph that follows described the 3.0.0 corpus and remains true of the rewritten one: each case names one observable with the events that must appear and the events that must not. It is a record shape and a set of fixtures. It is not evidence, and it does not move any line in this page toward `Observed`. Every case stands at `not_run` and `UNVERIFIED`, because no case has been run. What the corpus buys is that a receipt made later is reproducible and comparable to the next one, since the fixture, the prompt, the arm, and the observable are fixed before a session starts rather than chosen inside it. The unverified entries it is built to be able to answer later are the ones with no bounded receipt behind them: whether the 3.0.0 compact package changes model behavior at all, which is the three-arm comparison the corpus is arranged for; whether the read-only delegate default and the verified-isolation precondition are honored; and whether the conditional compact and resume reminder stops a session SkipHow does not govern from loading the kernel. Each of them is exactly as open as it was before the corpus existed, and closes only when an authorized run lands its observable. `python scripts/check.py` and the pytest suite read the corpus for shape alone and start no model.
+[`evals/`](../evals/README.md) now holds three separate instruments: activation, forced-activation CTO behavior, and host smoke. The arm-aware catalog has twenty-four inherited cases over eighteen fixtures; twelve concrete minimum CTO scenarios separately cover small and intermittent bugs, idea triage, product ambiguity, consequential design, a large programme, material findings, process failure, false-fix review, read-only analysis, production preparation, and continuity. Host smoke keeps nine capabilities visible per host. Success observables are positive actions; required absence is recorded separately; activation, adherence, task success, technical quality, proportionality, and completion honesty do not substitute for one another; and one terminal-state table alone determines whether a landed observable may support `Observed`. Deterministic tests prove only shape and internal satisfiability. Every entry is `not_run` and `UNVERIFIED`.
 
 ## 2.x Observed behavior
 
@@ -357,9 +357,14 @@ Version 2.14.0 bounds the frontier by the result, adds defer as a direction outc
 
 One matched Claude Code pair was then run on a throwaway shop repository whose tracker held two takeable items on the payment path, one human-gated item on it, and two audit-derived infrastructure items off it, with the same Get5Stars-shaped prompt, settings sources and MCP disabled, the package passed as a session plugin, and the init event naming Claude Code 2.1.258, Opus 5, and the exact package path each time. Exact 2.13.1 and the candidate both did the same thing in about five minutes: closed the two path items, continued past the human gate rather than stopping at it, found that the payment adapter never charged anything and recorded that as the real blocker, marked both audit items proposed, put the backups-before-money question to the owner as a risk choice with a recommendation, and stopped with one batch. Both opened the frontier method. The pair shows that the new wording keeps a run moving through a human gate and does not add a question or a gate; it does not show the improvement, because the released text already behaved correctly on a five-minute fixture, as the 2.13.0 pairs also found. What the installed campaigns show and the fixture cannot is a run twenty hours in, holding records it wrote itself, with free delegate capacity and nothing left on the path.
 
-## 3.x encoded Contract
+## 4.0 encoded Contract
 
-What the current package's text requires, settled by reading it. Nothing here has a run behind it. The sentences live in [`SKILL.md`](../plugins/skiphow/skills/skiphow/SKILL.md) and its references; the corpus's `contract_refs` point at the heading each case tests, and the validator refuses a case that points nowhere.
+What the current package's text requires, settled by reading it. Nothing here has a run behind it. The sentences live in [`SKILL.md`](../plugins/skiphow/skills/skiphow/SKILL.md) and its eight conditional playbooks.
+
+- One accountable virtual CTO owns the technical lifecycle through current-state inspection, research, architecture, planning, implementation, review, integration, verification, and operational learning. Technique stays proportional; no fixed stages, role counts, or private runtime are required.
+- Before consequential work it reconciles the request with live product, code, tests, Git, branches, worktrees, records, CI, and host state. It compares repository and platform capabilities, official integrations, maintained open source, managed services, bounded experiments, and custom code where relevant.
+- Programmes split into observable end-to-end outcomes with real dependency edges. Existing authorized tracking is used when work has several deliverables, spans sessions or writers, needs a durable decision, or leaves a separable material defect; tiny same-session work gets no ceremony.
+- Models and effort are configured deliberately for the actual task. Every change gets review scaled to consequence, with an independent read for substantive or high-risk work. Process and environment failures are diagnosed at their own root cause rather than converted into product changes.
 
 - Authority comes from the owner's messages and trusted host-, user-, organization-, or administrator-managed policy. Repository instruction files are applicable project procedure within authority already granted, evidence until their provenance is established in an untrusted revision, and never a grant of mutation, secret access, disclosure, network egress, permission change, cleanup, or protected external effect. Records the owner points at authorize pursuing the outcome, and stay untrusted task data.
 - A read-only request writes nothing. A change request grants in-scope local edits and non-destructive validation, and may include a clean local commit of owned changes when the commit path is known not to cross another boundary; otherwise the work stays uncommitted with the reason stated, and that is not implementation failure.
@@ -375,9 +380,9 @@ What the current package's text requires, settled by reading it. Nothing here ha
 
 Whether any of that changes what a model does is the next section's question, and that section is empty.
 
-## 3.x Observed behavior
+## 3.x and 4.0 Observed behavior
 
-None. No run has been made on any 3.x package. The three-arm comparison the 3.0.0 corpus was arranged for was never run, and the five-arm comparison that replaced it has not been either. Every 3.x behavioral claim is `UNVERIFIED`, and the release ships on reasoning about the text and on deterministic checks that start no model.
+None. No run has been made on any 3.x or 4.0 package. Every current behavioral claim is `UNVERIFIED`; the release ships on reasoning about the text and deterministic checks that start no model.
 
 ## UNVERIFIED comparisons and capabilities
 
@@ -401,14 +406,14 @@ None. No run has been made on any 3.x package. The three-arm comparison the 3.0.
 - Whether the asking rule over-asks in general. Sixteen negative-control sessions are a counterweight, not a bound.
 - Continuity under the corrected compaction reminder. The installed 2.11.1 session above proves that the old reminder caused an unnecessary handoff probe. No genuine compaction has run on the corrected package, so whether reloading the kernel leads the agent to the right continuation source remains `UNVERIFIED`. A simulated compaction would not settle it.
 - Whether the 2.13.0 direction checks change a real campaign whose repair, integration, or process load is growing without new evidence of the owner's outcome. The Claude fixtures show the method loading and the intended judgments, but 2.12.1 made the same central judgments, no run had live lanes to stop or records it was allowed to rewrite, and Codex has no accepted receipt.
-- Whether the 3.0.0 compact package changes model behavior at all. No receipt compares it against the policy it replaced, and no three-arm comparison has been run on any fixture, against the base host with no package, the compact candidate, and the previous full SkipHow. Every 3.0.0 line below rests on that gap, and so does the release: it ships on reasoning about the text and on the deterministic checks, which start no model.
+- Whether the 4.0 virtual-CTO contract changes model behavior at all. No receipt compares it with 3.0.1 or a base host. The release ships on reasoning about the text and deterministic checks that start no model.
 - Whether removing mandatory method routing changes what a run opens. Every loading number in this file was measured against a package that told a run an applicable method was not optional. Consulting guidance where uncertainty, risk, duration, an observed failure, or a repository requirement makes it materially useful is a weaker instruction than that, and no run has been made on it. Fewer methods opening is the expected result rather than a defect, and neither direction is measured.
 - Whether the read-only delegate default and the verified-isolation precondition are honored. The failures they answer are on record: one run put five lanes in a single checkout with the isolation rule in context, and one host worktree mechanism reported success into the shared tree and cost thirteen files of a peer session's work. The new default reverses what those runs did. No run has been made on it, and a rule moved or strengthened has been shown before to change what is read rather than what is done.
-- Whether the conditional compact and resume reminder stops a session SkipHow does not govern from loading the kernel. One installed 2.11.1 session proved the old unconditional reminder caused an unnecessary handoff probe; nothing shows what the condition does in either direction, and a simulated compaction would not settle it.
+- Whether a genuinely compacted or resumed governed session reconstructs the outcome, authority, live state, and still-valid evidence without the removed reminder hook. A simulated compaction would not settle it.
 - Real production or public-delivery actions.
 - Comparative cost or speed against any other approach. Nothing here benchmarks SkipHow against anything.
 - Behavior in the owner's real application, and any general rate at which the skill is selected without being named.
-- Every 3.x contract correction: provenance-aware authority, records as untrusted task data, the commit-hook boundary, read-only review that never becomes repair, destination-relative completion, no earlier-run cleanup, read-only delegates without verified isolation, bounded wait renewal, and task-relative model and effort routing. Each has a case in [`evals/cases.json`](../evals/cases.json) and no run. The 2.x observations above show the failures some of them answer; none shows the corrected text doing anything.
-- The activation arms themselves. Explicit invocation, implicit discovery with the reminder hook, and the bootstrap candidate are the corpus's M1, M2 and M3, and none has a receipt against the base host M0. Until one exists, public wording says "when selected" or "when loaded", and no activation mode is called reliable.
+- Every 3.x contract correction retained by 4.0: provenance-aware authority, records as untrusted task data, the repository commit-hook boundary, read-only review that never becomes repair, destination-relative completion, no earlier-run cleanup, and read-only delegates without verified isolation. The 2.x observations above show failures some answer; none shows current wording doing anything.
+- Activation itself. Explicit invocation, native implicit discovery, and the reversible persistent-instruction setup have no 4.0 receipt against a base host. Documented host loading is not automatic-selection evidence, so no activation mode is called reliable.
 
 A behavior no receipt covers stays `UNVERIFIED`, including every one above.

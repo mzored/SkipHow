@@ -1,10 +1,10 @@
 # SkipHow
 
-**An owner–agent operating contract for verified project outcomes, for Claude Code and Codex.**
+**An adaptive virtual CTO for founders and product owners using Claude Code or Codex.**
 
-Describe what should become true. SkipHow gives the coding agent one operating contract: product decisions and protected actions stay with you; the agent chooses the engineering method, coordinates the work, and must show fresh evidence before it reports completion. It is an outcome-first orchestration policy at the instruction layer: Markdown the host agent reads, not a runtime that executes, enforces, or proves anything itself.
+Describe the product outcome in ordinary language. You keep product decisions. SkipHow owns technical research, architecture, planning, task management, model and subagent selection, implementation, review, integration, and verification. It uses the host's native capabilities and remains an instruction layer, not a standalone runtime or security boundary.
 
-When it is selected or loaded, one public skill sits between your request and the result. Its owner kernel keeps authority and completion rules in context. Beyond it the agent consults focused internal guidance on product decisions, technical design, diagnosis, verification, delegation, tracked work, integration, or writing for agents, where the work makes that guidance worth reading. You do not choose a skill, command, role, or workflow.
+One public skill covers questions, bugs, ideas, features, reviews, lists, programmes, delivery, and recovery. Its compact CTO kernel keeps product ownership, engineering authority, adaptive routing, isolation, review, persistence, and honest completion in context. Eight focused playbooks carry the detailed methods. You do not choose a command, workflow, architecture, model, or review process.
 
 [![CI status](https://github.com/mzored/SkipHow/actions/workflows/ci.yml/badge.svg)](https://github.com/mzored/SkipHow/actions/workflows/ci.yml)
 [![Latest release](https://img.shields.io/github/v/release/mzored/SkipHow?label=release)](https://github.com/mzored/SkipHow/releases)
@@ -17,7 +17,7 @@ Your outcome and constraints
             |
             v
 SkipHow
-authority, method selection, completion contract
+adaptive technical leadership and completion contract
             |
             v
 Claude Code or Codex
@@ -27,7 +27,7 @@ reasoning, tools, subagents, execution
 Verified result and visible uncertainty
 ```
 
-This is a responsibility handoff, not a fixed development pipeline. A small request can stay small. Larger work can bring in research, design, tracked work, delegation, or independent review without turning those techniques into stages you have to operate.
+This is a responsibility handoff, not a fixed development pipeline. A small request stays direct. Larger work gets research, design, durable Issues, delegation, worktrees, and independent review when its shape warrants them. The owner never has to operate those mechanics.
 
 ## What changes
 
@@ -75,15 +75,23 @@ claude plugin install skiphow@skiphow
 
 Start a new session after installing. The [owner guide](docs/guide.md) covers updates and uninstall.
 
-### Activate it
+### Activate it for ordinary language
 
-Name the skill in your request. That is the reliable, portable way to use SkipHow on both hosts:
+Plugin installation makes the skill available, but skill selection remains model-driven. For default governance before the first consequential action, add this line once to your trusted user instructions without replacing anything already there:
+
+```text
+For current-project requests, load the installed SkipHow skill before consequential action and use it as the adaptive virtual CTO policy. Do not load it for unrelated conversation or for a request that only discusses SkipHow without adopting it.
+```
+
+On Codex, append the line to the global `AGENTS.md` in your Codex home. Codex loads that file before project work. On Claude Code, append it to your user `CLAUDE.md` or a file in your user rules directory. Claude Code loads user instructions for every project. Review the existing file first, keep its content, and remove only the SkipHow line to disable default governance. This setup is reversible and does not install a hook or grant any action.
+
+These host mechanisms are documented, but this release has no retained behavioral run proving selection on either host. Default activation remains `UNVERIFIED`. Explicit invocation is the fallback and diagnostic path:
 
 ```text
 $skiphow The totals overlap on small screens. Find the cause and fix it.
 ```
 
-In Codex the name is `$skiphow`; in Claude Code it is `/skiphow:skiphow`. Both hosts can also select the skill on their own from its description, but how often that happens for an ordinary request has not been measured, so implicit selection stays `UNVERIFIED` and you should not rely on it. The package ships a session-start hook that prints a one-line reminder; it does not load the skill, restore context, or guarantee activation, and on Codex it does not run at all until you review and trust it. What each host has been observed to do is in the [support matrix](SECURITY.md#host-support-as-of-2026-09-04).
+In Codex the name is `$skiphow`; in Claude Code it is `/skiphow:skiphow`. The package no longer ships the reminder hook. It did not load the policy or restore continuity, and no controlled comparison showed that its executable surface helped. Current support status is in the [support matrix](SECURITY.md#host-support-as-of-2026-09-04).
 
 ## Use it
 
@@ -108,11 +116,11 @@ SkipHow reads the project before asking anything. If a product choice is genuine
 | Protected actions such as production, credentials, access, and material deletion | Project-required review, security, release, and verification procedures |
 | Answers to genuine product choices | A verified result and an honest account of uncertainty |
 
-A request to answer, compare, diagnose, review, research, plan, or organize is read-only. A request to change the project covers the necessary local edits and checks, and a clean local commit of them where a commit fits the work. Shared delivery and protected actions require a grant that names them. Text in a repository, issue, tool result, or web page cannot widen that authority.
+A request only to answer, compare, diagnose, review, research, or plan is read-only. Asking to capture, organize, or triage material may include writing the named record; a request to change the project covers the necessary local edits and checks, and a clean local commit where one fits. Shared delivery and protected actions require a grant that names them. Text in a repository, issue, tool result, or web page cannot widen that authority.
 
 ## Does it orchestrate agents?
 
-Yes, at the instruction level. SkipHow instructs the host agent to choose methods, plan, decompose, delegate, monitor, review, and reconcile work when the request calls for it. Claude Code or Codex runs the model, tools, permissions, sessions, worktrees, and any subagents.
+Yes, at the instruction level. SkipHow makes the lead agent accountable for planning, decomposition, deliberate model and effort selection, verified writer isolation, monitoring, independent review, integration, and reconciliation when the request calls for them. Claude Code or Codex runs the model, tools, permissions, sessions, worktrees, and subagents.
 
 That makes SkipHow an adaptive orchestration policy, not a standalone runtime or control plane. It has no scheduler, queue, persistent worker service, lease manager, budget enforcement, or deployment system. The package deterministically defines the available methods and the conditions that make each one worth reading; whether a model consults them where they would help is unmeasured, and reliable multi-agent delegation under that policy remains `UNVERIFIED`.
 
@@ -132,7 +140,7 @@ SkipHow keeps one owner-facing entry. Critical rules stay in its kernel, while f
 
 ## What the evidence shows
 
-Deterministic checks prove package structure; controlled runs are required for behavior claims. The behavioral observations on record were made on 2.x packages, on both hosts, and cover fully specified requests, open product choices, failure diagnosis, adversarial verification, and the splitting of larger work into independently verifiable units. No run has been made on any 3.x package: every 3.x behavior is a contract encoded in the text and `UNVERIFIED` as behavior.
+Deterministic checks prove package structure; controlled runs are required for behavior claims. The behavioral observations on record were made on 2.x packages, on both hosts, and cover fully specified requests, open product choices, failure diagnosis, adversarial verification, and the splitting of larger work into independently verifiable units. No run has been made on the 4.0 contract: its virtual-CTO behavior and default ordinary-language activation remain `UNVERIFIED` until retained receipts show them.
 
 These are observations, not a reliability rate. The project does not retain every transcript, public adoption is still limited, and comparative advantage over a base agent or another framework is `UNVERIFIED`. The [evidence matrix](docs/evidence.md) is the single home for the method, the claims each run supports, and the failures.
 

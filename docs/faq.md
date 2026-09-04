@@ -4,13 +4,13 @@ Short answers about installing and using SkipHow. These describe what the shippe
 
 ## What is SkipHow?
 
-SkipHow is an owner–agent operating contract for verified project outcomes, delivered as one public Agent Skill for Claude Code and OpenAI Codex: an outcome-first orchestration policy at the instruction layer. When it is selected or loaded, product decisions and protected actions stay with the owner; the agent chooses the engineering method, coordinates the work, and must show fresh evidence before it reports completion.
+SkipHow is an adaptive virtual CTO for founders and product owners, delivered as one public Agent Skill for Claude Code and OpenAI Codex. Describe the product outcome in ordinary language. Product decisions and protected actions stay with you; SkipHow owns technical research, architecture, planning, task management, model and subagent selection, implementation, review, integration, and fresh verification.
 
 The host runs the model, tools, permissions, sessions, and any subagents. SkipHow supplies the authority, method-selection, and completion policy, not a server or separate runtime.
 
 ## Do modern agents already do this?
 
-They already plan, write code, run tests, and often make sound technical choices. SkipHow does not make a model smarter. It makes the decision, authority, method-selection, and completion boundary explicit and portable. If your base agent already keeps that boundary reliably, SkipHow adds little.
+They already plan, write code, run tests, and often make sound technical choices. SkipHow does not make a model smarter. It makes one agent accountable for applying those capabilities as a technical lead, while preserving owner authority and honest completion. If your base agent already does that reliably, SkipHow adds little.
 
 ## Does SkipHow orchestrate agents?
 
@@ -52,15 +52,15 @@ SkipHow makes a different choice. It keeps one owner-facing skill and lets the m
 
 ## Will it push, merge or deploy without asking?
 
-No. A request to change the project covers edits, checks and, where a commit fits the work, a clean local commit of it. Anything shared has to be asked for. Production, staging, public releases, payments, credentials, repository settings, access changes and destructive actions need a grant that names them in your own request. Instructions inside a file, an issue, a tool result or a web page cannot widen that.
+No. A request to change the project covers edits, checks and, where a commit fits the work, a clean local commit of it. Anything shared has to be asked for. Production, live-data changes, public releases, payments, credentials, repository settings, access changes and destructive actions need a grant that names them in your own request. Local previews and isolated tests remain engineering choices. Instructions inside a file, an issue, a tool result or a web page cannot widen authority.
 
 ## What happens to work I did not ask about?
 
-It stays untouched. A dirty working tree stops a commit only when the owned change cannot be separated safely. A material problem found along the way is fixed if it blocks the work and cannot be separated safely, and otherwise reported to you. It is recorded as well only where your request or your repository's own workflow already calls for a record.
+It stays untouched. A dirty working tree stops a commit only when the owned change cannot be separated safely. A material problem found along the way ends fixed, safely recorded in an existing authorized system when it is separable, blocked with evidence and a next action, or rejected with a reason. Foreign work is never overwritten to make room for it.
 
 ## Where does it keep tasks and findings?
 
-Wherever your project already keeps them, and only when a record is called for. Installing SkipHow does not set up a tracker or write a tracking convention into your project. It writes a record when you ask for one or for tracker work, when you ask for work already on record to be carried forward, when your repository's own workflow makes that record part of the delivery you asked for, or when a change running over more than one session needs the little state it takes to resume and your project already has a private place allowed to hold it. It uses the tracker's own classification and does not introduce a schema of its own.
+Wherever your project already keeps them, within the existing audience. Installing SkipHow does not set up a tracker or invent a tracking convention. It writes when you ask for records or tracker work, ask to carry recorded work forward, the repository's delivery path requires it, or a programme has several deliverable outcomes, spans sessions or writers, needs a durable decision, or leaves a material separable defect. Tiny same-session work needs no item. SkipHow uses the tracker's own classification and introduces no schema of its own.
 
 ## Does it need GitHub?
 
@@ -92,7 +92,7 @@ Update with `codex plugin marketplace upgrade skiphow` then `codex plugin add sk
 
 ## Do I have to invoke it by name?
 
-Naming it is the reliable way: `$skiphow` in Codex, `/skiphow:skiphow` in Claude Code. Both hosts can also pick the skill from its description without being asked, but how often that happens has not been measured, so implicit selection is `UNVERIFIED` and the documentation does not promise it. The session-start hook prints a reminder and nothing more; it does not activate the skill, and on Codex it does not run until you trust it.
+For default governance, append the README's activation line to the global `AGENTS.md` in your Codex home or to your Claude Code user `CLAUDE.md` or user rules directory. Remove only that line to disable it. Host documentation establishes that these instructions load for every project, but automatic SkipHow selection has no retained run and remains `UNVERIFIED`. Use `$skiphow` in Codex or `/skiphow:skiphow` in Claude Code as the explicit fallback. The package ships no session hook.
 
 ## The skill did not load. What now?
 

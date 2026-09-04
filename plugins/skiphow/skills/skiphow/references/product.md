@@ -22,7 +22,7 @@ Translate the answer into acceptance conditions observable in the product. Read 
 
 ## When a durable record is warranted
 
-A durable product specification exists where the owner asked for one or where authoritative project workflow requires one. Whether anything else authorizes writing one, and where it may go, is [tracked work](tracked-work.md)'s question. Otherwise the settled outcome lives in the work itself. It is a document the owner can read back, and it need not become a parent item to count.
+Write a durable product specification when the owner asked for one, trusted project workflow requires one, or product decisions and acceptance conditions must survive several sessions or workers inside an authorized delivery. Otherwise the settled outcome lives in the work itself. [Tracked work](tracked-work.md) decides the safe destination and whether a tracker item is warranted. A specification is a document the owner can read back; it need not become a parent item or a gate before implementation.
 
 What the record captures:
 

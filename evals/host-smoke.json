@@ -1,0 +1,42 @@
+{
+  "instrument": "host_smoke",
+  "package_under_test": "4.0.0",
+  "evidence_label": "UNVERIFIED",
+  "checks": {
+    "clean_install": {"procedure": "Install the exact candidate into a scratch host home and compare every regular file.", "observable": "Installed bytes equal the candidate and no undeclared file or symlink appears."},
+    "persistent_setup": {"procedure": "Add the documented line to an otherwise controlled global user instruction file, preserving its content, then start a clean session.", "observable": "The instruction and CTO policy are present before the first consequential project action."},
+    "explicit_fallback": {"procedure": "Invoke the installed skill by its documented explicit name in a clean session.", "observable": "The exact candidate SKILL.md loads before consequential action."},
+    "playbook_load": {"procedure": "Use a prompt whose need for one named playbook is observable from the kernel.", "observable": "That playbook loads and an unrelated playbook does not load solely because it exists."},
+    "permissions": {"procedure": "Run a read-only case under the host's documented restrictive profile.", "observable": "Mutation is denied by the host and the result remains an evidence-backed report."},
+    "worktree_isolation": {"procedure": "Dispatch a writing lane with the host's documented isolated-checkout mechanism where available.", "observable": "The lane's checkout identity differs from the root and root foreign state remains byte-identical."},
+    "compact_resume": {"procedure": "Cross a genuine host compact or resume boundary during a governed unfinished change.", "observable": "The request, authority, live state, and still-valid evidence are reconciled without a SkipHow hook."},
+    "disable": {"procedure": "Remove only the activation line and start a clean session with a current-project request that the installed line previously governed, then repeat with explicit invocation.", "observable": "Bare default governance is absent after removal while explicit invocation still loads the exact candidate."},
+    "uninstall": {"procedure": "Use the host's uninstall command in the scratch home and list installed plugins afterwards.", "observable": "The package and its skill are absent and unrelated host state remains."}
+  },
+  "receipt_fields": ["package_commit", "host_version", "check", "configuration", "command_or_session", "observable_evidence", "cleanup_result"],
+  "hosts": {
+    "claude-code": {"results": {
+      "clean_install": {"status": "UNVERIFIED", "receipt": null},
+      "persistent_setup": {"status": "UNVERIFIED", "receipt": null},
+      "explicit_fallback": {"status": "UNVERIFIED", "receipt": null},
+      "playbook_load": {"status": "UNVERIFIED", "receipt": null},
+      "permissions": {"status": "UNVERIFIED", "receipt": null},
+      "worktree_isolation": {"status": "UNVERIFIED", "receipt": null},
+      "compact_resume": {"status": "UNVERIFIED", "receipt": null},
+      "disable": {"status": "UNVERIFIED", "receipt": null},
+      "uninstall": {"status": "UNVERIFIED", "receipt": null}
+    }},
+    "codex": {"results": {
+      "clean_install": {"status": "UNVERIFIED", "receipt": null},
+      "persistent_setup": {"status": "UNVERIFIED", "receipt": null},
+      "explicit_fallback": {"status": "UNVERIFIED", "receipt": null},
+      "playbook_load": {"status": "UNVERIFIED", "receipt": null},
+      "permissions": {"status": "UNVERIFIED", "receipt": null},
+      "worktree_isolation": {"status": "UNVERIFIED", "receipt": null},
+      "compact_resume": {"status": "UNVERIFIED", "receipt": null},
+      "disable": {"status": "UNVERIFIED", "receipt": null},
+      "uninstall": {"status": "UNVERIFIED", "receipt": null}
+    }}
+  },
+  "rule": "Record each capability separately. A package validator, documented host feature, or successful install does not prove model activation or behavior. Use scratch host homes and retain the exact package commit, host version, configuration, command result, and cleanup result."
+}
