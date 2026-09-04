@@ -174,6 +174,28 @@ def test_site_copy_is_not_pinned_to_a_category_phrase(tmp_path: Path) -> None:
         assert check.validate_site() == []
 
 
+def test_evidence_page_scope_is_bound_to_the_current_ledger(tmp_path: Path) -> None:
+    site = tmp_path / "site"
+    shutil.copytree(ROOT / "site", site)
+    evidence = site / "evidence/index.html"
+    text = evidence.read_text(encoding="utf-8")
+    version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+    marker = f'data-current-package="{version}"'
+    assert marker in text
+    evidence.write_text(
+        text.replace(marker, 'data-current-package="0.0.0"', 1),
+        encoding="utf-8",
+    )
+    with patch.object(check, "SITE_ROOT", site):
+        assert any("evidence scope must match" in error for error in check.validate_site())
+
+    summary = json.loads((ROOT / "evals/cto-cases.json").read_text(encoding="utf-8"))["summary"]
+    count = f"{summary['observed_scenarios']} of {summary['total_scenarios']}"
+    evidence.write_text(text.replace(count, "999 of 999", 1), encoding="utf-8")
+    with patch.object(check, "SITE_ROOT", site):
+        assert any("visibly disclose" in error for error in check.validate_site())
+
+
 def write_skill(root: Path, name: str, *, description: str = "Handle a focused task.") -> Path:
     skill = root / name
     (skill / "agents").mkdir(parents=True)

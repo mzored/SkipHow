@@ -85,7 +85,7 @@ For current-project requests, load the installed SkipHow skill before consequent
 
 On Codex, append the line to the global `AGENTS.md` in your Codex home. Codex loads that file before project work. On Claude Code, append it to your user `CLAUDE.md` or a file in your user rules directory. Claude Code loads user instructions for every project. Review the existing file first, keep its content, and remove only the SkipHow line to disable default governance. This setup is reversible and does not install a hook or grant any action.
 
-These host mechanisms are documented, but this release has no retained behavioral run proving selection on either host. Default activation remains `UNVERIFIED`. Explicit invocation is the fallback and diagnostic path:
+These host mechanisms are documented, but default activation remains `UNVERIFIED`: one Claude Code bare-prompt pilot did not select the skill, persistent clean-home setup could not authenticate, and Codex clean-home model runs were also blocked by authentication. Explicit Claude Code invocation loaded the exact current policy in the retained pilot set; Codex explicit invocation remains `UNVERIFIED`. Explicit invocation is the fallback and diagnostic path:
 
 ```text
 $skiphow The totals overlap on small screens. Find the cause and fix it.
@@ -140,7 +140,7 @@ SkipHow keeps one owner-facing entry. Critical rules stay in its kernel, while f
 
 ## What the evidence shows
 
-Deterministic checks prove package structure; controlled runs are required for behavior claims. The behavioral observations on record were made on 2.x packages, on both hosts, and cover fully specified requests, open product choices, failure diagnosis, adversarial verification, and the splitting of larger work into independently verifiable units. No run has been made on the 4.0 contract: its virtual-CTO behavior and default ordinary-language activation remain `UNVERIFIED` until retained receipts show them.
+Deterministic checks prove package structure; controlled runs are required for behavior claims. The behavioral observations on record were made on 2.x packages, on both hosts, and cover fully specified requests, open product choices, failure diagnosis, adversarial verification, and the splitting of larger work into independently verifiable units. The 4.x virtual-CTO behavior and default ordinary-language activation remain `UNVERIFIED` until retained receipts show them.
 
 These are observations, not a reliability rate. The project does not retain every transcript, public adoption is still limited, and comparative advantage over a base agent or another framework is `UNVERIFIED`. The [evidence matrix](docs/evidence.md) is the single home for the method, the claims each run supports, and the failures.
 

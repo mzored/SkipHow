@@ -420,7 +420,8 @@ def test_matrix_reports_every_capability_on_its_own_row(capsys) -> None:
 def test_render_matrix_requires_the_tracked_capabilities_in_order() -> None:
     rows = [(name, "UNVERIFIED", "x") for name in hosts.MATRIX_CAPABILITIES]
     rendered = hosts.render_matrix(rows)
-    assert rendered.splitlines()[0] == "| Capability | Status | Detail |"
+    assert rendered.splitlines()[0] == "Scope: this release runner. External candidate and model-session receipts are recorded separately."
+    assert rendered.splitlines()[2] == "| Capability | Status | Detail |"
     with pytest.raises(ValueError):
         hosts.render_matrix(rows[:-1])
 
@@ -480,21 +481,49 @@ def fake_smoke_host(host: str, calls: list[list[str]], *, uninstall_ok: bool = T
     return checked
 
 
+def fake_committed_package() -> dict[str, str]:
+    current = hosts.package_identity()
+    return {
+        "version": current["version"],
+        "commit": "a" * 40,
+        "git_tree": "b" * 40,
+        "payload_sha256": current["payload_sha256"],
+    }
+
+
 @pytest.mark.parametrize("host", ["codex", "claude"])
 def test_smoke_installs_inspects_uninstalls_and_writes_a_privacy_safe_receipt(
     host: str, tmp_path: Path
 ) -> None:
     calls: list = []
-    with patch.object(hosts, "checked", side_effect=fake_smoke_host(host, calls)):
+    package = fake_committed_package()
+    with (
+        patch.object(hosts, "checked", side_effect=fake_smoke_host(host, calls)),
+        patch.object(hosts, "package_identity", return_value=package),
+    ):
         passed, detail, receipt = hosts.smoke_install(host, f"/bin/{host}", tmp_path / "receipts")
     assert passed, detail
     verbs = [call[2] if isinstance(call, list) else call[0][2] for call in calls if (call[1] if isinstance(call, list) else call[0][1]) == "plugin"]
     assert verbs == ["marketplace", "add" if host == "codex" else "install", "list", "remove" if host == "codex" else "uninstall", "list"]
     document = json.loads(receipt.read_text(encoding="utf-8"))
-    assert document["host"] == host
+    assert document["host"] == ("claude-code" if host == "claude" else host)
     assert document["host_version"] == f"{host} 9.9.9"
     assert document["result"] == "PASS"
-    assert document["package_version"] == (ROOT / "VERSION").read_text().strip()
+    assert document["schema"] == "skiphow-host-smoke-bundle/1"
+    for check in ("clean_install", "uninstall"):
+        result = document["results"][check]
+        assert result["status"] == "PASS"
+        assert set(result["receipt"]) == set(hosts.HOST_RECEIPT_FIELDS)
+        assert result["receipt"]["check"] == check
+        assert result["receipt"]["package_version"] == (ROOT / "VERSION").read_text().strip()
+        assert len(result["receipt"]["package_payload_sha256"]) == 64
+        with patch.object(hosts, "validate_committed_package_identity", return_value=None):
+            hosts.validate_host_receipt(
+                result["receipt"],
+                host=document["host"],
+                check=check,
+                status=result["status"],
+            )
     steps = {step["step"]: step["status"] for step in document["steps"]}
     assert steps["clean host home"] == "PASS"
     assert steps["inspect installed files"] == "PASS"
@@ -503,7 +532,6 @@ def test_smoke_installs_inspects_uninstalls_and_writes_a_privacy_safe_receipt(
     assert steps["verify uninstall"] == "PASS"
     assert steps["start a clean session"] == "UNVERIFIED"
     assert steps["verify explicit invocation"] == "UNVERIFIED"
-    assert document["session"] == {"start a clean session": "UNVERIFIED", "verify explicit invocation": "UNVERIFIED"}
     assert set(document["installed_files"]) == set(hosts._payload(hosts.PLUGIN_ROOT))
     text = receipt.read_text(encoding="utf-8")
     assert str(Path.home()) not in text
@@ -523,45 +551,112 @@ def test_smoke_reports_a_plugin_that_survives_uninstall(tmp_path: Path) -> None:
             return True, "removed"
         return base(command, **kwargs)
 
-    with patch.object(hosts, "checked", side_effect=sticky):
+    with (
+        patch.object(hosts, "checked", side_effect=sticky),
+        patch.object(hosts, "package_identity", return_value=fake_committed_package()),
+    ):
         passed, detail, receipt = hosts.smoke_install("codex", "/bin/codex", tmp_path)
     assert not passed
     assert detail == "plugin remained installed after uninstall"
     assert json.loads(receipt.read_text())["result"] == "FAIL"
 
 
-def test_session_receipt_marks_rows_observed_only_when_it_says_so(tmp_path: Path, capsys) -> None:
-    receipt = tmp_path / "session.json"
-    receipt.write_text(
-        json.dumps(
-            {
-                "host": "codex",
-                "host_version": "codex-cli 0.0.0",
-                "date": "2026-09-04",
-                "reference": "docs/evidence.md#example",
-                "explicit_invocation": "observed",
-                "implicit_activation": "unverified",
-            }
-        ),
-        encoding="utf-8",
-    )
+def test_smoke_refuses_a_missing_host_version(tmp_path: Path) -> None:
     with (
-        patch.object(hosts, "codex_validator", return_value=None),
-        patch.object(hosts.shutil, "which", return_value=None),
+        patch.object(hosts, "package_identity", return_value=fake_committed_package()),
+        patch.object(hosts, "_host_version", return_value="unknown"),
     ):
-        assert hosts.main(["--skip-install", "--session-receipt", str(receipt)]) == 0
-    output = capsys.readouterr().out
-    assert "| Explicit invocation | Observed | codex codex-cli 0.0.0 on 2026-09-04 (docs/evidence.md#example) |" in output
-    assert "| Implicit activation | UNVERIFIED |" in output
-    assert "| Continuity/bootstrap | UNVERIFIED |" in output
+        with pytest.raises(ValueError, match="host version"):
+            hosts.smoke_install("codex", "/bin/codex", tmp_path)
 
-    receipt.write_text(json.dumps({"host": "codex", "explicit_invocation": "yes"}), encoding="utf-8")
+
+def test_canonical_host_receipt_cannot_move_between_host_rows() -> None:
+    package = fake_committed_package()
+    receipt = {
+        "host": "codex",
+        "package_version": package["version"],
+        "package_commit": package["commit"],
+        "package_tree": package["git_tree"],
+        "package_payload_sha256": package["payload_sha256"],
+        "host_version": "codex-cli 0.0.0",
+        "date": "2026-09-04",
+        "check": "clean_install",
+        "outcome": "PASS",
+        "configuration": "isolated",
+        "command_or_session": "synthetic",
+        "observable_evidence": "synthetic",
+        "cleanup_result": "synthetic",
+        "source": "test",
+    }
+    with patch.object(hosts, "validate_committed_package_identity", return_value=None):
+        with pytest.raises(ValueError, match="ledger host"):
+            hosts.validate_host_receipt(
+                receipt,
+                host="claude-code",
+                check="clean_install",
+                status="PASS",
+            )
+
+
+def test_canonical_host_receipt_outcome_must_match_ledger_status() -> None:
+    package = fake_committed_package()
+    receipt = {
+        "host": "codex",
+        "package_version": package["version"],
+        "package_commit": package["commit"],
+        "package_tree": package["git_tree"],
+        "package_payload_sha256": package["payload_sha256"],
+        "host_version": "codex-cli 0.0.0",
+        "date": "2026-09-04",
+        "check": "clean_install",
+        "outcome": "FAIL",
+        "configuration": "isolated",
+        "command_or_session": "synthetic",
+        "observable_evidence": "synthetic failure",
+        "cleanup_result": "synthetic",
+        "source": "test",
+    }
+    with patch.object(hosts, "validate_committed_package_identity", return_value=None):
+        with pytest.raises(ValueError, match="ledger status"):
+            hosts.validate_host_receipt(
+                receipt,
+                host="codex",
+                check="clean_install",
+                status="PASS",
+            )
+
+
+def test_committed_identity_accepts_an_earlier_commit_with_the_same_package() -> None:
+    package = fake_committed_package()
+    receipt = {
+        "package_version": package["version"],
+        "package_commit": "c" * 40,
+        "package_tree": package["git_tree"],
+        "package_payload_sha256": package["payload_sha256"],
+    }
+    committed = {
+        "version": receipt["package_version"],
+        "git_tree": receipt["package_tree"],
+        "payload_sha256": receipt["package_payload_sha256"],
+    }
     with (
-        patch.object(hosts, "codex_validator", return_value=None),
-        patch.object(hosts.shutil, "which", return_value=None),
+        patch.object(hosts, "package_identity", return_value=package),
+        patch.object(hosts, "committed_package_identity", return_value=committed),
     ):
-        assert hosts.main(["--skip-install", "--session-receipt", str(receipt)]) == 1
-    assert "Observed" not in capsys.readouterr().out
+        hosts.validate_committed_package_identity(receipt)
+
+
+def test_committed_identity_rejects_an_uncommitted_candidate() -> None:
+    package = fake_committed_package() | {"commit": "UNCOMMITTED", "git_tree": "UNCOMMITTED"}
+    receipt = {
+        "package_version": package["version"],
+        "package_commit": "c" * 40,
+        "package_tree": "b" * 40,
+        "package_payload_sha256": package["payload_sha256"],
+    }
+    with patch.object(hosts, "package_identity", return_value=package):
+        with pytest.raises(ValueError, match="not committed"):
+            hosts.validate_committed_package_identity(receipt)
 
 
 def test_inventory_absent_accepts_only_a_missing_or_uninstalled_entry() -> None:

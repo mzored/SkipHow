@@ -916,6 +916,33 @@ def validate_site(lint: list[str] | None = None) -> list[str]:
         ]
         if not repository_links:
             errors.append(f"site/{relative} must link directly to the GitHub repository")
+        if relative == "evidence/index.html":
+            scopes = [
+                attrs
+                for attrs in document.attributes("section")
+                if "data-observed-package-series" in attrs
+            ]
+            try:
+                cto = load_json("evals/cto-cases.json")
+                expected_scope = {
+                    "data-observed-package-series": "2.x",
+                    "data-current-package": (ROOT / "VERSION").read_text(encoding="utf-8").strip(),
+                    "data-current-observed-scenarios": str(cto["summary"]["observed_scenarios"]),
+                }
+            except (OSError, KeyError, ValueError, json.JSONDecodeError) as exc:
+                errors.append(f"cannot derive site/evidence scope: {exc}")
+            else:
+                if len(scopes) != 1 or any(scopes[0].get(key) != value for key, value in expected_scope.items()):
+                    errors.append("site/evidence scope must match VERSION and the CTO evidence ledger")
+                expected_disclosure = (
+                    "Historical observations below: 2.x only. "
+                    f"Current package: {expected_scope['data-current-package']}. "
+                    "Retained current-package CTO scenarios with Observed receipts: "
+                    f"{expected_scope['data-current-observed-scenarios']} of {cto['summary']['total_scenarios']}."
+                )
+                visible = " ".join(" ".join(document.visible_parts).split())
+                if expected_disclosure not in visible:
+                    errors.append("site/evidence must visibly disclose the ledger-derived evidence scope")
         for tag in ("div", "pre"):
             for attrs in document.attributes(tag):
                 if attrs.get("aria-label") and not attrs.get("role"):

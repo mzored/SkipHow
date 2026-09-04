@@ -28,9 +28,16 @@ skill, that persistent instructions select it, that a delegate is isolated, or h
 text reaches it. A `PASS` is a run that happened on the named host version; a
 documentation-only row is `UNVERIFIED` however clearly the page describes the feature.
 
-Tested host versions, where a run exists, are Claude Code 2.1.259 and Codex CLI 0.153.0,
-the versions `claude --version` and `codex --version` reported on 2026-09-04. Those are
-two observed versions and not a tested range.
+Three evidence scopes stay separate. [`evals/host-smoke.json`](evals/host-smoke.json)
+is the candidate ledger for external host receipts tied to exact package bytes and a
+committed package tree. A release's generated matrix reports only what its release
+runner performed. Model activation and behavior belong in [`docs/evidence.md`](docs/evidence.md)
+with their session receipts. A skipped release-runner row does not erase an external
+candidate receipt, and a successful install does not imply activation.
+
+Tested host versions, where a run exists, are Claude Code 2.1.259 for schema validation,
+Claude Code 2.1.260 for clean installation, and Codex CLI 0.153.0. These are the versions
+the host commands reported on 2026-09-04, not a tested range.
 
 Where a row cites `developers.openai.com`, that address redirected on 2026-09-04 to a
 page under `learn.chatgpt.com`; the redirect target is the page actually read.
@@ -39,12 +46,12 @@ page under `learn.chatgpt.com`; the redirect target is the page actually read.
 
 | Capability | What the source says | Source | Verified | Tested version | Status |
 | --- | --- | --- | --- | --- | --- |
-| Skill loading | Plugin skills are discovered at `<plugin>/skills/<name>/SKILL.md` and namespaced `/<plugin>:<skill>`. The description sits in context and the body loads on invocation; description plus `when_to_use` is truncated at 1,536 characters in the listing. Both explicit `/name` and automatic invocation are available unless `disable-model-invocation` or `user-invocable` restricts them. | [Skills](https://code.claude.com/docs/en/skills) | 2026-09-04 | none | `UNVERIFIED` (documented; no activation run on record) |
+| Skill loading | Plugin skills are discovered at `<plugin>/skills/<name>/SKILL.md` and namespaced `/<plugin>:<skill>`. The description sits in context and the body loads on invocation; description plus `when_to_use` is truncated at 1,536 characters in the listing. Both explicit `/name` and automatic invocation are available unless `disable-model-invocation` or `user-invocable` restricts them. | [Skills](https://code.claude.com/docs/en/skills) | 2026-09-04 | 2.1.260 | `PASS` for explicit invocation of exact 4.0.1 in the retained pilots; automatic selection remains `UNVERIFIED` and did not occur in one bare-prompt pilot |
 | Persistent instruction loading | User `CLAUDE.md` and user rules apply to every project. The optional SkipHow activation line is added without replacing existing instructions and removed to disable it. The file is behavioral guidance, not client enforcement. | [Memory](https://code.claude.com/docs/en/memory) | 2026-09-04 | none | `UNVERIFIED` (documented loading; no automatic-selection run) |
 | Per-agent read-only controls | Subagent frontmatter takes a `tools` allowlist, `disallowedTools`, and `permissionMode`, whose values include `plan` for read-only exploration. | [Subagents](https://code.claude.com/docs/en/sub-agents) | 2026-09-04 | none | `UNVERIFIED` (documented) |
 | Worktree isolation | `isolation: worktree` runs a subagent in a temporary git worktree. | [Subagents](https://code.claude.com/docs/en/sub-agents) | 2026-09-04 | none | `UNVERIFIED` (documented) |
 | Plugin validation | Manifest `.claude-plugin/plugin.json`; `claude plugin validate <path>` validates it and `--strict` treats warnings as errors. | [Plugins](https://code.claude.com/docs/en/plugins) | 2026-09-04 | 2.1.259 | `PASS` (`scripts/check_hosts.py`, 2026-09-04) |
-| Clean installation | `claude plugin marketplace add`, `claude plugin install --scope user`, `claude plugin uninstall --scope user`; `CLAUDE_CONFIG_DIR` points the host at a scratch home. | [Discover plugins](https://code.claude.com/docs/en/discover-plugins), [Skills](https://code.claude.com/docs/en/skills) | 2026-09-04 | 2.1.260 | `PASS` (`scripts/check_hosts.py --smoke`: clean home, install, 15 regular files matching the 4.0 candidate, uninstall verified, 2026-09-04) |
+| Clean installation | `claude plugin marketplace add`, `claude plugin install --scope user`, `claude plugin uninstall --scope user`; `CLAUDE_CONFIG_DIR` points the host at a scratch home. | [Discover plugins](https://code.claude.com/docs/en/discover-plugins), [Skills](https://code.claude.com/docs/en/skills) | 2026-09-04 | 2.1.260 | `PASS` (`scripts/check_hosts.py --smoke`: clean home, install, 15 regular files matching exact 4.0.1 payload `3d6f359a…`, uninstall verified, 2026-09-04) |
 
 ### Codex CLI
 
@@ -73,21 +80,43 @@ than the CLI.
 | IDE extension | Does not support plugins. Whether the same skill loads there as a standalone `.agents/skills` entry is not stated. | 2026-09-04 | `UNVERIFIED` (unsupported as a plugin per the page) |
 | Cloud and web Codex | Not mentioned on the page read. | 2026-09-04 | `UNVERIFIED` |
 
-Behavioral status is `UNVERIFIED` on both hosts, and it is a separate claim from every row
-above. No host documents that identical instruction text produces equivalent behavior,
+Behavioral coverage is `UNVERIFIED` on both hosts and is a separate claim from every
+row above. Eight Claude run records remain useful for diagnosis, but none retained both
+the verified pre-session manifest and concrete end-state artifact required for an
+eligible receipt. No host documents
+that identical instruction text produces equivalent behavior,
 and the two loading models differ materially: one keeps every description in context,
 the other lists a capped inventory and loads the file on selection. What runs have and
 have not shown is in [current evidence](docs/evidence.md).
 
 Each release publishes the compact matrix that `scripts/check_hosts.py` prints, with one
 row per capability. A skipped or unavailable check stays `UNVERIFIED` there; it is never
-folded into a passing aggregate. The session steps of the clean-install procedure,
-starting a clean session and verifying explicit or persistent-instruction activation, start a model and are
-reported only from a receipt supplied to the script; without one they stay `UNVERIFIED`.
+folded into a passing aggregate. The release runner neither starts nor ingests model
+sessions, so explicit, implicit, and persistent-instruction activation always stay
+`UNVERIFIED` in that matrix. External model-session evidence is retained separately in
+the behavioral ledger.
 
 This repository's continuous integration is not dual-host behavioral support and does
 not claim to be. It requires the pinned Codex validator, validates the Claude package
 only where that executable is present, and skips isolated installation entirely.
+
+## Untrusted repository profile
+
+SkipHow is policy, not enforcement. When a repository, branch, pull request, download,
+or incident snapshot is not yet trusted, use the host's controls before reading its
+instructions as procedure or running its code. Start from a disposable checkout, use
+synthetic or redacted data, inherit no unrelated credentials, deny network access unless
+the task requires named destinations, and keep writing delegates disabled. Do not run
+project hooks, build scripts, tests, or project-supplied skills until their effects fit
+the request's authority and the repository's provenance is established.
+
+On Codex, use a read-only sandbox and approval policy for the root and every subagent.
+Codex supports `sandbox_mode` in custom-agent configuration, while its `AGENTS.md`
+chain remains behavioral context rather than an enforcement boundary. On Claude Code,
+use plan or equivalent read-only permissions plus the OS-enforced filesystem and
+network sandbox; set sandbox unavailability to fail closed when the review depends on
+it, and disable the unsandboxed-command escape. In either host, a requested repair moves
+to a fresh bounded write environment only after the source and effects are understood.
 
 ## Report a vulnerability
 

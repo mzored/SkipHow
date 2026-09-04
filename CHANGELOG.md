@@ -2,6 +2,31 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 4.0.1 (2026-09-04)
+
+This patch repairs the evidence system around the 4.x virtual-CTO contract and closes narrow safety ambiguities found by an independent audit. It does not add automatic push, pull-request, merge, or release authority. Current model behavior stays `UNVERIFIED` unless the evidence section below names a retained run.
+
+### Changed
+
+- Forced-activation receipts now belong to one CTO scenario. Each scenario derives its autonomy evidence separately, while suite status reports only declared host, arm, and trial coverage. One run cannot mark another scenario or host as observed, reuse one transcript as several trials, or attach evidence to uncommitted package bytes. A receipt must also bind the exact fixture setup and retained source revision, include a verified pre-session manifest, and retain a concrete end-state artifact before an eligible terminal outcome can become `Observed` or count as coverage. Eight neutral cases form the active minimum and continuity stays a separate expensive host scenario. Negative corpus tests cover unknown cases, duplicate run ids and transcript hashes, prompt and fixture mismatches, incomplete artifacts, empty or unknown coverage dimensions, failed evidence upgrades, stale or cross-host summaries, and one-host completion.
+- Method-leading adherence prompts remain in the CTO instrument, and neutral autonomy prompts now test whether the agent chooses the engineering method from the requested outcome. Product result, method selection, owner boundary, ceremony, owner questions, usage, and completion honesty remain separate scores.
+- Host receipts now carry exact package bytes, the committed package tree, host and version, configuration, source, date, observable, and cleanup in the same flat schema as the canonical ledger. Release notes label their generated matrix as release-runner evidence and never ingest external model-session receipts.
+- The always-loaded contract now applies its authority and trust boundary before an operation can execute repository hooks, project code, credential helpers, or external tooling. It also says directly that credentials do not authorize production-system or customer-data reads.
+- Review after a repair targets the changed parts. Another broad reviewer is reserved for high-consequence disagreement or contradictory evidence, so the review obligation has a bounded completion reading.
+- The public evidence page identifies every displayed observation as 2.x, adds exact package, host, and activation columns, and carries a visible ledger-derived current-package count checked in CI. The comparison page, social preview, and metadata now use the virtual-CTO position. Lexical migration tests now cover only literal safety markers, removed legacy promises, and interface tokens; they make no semantic or behavioral claim.
+
+### Audit disposition
+
+- Accepted: per-scenario eval aggregation, autonomy pairs, public and host evidence reconciliation, retained review evidence, the two safety clarifications, bounded review convergence, and honest lexical-test naming.
+- Deferred until receipts: routine non-production delivery authority, activation-policy changes, model-routing thresholds, discovery changes, Codex writer mechanics, continuity changes, and playbook ablation.
+- Rejected: a broader executive-CTO disclaimer and size-driven policy reduction. The current product already scopes itself to coding agents and software projects, and file size alone identifies no behavior to fix.
+
+### Evidence
+
+- The exact 4.0.1 payload installed byte for byte and uninstalled cleanly on Claude Code 2.1.260. Codex CLI 0.153.0 clean installation remains `UNVERIFIED` because this machine's managed marketplace-source policy refused the scratch source before installation. Neither result proves activation.
+- Eight retained explicit Claude Code run records cover seven neutral minimum CTO scenarios, including one confirmation, but none retained the verified fixture manifest and concrete end-state artifact required for behavioral evidence. Five setup attempts were voided; one of them exposed and led to repair of a contradictory process fixture. Every current behavior claim remains `UNVERIFIED`. Separately, explicit Claude invocation loaded exact 4.0.1; one bare-prompt implicit pilot did not select it, the unrelated installed/uninvoked control did not false-activate, and clean-home persistent setup could not authenticate.
+- `python scripts/check.py`, `git diff --check`, and host validation are reported from the final candidate. Independent review receipts name the exact commit and scope they inspected; host and model receipts name the exact package bytes they exercised. A release-runner `UNVERIFIED` row means that runner did not perform the capability; it does not erase a separately retained external receipt.
+
 ## 4.0.0 (2026-09-04)
 
 SkipHow is again an adaptive virtual CTO rather than only a compact authority contract. One accountable lead agent owns the technical lifecycle from current-state inspection through research, architecture, planning, implementation, review, integration, verification, and operational learning, while the owner keeps product choices and protected actions. This changes the owner-facing role and default activation contract, so it is a major release. No model run has exercised this wording: the behavior is `UNVERIFIED` and the release rests on the encoded contract and deterministic checks.

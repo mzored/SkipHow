@@ -1,7 +1,7 @@
 {
   "instrument": "host_smoke",
-  "package_under_test": "4.0.0",
-  "evidence_label": "UNVERIFIED",
+  "package_under_test": "4.0.1",
+  "scope": "external_candidate_receipts",
   "checks": {
     "clean_install": {"procedure": "Install the exact candidate into a scratch host home and compare every regular file.", "observable": "Installed bytes equal the candidate and no undeclared file or symlink appears."},
     "persistent_setup": {"procedure": "Add the documented line to an otherwise controlled global user instruction file, preserving its content, then start a clean session.", "observable": "The instruction and CTO policy are present before the first consequential project action."},
@@ -13,10 +13,40 @@
     "disable": {"procedure": "Remove only the activation line and start a clean session with a current-project request that the installed line previously governed, then repeat with explicit invocation.", "observable": "Bare default governance is absent after removal while explicit invocation still loads the exact candidate."},
     "uninstall": {"procedure": "Use the host's uninstall command in the scratch home and list installed plugins afterwards.", "observable": "The package and its skill are absent and unrelated host state remains."}
   },
-  "receipt_fields": ["package_commit", "host_version", "check", "configuration", "command_or_session", "observable_evidence", "cleanup_result"],
+  "receipt_fields": [
+    "host",
+    "package_version",
+    "package_commit",
+    "package_tree",
+    "package_payload_sha256",
+    "host_version",
+    "date",
+    "check",
+    "outcome",
+    "configuration",
+    "command_or_session",
+    "observable_evidence",
+    "cleanup_result",
+    "source"
+  ],
   "hosts": {
     "claude-code": {"results": {
-      "clean_install": {"status": "UNVERIFIED", "receipt": null},
+      "clean_install": {"status": "PASS", "receipt": {
+        "host": "claude-code",
+        "package_version": "4.0.1",
+        "package_commit": "e2e74e3d01a4423be1297b7ff2cb03d0adf4d5b6",
+        "package_tree": "d468e226e69576c6c3a7c075089e15c0cde71e5a",
+        "package_payload_sha256": "3d6f359af92c38cf02fb916c6d2c2d785a8640e82ec8cfbbefd8dad1001ebda5",
+        "host_version": "2.1.260 (Claude Code)",
+        "date": "2026-09-04",
+        "check": "clean_install",
+        "outcome": "PASS",
+        "configuration": "empty CLAUDE_CONFIG_DIR; exact local marketplace snapshot",
+        "command_or_session": "host marketplace add, install, list, inspect, uninstall, list",
+        "observable_evidence": "installed regular files exactly matched the candidate payload",
+        "cleanup_result": "plugin absent before scratch host home cleanup",
+        "source": "scripts/check_hosts.py --smoke"
+      }},
       "persistent_setup": {"status": "UNVERIFIED", "receipt": null},
       "explicit_fallback": {"status": "UNVERIFIED", "receipt": null},
       "playbook_load": {"status": "UNVERIFIED", "receipt": null},
@@ -24,7 +54,22 @@
       "worktree_isolation": {"status": "UNVERIFIED", "receipt": null},
       "compact_resume": {"status": "UNVERIFIED", "receipt": null},
       "disable": {"status": "UNVERIFIED", "receipt": null},
-      "uninstall": {"status": "UNVERIFIED", "receipt": null}
+      "uninstall": {"status": "PASS", "receipt": {
+        "host": "claude-code",
+        "package_version": "4.0.1",
+        "package_commit": "e2e74e3d01a4423be1297b7ff2cb03d0adf4d5b6",
+        "package_tree": "d468e226e69576c6c3a7c075089e15c0cde71e5a",
+        "package_payload_sha256": "3d6f359af92c38cf02fb916c6d2c2d785a8640e82ec8cfbbefd8dad1001ebda5",
+        "host_version": "2.1.260 (Claude Code)",
+        "date": "2026-09-04",
+        "check": "uninstall",
+        "outcome": "PASS",
+        "configuration": "empty CLAUDE_CONFIG_DIR; exact local marketplace snapshot",
+        "command_or_session": "host marketplace add, install, list, inspect, uninstall, list",
+        "observable_evidence": "host inventory no longer listed SkipHow",
+        "cleanup_result": "plugin absent before scratch host home cleanup",
+        "source": "scripts/check_hosts.py --smoke"
+      }}
     }},
     "codex": {"results": {
       "clean_install": {"status": "UNVERIFIED", "receipt": null},
@@ -38,5 +83,5 @@
       "uninstall": {"status": "UNVERIFIED", "receipt": null}
     }}
   },
-  "rule": "Record each capability separately. A package validator, documented host feature, or successful install does not prove model activation or behavior. Use scratch host homes and retain the exact package commit, host version, configuration, command result, and cleanup result."
+  "rule": "Record each capability separately. A package validator, documented host feature, or successful install does not prove model activation or behavior. Use scratch host homes and retain exact package bytes, the package tree and candidate commit, host version, outcome, configuration, command or session result, source, date, and cleanup result. The receipt outcome must match its ledger status. Release-runner capability is a separate matrix."
 }

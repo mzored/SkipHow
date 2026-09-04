@@ -40,7 +40,7 @@ Look for incorrect behavior, missing cases, scope creep, security or data risks,
 
 Verify a suspected issue before reporting it when a focused check can settle it. Distinguish a real defect from a preference: a finding names a concrete defect, and a reviewer who cannot point at what breaks is reporting taste. State each actionable finding with its location, triggering scenario, and impact, most consequential first. If there are no material findings, say so and name any important area that remained unverified.
 
-On a read-only review, report confirmed defects without modifying the project; urgency, including a security finding, does not widen the request, and a sensitive finding stays private unless disclosure is granted. When repair is authorized, fix confirmed in-scope defects before completion and verify the repaired final state, and do not carry an important defect forward as accepted.
+On a read-only review, report confirmed defects without modifying the project; urgency, including a security finding, does not widen the request, and a sensitive finding stays private unless disclosure is granted. When repair is authorized, fix confirmed in-scope defects before completion and verify the repaired final state, and do not carry an important defect forward as accepted. After a fix, target the next read at the affected parts. A second broad review earns its cost only for a high-consequence disagreement or contradictory evidence.
 
 ## Security, reliability, and operations
 

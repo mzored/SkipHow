@@ -19,6 +19,7 @@ document below that must be rejected.
 from __future__ import annotations
 
 import copy
+import hashlib
 import importlib.util
 import json
 import re
@@ -39,6 +40,12 @@ CHECK = importlib.util.spec_from_file_location(
 assert CHECK and CHECK.loader
 check = importlib.util.module_from_spec(CHECK)
 CHECK.loader.exec_module(check)
+HOST_CHECKS = importlib.util.spec_from_file_location(
+    "skiphow_check_hosts_corpus", ROOT / "scripts/check_hosts.py"
+)
+assert HOST_CHECKS and HOST_CHECKS.loader
+host_checks = importlib.util.module_from_spec(HOST_CHECKS)
+HOST_CHECKS.loader.exec_module(host_checks)
 
 CASE_FIELDS = frozenset(
     {
@@ -90,7 +97,11 @@ REQUIRED_RUN_FIELDS = frozenset(
         "run_id",
         "case",
         "arm",
+        "trial",
+        "package_version",
         "package_commit",
+        "package_tree",
+        "package_payload_sha256",
         "host",
         "host_version",
         "model_family",
@@ -109,6 +120,7 @@ REQUIRED_RUN_FIELDS = frozenset(
         "transcript_reference",
         "transcript_hash",
         "end_state",
+        "end_state_artifacts",
         "destination_receipts",
         "test_receipts",
         "conditions_observed",
@@ -126,6 +138,7 @@ REQUIRED_RUN_FIELDS = frozenset(
         "measures",
         "usage",
         "redaction_notes",
+        "receipt_complete",
         "evidence_label",
     }
 )
@@ -185,6 +198,130 @@ def fixture_record(name: str) -> dict:
     value = json.loads((FIXTURES / name / "fixture.json").read_text(encoding="utf-8"))
     assert isinstance(value, dict)
     return value
+
+
+def fixture_source_sha256(name: str) -> str:
+    """Hash the retained source layers that define a synthetic fixture."""
+    layers: list[str] = []
+
+    def add_layer(layer: str) -> None:
+        record = fixture_record(layer)
+        base = record.get("derives_from")
+        if base is not None:
+            add_layer(base)
+        layers.append(layer)
+
+    add_layer(name)
+    payload: dict[str, dict[str, object]] = {}
+    for layer in layers:
+        root = FIXTURES / layer
+        for path in sorted(item for item in root.rglob("*") if item.is_file()):
+            payload[f"{layer}/{path.relative_to(root).as_posix()}"] = {
+                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                "executable": bool(path.stat().st_mode & 0o111),
+            }
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def validate_fixture_snapshot(snapshot: object, name: str) -> bool:
+    """Validate fixture provenance and return whether built content has a manifest."""
+    assert isinstance(snapshot, dict), "fixture snapshot must be an object"
+    assert set(snapshot) == {
+        "id",
+        "setup",
+        "fixture_revision_sha256",
+        "built_content",
+    }, "fixture snapshot has unknown or missing fields"
+    assert snapshot["id"] == name, "fixture snapshot mismatch"
+    assert snapshot["setup"] == fixture_record(name)["setup"], "fixture snapshot setup mismatch"
+    assert snapshot["fixture_revision_sha256"] == fixture_source_sha256(name), "fixture revision mismatch"
+    built = snapshot["built_content"]
+    assert isinstance(built, dict) and set(built) == {
+        "verification",
+        "sha256",
+        "manifest",
+    }, "fixture built-content proof is malformed"
+    assert re.fullmatch(r"[0-9a-f]{64}", str(built["sha256"])), "invalid built fixture hash"
+    assert built["sha256"] != "0" * 64, "invalid built fixture hash"
+    if built["verification"] == "attested":
+        assert built["manifest"] is None, "attested fixture build cannot claim a manifest"
+        return False
+    assert built["verification"] == "manifest", "unknown fixture verification"
+    manifest = built["manifest"]
+    assert isinstance(manifest, dict) and set(manifest) == {"schema", "scope", "files"}, "fixture manifest is malformed"
+    assert manifest["schema"] == 1
+    assert manifest["scope"] == "pre-session worktree regular files excluding .git"
+    assert isinstance(manifest["files"], list) and manifest["files"], "fixture manifest files are empty"
+    paths: list[str] = []
+    for entry in manifest["files"]:
+        assert isinstance(entry, dict) and set(entry) == {"path", "mode", "sha256"}, "fixture manifest entry is malformed"
+        path = entry["path"]
+        assert isinstance(path, str) and path and not path.startswith("/")
+        assert ".." not in Path(path).parts and "\\" not in path, "unsafe fixture manifest path"
+        assert entry["mode"] in {"100644", "100755"}, "invalid fixture manifest mode"
+        assert re.fullmatch(r"[0-9a-f]{64}", str(entry["sha256"])), "invalid fixture manifest hash"
+        paths.append(path)
+    assert paths == sorted(set(paths)), "fixture manifest paths must be unique and sorted"
+    encoded = json.dumps(manifest, sort_keys=True, separators=(",", ":")).encode()
+    assert hashlib.sha256(encoded).hexdigest() == built["sha256"], "built fixture manifest hash mismatch"
+    return True
+
+
+def validate_end_state_artifacts(value: object) -> bool:
+    """Validate retained end-state evidence and return whether any is present."""
+    assert isinstance(value, list), "end-state artifacts must be a list"
+    for artifact in value:
+        assert isinstance(artifact, dict) and set(artifact) == {
+            "kind",
+            "sha256",
+            "description",
+            "content",
+        }, "end-state artifact is malformed"
+        assert artifact["kind"] in {"tree", "diff", "manifest", "file", "marker"}
+        assert re.fullmatch(r"[0-9a-f]{64}", str(artifact["sha256"])), "invalid end-state artifact hash"
+        assert artifact["sha256"] != "0" * 64, "invalid end-state artifact hash"
+        assert isinstance(artifact["description"], str) and artifact["description"].strip()
+        assert isinstance(artifact["content"], str) and artifact["content"].strip()
+        assert hashlib.sha256(artifact["content"].encode()).hexdigest() == artifact["sha256"], "end-state artifact hash mismatch"
+    return bool(value)
+
+
+def synthetic_fixture_snapshot(name: str) -> dict:
+    """Build a complete in-memory receipt for validator unit tests."""
+    manifest = {
+        "schema": 1,
+        "scope": "pre-session worktree regular files excluding .git",
+        "files": [
+            {
+                "path": "receipt.txt",
+                "mode": "100644",
+                "sha256": hashlib.sha256(b"synthetic fixture").hexdigest(),
+            }
+        ],
+    }
+    encoded = json.dumps(manifest, sort_keys=True, separators=(",", ":")).encode()
+    return {
+        "id": name,
+        "setup": fixture_record(name)["setup"],
+        "fixture_revision_sha256": fixture_source_sha256(name),
+        "built_content": {
+            "verification": "manifest",
+            "sha256": hashlib.sha256(encoded).hexdigest(),
+            "manifest": manifest,
+        },
+    }
+
+
+def synthetic_end_state_artifacts() -> list[dict]:
+    return [
+        {
+            "kind": "manifest",
+            "sha256": hashlib.sha256(b"synthetic end state").hexdigest(),
+            "description": "Synthetic end-state manifest for validator tests.",
+            "content": "synthetic end state",
+        }
+    ]
 
 
 def heading_anchors(path: Path) -> set[str]:
@@ -422,7 +559,7 @@ def validate_corpus(data: dict) -> None:
 
 def test_corpus_declares_its_arms_measures_scores_and_run_record_fields() -> None:
     data = corpus()
-    assert data["corpus_version"] == 3
+    assert data["corpus_version"] == 4
     assert data["package_under_test"] == (ROOT / "VERSION").read_text(encoding="utf-8").strip()
     assert set(data["evidence_labels"]) == EVIDENCE_LABELS
     assert tuple(arm["id"] for arm in data["arms"]) == REQUIRED_ARMS
@@ -449,8 +586,12 @@ def test_corpus_declares_its_arms_measures_scores_and_run_record_fields() -> Non
     assert "grammar" in data["conditions"] and len(data["conditions"]) > 1
 
 
-def test_minimum_cto_scenarios_are_concrete_and_complete() -> None:
-    data = json.loads((EVALS / "cto-cases.json").read_text(encoding="utf-8"))
+def validate_cto_instrument(
+    data: dict,
+    *,
+    identity_validator=host_checks.validate_committed_package_identity,
+    historical_identity_validator=host_checks.validate_committed_package_identity,
+) -> None:
     expected = {
         "small_known_bug",
         "unknown_intermittent_bug",
@@ -467,26 +608,47 @@ def test_minimum_cto_scenarios_are_concrete_and_complete() -> None:
     }
     assert data["instrument"] == "forced_activation_behavior"
     assert data["package_under_test"] == (ROOT / "VERSION").read_text(encoding="utf-8").strip()
-    assert data["status"] in {"not_run", "run"}
-    assert data["evidence_label"] in {"UNVERIFIED", "Observed"}
-    assert isinstance(data["runs"], list)
+    assert "status" not in data and "evidence_label" not in data and "runs" not in data
+    assert data["suite_status"] in {"not_run", "partial", "complete"}
+    coverage = data["minimum_coverage"]
+    assert set(coverage) == {"case_ids", "hosts", "arms", "trials", "prompt_style"}
+    required_case_ids = {
+        "cto-small-known-bug",
+        "cto-product-ambiguity",
+        "cto-consequential-design",
+        "cto-large-programme",
+        "cto-discovered-material-defect",
+        "cto-process-environment-defect",
+        "cto-analysis-only",
+        "cto-production-boundary",
+    }
+    assert set(coverage["case_ids"]) == required_case_ids
+    assert set(coverage["case_ids"]) <= {case["id"] for case in data["cases"]}
+    assert len(coverage["case_ids"]) == len(set(coverage["case_ids"])), "duplicate coverage case id"
+    assert set(coverage["hosts"]) == {"claude-code", "codex"}
+    assert set(coverage["arms"]) == {"m1-explicit-skiphow"}
+    assert set(coverage["trials"]) == {"pilot", "confirmation"}
+    assert coverage["prompt_style"] == "autonomy"
     assert data["receipt_schema"] == {
         "source": "cases.json#run_record_fields",
-        "additional_fields": ["limitations"],
+        "additional_fields": [
+            "limitations",
+            "prompt_id",
+            "fixture",
+            "method_selection",
+            "owner_boundary",
+            "ceremony",
+            "owner_questions",
+        ],
     }
     corpus_data = corpus()
-    receipt_fields = set(corpus_data["run_record_fields"]) | {"limitations"}
+    arm_by_id = {arm["id"]: arm for arm in corpus_data["arms"]}
+    receipt_fields = set(corpus_data["run_record_fields"]) | set(data["receipt_schema"]["additional_fields"])
     terminal_states = corpus_data["terminal_states"]
-    assert all(isinstance(run, dict) and receipt_fields <= set(run) for run in data["runs"])
-    assert all(run["terminal_state"] in terminal_states for run in data["runs"])
-    observed_eligible = any(terminal_states[run["terminal_state"]]["observed_eligible"] for run in data["runs"])
-    if not data["runs"]:
-        assert data["status"] == "not_run" and data["evidence_label"] == "UNVERIFIED"
-    else:
-        assert data["status"] == "run"
-        assert data["evidence_label"] == ("Observed" if observed_eligible else "UNVERIFIED")
     assert {case["scenario"] for case in data["cases"]} == expected
     assert len(data["cases"]) == len(expected)
+    case_ids = [case["id"] for case in data["cases"]]
+    assert len(case_ids) == len(set(case_ids)), "duplicate CTO case id"
     compatible_fixtures = {
         "small_known_bug": "orders-service",
         "unknown_intermittent_bug": "intermittent-job-runner",
@@ -502,18 +664,582 @@ def test_minimum_cto_scenarios_are_concrete_and_complete() -> None:
         "continuity": "orders-service-continuity",
     }
     fixture_ids = {path.name for path in FIXTURES.iterdir() if path.is_dir()}
+    prompt_ids: set[str] = set()
+    run_ids: set[str] = set()
+    transcript_hashes: set[str] = set()
+    observed_scenarios = 0
+    any_run = False
+    all_cases_covered = True
+    paired_styles = 0
+    host_summary = {
+        host: {
+            "observed_scenarios": 0,
+            "total_scenarios": len(data["cases"]),
+            "covered_minimum_scenarios": 0,
+            "total_minimum_scenarios": len(required_case_ids),
+        }
+        for host in coverage["hosts"]
+    }
     for case in data["cases"]:
         assert case["fixture"] in fixture_ids
         assert case["fixture"] == compatible_fixtures[case["scenario"]]
-        assert case["prompt"].strip()
+        assert case["prompts"]
+        prompt_by_id: dict[str, dict] = {}
+        for prompt in case["prompts"]:
+            assert set(prompt) == {"id", "style", "text"}
+            assert prompt["style"] in {"adherence", "autonomy"}
+            assert prompt["text"].strip()
+            assert prompt["id"] not in prompt_ids, "duplicate CTO prompt id"
+            prompt_ids.add(prompt["id"])
+            prompt_by_id[prompt["id"]] = prompt
+        assert any(prompt["style"] == "autonomy" for prompt in case["prompts"])
+        if {prompt["style"] for prompt in case["prompts"]} == {"adherence", "autonomy"}:
+            paired_styles += 1
         assert case["positive_observable"].strip()
         assert case["required_absence"] and all(item.strip() for item in case["required_absence"])
+        result = case["result"]
+        assert set(result) == {"status", "evidence_label", "runs"}
+        assert result["status"] in {"not_run", "partial", "run"}
+        assert result["evidence_label"] in {"UNVERIFIED", "Observed"}
+        assert isinstance(result["runs"], list)
+        observed_eligible = False
+        observed_by_host = {host: False for host in coverage["hosts"]}
+        covered_cells: set[tuple[str, str, str]] = set()
+        for run in result["runs"]:
+            any_run = True
+            assert isinstance(run, dict) and receipt_fields <= set(run), "incomplete CTO receipt"
+            assert run["run_id"] not in run_ids, "duplicate CTO run id"
+            run_ids.add(run["run_id"])
+            assert re.fullmatch(r"[0-9a-f]{64}", str(run["transcript_hash"])), "invalid CTO transcript hash"
+            assert run["transcript_hash"] not in transcript_hashes, "duplicate CTO transcript hash"
+            transcript_hashes.add(run["transcript_hash"])
+            assert run["case"] == case["id"], "unknown or mismatched CTO case"
+            assert run["prompt_id"] in prompt_by_id, "unknown CTO prompt"
+            prompt = prompt_by_id[run["prompt_id"]]
+            assert run["owner_prompt"] == prompt["text"], "CTO receipt prompt mismatch"
+            assert run["fixture"] == case["fixture"], "CTO receipt fixture mismatch"
+            manifest_verified = validate_fixture_snapshot(run["fixture_snapshot"], case["fixture"])
+            assert run["host"] in coverage["hosts"], "unknown CTO host"
+            assert run["arm"] in arm_by_id, "unknown CTO arm"
+            assert run["trial"] in {"pilot", "confirmation", "tie_break"}, "unknown CTO trial"
+            package_fields = (
+                "package_version",
+                "package_commit",
+                "package_tree",
+                "package_payload_sha256",
+            )
+            if arm_by_id[run["arm"]]["package_present"]:
+                if run["arm"] == "m4-previous-full-skiphow":
+                    historical_identity_validator(run, match_current=False)
+                else:
+                    identity_validator(run)
+            else:
+                assert all(run[field] == "not_applicable" for field in package_fields), "base arm carries package identity"
+            assert run["terminal_state"] in terminal_states
+            eligible_terminal = terminal_states[run["terminal_state"]]["observed_eligible"]
+            artifacts_retained = validate_end_state_artifacts(run["end_state_artifacts"])
+            receipt_complete = manifest_verified and artifacts_retained
+            assert isinstance(run["receipt_complete"], bool), "CTO receipt_complete must be boolean"
+            assert run["receipt_complete"] is receipt_complete, "CTO receipt completeness is not derived"
+            eligible = eligible_terminal and receipt_complete
+            expected_label = "Observed" if eligible else "UNVERIFIED"
+            assert run["evidence_label"] == expected_label, "CTO run evidence label is not derived"
+            assert run["method_selection"] in {"pass", "fail", "not_applicable"}
+            assert run["owner_boundary"] in {"pass", "fail", "not_applicable"}
+            assert run["ceremony"] in {"pass", "fail", "not_applicable"}
+            assert run["owner_questions"] in {"pass", "fail", "not_applicable"}
+            assert run["activation_score"] in {"pass", "fail", "not_applicable"}
+            assert run["adherence"] in {"pass", "fail", "not_applicable"}
+            for score in ("task_success", "technical_quality", "proportionality", "completion_honesty"):
+                assert run[score] in {"pass", "fail"}, f"invalid CTO {score}"
+            for field in (
+                "host_version",
+                "model_family",
+                "permission_configuration",
+                "sandbox_configuration",
+                "activation_configuration",
+                "instruction_configuration",
+                "isolation_configuration",
+                "control_run",
+                "activation_event",
+                "transcript_reference",
+                "end_state",
+                "test_receipts",
+                "stopping_point",
+                "grader",
+                "redaction_notes",
+                "limitations",
+            ):
+                assert isinstance(run[field], str) and run[field].strip(), f"empty CTO {field}"
+            assert isinstance(run["activated"], bool), "CTO activated must be boolean"
+            for field in (
+                "subsequent_answers",
+                "references_loaded",
+                "expected_events_observed",
+                "forbidden_events_observed",
+            ):
+                assert isinstance(run[field], list), f"CTO {field} must be a list"
+            for field in ("conditions_observed", "measures", "usage", "destination_receipts"):
+                assert isinstance(run[field], dict), f"CTO {field} must be an object"
+            declared_candidate = (
+                prompt["style"] == coverage["prompt_style"]
+                and run["arm"] in coverage["arms"]
+                and run["activated"] is True
+                and run["activation_score"] == "pass"
+            )
+            observed_eligible = observed_eligible or (eligible and declared_candidate)
+            if eligible and declared_candidate:
+                observed_by_host[run["host"]] = True
+            if (
+                prompt["style"] == coverage["prompt_style"]
+                and run["host"] in coverage["hosts"]
+                and run["arm"] in coverage["arms"]
+                and run["trial"] in coverage["trials"]
+            ):
+                if receipt_complete:
+                    covered_cells.add((run["host"], run["arm"], run["trial"]))
+        required_cells = {
+            (host, arm, trial)
+            for host in coverage["hosts"]
+            for arm in coverage["arms"]
+            for trial in coverage["trials"]
+        }
+        case_covered = required_cells <= covered_cells
+        expected_status = "not_run" if not result["runs"] else "run" if case_covered else "partial"
+        assert result["status"] == expected_status, "CTO scenario status is not derived"
+        expected_label = "Observed" if observed_eligible else "UNVERIFIED"
+        assert result["evidence_label"] == expected_label, "CTO scenario evidence label is not derived"
+        observed_scenarios += int(observed_eligible)
+        if case["id"] in required_case_ids:
+            all_cases_covered = all_cases_covered and case_covered
+            for host in coverage["hosts"]:
+                host_cells = {
+                    (host, arm, trial)
+                    for arm in coverage["arms"]
+                    for trial in coverage["trials"]
+                }
+                host_summary[host]["covered_minimum_scenarios"] += int(
+                    host_cells <= covered_cells
+                )
+        for host, observed in observed_by_host.items():
+            host_summary[host]["observed_scenarios"] += int(observed)
+    assert paired_styles >= 8
+    expected_suite_status = "not_run" if not any_run else "complete" if all_cases_covered else "partial"
+    assert data["suite_status"] == expected_suite_status, "CTO suite coverage status is not derived"
+    assert data["summary"] == {
+        "prompt_style": coverage["prompt_style"],
+        "observed_scenarios": observed_scenarios,
+        "total_scenarios": len(data["cases"]),
+        "by_host": host_summary,
+    }, "stale CTO evidence summary"
+
+
+def test_minimum_cto_scenarios_are_concrete_and_complete() -> None:
+    data = json.loads((EVALS / "cto-cases.json").read_text(encoding="utf-8"))
+    validate_cto_instrument(data)
+
+
+def _cto_document() -> dict:
+    data = json.loads((EVALS / "cto-cases.json").read_text(encoding="utf-8"))
+    for case in data["cases"]:
+        case["result"] = {"status": "not_run", "evidence_label": "UNVERIFIED", "runs": []}
+    data["suite_status"] = "not_run"
+    data["summary"]["observed_scenarios"] = 0
+    for host in data["summary"]["by_host"].values():
+        host["observed_scenarios"] = 0
+        host["covered_minimum_scenarios"] = 0
+    return data
+
+
+def _validate_synthetic_cto(data: dict) -> None:
+    validate_cto_instrument(
+        data,
+        identity_validator=lambda _: None,
+        historical_identity_validator=lambda *_args, **_kwargs: None,
+    )
+
+
+def _add_cto_run(
+    data: dict,
+    case_index: int = 0,
+    *,
+    host: str = "claude-code",
+    arm: str = "m1-explicit-skiphow",
+    trial: str = "pilot",
+    terminal_state: str = "task_completed",
+    run_id: str | None = None,
+) -> dict:
+    case = data["cases"][case_index]
+    prompt = next(prompt for prompt in case["prompts"] if prompt["style"] == "autonomy")
+    run = {field: "recorded" for field in corpus()["run_record_fields"]}
+    eligible = corpus()["terminal_states"][terminal_state]["observed_eligible"]
+    receipt_run_id = run_id or f"{case['id']}-{host}-{trial}"
+    run.update(
+        {
+            "run_id": receipt_run_id,
+            "case": case["id"],
+            "arm": arm,
+            "package_version": (ROOT / "VERSION").read_text(encoding="utf-8").strip(),
+            "package_commit": "a" * 40,
+            "package_tree": "b" * 40,
+            "package_payload_sha256": "c" * 64,
+            "host": host,
+            "owner_prompt": prompt["text"],
+            "fixture_snapshot": synthetic_fixture_snapshot(case["fixture"]),
+            "terminal_state": terminal_state,
+            "evidence_label": "Observed" if eligible else "UNVERIFIED",
+            "transcript_hash": hashlib.sha256(receipt_run_id.encode()).hexdigest(),
+            "prompt_id": prompt["id"],
+            "fixture": case["fixture"],
+            "trial": trial,
+            "limitations": "Synthetic validator receipt.",
+            "method_selection": "pass",
+            "owner_boundary": "pass",
+            "ceremony": "pass",
+            "owner_questions": "pass",
+            "activation_score": "pass",
+            "adherence": "pass",
+            "task_success": "pass",
+            "technical_quality": "pass",
+            "proportionality": "pass",
+            "completion_honesty": "pass",
+            "receipt_complete": True,
+            "activated": True,
+            "subsequent_answers": [],
+            "references_loaded": [],
+            "expected_events_observed": [],
+            "forbidden_events_observed": [],
+            "conditions_observed": {},
+            "measures": {},
+            "usage": {},
+            "destination_receipts": {},
+            "end_state_artifacts": synthetic_end_state_artifacts(),
+        }
+    )
+    if not next(arm_spec for arm_spec in corpus()["arms"] if arm_spec["id"] == arm)["package_present"]:
+        for field in ("package_version", "package_commit", "package_tree", "package_payload_sha256"):
+            run[field] = "not_applicable"
+        run["activated"] = False
+        run["activation_score"] = "not_applicable"
+    case["result"]["runs"].append(run)
+    case["result"]["status"] = "partial"
+    if eligible and arm in data["minimum_coverage"]["arms"]:
+        case["result"]["evidence_label"] = "Observed"
+    data["suite_status"] = "partial"
+    data["summary"]["observed_scenarios"] = sum(
+        result_case["result"]["evidence_label"] == "Observed"
+        for result_case in data["cases"]
+    )
+    data["summary"]["by_host"][host]["observed_scenarios"] = sum(
+        any(
+            recorded["host"] == host
+            and recorded["evidence_label"] == "Observed"
+            and recorded["arm"] in data["minimum_coverage"]["arms"]
+            and next(
+                prompt_item["style"]
+                for prompt_item in result_case["prompts"]
+                if prompt_item["id"] == recorded["prompt_id"]
+            )
+            == data["minimum_coverage"]["prompt_style"]
+            for recorded in result_case["result"]["runs"]
+        )
+        for result_case in data["cases"]
+    )
+    if case["id"] in data["minimum_coverage"]["case_ids"]:
+        required_host_cells = {
+            (required_arm, required_trial)
+            for required_arm in data["minimum_coverage"]["arms"]
+            for required_trial in data["minimum_coverage"]["trials"]
+        }
+        covered_host_cells = {
+            (recorded["arm"], recorded["trial"])
+            for recorded in case["result"]["runs"]
+            if recorded["host"] == host
+            and next(
+                prompt_item["style"]
+                for prompt_item in case["prompts"]
+                if prompt_item["id"] == recorded["prompt_id"]
+            )
+            == data["minimum_coverage"]["prompt_style"]
+        }
+        if required_host_cells <= covered_host_cells:
+            data["summary"]["by_host"][host]["covered_minimum_scenarios"] = sum(
+                all(
+                    any(
+                        recorded["host"] == host
+                        and recorded["arm"] == required_arm
+                        and recorded["trial"] == required_trial
+                        and next(
+                            prompt_item["style"]
+                            for prompt_item in result_case["prompts"]
+                            if prompt_item["id"] == recorded["prompt_id"]
+                        )
+                        == data["minimum_coverage"]["prompt_style"]
+                        for recorded in result_case["result"]["runs"]
+                    )
+                    for required_arm, required_trial in required_host_cells
+                )
+                for result_case in data["cases"]
+                if result_case["id"] in data["minimum_coverage"]["case_ids"]
+            )
+    return run
+
+
+def test_one_cto_receipt_observes_only_its_own_scenario() -> None:
+    data = _cto_document()
+    _add_cto_run(data)
+    _validate_synthetic_cto(data)
+    assert data["summary"]["observed_scenarios"] == 1
+    assert data["summary"]["total_scenarios"] == 12
+    assert data["summary"]["by_host"]["claude-code"]["observed_scenarios"] == 1
+    assert data["summary"]["by_host"]["codex"]["observed_scenarios"] == 0
+    assert data["cases"][0]["result"]["evidence_label"] == "Observed"
+    assert all(case["result"]["evidence_label"] == "UNVERIFIED" for case in data["cases"][1:])
+
+
+def test_cto_instrument_rejects_unknown_or_mismatched_case() -> None:
+    data = _cto_document()
+    run = _add_cto_run(data)
+    run["case"] = "not-a-cto-case"
+    with pytest.raises(AssertionError, match="unknown or mismatched CTO case"):
+        _validate_synthetic_cto(data)
+
+
+def test_cto_instrument_rejects_duplicate_run_id_across_scenarios() -> None:
+    data = _cto_document()
+    _add_cto_run(data, run_id="duplicate")
+    _add_cto_run(data, 1, run_id="duplicate")
+    with pytest.raises(AssertionError, match="duplicate CTO run id"):
+        _validate_synthetic_cto(data)
+
+
+def test_cto_instrument_rejects_empty_coverage_and_reused_session() -> None:
+    data = _cto_document()
+    data["minimum_coverage"]["arms"] = []
+    _add_cto_run(data)
+    with pytest.raises(AssertionError):
+        _validate_synthetic_cto(data)
+
+    data = _cto_document()
+    first = _add_cto_run(data)
+    second = _add_cto_run(data, 1)
+    second["transcript_hash"] = first["transcript_hash"]
+    with pytest.raises(AssertionError, match="duplicate CTO transcript hash"):
+        _validate_synthetic_cto(data)
+
+
+def test_adherence_receipt_does_not_upgrade_the_autonomy_summary() -> None:
+    data = _cto_document()
+    run = _add_cto_run(data)
+    case = data["cases"][0]
+    adherence = next(prompt for prompt in case["prompts"] if prompt["style"] == "adherence")
+    run["prompt_id"] = adherence["id"]
+    run["owner_prompt"] = adherence["text"]
+    case["result"]["evidence_label"] = "UNVERIFIED"
+    data["summary"]["observed_scenarios"] = 0
+    data["summary"]["by_host"]["claude-code"]["observed_scenarios"] = 0
+    _validate_synthetic_cto(data)
+
+
+def test_base_arm_receipt_does_not_upgrade_candidate_evidence() -> None:
+    data = _cto_document()
+    run = _add_cto_run(data, arm="m0-base-host")
+    _validate_synthetic_cto(data)
+    assert run["package_commit"] == "not_applicable"
+    assert data["cases"][0]["result"]["evidence_label"] == "UNVERIFIED"
+    assert data["summary"]["observed_scenarios"] == 0
+
+    data = _cto_document()
+    _add_cto_run(data, arm="m4-previous-full-skiphow")
+    _validate_synthetic_cto(data)
+    assert data["cases"][0]["result"]["evidence_label"] == "UNVERIFIED"
+
+
+def test_cto_receipt_rejects_invalid_scores_and_empty_required_context() -> None:
+    data = _cto_document()
+    run = _add_cto_run(data)
+    run["task_success"] = "recorded"
+    with pytest.raises(AssertionError, match="invalid CTO task_success"):
+        _validate_synthetic_cto(data)
+
+    data = _cto_document()
+    run = _add_cto_run(data)
+    run["grader"] = ""
+    with pytest.raises(AssertionError, match="empty CTO grader"):
+        _validate_synthetic_cto(data)
+
+
+def test_cto_receipt_identity_is_checked_against_the_candidate() -> None:
+    data = _cto_document()
+    run = _add_cto_run(data)
+    seen: list[str] = []
+
+    def identity_validator(receipt: dict) -> None:
+        seen.append(receipt["run_id"])
+        assert receipt["package_commit"] == "a" * 40
+
+    validate_cto_instrument(data, identity_validator=identity_validator)
+    assert seen == [run["run_id"]]
+
+    run["package_commit"] = "d" * 40
+    with pytest.raises(AssertionError):
+        validate_cto_instrument(data, identity_validator=identity_validator)
+
+
+def test_cto_instrument_rejects_prompt_and_fixture_mismatches() -> None:
+    data = _cto_document()
+    run = _add_cto_run(data)
+    run["owner_prompt"] = "A different prompt."
+    with pytest.raises(AssertionError, match="prompt mismatch"):
+        _validate_synthetic_cto(data)
+
+    data = _cto_document()
+    run = _add_cto_run(data)
+    run["fixture"] = "another-fixture"
+    with pytest.raises(AssertionError, match="fixture mismatch"):
+        _validate_synthetic_cto(data)
+
+    data = _cto_document()
+    run = _add_cto_run(data)
+    run["fixture_snapshot"]["id"] = "another-fixture"
+    with pytest.raises(AssertionError, match="snapshot mismatch"):
+        _validate_synthetic_cto(data)
+
+    data = _cto_document()
+    run = _add_cto_run(data)
+    run["fixture_snapshot"]["setup"] = list(reversed(run["fixture_snapshot"]["setup"]))
+    with pytest.raises(AssertionError, match="setup mismatch"):
+        _validate_synthetic_cto(data)
+
+    data = _cto_document()
+    run = _add_cto_run(data)
+    run["fixture_snapshot"]["fixture_revision_sha256"] = "f" * 64
+    with pytest.raises(AssertionError, match="fixture revision mismatch"):
+        _validate_synthetic_cto(data)
+
+    data = _cto_document()
+    run = _add_cto_run(data)
+    run["fixture_snapshot"]["built_content"]["sha256"] = "e" * 64
+    with pytest.raises(AssertionError, match="manifest hash mismatch"):
+        _validate_synthetic_cto(data)
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "message"),
+    [
+        ("host", "other-host", "unknown CTO host"),
+        ("arm", "other-arm", "unknown CTO arm"),
+        ("trial", "fourth", "unknown CTO trial"),
+    ],
+)
+def test_cto_instrument_rejects_unknown_coverage_dimension(field: str, value: str, message: str) -> None:
+    data = _cto_document()
+    run = _add_cto_run(data)
+    run[field] = value
+    with pytest.raises(AssertionError, match=message):
+        _validate_synthetic_cto(data)
+
+
+def test_failed_cto_run_cannot_upgrade_run_or_scenario() -> None:
+    data = _cto_document()
+    run = _add_cto_run(data, terminal_state="failed_to_reach_observable")
+    _validate_synthetic_cto(data)
+    assert run["evidence_label"] == "UNVERIFIED"
+    assert data["cases"][0]["result"]["evidence_label"] == "UNVERIFIED"
+
+    run["evidence_label"] = "Observed"
+    with pytest.raises(AssertionError, match="run evidence label"):
+        _validate_synthetic_cto(data)
+
+    run["evidence_label"] = "UNVERIFIED"
+    data["cases"][0]["result"]["evidence_label"] = "Observed"
+    data["summary"]["observed_scenarios"] = 1
+    with pytest.raises(AssertionError, match="scenario evidence label"):
+        _validate_synthetic_cto(data)
+
+
+def test_incomplete_cto_receipt_preserves_outcome_but_cannot_upgrade() -> None:
+    data = _cto_document()
+    run = _add_cto_run(data)
+    run["end_state_artifacts"] = []
+    run["receipt_complete"] = False
+    run["evidence_label"] = "UNVERIFIED"
+    data["cases"][0]["result"]["evidence_label"] = "UNVERIFIED"
+    data["summary"]["observed_scenarios"] = 0
+    data["summary"]["by_host"]["claude-code"]["observed_scenarios"] = 0
+    _validate_synthetic_cto(data)
+    assert run["terminal_state"] == "task_completed"
+
+    run["receipt_complete"] = True
+    with pytest.raises(AssertionError, match="receipt completeness"):
+        _validate_synthetic_cto(data)
+
+
+def test_cto_receipt_rejects_malformed_end_state_artifact() -> None:
+    data = _cto_document()
+    run = _add_cto_run(data)
+    run["end_state_artifacts"][0]["sha256"] = "0" * 64
+    with pytest.raises(AssertionError, match="invalid end-state artifact hash"):
+        _validate_synthetic_cto(data)
+
+    data = _cto_document()
+    run = _add_cto_run(data)
+    run["end_state_artifacts"][0]["content"] = "different bytes"
+    with pytest.raises(AssertionError, match="end-state artifact hash mismatch"):
+        _validate_synthetic_cto(data)
+
+
+def test_task_success_without_activation_cannot_upgrade_cto_evidence() -> None:
+    data = _cto_document()
+    run = _add_cto_run(data)
+    run["activated"] = False
+    run["activation_score"] = "fail"
+    run["adherence"] = "not_applicable"
+    data["cases"][0]["result"]["evidence_label"] = "UNVERIFIED"
+    data["summary"]["observed_scenarios"] = 0
+    data["summary"]["by_host"]["claude-code"]["observed_scenarios"] = 0
+    _validate_synthetic_cto(data)
+
+    data["cases"][0]["result"]["evidence_label"] = "Observed"
+    data["summary"]["observed_scenarios"] = 1
+    data["summary"]["by_host"]["claude-code"]["observed_scenarios"] = 1
+    with pytest.raises(AssertionError, match="scenario evidence label"):
+        _validate_synthetic_cto(data)
+
+
+def test_one_host_cannot_complete_the_cto_suite_or_imply_host_parity() -> None:
+    data = _cto_document()
+    for case_index in range(len(data["cases"])):
+        _add_cto_run(data, case_index, host="claude-code", trial="pilot")
+        _add_cto_run(data, case_index, host="claude-code", trial="confirmation")
+    _validate_synthetic_cto(data)
+    assert data["suite_status"] == "partial"
+    assert all(case["result"]["status"] == "partial" for case in data["cases"])
+
+    data["suite_status"] = "complete"
+    with pytest.raises(AssertionError, match="suite coverage status"):
+        _validate_synthetic_cto(data)
+
+
+def test_cto_instrument_rejects_stale_summary_and_duplicate_case_ids() -> None:
+    data = _cto_document()
+    _add_cto_run(data)
+    data["summary"]["observed_scenarios"] = 0
+    with pytest.raises(AssertionError, match="stale CTO evidence summary"):
+        _validate_synthetic_cto(data)
+
+    data = _cto_document()
+    data["cases"][1]["id"] = data["cases"][0]["id"]
+    with pytest.raises(AssertionError):
+        _validate_synthetic_cto(data)
 
 
 def test_host_smoke_instrument_keeps_each_capability_visible() -> None:
     data = json.loads((EVALS / "host-smoke.json").read_text(encoding="utf-8"))
     assert data["instrument"] == "host_smoke"
     assert data["package_under_test"] == (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+    assert data["scope"] == "external_candidate_receipts"
+    assert "evidence_label" not in data
     expected_checks = {
         "clean_install",
         "persistent_setup",
@@ -527,21 +1253,31 @@ def test_host_smoke_instrument_keeps_each_capability_visible() -> None:
     }
     assert set(data["checks"]) == expected_checks
     assert all(spec["procedure"].strip() and spec["observable"].strip() for spec in data["checks"].values())
-    assert set(data["receipt_fields"]) == {
-        "package_commit", "host_version", "check", "configuration", "command_or_session",
-        "observable_evidence", "cleanup_result",
-    }
+    assert tuple(data["receipt_fields"]) == host_checks.HOST_RECEIPT_FIELDS
     assert set(data["hosts"]) == {"claude-code", "codex"}
     receipt_fields = set(data["receipt_fields"])
-    for host in data["hosts"].values():
+    for host_id, host in data["hosts"].items():
         assert set(host["results"]) == expected_checks
-        for result in host["results"].values():
+        for check, result in host["results"].items():
             assert result["status"] in {"PASS", "FAIL", "UNVERIFIED"}
             if result["status"] == "UNVERIFIED":
                 assert result["receipt"] is None
             else:
                 assert isinstance(result["receipt"], dict)
                 assert receipt_fields <= set(result["receipt"])
+                receipt = result["receipt"]
+                assert receipt["package_version"] == data["package_under_test"]
+                assert re.fullmatch(r"[0-9a-f]{40}", receipt["package_commit"])
+                assert re.fullmatch(r"[0-9a-f]{40}", receipt["package_tree"])
+                assert re.fullmatch(r"[0-9a-f]{64}", receipt["package_payload_sha256"])
+                assert receipt["check"] == check
+                assert all(str(receipt[field]).strip() for field in receipt_fields)
+                host_checks.validate_host_receipt(
+                    receipt,
+                    host=host_id,
+                    check=check,
+                    status=result["status"],
+                )
 
 
 def test_every_case_is_complete_and_uniquely_identified() -> None:
@@ -623,14 +1359,171 @@ def test_every_referenced_fixture_exists_and_describes_itself() -> None:
             assert environment in fixture_record(case["fixture"])["environments"]
 
 
-def test_no_case_claims_a_result_it_has_not_earned() -> None:
-    for case in cases():
+def validate_case_results(
+    data: dict,
+    *,
+    identity_validator=host_checks.validate_committed_package_identity,
+    historical_identity_validator=host_checks.validate_committed_package_identity,
+) -> None:
+    arm_by_id = {arm["id"]: arm for arm in data["arms"]}
+    terminal_states = data["terminal_states"]
+    receipt_fields = set(data["run_record_fields"])
+    run_ids: set[str] = set()
+    transcript_hashes: set[str] = set()
+    for case in data["cases"]:
         result = case["result"]
-        assert set(result) == {"status", "evidence_label", "arms_pending", "runs"}
-        assert result["status"] == "not_run", case["id"]
-        assert result["evidence_label"] == "UNVERIFIED", case["id"]
-        assert result["runs"] == [], case["id"]
-        assert tuple(result["arms_pending"]) == REQUIRED_ARMS, case["id"]
+        assert set(result) == {"status", "evidence_label", "observed_arms", "arms_pending", "runs"}
+        assert result["status"] in {"not_run", "partial", "run"}
+        assert result["evidence_label"] in {"UNVERIFIED", "Observed"}
+        seen_arms: set[str] = set()
+        observed_arms: set[str] = set()
+        for run in result["runs"]:
+            assert isinstance(run, dict) and receipt_fields <= set(run), "incomplete case receipt"
+            assert run["run_id"] not in run_ids, "duplicate case run id"
+            run_ids.add(run["run_id"])
+            assert re.fullmatch(r"[0-9a-f]{64}", str(run["transcript_hash"])), "invalid case transcript hash"
+            assert run["transcript_hash"] not in transcript_hashes, "duplicate case transcript hash"
+            transcript_hashes.add(run["transcript_hash"])
+            assert run["case"] == case["id"], "case receipt mismatch"
+            assert run["arm"] in arm_by_id, "unknown case receipt arm"
+            assert run["trial"] in {"pilot", "confirmation", "tie_break"}
+            assert run["host"] in {"claude-code", "codex"}
+            assert run["owner_prompt"] == case["owner_prompt"]
+            manifest_verified = validate_fixture_snapshot(run["fixture_snapshot"], case["fixture"])
+            arm = arm_by_id[run["arm"]]
+            package_fields = (
+                "package_version",
+                "package_commit",
+                "package_tree",
+                "package_payload_sha256",
+            )
+            if not arm["package_present"]:
+                assert all(run[field] == "not_applicable" for field in package_fields)
+            elif run["arm"] == "m4-previous-full-skiphow":
+                historical_identity_validator(run, match_current=False)
+            else:
+                identity_validator(run)
+            assert run["terminal_state"] in terminal_states
+            eligible_terminal = terminal_states[run["terminal_state"]]["observed_eligible"]
+            artifacts_retained = validate_end_state_artifacts(run["end_state_artifacts"])
+            receipt_complete = manifest_verified and artifacts_retained
+            assert isinstance(run["receipt_complete"], bool)
+            assert run["receipt_complete"] is receipt_complete
+            eligible = eligible_terminal and receipt_complete
+            assert run["evidence_label"] == ("Observed" if eligible else "UNVERIFIED")
+            assert run["activation_score"] in {"pass", "fail", "not_applicable"}
+            assert run["adherence"] in {"pass", "fail", "not_applicable"}
+            for score in ("task_success", "technical_quality", "proportionality", "completion_honesty"):
+                assert run[score] in {"pass", "fail"}
+            for field in (
+                "host_version",
+                "model_family",
+                "permission_configuration",
+                "sandbox_configuration",
+                "activation_configuration",
+                "instruction_configuration",
+                "isolation_configuration",
+                "control_run",
+                "activation_event",
+                "transcript_reference",
+                "end_state",
+                "test_receipts",
+                "stopping_point",
+                "grader",
+                "redaction_notes",
+            ):
+                assert isinstance(run[field], str) and run[field].strip(), f"empty case receipt {field}"
+            if receipt_complete:
+                seen_arms.add(run["arm"])
+            if eligible:
+                observed_arms.add(run["arm"])
+        expected_pending = tuple(arm for arm in REQUIRED_ARMS if arm not in seen_arms)
+        expected_observed = tuple(arm for arm in REQUIRED_ARMS if arm in observed_arms)
+        assert tuple(result["arms_pending"]) == expected_pending
+        assert tuple(result["observed_arms"]) == expected_observed
+        expected_status = "not_run" if not result["runs"] else "run" if not expected_pending else "partial"
+        assert result["status"] == expected_status
+        assert result["evidence_label"] == ("Observed" if expected_observed else "UNVERIFIED")
+
+
+def test_case_results_are_derived_without_claiming_unrun_arms() -> None:
+    validate_case_results(corpus())
+
+
+def _add_case_run(data: dict, *, arm: str = "m1-explicit-skiphow") -> dict:
+    case = data["cases"][0]
+    run_id = f"{case['id']}-{arm}-pilot"
+    run = {field: "recorded" for field in data["run_record_fields"]}
+    run.update(
+        {
+            "run_id": run_id,
+            "case": case["id"],
+            "arm": arm,
+            "trial": "pilot",
+            "package_version": (ROOT / "VERSION").read_text(encoding="utf-8").strip(),
+            "package_commit": "a" * 40,
+            "package_tree": "b" * 40,
+            "package_payload_sha256": "c" * 64,
+            "host": "claude-code",
+            "owner_prompt": case["owner_prompt"],
+            "fixture_snapshot": synthetic_fixture_snapshot(case["fixture"]),
+            "subsequent_answers": case["subsequent_answers"],
+            "activated": True,
+            "references_loaded": [],
+            "transcript_hash": hashlib.sha256(run_id.encode()).hexdigest(),
+            "destination_receipts": {},
+            "end_state_artifacts": synthetic_end_state_artifacts(),
+            "conditions_observed": {},
+            "expected_events_observed": [],
+            "forbidden_events_observed": [],
+            "activation_score": "pass",
+            "adherence": "pass",
+            "task_success": "pass",
+            "technical_quality": "pass",
+            "proportionality": "pass",
+            "completion_honesty": "pass",
+            "receipt_complete": True,
+            "terminal_state": "task_completed",
+            "measures": {},
+            "usage": {},
+            "evidence_label": "Observed",
+        }
+    )
+    if arm == "m0-base-host":
+        for field in ("package_version", "package_commit", "package_tree", "package_payload_sha256"):
+            run[field] = "not_applicable"
+        run["activated"] = False
+        run["activation_score"] = "not_applicable"
+    case["result"] = {
+        "status": "partial",
+        "evidence_label": "Observed",
+        "observed_arms": [arm],
+        "arms_pending": [candidate for candidate in REQUIRED_ARMS if candidate != arm],
+        "runs": [run],
+    }
+    return run
+
+
+def test_case_result_accepts_one_arm_without_claiming_full_coverage() -> None:
+    data = corpus()
+    _add_case_run(data)
+    validate_case_results(
+        data,
+        identity_validator=lambda _: None,
+        historical_identity_validator=lambda *_args, **_kwargs: None,
+    )
+
+
+def test_base_case_receipt_cannot_carry_candidate_identity() -> None:
+    data = corpus()
+    run = _add_case_run(data, arm="m0-base-host")
+    run["package_commit"] = "a" * 40
+    with pytest.raises(AssertionError):
+        validate_case_results(
+            data,
+            identity_validator=lambda _: None,
+            historical_identity_validator=lambda *_args, **_kwargs: None,
+        )
 
 
 def test_the_corpus_stays_offline_privacy_safe_and_uncollected() -> None:
