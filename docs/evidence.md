@@ -175,9 +175,14 @@ overstated old Codex isolation; and SECURITY described a removed session-
 receipt ingestion path. All four were corrected in
 `2d0481dd9ff0709e62dabf217faacfc50c2b32d2`.
 
-The one permitted targeted follow-up reviewed those four corrections and
+A targeted follow-up reviewed those four corrections and
 reported no remaining qualifying finding. Its private JSONL hash is
 `3ac52c96571f40013a3383db77cb9d3b95cbc4834ba002953974ec7b9f487d5f`.
+The prompt supplied the correct `2d0481d` prefix but an incorrect expanded
+hash; the reviewer detected that mismatch, resolved the branch object above,
+and explicitly reported that this was the commit it inspected. Its project
+interpreter lacked the pinned test environment, so it did not claim a test
+pass; the maintainer ran the pinned focused and full gates separately.
 
 A later independent review inspected exact evidence commit
 `d5a2ca604fcee8d03a030ea0688bedc9a69a7b85`. Its private JSONL hash is
@@ -190,13 +195,17 @@ final-candidate review beyond the commits actually inspected. The corrections
 above downgrade every current behavior claim, void the process run, bind
 fixture provenance, require concrete receipt artifacts, reconcile the public
 summaries, and scope review claims to the named commits.
-The prompt supplied the correct `2d0481d` prefix but an incorrect expanded
-hash; the reviewer detected that mismatch, resolved the branch object above,
-and explicitly reported that this was the commit it inspected. Its project
-interpreter lacked the pinned test environment, so it did not claim a test
-pass; the maintainer ran the pinned focused and full gates separately. The
-private review logs were destroyed after these hashes and dispositions were
-retained.
+
+The targeted follow-up for those five findings inspected exact correction
+commit `f0265157f4c80b492e9545d2872a33e8ecf8b5a7`; its private JSONL hash is
+`a088cff8b3f7023ab1aca851eb220b6452bcd2317d7bb8e6cb7f1d8f28abee69`.
+It confirmed the voided process run, fixture-manifest binding, and review-scope
+claims. It found two correction-level defects: an artifact reference did not
+prove retained bytes, and public copy erased the separate explicit-activation
+observation. The follow-up corrections retain artifact content inline and
+recompute its hash, and separate CTO behavior from activation in public copy.
+The private review logs were destroyed after these hashes and dispositions
+were retained.
 
 ## 2.x Observed behavior
 

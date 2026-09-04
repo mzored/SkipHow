@@ -230,8 +230,8 @@ version, commit, tree and payload hash, the host and its version, the model fami
 the fixture source revision, built-content manifest and hash, the prompt and later turns verbatim, the permission,
 sandbox, activation, instruction and isolation configuration, the control run, the
 activation event, the references loaded, the transcript or its privacy-safe
-excerpt and hash, the end state, its retained tree, diff, manifest, file, or
-marker artifacts, and destination receipts, the conditions
+excerpt and hash, the end state, its retained inline tree, diff, manifest,
+file, or marker-record content and derived hashes, and destination receipts, the conditions
 observed, the events observed, the ten separate scoring dimensions, the terminal state and
 stopping point, the grader and rationale, usage, redaction notes, and the
 validator-derived receipt-completeness state.

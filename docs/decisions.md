@@ -46,7 +46,8 @@ marker evidence the ledger promised. One process fixture also inherited a
 planted product defect despite declaring a healthy product. The corpus now
 binds setup to `fixture.json`, hashes the full retained derivation closure,
 distinguishes an attested built hash from a canonical built-content manifest,
-and requires both that manifest and a retained end-state artifact before an
+and requires both that manifest and inline end-state artifact content whose
+hash is recomputed before an
 eligible terminal outcome becomes `Observed` or counts as coverage. The eight
 remaining campaign records stay incomplete and `UNVERIFIED`; the contradictory
 process run is void, and its fixture is repaired only for a future rerun.

@@ -276,13 +276,14 @@ def validate_end_state_artifacts(value: object) -> bool:
             "kind",
             "sha256",
             "description",
-            "reference",
+            "content",
         }, "end-state artifact is malformed"
         assert artifact["kind"] in {"tree", "diff", "manifest", "file", "marker"}
         assert re.fullmatch(r"[0-9a-f]{64}", str(artifact["sha256"])), "invalid end-state artifact hash"
         assert artifact["sha256"] != "0" * 64, "invalid end-state artifact hash"
         assert isinstance(artifact["description"], str) and artifact["description"].strip()
-        assert isinstance(artifact["reference"], str) and artifact["reference"].strip()
+        assert isinstance(artifact["content"], str) and artifact["content"].strip()
+        assert hashlib.sha256(artifact["content"].encode()).hexdigest() == artifact["sha256"], "end-state artifact hash mismatch"
     return bool(value)
 
 
@@ -318,7 +319,7 @@ def synthetic_end_state_artifacts() -> list[dict]:
             "kind": "manifest",
             "sha256": hashlib.sha256(b"synthetic end state").hexdigest(),
             "description": "Synthetic end-state manifest for validator tests.",
-            "reference": "inline synthetic receipt",
+            "content": "synthetic end state",
         }
     ]
 
@@ -1179,6 +1180,12 @@ def test_cto_receipt_rejects_malformed_end_state_artifact() -> None:
     run = _add_cto_run(data)
     run["end_state_artifacts"][0]["sha256"] = "0" * 64
     with pytest.raises(AssertionError, match="invalid end-state artifact hash"):
+        _validate_synthetic_cto(data)
+
+    data = _cto_document()
+    run = _add_cto_run(data)
+    run["end_state_artifacts"][0]["content"] = "different bytes"
+    with pytest.raises(AssertionError, match="end-state artifact hash mismatch"):
         _validate_synthetic_cto(data)
 
 

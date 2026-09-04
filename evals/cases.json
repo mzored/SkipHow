@@ -151,7 +151,7 @@
     "transcript_reference": "Where the transcript and log for this run are kept, or the privacy-safe excerpt retained here.",
     "transcript_hash": "A hash of the full transcript where it stays private.",
     "end_state": "What the fixture looked like when the session stopped: the working tree, the commit graph, any record the session wrote, and a hash or diff of it.",
-    "end_state_artifacts": "Retained end-state manifests, trees, diffs, or hashes that support the prose end_state. Each entry names its kind, SHA-256 digest, description, and retained reference.",
+    "end_state_artifacts": "Retained inline end-state manifests, trees, diffs, files, or marker records that support the prose end_state. Each entry names its kind, description, content, and SHA-256 digest derived from that content.",
     "destination_receipts": "What the named destination itself showed, for a case with one: the remote's branch list, the marker files above the repository.",
     "test_receipts": "The checks that ran and what they showed.",
     "conditions_observed": "The value of every condition variable the case uses, as observed in this run.",
