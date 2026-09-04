@@ -204,6 +204,11 @@ claims. It found two correction-level defects: an artifact reference did not
 prove retained bytes, and public copy erased the separate explicit-activation
 observation. The follow-up corrections retain artifact content inline and
 recompute its hash, and separate CTO behavior from activation in public copy.
+The final narrow read inspected exact commit
+`a3beefc1c6d23edb58307b270bafc7d5fba0f2c1`; its private JSONL hash is
+`79011aa60722298808de457e9b7c7db725bd8a44e862256b463e285b667b2ec3`.
+It marked both corrections `PASS` and reported no new qualifying contradiction
+or evidence bypass.
 The private review logs were destroyed after these hashes and dispositions
 were retained.
 
