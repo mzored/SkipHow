@@ -28,6 +28,7 @@ HOST_RECEIPT_FIELDS = (
     "host_version",
     "date",
     "check",
+    "outcome",
     "configuration",
     "command_or_session",
     "observable_evidence",
@@ -257,7 +258,7 @@ def validate_committed_package_identity(
             raise ValueError(f"receipt {field} does not match the candidate")
 
 
-def validate_host_receipt(value: dict[str, str], *, host: str, check: str) -> None:
+def validate_host_receipt(value: dict[str, str], *, host: str, check: str, status: str) -> None:
     """Validate one canonical external host receipt against its ledger cell."""
     if set(value) != set(HOST_RECEIPT_FIELDS):
         raise ValueError("host receipt fields do not match the canonical schema")
@@ -265,6 +266,8 @@ def validate_host_receipt(value: dict[str, str], *, host: str, check: str) -> No
         raise ValueError("host receipt does not match its ledger host")
     if value.get("check") != check:
         raise ValueError("host receipt does not match its ledger check")
+    if status not in {"PASS", "FAIL"} or value.get("outcome") != status:
+        raise ValueError("host receipt outcome does not match its ledger status")
     if any(not isinstance(value.get(field), str) or not value[field].strip() for field in HOST_RECEIPT_FIELDS):
         raise ValueError("host receipt fields must be nonempty strings")
     validate_committed_package_identity(value)
@@ -665,6 +668,7 @@ def smoke_install(
             "host_version": host_version,
             "date": date,
             "check": check,
+            "outcome": status,
             "configuration": f"empty {_home_variable(host)}; exact local marketplace snapshot",
             "command_or_session": "host marketplace add, install, list, inspect, uninstall, list",
             "observable_evidence": observable,

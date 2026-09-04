@@ -518,7 +518,12 @@ def test_smoke_installs_inspects_uninstalls_and_writes_a_privacy_safe_receipt(
         assert result["receipt"]["package_version"] == (ROOT / "VERSION").read_text().strip()
         assert len(result["receipt"]["package_payload_sha256"]) == 64
         with patch.object(hosts, "validate_committed_package_identity", return_value=None):
-            hosts.validate_host_receipt(result["receipt"], host=document["host"], check=check)
+            hosts.validate_host_receipt(
+                result["receipt"],
+                host=document["host"],
+                check=check,
+                status=result["status"],
+            )
     steps = {step["step"]: step["status"] for step in document["steps"]}
     assert steps["clean host home"] == "PASS"
     assert steps["inspect installed files"] == "PASS"
@@ -576,6 +581,7 @@ def test_canonical_host_receipt_cannot_move_between_host_rows() -> None:
         "host_version": "codex-cli 0.0.0",
         "date": "2026-09-04",
         "check": "clean_install",
+        "outcome": "PASS",
         "configuration": "isolated",
         "command_or_session": "synthetic",
         "observable_evidence": "synthetic",
@@ -584,7 +590,40 @@ def test_canonical_host_receipt_cannot_move_between_host_rows() -> None:
     }
     with patch.object(hosts, "validate_committed_package_identity", return_value=None):
         with pytest.raises(ValueError, match="ledger host"):
-            hosts.validate_host_receipt(receipt, host="claude-code", check="clean_install")
+            hosts.validate_host_receipt(
+                receipt,
+                host="claude-code",
+                check="clean_install",
+                status="PASS",
+            )
+
+
+def test_canonical_host_receipt_outcome_must_match_ledger_status() -> None:
+    package = fake_committed_package()
+    receipt = {
+        "host": "codex",
+        "package_version": package["version"],
+        "package_commit": package["commit"],
+        "package_tree": package["git_tree"],
+        "package_payload_sha256": package["payload_sha256"],
+        "host_version": "codex-cli 0.0.0",
+        "date": "2026-09-04",
+        "check": "clean_install",
+        "outcome": "FAIL",
+        "configuration": "isolated",
+        "command_or_session": "synthetic",
+        "observable_evidence": "synthetic failure",
+        "cleanup_result": "synthetic",
+        "source": "test",
+    }
+    with patch.object(hosts, "validate_committed_package_identity", return_value=None):
+        with pytest.raises(ValueError, match="ledger status"):
+            hosts.validate_host_receipt(
+                receipt,
+                host="codex",
+                check="clean_install",
+                status="PASS",
+            )
 
 
 def test_committed_identity_accepts_an_earlier_commit_with_the_same_package() -> None:

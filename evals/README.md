@@ -239,7 +239,8 @@ identified runs did. It never implies a rate.
 
 `scripts/check_hosts.py --smoke` emits a host bundle whose `clean_install` and
 `uninstall` entries use the exact flat receipt schema in `host-smoke.json`.
-Those entries can be copied without translation into the matching host ledger.
+Those entries can be copied without translation into the matching host ledger;
+their machine-readable outcome must equal the containing ledger status.
 The release-runner matrix never ingests model-session receipts; activation,
 playbook, permission, isolation, and continuity observations stay in their
 external candidate ledger and in `docs/evidence.md`.

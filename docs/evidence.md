@@ -69,6 +69,15 @@ From 3.0.0 it prepares no environment and reaches no network. It runs against th
 
 These checks do not start a model and do not prove runtime behavior.
 
+For the exact 4.0.1 package (`d468e226e69576c6c3a7c075089e15c0cde71e5a`,
+payload `3d6f359af92c38cf02fb916c6d2c2d785a8640e82ec8cfbbefd8dad1001ebda5`),
+Claude Code 2.1.260 installed all fifteen regular files byte for byte in an
+empty host home and removed the package successfully on 2026-09-04. The flat
+`PASS` receipts are retained in [`evals/host-smoke.json`](../evals/host-smoke.json).
+The same Codex attempt on CLI 0.153.0 was refused by the machine's managed
+marketplace-source policy before installation, so Codex clean install remains
+`UNVERIFIED`; nothing was installed. Neither result is activation evidence.
+
 ## How these runs were made
 
 The main 2.4.2 behavior pass summarized below contains seventy-five owner turns across fifty-seven sessions. Eight ran against 2.4.1. The rest ran against that release's wording while it was being built, which happened in steps: the frontier clause first, then the clause about not building what you have just asked about, and three attempts at a kernel rule for the outside read that were all discarded. Every claim below says which wording produced it, and both clauses that ship were re-run on the exact release-candidate package. Each run used a throwaway fixture repository built from a script, a session carrying the package under test and the host's own built-in skills, and the host's own permission controls. The one-sentence `project-setup` clarification landed after most of these runs; the sessions that reach that method are reported as a before and after pair, and no other session's request reaches its trigger. Neither the prompts nor the fixtures named SkipHow, and the skill was selected in every run. The transcripts are not retained; the method in [`AGENTS.md`](../AGENTS.md) reproduces them.

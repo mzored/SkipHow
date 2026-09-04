@@ -51,7 +51,7 @@ page under `learn.chatgpt.com`; the redirect target is the page actually read.
 | Per-agent read-only controls | Subagent frontmatter takes a `tools` allowlist, `disallowedTools`, and `permissionMode`, whose values include `plan` for read-only exploration. | [Subagents](https://code.claude.com/docs/en/sub-agents) | 2026-09-04 | none | `UNVERIFIED` (documented) |
 | Worktree isolation | `isolation: worktree` runs a subagent in a temporary git worktree. | [Subagents](https://code.claude.com/docs/en/sub-agents) | 2026-09-04 | none | `UNVERIFIED` (documented) |
 | Plugin validation | Manifest `.claude-plugin/plugin.json`; `claude plugin validate <path>` validates it and `--strict` treats warnings as errors. | [Plugins](https://code.claude.com/docs/en/plugins) | 2026-09-04 | 2.1.259 | `PASS` (`scripts/check_hosts.py`, 2026-09-04) |
-| Clean installation | `claude plugin marketplace add`, `claude plugin install --scope user`, `claude plugin uninstall --scope user`; `CLAUDE_CONFIG_DIR` points the host at a scratch home. | [Discover plugins](https://code.claude.com/docs/en/discover-plugins), [Skills](https://code.claude.com/docs/en/skills) | 2026-09-04 | 2.1.260 | `PASS` (`scripts/check_hosts.py --smoke`: clean home, install, 15 regular files matching the 4.0 candidate, uninstall verified, 2026-09-04) |
+| Clean installation | `claude plugin marketplace add`, `claude plugin install --scope user`, `claude plugin uninstall --scope user`; `CLAUDE_CONFIG_DIR` points the host at a scratch home. | [Discover plugins](https://code.claude.com/docs/en/discover-plugins), [Skills](https://code.claude.com/docs/en/skills) | 2026-09-04 | 2.1.260 | `PASS` (`scripts/check_hosts.py --smoke`: clean home, install, 15 regular files matching exact 4.0.1 payload `3d6f359a…`, uninstall verified, 2026-09-04) |
 
 ### Codex CLI
 
@@ -88,9 +88,10 @@ have not shown is in [current evidence](docs/evidence.md).
 
 Each release publishes the compact matrix that `scripts/check_hosts.py` prints, with one
 row per capability. A skipped or unavailable check stays `UNVERIFIED` there; it is never
-folded into a passing aggregate. The session steps of the clean-install procedure,
-starting a clean session and verifying explicit or persistent-instruction activation, start a model and are
-reported only from a receipt supplied to the script; without one they stay `UNVERIFIED`.
+folded into a passing aggregate. The release runner neither starts nor ingests model
+sessions, so explicit, implicit, and persistent-instruction activation always stay
+`UNVERIFIED` in that matrix. External model-session evidence is retained separately in
+the behavioral ledger.
 
 This repository's continuous integration is not dual-host behavioral support and does
 not claim to be. It requires the pinned Codex validator, validates the Claude package

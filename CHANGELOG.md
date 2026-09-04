@@ -23,6 +23,7 @@ This patch repairs the evidence system around the 4.x virtual-CTO contract and c
 
 ### Evidence
 
+- The exact 4.0.1 payload installed byte for byte and uninstalled cleanly on Claude Code 2.1.260. Codex CLI 0.153.0 clean installation remains `UNVERIFIED` because this machine's managed marketplace-source policy refused the scratch source before installation. Neither result proves activation.
 - `python scripts/check.py`, `git diff --check`, host validation, exact-candidate review, and any retained host or model receipts are reported from the final candidate. A release-runner `UNVERIFIED` row means that runner did not perform the capability; it does not erase a separately retained external receipt.
 
 ## 4.0.0 (2026-09-04)

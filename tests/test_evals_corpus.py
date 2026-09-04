@@ -657,6 +657,8 @@ def validate_cto_instrument(
             declared_candidate = (
                 prompt["style"] == coverage["prompt_style"]
                 and run["arm"] in coverage["arms"]
+                and run["activated"] is True
+                and run["activation_score"] == "pass"
             )
             observed_eligible = observed_eligible or (eligible and declared_candidate)
             if eligible and declared_candidate:
@@ -1000,6 +1002,24 @@ def test_failed_cto_run_cannot_upgrade_run_or_scenario() -> None:
         _validate_synthetic_cto(data)
 
 
+def test_task_success_without_activation_cannot_upgrade_cto_evidence() -> None:
+    data = _cto_document()
+    run = _add_cto_run(data)
+    run["activated"] = False
+    run["activation_score"] = "fail"
+    run["adherence"] = "not_applicable"
+    data["cases"][0]["result"]["evidence_label"] = "UNVERIFIED"
+    data["summary"]["observed_scenarios"] = 0
+    data["summary"]["by_host"]["claude-code"]["observed_scenarios"] = 0
+    _validate_synthetic_cto(data)
+
+    data["cases"][0]["result"]["evidence_label"] = "Observed"
+    data["summary"]["observed_scenarios"] = 1
+    data["summary"]["by_host"]["claude-code"]["observed_scenarios"] = 1
+    with pytest.raises(AssertionError, match="scenario evidence label"):
+        _validate_synthetic_cto(data)
+
+
 def test_one_host_cannot_complete_the_cto_suite_or_imply_host_parity() -> None:
     data = _cto_document()
     for case_index in range(len(data["cases"])):
@@ -1065,7 +1085,12 @@ def test_host_smoke_instrument_keeps_each_capability_visible() -> None:
                 assert re.fullmatch(r"[0-9a-f]{64}", receipt["package_payload_sha256"])
                 assert receipt["check"] == check
                 assert all(str(receipt[field]).strip() for field in receipt_fields)
-                host_checks.validate_host_receipt(receipt, host=host_id, check=check)
+                host_checks.validate_host_receipt(
+                    receipt,
+                    host=host_id,
+                    check=check,
+                    status=result["status"],
+                )
 
 
 def test_every_case_is_complete_and_uniquely_identified() -> None:
