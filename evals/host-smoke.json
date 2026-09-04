@@ -1,7 +1,7 @@
 {
   "instrument": "host_smoke",
-  "package_under_test": "4.0.0",
-  "evidence_label": "UNVERIFIED",
+  "package_under_test": "4.0.1",
+  "scope": "external_candidate_receipts",
   "checks": {
     "clean_install": {"procedure": "Install the exact candidate into a scratch host home and compare every regular file.", "observable": "Installed bytes equal the candidate and no undeclared file or symlink appears."},
     "persistent_setup": {"procedure": "Add the documented line to an otherwise controlled global user instruction file, preserving its content, then start a clean session.", "observable": "The instruction and CTO policy are present before the first consequential project action."},
@@ -13,7 +13,21 @@
     "disable": {"procedure": "Remove only the activation line and start a clean session with a current-project request that the installed line previously governed, then repeat with explicit invocation.", "observable": "Bare default governance is absent after removal while explicit invocation still loads the exact candidate."},
     "uninstall": {"procedure": "Use the host's uninstall command in the scratch home and list installed plugins afterwards.", "observable": "The package and its skill are absent and unrelated host state remains."}
   },
-  "receipt_fields": ["package_commit", "host_version", "check", "configuration", "command_or_session", "observable_evidence", "cleanup_result"],
+  "receipt_fields": [
+    "host",
+    "package_version",
+    "package_commit",
+    "package_tree",
+    "package_payload_sha256",
+    "host_version",
+    "date",
+    "check",
+    "configuration",
+    "command_or_session",
+    "observable_evidence",
+    "cleanup_result",
+    "source"
+  ],
   "hosts": {
     "claude-code": {"results": {
       "clean_install": {"status": "UNVERIFIED", "receipt": null},
@@ -38,5 +52,5 @@
       "uninstall": {"status": "UNVERIFIED", "receipt": null}
     }}
   },
-  "rule": "Record each capability separately. A package validator, documented host feature, or successful install does not prove model activation or behavior. Use scratch host homes and retain the exact package commit, host version, configuration, command result, and cleanup result."
+  "rule": "Record each capability separately. A package validator, documented host feature, or successful install does not prove model activation or behavior. Use scratch host homes and retain exact package bytes, the package tree and candidate commit, host version, configuration, command or session result, source, date, and cleanup result. Release-runner capability is a separate matrix."
 }

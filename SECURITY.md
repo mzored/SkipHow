@@ -28,9 +28,16 @@ skill, that persistent instructions select it, that a delegate is isolated, or h
 text reaches it. A `PASS` is a run that happened on the named host version; a
 documentation-only row is `UNVERIFIED` however clearly the page describes the feature.
 
-Tested host versions, where a run exists, are Claude Code 2.1.259 and Codex CLI 0.153.0,
-the versions `claude --version` and `codex --version` reported on 2026-09-04. Those are
-two observed versions and not a tested range.
+Three evidence scopes stay separate. [`evals/host-smoke.json`](evals/host-smoke.json)
+is the candidate ledger for external host receipts tied to exact package bytes and a
+committed package tree. A release's generated matrix reports only what its release
+runner performed. Model activation and behavior belong in [`docs/evidence.md`](docs/evidence.md)
+with their session receipts. A skipped release-runner row does not erase an external
+candidate receipt, and a successful install does not imply activation.
+
+Tested host versions, where a run exists, are Claude Code 2.1.259 for schema validation,
+Claude Code 2.1.260 for clean installation, and Codex CLI 0.153.0. These are the versions
+the host commands reported on 2026-09-04, not a tested range.
 
 Where a row cites `developers.openai.com`, that address redirected on 2026-09-04 to a
 page under `learn.chatgpt.com`; the redirect target is the page actually read.
@@ -88,6 +95,24 @@ reported only from a receipt supplied to the script; without one they stay `UNVE
 This repository's continuous integration is not dual-host behavioral support and does
 not claim to be. It requires the pinned Codex validator, validates the Claude package
 only where that executable is present, and skips isolated installation entirely.
+
+## Untrusted repository profile
+
+SkipHow is policy, not enforcement. When a repository, branch, pull request, download,
+or incident snapshot is not yet trusted, use the host's controls before reading its
+instructions as procedure or running its code. Start from a disposable checkout, use
+synthetic or redacted data, inherit no unrelated credentials, deny network access unless
+the task requires named destinations, and keep writing delegates disabled. Do not run
+project hooks, build scripts, tests, or project-supplied skills until their effects fit
+the request's authority and the repository's provenance is established.
+
+On Codex, use a read-only sandbox and approval policy for the root and every subagent.
+Codex supports `sandbox_mode` in custom-agent configuration, while its `AGENTS.md`
+chain remains behavioral context rather than an enforcement boundary. On Claude Code,
+use plan or equivalent read-only permissions plus the OS-enforced filesystem and
+network sandbox; set sandbox unavailability to fail closed when the review depends on
+it, and disable the unsandboxed-command escape. In either host, a requested repair moves
+to a fresh bounded write environment only after the source and effects are understood.
 
 ## Report a vulnerability
 

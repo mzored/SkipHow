@@ -140,7 +140,7 @@ SkipHow keeps one owner-facing entry. Critical rules stay in its kernel, while f
 
 ## What the evidence shows
 
-Deterministic checks prove package structure; controlled runs are required for behavior claims. The behavioral observations on record were made on 2.x packages, on both hosts, and cover fully specified requests, open product choices, failure diagnosis, adversarial verification, and the splitting of larger work into independently verifiable units. No run has been made on the 4.0 contract: its virtual-CTO behavior and default ordinary-language activation remain `UNVERIFIED` until retained receipts show them.
+Deterministic checks prove package structure; controlled runs are required for behavior claims. The behavioral observations on record were made on 2.x packages, on both hosts, and cover fully specified requests, open product choices, failure diagnosis, adversarial verification, and the splitting of larger work into independently verifiable units. The 4.x virtual-CTO behavior and default ordinary-language activation remain `UNVERIFIED` until retained receipts show them.
 
 These are observations, not a reliability rate. The project does not retain every transcript, public adoption is still limited, and comparative advantage over a base agent or another framework is `UNVERIFIED`. The [evidence matrix](docs/evidence.md) is the single home for the method, the claims each run supports, and the failures.
 

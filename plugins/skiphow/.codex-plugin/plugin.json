@@ -1,6 +1,6 @@
 {
   "name": "skiphow",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Adaptive virtual CTO for founders and product owners using Claude Code or Codex. Describe the product outcome; SkipHow owns the technical lifecycle through verified completion.",
   "author": {
     "name": "mzored",

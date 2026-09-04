@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import stat
 import subprocess
@@ -18,6 +19,21 @@ from typing import Sequence
 
 ROOT = Path(__file__).resolve().parents[1]
 PLUGIN_ROOT = ROOT / "plugins/skiphow"
+HOST_RECEIPT_FIELDS = (
+    "host",
+    "package_version",
+    "package_commit",
+    "package_tree",
+    "package_payload_sha256",
+    "host_version",
+    "date",
+    "check",
+    "configuration",
+    "command_or_session",
+    "observable_evidence",
+    "cleanup_result",
+    "source",
+)
 
 
 def checked(
@@ -108,6 +124,150 @@ def _payload(root: Path) -> dict[str, str]:
     if not result:
         raise ValueError("package payload is empty")
     return result
+
+
+def package_identity() -> dict[str, str]:
+    """Identify the exact package bytes and their committed Git tree when available."""
+    payload = _payload(PLUGIN_ROOT)
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    identity = {
+        "version": (ROOT / "VERSION").read_text(encoding="utf-8").strip(),
+        "commit": "UNCOMMITTED",
+        "git_tree": "UNCOMMITTED",
+        "payload_sha256": hashlib.sha256(encoded).hexdigest(),
+    }
+    status = subprocess.run(
+        ["git", "status", "--porcelain=v1", "--", "VERSION", "plugins/skiphow"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if status.returncode != 0 or status.stdout.strip():
+        return identity
+    for key, revision in (("commit", "HEAD"), ("git_tree", "HEAD:plugins/skiphow")):
+        result = subprocess.run(
+            ["git", "rev-parse", revision],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            identity[key] = result.stdout.strip()
+    return identity
+
+
+def committed_package_identity(commit: str) -> dict[str, str]:
+    """Read version and package tree from one existing commit."""
+    tree = subprocess.run(
+        ["git", "rev-parse", f"{commit}:plugins/skiphow"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    version = subprocess.run(
+        ["git", "show", f"{commit}:VERSION"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if tree.returncode != 0 or version.returncode != 0:
+        raise ValueError("receipt package_commit is unavailable")
+    listing = subprocess.run(
+        ["git", "ls-tree", "-r", "-z", commit, "--", "plugins/skiphow"],
+        cwd=ROOT,
+        capture_output=True,
+        check=False,
+    )
+    if listing.returncode != 0:
+        raise ValueError("receipt package_commit payload is unavailable")
+    payload: dict[str, str] = {}
+    prefix = "plugins/skiphow/"
+    for entry in listing.stdout.split(b"\0"):
+        if not entry:
+            continue
+        header, raw_path = entry.split(b"\t", 1)
+        mode, kind, _ = header.decode("utf-8").split()
+        path = raw_path.decode("utf-8")
+        if kind != "blob" or mode not in {"100644", "100755"} or not path.startswith(prefix):
+            raise ValueError("receipt package_commit contains a non-regular package entry")
+        content = subprocess.run(
+            ["git", "show", f"{commit}:{path}"],
+            cwd=ROOT,
+            capture_output=True,
+            check=False,
+        )
+        if content.returncode != 0:
+            raise ValueError("receipt package_commit payload is unreadable")
+        payload[path.removeprefix(prefix)] = hashlib.sha256(content.stdout).hexdigest()
+    if not payload:
+        raise ValueError("receipt package_commit payload is empty")
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return {
+        "version": version.stdout.strip(),
+        "git_tree": tree.stdout.strip(),
+        "payload_sha256": hashlib.sha256(encoded).hexdigest(),
+    }
+
+
+def validate_committed_package_identity(
+    value: dict[str, str], *, match_current: bool = True
+) -> None:
+    """Bind a flat receipt identity to committed package bytes.
+
+    A documentation-only commit may follow the commit that first carried the
+    package. The receipt commit therefore need not equal HEAD, but it must exist,
+    contain the named package tree and version, and describe the package bytes
+    currently being validated.
+    """
+    fields = {
+        "package_version": (r"[^\s]+", "version"),
+        "package_commit": (r"[0-9a-f]{40}", "commit"),
+        "package_tree": (r"[0-9a-f]{40}", "git_tree"),
+        "package_payload_sha256": (r"[0-9a-f]{64}", "payload_sha256"),
+    }
+    for field, (pattern, _) in fields.items():
+        if not isinstance(value.get(field), str) or not re.fullmatch(pattern, value[field]):
+            raise ValueError(f"receipt has invalid {field}")
+
+    current: dict[str, str] | None = None
+    if match_current:
+        current = package_identity()
+        if current["commit"] == "UNCOMMITTED" or current["git_tree"] == "UNCOMMITTED":
+            raise ValueError("candidate package is not committed")
+
+    commit = value["package_commit"]
+    committed = committed_package_identity(commit)
+    if committed["git_tree"] != value["package_tree"]:
+        raise ValueError("receipt package_commit does not contain package_tree")
+    if committed["version"] != value["package_version"]:
+        raise ValueError("receipt package_commit does not contain package_version")
+    if committed["payload_sha256"] != value["package_payload_sha256"]:
+        raise ValueError("receipt package_commit does not contain package_payload_sha256")
+    if not match_current:
+        return
+    assert current is not None
+    for field, (_, current_key) in fields.items():
+        if field == "package_commit":
+            continue
+        if value[field] != current[current_key]:
+            raise ValueError(f"receipt {field} does not match the candidate")
+
+
+def validate_host_receipt(value: dict[str, str], *, host: str, check: str) -> None:
+    """Validate one canonical external host receipt against its ledger cell."""
+    if set(value) != set(HOST_RECEIPT_FIELDS):
+        raise ValueError("host receipt fields do not match the canonical schema")
+    if value.get("host") != host:
+        raise ValueError("host receipt does not match its ledger host")
+    if value.get("check") != check:
+        raise ValueError("host receipt does not match its ledger check")
+    if any(not isinstance(value.get(field), str) or not value[field].strip() for field in HOST_RECEIPT_FIELDS):
+        raise ValueError("host receipt fields must be nonempty strings")
+    validate_committed_package_identity(value)
 
 
 def _marketplace_manifest(host: str) -> tuple[str, Path]:
@@ -452,17 +612,22 @@ def smoke_install(
     *,
     codex_marketplace_source: str | None = None,
 ) -> tuple[bool, str, Path]:
-    """Run the clean-install procedure (spec 9.5 steps 1-4, 7-9) and write a receipt.
+    """Run the clean-install procedure and write ledger-compatible receipts.
 
     Steps 5 and 6, starting a session and verifying explicit invocation, start a
-    model and are never run here. The receipt lists them as UNVERIFIED; supply a
-    session receipt with --session-receipt to report an observed invocation.
+    model and are never run here. Model-session evidence belongs in the behavioral
+    ledger, not in this release-runner receipt.
     """
     from datetime import datetime, timezone
 
     receipt_dir.mkdir(parents=True, exist_ok=True)
-    version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+    package = package_identity()
+    if package["commit"] == "UNCOMMITTED" or package["git_tree"] == "UNCOMMITTED":
+        raise ValueError("--smoke requires VERSION and plugins/skiphow to be committed")
     date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    host_version = _host_version(executable)
+    if host_version == "unknown":
+        raise ValueError(f"--smoke could not read the {host} host version")
     with tempfile.TemporaryDirectory(prefix=f"skiphow-{host}-smoke-") as temporary:
         cycle = _InstallCycle(host, executable, codex_marketplace_source)
         passed, detail = cycle.install(Path(temporary), uninstall=True)
@@ -475,49 +640,72 @@ def smoke_install(
         {key: _privacy_safe(value, secrets) for key, value in step.items()}
         for step in cycle.steps
     ]
-    receipt = {
-        "schema": "skiphow-clean-install-receipt/1",
-        "host": host,
-        "host_version": _host_version(executable),
-        "package_version": version,
+    step_status = {step["step"]: step["status"] for step in steps}
+    clean_status = "PASS" if step_status.get("inspect installed files") == "PASS" else "FAIL"
+    if step_status.get("verify uninstall") == "PASS":
+        uninstall_status = "PASS"
+    elif "uninstall" in step_status or "verify uninstall" in step_status:
+        uninstall_status = "FAIL"
+    else:
+        uninstall_status = "UNVERIFIED"
+    host_id = "claude-code" if host == "claude" else host
+    identity = {
+        "package_version": package["version"],
+        "package_commit": package["commit"],
+        "package_tree": package["git_tree"],
+        "package_payload_sha256": package["payload_sha256"],
+    }
+
+    def canonical(check: str, status: str, observable: str) -> dict[str, object]:
+        if status == "UNVERIFIED":
+            return {"status": status, "receipt": None}
+        receipt = {
+            **identity,
+            "host": host_id,
+            "host_version": host_version,
+            "date": date,
+            "check": check,
+            "configuration": f"empty {_home_variable(host)}; exact local marketplace snapshot",
+            "command_or_session": "host marketplace add, install, list, inspect, uninstall, list",
+            "observable_evidence": observable,
+            "cleanup_result": (
+                "plugin absent before scratch host home cleanup"
+                if step_status.get("verify uninstall") == "PASS"
+                else "scratch host home removed; uninstall was not verified"
+            ),
+            "source": "scripts/check_hosts.py --smoke",
+        }
+        return {"status": status, "receipt": receipt}
+
+    document = {
+        "schema": "skiphow-host-smoke-bundle/1",
+        "host": host_id,
+        "host_version": host_version,
         "date": date,
         "result": "PASS" if passed else "FAIL",
         "detail": _privacy_safe(detail, secrets),
+        "results": {
+            "clean_install": canonical(
+                "clean_install",
+                clean_status,
+                "installed regular files exactly matched the candidate payload"
+                if clean_status == "PASS"
+                else _privacy_safe(detail, secrets),
+            ),
+            "uninstall": canonical(
+                "uninstall",
+                uninstall_status,
+                "host inventory no longer listed SkipHow"
+                if uninstall_status == "PASS"
+                else _privacy_safe(detail, secrets),
+            ),
+        },
         "steps": steps,
         "installed_files": cycle.inventory,
-        "session": {name: "UNVERIFIED" for name, _ in SESSION_STEPS},
     }
     path = receipt_dir / f"{host}-clean-install-{date}.json"
-    path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    path.write_text(json.dumps(document, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return passed, _privacy_safe(detail, secrets), path
-
-
-SESSION_FIELDS = ("explicit_invocation", "implicit_activation", "continuity")
-
-
-def load_session_receipt(path: Path) -> dict[str, str]:
-    """Validate a manual session receipt for spec 9.5 steps 5-6.
-
-    Shape: {"host": "codex"|"claude", "host_version": str, "date": "YYYY-MM-DD",
-    "explicit_invocation": "observed"|"unverified", "implicit_activation": ...,
-    "continuity": ..., "reference": str}. Only "observed" counts; anything else
-    stays UNVERIFIED.
-    """
-    value = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(value, dict):
-        raise ValueError(f"session receipt is not an object: {path}")
-    if value.get("host") not in ("codex", "claude"):
-        raise ValueError(f"session receipt names no known host: {path}")
-    for key in ("host_version", "date", "reference"):
-        if not isinstance(value.get(key), str) or not value[key]:
-            raise ValueError(f"session receipt lacks {key}: {path}")
-    result = {key: str(value[key]) for key in ("host", "host_version", "date", "reference")}
-    for key in SESSION_FIELDS:
-        state = value.get(key, "unverified")
-        if state not in ("observed", "unverified"):
-            raise ValueError(f"session receipt {key} must be observed or unverified: {path}")
-        result[key] = state
-    return result
 
 
 MATRIX_CAPABILITIES = (
@@ -538,7 +726,12 @@ def render_matrix(rows: Sequence[tuple[str, str, str]]) -> str:
     names = [row[0] for row in rows]
     if names != list(MATRIX_CAPABILITIES):
         raise ValueError("matrix rows must be exactly the tracked capabilities, in order")
-    lines = ["| Capability | Status | Detail |", "| --- | --- | --- |"]
+    lines = [
+        "Scope: this release runner. External candidate and model-session receipts are recorded separately.",
+        "",
+        "| Capability | Status | Detail |",
+        "| --- | --- | --- |",
+    ]
     for capability, status, detail in rows:
         lines.append(f"| {capability} | {status} | {detail.replace('|', '/')} |")
     return "\n".join(lines) + "\n"
@@ -574,12 +767,6 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument(
         "--receipt-dir",
         help="directory that receives one privacy-safe JSON receipt per smoked host",
-    )
-    parser.add_argument(
-        "--session-receipt",
-        action="append",
-        default=[],
-        help="manual receipt for the session steps of the clean-install procedure",
     )
     parser.add_argument("--matrix-out", help="also write the matrix to this file")
     args = parser.parse_args(argv)
@@ -645,10 +832,15 @@ def main(argv: Sequence[str] | None = None) -> int:
             continue
         source = args.codex_marketplace_source if host == "codex" else None
         if args.smoke:
-            passed, output, receipt = smoke_install(
-                host, executable, Path(args.receipt_dir), codex_marketplace_source=source
-            )
-            detail = f"receipt {receipt.name}"
+            try:
+                passed, output, receipt = smoke_install(
+                    host, executable, Path(args.receipt_dir), codex_marketplace_source=source
+                )
+            except ValueError as exc:
+                passed, output = False, str(exc)
+                detail = "no receipt; candidate package is not committed"
+            else:
+                detail = f"receipt {receipt.name}"
         else:
             passed, output = isolated_install(host, executable, codex_marketplace_source=source)
             detail = "install and inspect; no uninstall (pass --smoke)"
@@ -660,26 +852,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         if not passed and (not policy_blocked or required):
             errors.append(output or f"{host} isolated installation failed without output")
 
-    receipts: list[dict[str, str]] = []
-    for path in args.session_receipt:
-        try:
-            receipts.append(load_session_receipt(Path(path)))
-        except (OSError, ValueError, json.JSONDecodeError) as exc:
-            errors.append(f"invalid session receipt: {exc}")
-    for capability, key in (
-        ("Explicit invocation", "explicit_invocation"),
-        ("Implicit activation", "implicit_activation"),
-        ("Continuity/bootstrap", "continuity"),
-    ):
-        observed = [receipt for receipt in receipts if receipt[key] == "observed"]
-        if observed:
-            detail = "; ".join(
-                f"{r['host']} {r['host_version']} on {r['date']} ({r['reference']})"
-                for r in observed
+    for capability in ("Explicit invocation", "Implicit activation", "Continuity/bootstrap"):
+        rows.append(
+            (
+                capability,
+                "UNVERIFIED",
+                "not run by the release runner; external model-session evidence is recorded separately",
             )
-            rows.append((capability, "Observed", detail))
-        else:
-            rows.append((capability, "UNVERIFIED", "no session receipt; steps 5-6 of the clean-install procedure are manual"))
+        )
     rows.append(
         (
             "Behavioral contract suite",

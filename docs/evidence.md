@@ -7,30 +7,30 @@ This page separates package checks from observed model behavior. The full 2.0 ev
 Every claim about this project carries one of three labels, and they do not substitute for one another.
 
 - **Contract.** Behavior the shipped instructions require. Reading the package settles it. It says what a run is told to do, never what a model does.
-- **Observed.** Behavior shown in identified runs, with the package version, the host, and the fixture named. It is what those runs did, not a rate at which they would do it again.
+- **Observed.** Behavior shown in identified runs, with the scenario, package version, host, activation arm, and trial named. It is what those runs did, not a rate at which they would do it again.
 - **Unverified.** Intended behavior for which no sufficient receipt exists. A behavior that follows obviously from the text is still unverified until a run shows it. This page marks it `UNVERIFIED` inline.
 
-A contract claim never implies an observed one, and an observed one never implies a rate. Everything below the deterministic section is Observed or Unverified.
+A contract claim never implies an observed one, and an observed one never implies a rate. Each behavioral section below is labeled as Contract, Observed, or Unverified.
 
-This document is the single home for current claims. Other documents in the repository link here rather than restating the history, so a claim that changes has one place to change.
+This document is the detailed ledger for current claims. README and site summaries may restate a bounded claim when they preserve its version and evidence scope, expose the current ledger count, and link here for the full record.
 
 ## Four classes of claim, kept apart
 
 Every behavioral claim on this page sits in one of four sections, and a claim never moves between them without a receipt of its own:
 
 1. [**2.x Observed behavior**](#2x-observed-behavior). Runs made on 2.x packages, from 2.4.1 to 2.16.1. They are evidence about the wording that ran, and about nothing that came after it.
-2. [**4.0 encoded Contract**](#40-encoded-contract). What the current package's text requires. Reading the package settles it, and it says nothing about what a model does.
-3. [**3.x and 4.0 Observed behavior**](#3x-and-40-observed-behavior). Runs made on a 3.x or 4.0 package. There are none.
+2. [**4.x encoded Contract**](#4x-encoded-contract). What the current package's text requires. Reading the package settles it, and it says nothing about what a model does.
+3. [**3.x and 4.x Observed behavior**](#3x-and-4x-observed-behavior). Runs made on a 3.x or 4.x package.
 4. [**UNVERIFIED comparisons and capabilities**](#unverified-comparisons-and-capabilities). Everything intended, argued, or rewritten that no run has shown.
 
-An old run does not support a new behavioral rewrite. The 4.0 CTO contract replaced material 3.x wording, so the first section is history that informed the change and the third section stays empty until a retained receipt is made under the requirements below.
+An old run does not support a new behavioral rewrite. The 4.x CTO contract replaced material 3.x wording, so the first section is history that informed the change. Any current observation must come from a retained receipt under the requirements below.
 
 ## What a future Observed claim must retain
 
 An `Observed` claim made from now on carries a receipt with every item below, or it is recorded as `UNVERIFIED` with the missing item named. The corpus's `run_record_fields` in [`evals/cases.json`](../evals/cases.json) are this schema in machine-checkable form, and [`tests/test_evals_corpus.py`](../tests/test_evals_corpus.py) refuses a corpus that drops one.
 
 - the case and run id;
-- the exact package commit;
+- the exact package commit, Git tree, and payload hash;
 - the host and host version, read from the session;
 - the model or model family and the effective effort where visible;
 - the fixture snapshot or its content hash;
@@ -49,7 +49,7 @@ An `Observed` claim made from now on carries a receipt with every item below, or
 - redaction notes;
 - the explicit stopping point and terminal state.
 
-A small run set is never converted into a percentage reliability claim. Two sessions per arm say what those sessions did.
+A small run set is never converted into a percentage reliability claim. Two sessions per arm say what those sessions did. The CTO instrument derives evidence per scenario and reports suite completion only as declared coverage. One successful run cannot label another scenario or host as observed.
 
 ## Deterministic package evidence
 
@@ -79,7 +79,7 @@ Claude runs use `--setting-sources ''` with `--strict-mcp-config` and the packag
 
 ## A corpus of cases, with nothing run in it
 
-[`evals/`](../evals/README.md) now holds three separate instruments: activation, forced-activation CTO behavior, and host smoke. The arm-aware catalog has twenty-four inherited cases over eighteen fixtures; twelve concrete minimum CTO scenarios separately cover small and intermittent bugs, idea triage, product ambiguity, consequential design, a large programme, material findings, process failure, false-fix review, read-only analysis, production preparation, and continuity. Host smoke keeps nine capabilities visible per host. Success observables are positive actions; required absence is recorded separately; activation, adherence, task success, technical quality, proportionality, and completion honesty do not substitute for one another; and one terminal-state table alone determines whether a landed observable may support `Observed`. Deterministic tests prove only shape and internal satisfiability. Every entry is `not_run` and `UNVERIFIED`.
+[`evals/`](../evals/README.md) now holds three separate instruments: activation, forced-activation CTO behavior, and host smoke. The arm-aware catalog has twenty-four inherited cases over eighteen fixtures; twelve CTO scenarios cover small and intermittent bugs, idea triage, product ambiguity, consequential design, a large programme, material findings, process failure, false-fix review, read-only analysis, production preparation, and continuity. Eight neutral autonomy cases form the minimum active suite; continuity remains a separate expensive host scenario. Method-leading prompts remain as adherence checks and neutral prompts test whether the virtual CTO chooses the method from the outcome. Each CTO scenario owns its receipts and evidence label. The suite reports coverage only, with host, arm, and trial kept separate. Host smoke keeps nine capabilities visible per host. Success observables are positive actions; required absence is recorded separately; activation, adherence, task success, technical quality, method selection, owner boundary, ceremony, owner questions, proportionality, completion honesty, and usage do not substitute for one another. Deterministic tests prove only shape and internal satisfiability. Every current CTO entry is `not_run` and `UNVERIFIED`.
 
 ## 2.x Observed behavior
 
@@ -357,7 +357,7 @@ Version 2.14.0 bounds the frontier by the result, adds defer as a direction outc
 
 One matched Claude Code pair was then run on a throwaway shop repository whose tracker held two takeable items on the payment path, one human-gated item on it, and two audit-derived infrastructure items off it, with the same Get5Stars-shaped prompt, settings sources and MCP disabled, the package passed as a session plugin, and the init event naming Claude Code 2.1.258, Opus 5, and the exact package path each time. Exact 2.13.1 and the candidate both did the same thing in about five minutes: closed the two path items, continued past the human gate rather than stopping at it, found that the payment adapter never charged anything and recorded that as the real blocker, marked both audit items proposed, put the backups-before-money question to the owner as a risk choice with a recommendation, and stopped with one batch. Both opened the frontier method. The pair shows that the new wording keeps a run moving through a human gate and does not add a question or a gate; it does not show the improvement, because the released text already behaved correctly on a five-minute fixture, as the 2.13.0 pairs also found. What the installed campaigns show and the fixture cannot is a run twenty hours in, holding records it wrote itself, with free delegate capacity and nothing left on the path.
 
-## 4.0 encoded Contract
+## 4.x encoded Contract
 
 What the current package's text requires, settled by reading it. Nothing here has a run behind it. The sentences live in [`SKILL.md`](../plugins/skiphow/skills/skiphow/SKILL.md) and its eight conditional playbooks.
 
@@ -380,15 +380,15 @@ What the current package's text requires, settled by reading it. Nothing here ha
 
 Whether any of that changes what a model does is the next section's question, and that section is empty.
 
-## 3.x and 4.0 Observed behavior
+## 3.x and 4.x Observed behavior
 
-None. No run has been made on any 3.x or 4.0 package. Every current behavioral claim is `UNVERIFIED`; the release ships on reasoning about the text and deterministic checks that start no model.
+None. No run has been made on any 3.x or 4.x package. Every current behavioral claim is `UNVERIFIED`; the release ships on reasoning about the text and deterministic checks that start no model.
 
 ## UNVERIFIED comparisons and capabilities
 
 - Whether the 2.14.0 frontier bound and defer outcome stop a long run when its result waits on the owner and only enabling work remains. One installed 2.13.0 campaign shows the drift with the 2.13.1 text in context, and a matched five-minute pair shows both packages already behaving correctly at that scale, so the fixture is not where the defect lives. The line closes only on the owner's next long installed campaign.
 - The outside read of a consequential design decision, as a rule, is gone. Ten runs made the decision well and none took an outside read; Codex had the method open in all five of its runs, no Claude session in the pass opened it at all, and three kernel wordings changed nothing on either host. Version 3.0.0 removed the mandatory read rather than reword it a fourth time, and removed the broad mandatory outside review with it; review is now scaled to the risk in front of the run. What is still open is narrower than the old line: whether a run scales review up and gets a read taken from a context that did not produce the decision, at a boundary that genuinely warrants one. Nothing measures that.
-- Delegation under the shipped wording. The current position, stated once here so other pages can link to it rather than restate it: controlled isolated runs do spawn delegates, and have since 2.15.0. Thirty spawns across the six dispatching runs of the 2.15.0 pair, fifteen on the released 2.15.0 tree, fifteen on 2.15.1, and eighty-nine across the eleven sessions of the plan-mode pass on exact `v2.16.0`. What no controlled run has demonstrated is the rest of it: no lane ran concurrently in a verified isolated checkout, no worktree was created, no unit was integrated separately as it landed, and one run placed all five of its lanes in a single checkout with the isolation rule in context. Delegation as an act is observed; delegation as this project describes it is not. The installed sessions above show delegation happening at scale but with the governing methods absent from context, so they say what delegation costs and not whether the wording works. The 2.15.0 kernel obligation is now measured to get `delegation` opened before the first dispatch, and one of those runs read it and routed nothing anyway. Whether the method's own rules hold once it is open is unmeasured. The lane-health guidance first reached a fixture run in the 2.16.1 plan-mode pass, as `execution-health`; it now sits inside `diagnosis`, and whether it changes a run is still unmeasured.
+- Delegation under the shipped wording. The detailed position lives here; public summaries preserve its version and limits. Controlled isolated runs do spawn delegates, and have since 2.15.0. Thirty spawns across the six dispatching runs of the 2.15.0 pair, fifteen on the released 2.15.0 tree, fifteen on 2.15.1, and eighty-nine across the eleven sessions of the plan-mode pass on exact `v2.16.0`. What no controlled run has demonstrated is the rest of it: no lane ran concurrently in a verified isolated checkout, no worktree was created, no unit was integrated separately as it landed, and one run placed all five of its lanes in a single checkout with the isolation rule in context. Delegation as an act is observed; delegation as this project describes it is not. The installed sessions above show delegation happening at scale but with the governing methods absent from context, so they say what delegation costs and not whether the wording works. The 2.15.0 kernel obligation is now measured to get `delegation` opened before the first dispatch, and one of those runs read it and routed nothing anyway. Whether the method's own rules hold once it is open is unmeasured. The lane-health guidance first reached a fixture run in the 2.16.1 plan-mode pass, as `execution-health`; it now sits inside `diagnosis`, and whether it changes a run is still unmeasured.
 - Whether the 2.12.0 observation rule reduces root context traffic or the reconciliation rule prevents integrated working state from accumulating. Both changes answer installed failures, but neither has run in a comparable session.
 - Whether a rule moved into the kernel is followed. The installed sessions carried the kernel's worktree-placement rule and one breached it anyway, so kernel placement is shown to change what is read and not yet what is done.
 - Whether routing a delegate down is cheaper in total rather than per token. No paired run measures it. What the 2026-09-02 scan adds is the cost of naming no level at all, which is not the same question.

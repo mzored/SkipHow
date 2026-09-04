@@ -1,6 +1,6 @@
 {
-  "corpus_version": 3,
-  "package_under_test": "4.0.0",
+  "corpus_version": 4,
+  "package_under_test": "4.0.1",
   "purpose": "Synthetic cases for three separate instruments: activation, forced-activation CTO behavior, and host smoke. Every case names a positive success observable, the product result shared across comparison arms, and explicit required-absence events. Nothing here has been run.",
   "not_a_gate": "No model run gates a pull request. python scripts/check.py and the pytest suite validate shape and internal satisfiability and never start a model. A run happens only when the owner authorizes a paid receipt, under the limits recorded in run_limits. A deterministic check passing is never evidence of behavior.",
   "evidence_labels": {
@@ -125,14 +125,18 @@
     "never": "Infer causation from an uncontrolled field transcript, or convert a small run set into a percentage reliability claim."
   },
   "run_record_fields": {
-    "run_id": "An identifier unique within the case.",
+    "run_id": "An identifier unique within the instrument.",
     "case": "The case id this run belongs to.",
     "arm": "Which of the arms above this run belongs to.",
+    "trial": "pilot, confirmation, or tie_break under run_limits.",
+    "package_version": "The package version the session carried.",
     "package_commit": "The exact commit of the package the session carried.",
+    "package_tree": "The exact Git tree of the package directory the session carried.",
+    "package_payload_sha256": "A SHA-256 digest of the package's sorted path-to-file-digest map.",
     "host": "The host that ran the session.",
     "host_version": "The host's own version string, read from the session, not from memory.",
     "model_family": "The model or model family the host reported, and the effective effort where visible.",
-    "fixture_snapshot": "The fixture id, the setup steps actually used to build the scratch copy, and a content hash of the built fixture.",
+    "fixture_snapshot": "An object with the fixture id, the setup steps actually used to build the scratch copy, and a SHA-256 content hash of the built fixture.",
     "owner_prompt": "The prompt sent, verbatim.",
     "subsequent_answers": "Every later owner turn, verbatim, in order.",
     "permission_configuration": "The permission mode and any allow or deny list the session ran under.",
@@ -319,6 +323,7 @@
       "result": {
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
         "arms_pending": [
           "m0-base-host",
           "m1-explicit-skiphow",
@@ -508,6 +513,7 @@
       "result": {
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
         "arms_pending": [
           "m0-base-host",
           "m1-explicit-skiphow",
@@ -717,6 +723,7 @@
       "result": {
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
         "arms_pending": [
           "m0-base-host",
           "m1-explicit-skiphow",
@@ -913,6 +920,7 @@
       "result": {
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
         "arms_pending": [
           "m0-base-host",
           "m1-explicit-skiphow",
@@ -1107,6 +1115,7 @@
       "result": {
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
         "arms_pending": [
           "m0-base-host",
           "m1-explicit-skiphow",
@@ -1267,6 +1276,7 @@
       "result": {
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
         "arms_pending": [
           "m0-base-host",
           "m1-explicit-skiphow",
@@ -1478,6 +1488,7 @@
       "result": {
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
         "arms_pending": [
           "m0-base-host",
           "m1-explicit-skiphow",
@@ -1670,6 +1681,7 @@
       "result": {
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
         "arms_pending": [
           "m0-base-host",
           "m1-explicit-skiphow",
@@ -1853,6 +1865,7 @@
       "result": {
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
         "arms_pending": [
           "m0-base-host",
           "m1-explicit-skiphow",
@@ -2041,6 +2054,7 @@
       "result": {
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
         "arms_pending": [
           "m0-base-host",
           "m1-explicit-skiphow",
@@ -2227,6 +2241,7 @@
       "result": {
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
         "arms_pending": [
           "m0-base-host",
           "m1-explicit-skiphow",
@@ -2423,6 +2438,7 @@
       "result": {
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
         "arms_pending": [
           "m0-base-host",
           "m1-explicit-skiphow",
@@ -2615,6 +2631,7 @@
       "result": {
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
         "arms_pending": [
           "m0-base-host",
           "m1-explicit-skiphow",
@@ -2832,6 +2849,7 @@
       "result": {
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
         "arms_pending": [
           "m0-base-host",
           "m1-explicit-skiphow",
@@ -3065,6 +3083,7 @@
       "result": {
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
         "arms_pending": [
           "m0-base-host",
           "m1-explicit-skiphow",
@@ -3237,6 +3256,7 @@
       "result": {
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
         "arms_pending": [
           "m0-base-host",
           "m1-explicit-skiphow",
@@ -3394,6 +3414,7 @@
       "result": {
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
         "arms_pending": [
           "m0-base-host",
           "m1-explicit-skiphow",
@@ -3559,6 +3580,7 @@
       "result": {
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
         "arms_pending": [
           "m0-base-host",
           "m1-explicit-skiphow",
@@ -3718,6 +3740,7 @@
       "result": {
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
         "arms_pending": [
           "m0-base-host",
           "m1-explicit-skiphow",
@@ -3912,6 +3935,7 @@
       "result": {
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
         "arms_pending": [
           "m0-base-host",
           "m1-explicit-skiphow",
@@ -4081,6 +4105,7 @@
       "result": {
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
         "arms_pending": [
           "m0-base-host",
           "m1-explicit-skiphow",
@@ -4322,6 +4347,7 @@
       "result": {
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
         "arms_pending": [
           "m0-base-host",
           "m1-explicit-skiphow",
@@ -4542,6 +4568,7 @@
       "result": {
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
         "arms_pending": [
           "m0-base-host",
           "m1-explicit-skiphow",
@@ -4829,6 +4856,7 @@
       "result": {
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
         "arms_pending": [
           "m0-base-host",
           "m1-explicit-skiphow",

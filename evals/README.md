@@ -21,7 +21,9 @@ the receipt every future run has to leave behind.
   the steps that turn it into a scratch repository, and the end-state signals
   a grader reads afterwards. Overlay fixtures derive from a base fixture and
   add or set up one thing.
-- [`cto-cases.json`](cto-cases.json) holds the twelve minimum CTO scenarios.
+- [`cto-cases.json`](cto-cases.json) holds twelve CTO scenarios. Eight neutral
+  autonomy cases form the minimum active suite; continuity and three additional
+  adherence surfaces remain available without inflating minimum coverage.
 - [`host-smoke.json`](host-smoke.json) keeps install, persistent setup,
   explicit fallback, playbook load, permissions, worktree isolation,
   compact/resume, disable, and uninstall visible for each supported host.
@@ -36,7 +38,10 @@ pytest suite in [`../tests/test_evals_corpus.py`](../tests/test_evals_corpus.py)
 validate this corpus and nothing else: that every case has its fields, that
 every event it names is declared, that every fixture exists, that every case
 links into the shipped contract, and that every encoded path is internally
-satisfiable. That check is deterministic and offline, like every
+satisfiable. For the CTO instrument it also binds each receipt to a declared
+case, prompt, fixture, host, arm, and trial; derives evidence per scenario;
+and keeps suite completion as coverage state rather than a behavioral label.
+That check is deterministic and offline, like every
 other check in this repository.
 
 A deterministic check passing says the corpus is well-formed. It never says
@@ -158,10 +163,14 @@ Each rule has a negative document in the test module that must be rejected.
 
 ## The cases
 
-The arm-aware catalog remains in `cases.json`. The twelve required virtual-CTO
-scenarios are concrete entries in `cto-cases.json`; each names a fixture,
-verbatim prompt, positive observable, and required absence. All are `not_run`
-and `UNVERIFIED`. They are specifications for bounded receipts, not claims.
+The arm-aware catalog remains in `cases.json`. Twelve virtual-CTO scenarios are
+concrete entries in `cto-cases.json`; eight neutral cases form the required
+active suite and continuity remains a separate expensive host scenario. Each names a fixture,
+verbatim adherence and autonomy prompts where both are useful, a positive
+observable, a required absence, and its own result. The suite has a coverage
+status, an autonomy-only scenario count, and separate counts for each host. It never
+has an aggregate behavioral label. All scenarios begin `not_run` and
+`UNVERIFIED`; they are specifications for bounded receipts, not claims.
 
 The maintainer-only case about missing check pins was removed from this
 corpus. The behavior it observed is repository policy in `AGENTS.md`, and
@@ -189,9 +198,10 @@ Runs are manual, bounded, and authorized in advance. Before launching:
    own built-ins, and nothing else. `../AGENTS.md` describes the isolation
    each host needs and the control run that proves it. Confirm it in the
    transcript before trusting anything built on it.
-5. Send the case's `owner_prompt` verbatim, then its `subsequent_answers` in
-   order, one turn at a time. The prompts do not name SkipHow, and neither do
-   the fixtures.
+5. Send the selected prompt verbatim, then every planned later owner answer in
+   order, one turn at a time. Record the prompt id and whether it is an
+   adherence or autonomy prompt. The prompts do not name SkipHow, and neither
+   do the fixtures.
 6. Stop the session as soon as the observable lands where the case says
    `stop_at_observable`. Paying for delegates to finish buys nothing when the
    observable is what happened at the dispatch.
@@ -203,25 +213,34 @@ more sessions.
 
 ## Recording a result
 
-Append one entry to the case's `result.runs` and drop the arm from
-`result.arms_pending`. The entry carries every field named in
-`run_record_fields` in [`cases.json`](cases.json), which is the receipt
-schema of `docs/evidence.md`: the run and case ids, the package commit, the
-host and its version, the model family and effort where visible, the fixture
-snapshot and hash, the prompt and later turns verbatim, the permission,
+Append one entry to the matching scenario's `result.runs`. The CTO entry adds
+the prompt id, fixture id, and `pilot`, `confirmation`, or `tie_break` trial to
+every field named in `run_record_fields` in [`cases.json`](cases.json), which
+is the receipt schema of `docs/evidence.md`: the run and case ids, the package
+version, commit, tree and payload hash, the host and its version, the model family and effort where visible,
+the fixture snapshot and hash, the prompt and later turns verbatim, the permission,
 sandbox, activation, instruction and isolation configuration, the control run, the
 activation event, the references loaded, the transcript or its privacy-safe
 excerpt and hash, the end state and destination receipts, the conditions
-observed, the events observed, the six dimensions, the terminal state and
+observed, the events observed, the ten separate scoring dimensions, the terminal state and
 stopping point, the grader and rationale, usage, and redaction notes.
 
-Set `result.status` to `run` once at least one run has landed its observable,
-and change `result.evidence_label` from `UNVERIFIED` to `Observed`. An
-`Observed` label says what those runs did. It never implies a rate, and a
-small run set is never converted into a percentage reliability claim.
+The validator derives every status. A scenario is `not_run` with no receipts,
+`partial` while a declared coverage cell is missing, and `run` once all of its
+minimum cells have receipts. The suite follows the same coverage rule and is
+`complete` even when a completed cell failed. Success is separate: an eligible
+terminal state makes that run `Observed`; it upgrades the scenario only when it
+used the suite's declared neutral autonomy style. A failed run is still recorded
+and cannot upgrade either label. Host coverage and observed counts remain visible,
+so one host never implies parity with the other. An `Observed` label says what
+identified runs did. It never implies a rate.
 
-A run that did not reach its observable is still recorded, and the case stays
-`UNVERIFIED`.
+`scripts/check_hosts.py --smoke` emits a host bundle whose `clean_install` and
+`uninstall` entries use the exact flat receipt schema in `host-smoke.json`.
+Those entries can be copied without translation into the matching host ledger.
+The release-runner matrix never ingests model-session receipts; activation,
+playbook, permission, isolation, and continuity observations stay in their
+external candidate ledger and in `docs/evidence.md`.
 
 ## Privacy and safety
 
