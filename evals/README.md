@@ -41,6 +41,8 @@ links into the shipped contract, and that every encoded path is internally
 satisfiable. For the CTO instrument it also binds each receipt to a declared
 case, prompt, fixture, host, arm, and trial; derives evidence per scenario;
 and keeps suite completion as coverage state rather than a behavioral label.
+The activation catalog applies the same receipt binding and derives each
+case's `observed_arms`, pending arms, status, and evidence label from its runs.
 That check is deterministic and offline, like every
 other check in this repository.
 

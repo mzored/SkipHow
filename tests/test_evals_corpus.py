@@ -1235,6 +1235,80 @@ def test_case_results_are_derived_without_claiming_unrun_arms() -> None:
     validate_case_results(corpus())
 
 
+def _add_case_run(data: dict, *, arm: str = "m1-explicit-skiphow") -> dict:
+    case = data["cases"][0]
+    run_id = f"{case['id']}-{arm}-pilot"
+    run = {field: "recorded" for field in data["run_record_fields"]}
+    run.update(
+        {
+            "run_id": run_id,
+            "case": case["id"],
+            "arm": arm,
+            "trial": "pilot",
+            "package_version": (ROOT / "VERSION").read_text(encoding="utf-8").strip(),
+            "package_commit": "a" * 40,
+            "package_tree": "b" * 40,
+            "package_payload_sha256": "c" * 64,
+            "host": "claude-code",
+            "owner_prompt": case["owner_prompt"],
+            "fixture_snapshot": {"id": case["fixture"], "setup": [], "sha256": "0" * 64},
+            "subsequent_answers": case["subsequent_answers"],
+            "activated": True,
+            "references_loaded": [],
+            "transcript_hash": hashlib.sha256(run_id.encode()).hexdigest(),
+            "destination_receipts": {},
+            "conditions_observed": {},
+            "expected_events_observed": [],
+            "forbidden_events_observed": [],
+            "activation_score": "pass",
+            "adherence": "pass",
+            "task_success": "pass",
+            "technical_quality": "pass",
+            "proportionality": "pass",
+            "completion_honesty": "pass",
+            "terminal_state": "task_completed",
+            "measures": {},
+            "usage": {},
+            "evidence_label": "Observed",
+        }
+    )
+    if arm == "m0-base-host":
+        for field in ("package_version", "package_commit", "package_tree", "package_payload_sha256"):
+            run[field] = "not_applicable"
+        run["activated"] = False
+        run["activation_score"] = "not_applicable"
+    case["result"] = {
+        "status": "partial",
+        "evidence_label": "Observed",
+        "observed_arms": [arm],
+        "arms_pending": [candidate for candidate in REQUIRED_ARMS if candidate != arm],
+        "runs": [run],
+    }
+    return run
+
+
+def test_case_result_accepts_one_arm_without_claiming_full_coverage() -> None:
+    data = corpus()
+    _add_case_run(data)
+    validate_case_results(
+        data,
+        identity_validator=lambda _: None,
+        historical_identity_validator=lambda *_args, **_kwargs: None,
+    )
+
+
+def test_base_case_receipt_cannot_carry_candidate_identity() -> None:
+    data = corpus()
+    run = _add_case_run(data, arm="m0-base-host")
+    run["package_commit"] = "a" * 40
+    with pytest.raises(AssertionError):
+        validate_case_results(
+            data,
+            identity_validator=lambda _: None,
+            historical_identity_validator=lambda *_args, **_kwargs: None,
+        )
+
+
 def test_the_corpus_stays_offline_privacy_safe_and_uncollected() -> None:
     for path in sorted(EVALS.rglob("*")):
         if not path.is_file():
