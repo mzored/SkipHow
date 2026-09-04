@@ -1,17 +1,18 @@
-"""Shape and semantic contracts for the offline behavioral eval corpus.
+"""Shape and satisfiability checks for the offline behavioral eval corpus.
 
 These tests read data. They never start a model, never reach the network, and
 never gate a pull request on a model run. Passing them says the corpus is
 well-formed and every case is possible to satisfy in every arm; it says nothing
 about what a model does.
 
-The semantic rules are the nine rejections of the evaluation redesign: a
+The validator rejects corpus documents that cannot represent a valid run: a
 package event required where no package is installed, a required event that an
 allowed path makes impossible, a delegate-brief or writer-isolation event
 required unconditionally, one event both required and forbidden, a case with no
 link into the shipped contract, a case that tests contributor policy, an
-observable that cannot be read from a transcript or an end state, and a case
-that cannot tell doing nothing from correct restraint. Each rule has a negative
+observable that cannot be read from a transcript or an end state, a forbidden
+or restraint-only observable, and a case that cannot tell doing nothing from
+correct restraint. Each rule has a negative
 document below that must be rejected.
 """
 
@@ -98,7 +99,7 @@ REQUIRED_RUN_FIELDS = frozenset(
         "subsequent_answers",
         "permission_configuration",
         "sandbox_configuration",
-        "hook_configuration",
+        "activation_configuration",
         "instruction_configuration",
         "isolation_configuration",
         "control_run",
@@ -116,6 +117,9 @@ REQUIRED_RUN_FIELDS = frozenset(
         "activation_score",
         "adherence",
         "task_success",
+        "technical_quality",
+        "proportionality",
+        "completion_honesty",
         "terminal_state",
         "stopping_point",
         "grader",
@@ -141,6 +145,16 @@ REQUIRED_MEASURES = frozenset(
         "requested_outcomes_omitted",
         "false_completion",
         "task_success",
+        "technical_quality",
+        "proportionality",
+        "completion_honesty",
+        "technical_questions_sent_to_owner",
+        "build_versus_reuse_quality",
+        "issue_quality_and_lost_findings",
+        "configured_model_and_effort",
+        "review_findings_caught_and_resolved",
+        "unnecessary_machinery",
+        "latency_tokens_and_cost",
         "final_answer_completeness",
         "usage",
     }
@@ -186,6 +200,8 @@ def heading_anchors(path: Path) -> set[str]:
 
 
 def hook_matchers() -> set[str]:
+    if not HOOKS.is_file():
+        return set()
     value = json.loads(HOOKS.read_text(encoding="utf-8"))
     return {
         entry["matcher"]
@@ -309,6 +325,10 @@ def validate_case(case: dict, data: dict) -> None:
     evidence = events[observable["event"]]["evidence"]
     if evidence != "both" and evidence != observable["source"]:
         fail(f"observable {observable['event']} is read from {observable['source']} but its evidence is {evidence}")
+    if observable["event"] not in common:
+        fail("observable must be one of common_success so it represents task success")
+    if events[observable["event"]]["shows"] != "action":
+        fail("observable must be a positive action, not restraint")
 
     # Per-arm rules.
     if set(case["arm_expectations"]) != set(arms):
@@ -402,7 +422,7 @@ def validate_corpus(data: dict) -> None:
 
 def test_corpus_declares_its_arms_measures_scores_and_run_record_fields() -> None:
     data = corpus()
-    assert data["corpus_version"] == 2
+    assert data["corpus_version"] == 3
     assert data["package_under_test"] == (ROOT / "VERSION").read_text(encoding="utf-8").strip()
     assert set(data["evidence_labels"]) == EVIDENCE_LABELS
     assert tuple(arm["id"] for arm in data["arms"]) == REQUIRED_ARMS
@@ -413,10 +433,115 @@ def test_corpus_declares_its_arms_measures_scores_and_run_record_fields() -> Non
     assert REQUIRED_MEASURES <= set(data["measures"])
     assert REQUIRED_RUN_FIELDS <= set(data["run_record_fields"])
     assert set(data["terminal_states"]) == TERMINAL_STATES
+    assert {
+        name: value["observed_eligible"] for name, value in data["terminal_states"].items()
+    } == {
+        "observable_reached": True,
+        "task_completed": True,
+        "stopped_at_observable": True,
+        "failed_to_reach_observable": False,
+    }
+    assert all(value["meaning"].strip() for value in data["terminal_states"].values())
+    assert set(data["instruments"]) == {"activation", "forced_activation_behavior", "host_smoke"}
     assert set(data["run_limits"]["sessions_per_arm"]) == {"pilot", "confirmation", "tie_break"}
-    # Activation, adherence and task success are scored separately, and the corpus says so.
-    assert {"activation", "adherence", "task_success", "separation", "alternatives", "conditional", "terminal_state"} <= set(data["scoring"])
+    # The evidence dimensions stay separate; one passing score cannot hide another.
+    assert {"activation", "adherence", "task_success", "technical_quality", "proportionality", "completion_honesty", "separation", "alternatives", "conditional", "final_state_predicates", "terminal_state"} <= set(data["scoring"])
     assert "grammar" in data["conditions"] and len(data["conditions"]) > 1
+
+
+def test_minimum_cto_scenarios_are_concrete_and_complete() -> None:
+    data = json.loads((EVALS / "cto-cases.json").read_text(encoding="utf-8"))
+    expected = {
+        "small_known_bug",
+        "unknown_intermittent_bug",
+        "bug_and_idea_list",
+        "product_ambiguity",
+        "consequential_technical_design",
+        "large_programme",
+        "discovered_material_defect",
+        "process_environment_defect",
+        "review_rejects_false_fix",
+        "analysis_only",
+        "production_boundary",
+        "continuity",
+    }
+    assert data["instrument"] == "forced_activation_behavior"
+    assert data["package_under_test"] == (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+    assert data["status"] in {"not_run", "run"}
+    assert data["evidence_label"] in {"UNVERIFIED", "Observed"}
+    assert isinstance(data["runs"], list)
+    assert data["receipt_schema"] == {
+        "source": "cases.json#run_record_fields",
+        "additional_fields": ["limitations"],
+    }
+    corpus_data = corpus()
+    receipt_fields = set(corpus_data["run_record_fields"]) | {"limitations"}
+    terminal_states = corpus_data["terminal_states"]
+    assert all(isinstance(run, dict) and receipt_fields <= set(run) for run in data["runs"])
+    assert all(run["terminal_state"] in terminal_states for run in data["runs"])
+    observed_eligible = any(terminal_states[run["terminal_state"]]["observed_eligible"] for run in data["runs"])
+    if not data["runs"]:
+        assert data["status"] == "not_run" and data["evidence_label"] == "UNVERIFIED"
+    else:
+        assert data["status"] == "run"
+        assert data["evidence_label"] == ("Observed" if observed_eligible else "UNVERIFIED")
+    assert {case["scenario"] for case in data["cases"]} == expected
+    assert len(data["cases"]) == len(expected)
+    compatible_fixtures = {
+        "small_known_bug": "orders-service",
+        "unknown_intermittent_bug": "intermittent-job-runner",
+        "bug_and_idea_list": "catalog-triage",
+        "product_ambiguity": "orders-service-cancellation",
+        "consequential_technical_design": "orders-service-partner",
+        "large_programme": "catalog-integration",
+        "discovered_material_defect": "billing-findings-with-backlog",
+        "process_environment_defect": "checks-process-failure",
+        "review_rejects_false_fix": "orders-service-false-fix",
+        "analysis_only": "adversarial-audit",
+        "production_boundary": "orders-service-release",
+        "continuity": "orders-service-continuity",
+    }
+    fixture_ids = {path.name for path in FIXTURES.iterdir() if path.is_dir()}
+    for case in data["cases"]:
+        assert case["fixture"] in fixture_ids
+        assert case["fixture"] == compatible_fixtures[case["scenario"]]
+        assert case["prompt"].strip()
+        assert case["positive_observable"].strip()
+        assert case["required_absence"] and all(item.strip() for item in case["required_absence"])
+
+
+def test_host_smoke_instrument_keeps_each_capability_visible() -> None:
+    data = json.loads((EVALS / "host-smoke.json").read_text(encoding="utf-8"))
+    assert data["instrument"] == "host_smoke"
+    assert data["package_under_test"] == (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+    expected_checks = {
+        "clean_install",
+        "persistent_setup",
+        "explicit_fallback",
+        "playbook_load",
+        "permissions",
+        "worktree_isolation",
+        "compact_resume",
+        "disable",
+        "uninstall",
+    }
+    assert set(data["checks"]) == expected_checks
+    assert all(spec["procedure"].strip() and spec["observable"].strip() for spec in data["checks"].values())
+    assert set(data["receipt_fields"]) == {
+        "package_commit", "host_version", "check", "configuration", "command_or_session",
+        "observable_evidence", "cleanup_result",
+    }
+    assert set(data["hosts"]) == {"claude-code", "codex"}
+    receipt_fields = set(data["receipt_fields"])
+    for host in data["hosts"].values():
+        assert set(host["results"]) == expected_checks
+        for result in host["results"].values():
+            assert result["status"] in {"PASS", "FAIL", "UNVERIFIED"}
+            if result["status"] == "UNVERIFIED":
+                assert result["receipt"] is None
+            else:
+                assert isinstance(result["receipt"], dict)
+                assert receipt_fields <= set(result["receipt"])
 
 
 def test_every_case_is_complete_and_uniquely_identified() -> None:
@@ -487,7 +612,8 @@ def test_every_referenced_fixture_exists_and_describes_itself() -> None:
         assert record["planted"] and record["setup"] and record["privacy"].strip()
         base = record.get("derives_from")
         assert base is None or base in directories
-    referenced = {case["fixture"] for case in cases()}
+    cto = json.loads((EVALS / "cto-cases.json").read_text(encoding="utf-8"))
+    referenced = {case["fixture"] for case in cases()} | {case["fixture"] for case in cto["cases"]}
     assert referenced <= directories
     # A fixture nothing points at is dead weight in a corpus this small.
     assert directories - referenced == set()
@@ -662,6 +788,18 @@ def test_rejects_an_observable_that_cannot_be_read_from_transcript_or_end_state(
     _rejects(case, data, "observable source must be transcript or end_state")
 
 
+def test_rejects_a_forbidden_or_restraint_only_observable() -> None:
+    data, case = _template()
+    case["observable"] = {"event": "owner-question-asked", "source": "transcript", "stop": "run_to_completion"}
+    _rejects(case, data, "observable must be one of common_success")
+    case["events"]["tree-unchanged"] = {
+        "description": "Nothing changed.", "kind": "task", "evidence": "end_state", "shows": "restraint",
+    }
+    case["common_success"]["all"].append("tree-unchanged")
+    case["observable"] = {"event": "tree-unchanged", "source": "end_state", "stop": "run_to_completion"}
+    _rejects(case, data, "observable must be a positive action")
+
+
 def test_rejects_a_case_that_cannot_distinguish_doing_nothing_from_restraint() -> None:
     data, case = _template()
     case["events"]["tree-unchanged"] = {
@@ -670,4 +808,5 @@ def test_rejects_a_case_that_cannot_distinguish_doing_nothing_from_restraint() -
     case["common_success"]["all"] = ["tree-unchanged"]
     for expectation in case["arm_expectations"].values():
         expectation["required"] = []
-    _rejects(case, data, "requires no positive act, so doing nothing would pass")
+    case["observable"] = {"event": "tree-unchanged", "source": "end_state", "stop": "run_to_completion"}
+    _rejects(case, data, "observable must be a positive action")

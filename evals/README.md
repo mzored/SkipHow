@@ -1,12 +1,10 @@
 # Behavioral eval corpus
 
-A small synthetic corpus for the behaviors the shipped contract requires:
-what a read-only request may do, where authority comes from and what a
-repository file or an issue can and cannot grant, whether a commit is owed and
-what a commit hook may not do, what a product choice does to the work around
-it, when a protected action needs an exact grant, what happens to work you do
-not own, what a delegate may write, when completion follows a destination, and
-what the continuity hook does at a session boundary.
+Three offline instruments for the shipped contract: activation cases, forced-
+activation virtual-CTO behavior cases, and a host smoke checklist. They keep
+policy adherence, task success, technical quality, proportionality, and honest
+completion separate. Required absence is explicit, while every success
+observable is a positive act rather than merely doing nothing.
 
 Nothing in this corpus has been run. Every case is recorded as `UNVERIFIED`,
 which is the honest state for a behavior no receipt has shown. See
@@ -23,8 +21,12 @@ the receipt every future run has to leave behind.
   the steps that turn it into a scratch repository, and the end-state signals
   a grader reads afterwards. Overlay fixtures derive from a base fixture and
   add or set up one thing.
+- [`cto-cases.json`](cto-cases.json) holds the twelve minimum CTO scenarios.
+- [`host-smoke.json`](host-smoke.json) keeps install, persistent setup,
+  explicit fallback, playbook load, permissions, worktree isolation,
+  compact/resume, disable, and uninstall visible for each supported host.
 
-Both are data. Neither starts a model, and neither is read at runtime by the
+All are data. None starts a model, and none is read at runtime by the
 shipped package.
 
 ## This is not a gate, and a passing check is not evidence
@@ -33,8 +35,8 @@ A model run never gates a pull request. `python scripts/check.py` and the
 pytest suite in [`../tests/test_evals_corpus.py`](../tests/test_evals_corpus.py)
 validate this corpus and nothing else: that every case has its fields, that
 every event it names is declared, that every fixture exists, that every case
-links into the shipped contract, and that every case is semantically possible
-to satisfy in every arm. That check is deterministic and offline, like every
+links into the shipped contract, and that every encoded path is internally
+satisfiable. That check is deterministic and offline, like every
 other check in this repository.
 
 A deterministic check passing says the corpus is well-formed. It never says
@@ -46,23 +48,29 @@ A case is run only when the owner authorizes a paid receipt.
 
 ## The arms
 
-Every case carries expectations for five arms, and a run belongs to exactly
-one of them. The arms use identical fixtures and identical prompts, or the
-comparison says nothing.
+The arm-aware catalog defines five possible arms, and a run belongs to one of
+them. A receipt selects only the arms that answer its question. Compared arms
+use identical fixtures and prompts, or the comparison says nothing.
 
 | Arm | What runs | Activation |
 |---|---|---|
 | `m0-base-host` (M0) | The host with its own built-ins and no SkipHow package. | Not applicable. No package-specific event may be required here. |
 | `m1-explicit-skiphow` (M1) | The candidate package, invoked explicitly by the owner prompt where the case expects activation: `$skiphow` on Codex, the namespaced skill on Claude Code. Where a case expects no activation, the prompt is sent bare and the arm observes an installed, uninvoked package. | Expected on positive cases, not expected on negative ones. |
-| `m2-implicit-discovery-hook` (M2) | The candidate package, selected by the host's own implicit discovery, with the current reminder hook active. | Expected on positive cases, not expected on negative ones. |
-| `m3-bootstrap-candidate` (M3) | The candidate bootstrap invariants present through a trusted host-native mechanism before the first consequential action, plus the SkipHow methods on demand. Whether the reminder hook ships in this arm is decided by the activation experiment, so hook events are permitted here and never required. | Expected on positive cases, not expected on negative ones. |
-| `m4-previous-full-skiphow` (M4) | The last full release before the current package, installed like M2. | As M2. Run only where a regression comparison materially helps. |
+| `m2-implicit-discovery-hook` (M2) | The candidate selected by native implicit discovery. The legacy id remains for receipt compatibility; 4.0 ships no hook. | Expected on positive cases, not expected on negative ones. |
+| `m3-bootstrap-candidate` (M3) | The candidate activation line in trusted global user instructions before consequential action, plus playbooks on demand. | Expected on current-project cases, not expected on unrelated ones. |
+| `m4-previous-full-skiphow` (M4) | Exact 3.0.1, including its historical reminder hook. | Run only where a regression comparison materially helps. |
+
+Activation normally uses the arms needed to distinguish install-only,
+explicit invocation, native discovery, and persistent setup. Forced-activation
+behavior defaults to M1 and adds M0 or M4 only where incremental value or a
+regression matters. Host smoke is a separate checklist and never becomes
+evidence of model behavior.
 
 ## The shape of a case
 
 A case names one fixture, one owner prompt, any later owner turns, and the
 sentences of the shipped contract it tests, as `contract_refs` pointing at a
-heading in `SKILL.md` or a reference file, or at a matcher in the hook file.
+heading in `SKILL.md` or a reference file.
 It also names the spec items it covers, in `spec_refs` and `acceptance`.
 
 Its `events` are a catalog. Each event says how it is read (`transcript`,
@@ -94,7 +102,7 @@ was made. A condition is one or more `variable == true|false` terms joined by
 
 ## How a case is scored
 
-Three scores are recorded for every run, and none stands in for another.
+Six dimensions are recorded for every run, and none stands in for another.
 
 Activation is whether the SkipHow owner skill was selected or loaded, read
 from the session transcript rather than from the model's own account of
@@ -108,6 +116,12 @@ scored only from the transcript and the fixture's end state.
 
 Task success is whether every event in `common_success` appeared. It is the
 same test in every arm.
+
+Technical quality asks whether the result addresses the cause and carries
+risk-scaled proof. Proportionality asks whether the run added only the records,
+delegates, worktrees, and review depth the request warranted. Completion
+honesty asks whether every requested outcome has a verified disposition and
+every gap remains visible.
 
 A run that expected activation and did not get it records activation `fail`,
 adherence `not_applicable`, and task success scored normally. A run whose arm
@@ -144,12 +158,10 @@ Each rule has a negative document in the test module that must be rejected.
 
 ## The cases
 
-The ten core microcases and three composed journeys of the redesign are
-present, with the cases that carried over from 3.0.0 migrated to the same
-shape. Every case's `spec_refs` names the microcase number, the requirement
-ids, and the acceptance sections it is traceable to. The journeys are defined
-in full and marked `not_run` like everything else; they are the last cases to
-run, not the first.
+The arm-aware catalog remains in `cases.json`. The twelve required virtual-CTO
+scenarios are concrete entries in `cto-cases.json`; each names a fixture,
+verbatim prompt, positive observable, and required absence. All are `not_run`
+and `UNVERIFIED`. They are specifications for bounded receipts, not claims.
 
 The maintainer-only case about missing check pins was removed from this
 corpus. The behavior it observed is repository policy in `AGENTS.md`, and
@@ -197,10 +209,10 @@ Append one entry to the case's `result.runs` and drop the arm from
 schema of `docs/evidence.md`: the run and case ids, the package commit, the
 host and its version, the model family and effort where visible, the fixture
 snapshot and hash, the prompt and later turns verbatim, the permission,
-sandbox, hook, instruction and isolation configuration, the control run, the
+sandbox, activation, instruction and isolation configuration, the control run, the
 activation event, the references loaded, the transcript or its privacy-safe
 excerpt and hash, the end state and destination receipts, the conditions
-observed, the events observed, the three scores, the terminal state and
+observed, the events observed, the six dimensions, the terminal state and
 stopping point, the grader and rationale, usage, and redaction notes.
 
 Set `result.status` to `run` once at least one run has landed its observable,

@@ -182,7 +182,7 @@ def test_adapted_skills_have_pinned_source_provenance() -> None:
 def test_session_hook_is_inert_when_it_ships() -> None:
     """Safety shape of the hook (spec 11.1), not its matcher topology (spec 11.2)."""
     hooks_dir = PLUGIN / "hooks"
-    if not hooks_dir.is_dir():
+    if not hooks_dir.is_dir() or not any(hooks_dir.iterdir()):
         return
     assert [path.name for path in hooks_dir.iterdir()] == ["hooks.json"]
     payload = json_object("plugins/skiphow/hooks/hooks.json")

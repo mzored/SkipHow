@@ -1,6 +1,6 @@
 # Design
 
-SkipHow is an owner–agent operating contract for verified project outcomes, shipped as an outcome-first orchestration policy at the instruction layer for strong coding agents. When selected or loaded, it supplies the policy for understanding an outcome, choosing the engineering method, instructing the host agent to coordinate work, and requiring fresh evidence before completion is reported. It is not a scheduler, database, model runner, control plane, or replacement for host permissions, and it proves nothing itself.
+SkipHow is an adaptive virtual CTO for founders and product owners, shipped as one Agent Skill for strong coding agents. The owner states a product outcome and keeps product decisions. The CTO kernel makes the lead agent accountable for translating the outcome, selecting the engineering method, managing durable work when warranted, choosing and supervising delegates, reviewing the result, integrating it, and showing fresh evidence. It is not a scheduler, database, model runner, control plane, or replacement for host permissions, and it proves nothing itself.
 
 ## Package shape
 
@@ -10,7 +10,6 @@ The repository ships one canonical package:
 plugins/skiphow/
   .codex-plugin/plugin.json
   .claude-plugin/plugin.json
-  hooks/hooks.json
   skills/skiphow/
     SKILL.md
     references/
@@ -18,11 +17,11 @@ plugins/skiphow/
 
 Both host manifests point to the same skill directory. The package contains one public skill named `skiphow`.
 
-## Kernel and methods
+## Kernel and playbooks
 
-`SKILL.md` is the owner kernel. It keeps authority, the trust boundary described below, autonomy, preservation of unrelated work, delegate safety, and honest completion in context.
+`SKILL.md` is the CTO kernel. It keeps the mission, decision rights, adaptive routing triggers, authority, trust, preservation of unrelated work, delegate safety, risk-scaled review, persistence, and honest completion in context.
 
-The files under `references/` hold eight focused modules: product, technical design, diagnosis, verification, delegation, tracked work, integration, and writing for agents. The agent opens one when the expected contribution justifies the cost, judged from the uncertainty, risk, duration, observed failure, or repository requirements in front of it. A matching condition is a reason to consider a module, not an obligation to read it. A missed method cannot grant more authority or weaken completion because those rules stay in the kernel.
+The files under `references/` hold eight focused playbooks: product, technical design, diagnosis, tracked work, delegation, integration, verification, and operations. Their observable triggers live in the kernel. A playbook carries technique, not a product-defining duty whose absence would erase CTO behavior.
 
 A module exists only if it meets four criteria: it covers one distinct failure domain, it gives a reason to consult it that is recognizable without opening it, it carries no critical invariant that is absent from the kernel, and it repeats no rule another module owns.
 
@@ -40,7 +39,7 @@ Authoritative project instructions may narrow scope, require safeguards, and def
 
 Instruction-level policy is probabilistic. It raises the odds that an agent behaves correctly and guarantees nothing, so a host-enforced control is preferred wherever the host provides one. Read-only profiles, sandboxes, permission prompts, and isolated checkouts do work that prose cannot.
 
-The package includes one continuity hook. It prints a short load or reload reminder for startup, clear, compact, and resume events. The compact and resume reminder applies only where SkipHow is already governing the request. The hook does not load the skill, restore context, write project state, change permissions, or guarantee activation; on Codex it does not run until the user trusts it. Explicit invocation is the reliable portable mode, and implicit selection is `UNVERIFIED`. The deterministic check validates the hook's safety shape, an echo-only command with a bounded timeout, and not its matcher topology.
+The package ships no hook. The former reminder did not load the skill or restore state, and no controlled comparison showed a benefit worth an executable surface. Default ordinary-language governance uses a reversible line in each host's trusted user instructions. Codex reads global `AGENTS.md`; Claude Code reads user `CLAUDE.md` and rules. This is the thinnest host-specific adapter available without a runtime or silent configuration mutation. Explicit invocation remains the fallback, and automatic selection stays `UNVERIFIED` until a retained run proves it.
 
 ## Public site visual system
 

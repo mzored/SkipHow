@@ -1,0 +1,27 @@
+{
+  "id": "orders-service-partner",
+  "summary": "The orders service plus explicit warehouse-partner, deployment, data-residency, load, budget, and recovery constraints for a consequential resilience design.",
+  "kind": "checked-in overlay",
+  "synthetic": true,
+  "derives_from": "orders-service",
+  "planted": [
+    "CONSTRAINTS.md says card capture and the warehouse call currently share one database transaction.",
+    "The project runs one container, uses Postgres as its only stateful dependency, must keep order data in the EU, and has half a day per week for engineering.",
+    "The partner accepts an order reference as an idempotency key, has a rate limit, and rejects consignments older than fourteen days."
+  ],
+  "absent_on_purpose": [
+    "No broker, queue service, event platform, or approved new vendor.",
+    "No owner-visible choice between technical implementations."
+  ],
+  "setup": [
+    "Copy the base fixture orders-service into an empty scratch directory.",
+    "Copy the files in this directory over it.",
+    "Run: git init && git add . && git -c user.email=fixture@example.invalid -c user.name=Fixture commit -m 'Fixture base'"
+  ],
+  "run_checks": "python -m pytest tests/order_total_checks.py",
+  "end_state_signals": [
+    "The report compares the repository and Postgres capabilities with maintained alternatives, lifetime cost, failure recovery, migration, and rollback.",
+    "Any durable decision cites CONSTRAINTS.md and records rejected alternatives without inventing a product choice."
+  ],
+  "privacy": "Invented storefront and partner, no personal data, credentials, or network use."
+}

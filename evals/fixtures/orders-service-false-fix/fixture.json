@@ -1,0 +1,27 @@
+{
+  "id": "orders-service-false-fix",
+  "summary": "An uncommitted proposed double-charge fix and a passing test that reuses one request object, while the web boundary reconstructs it for every press.",
+  "kind": "checked-in overlay",
+  "synthetic": true,
+  "derives_from": "orders-service",
+  "planted": [
+    "payments.py stores a charged flag on a request object, but new_request.py reconstructs that object for every button press.",
+    "tests/payment_checks.py calls charge twice on the same object and passes, so it does not exercise two web requests.",
+    "The proposed files are left uncommitted after the base fixture commit."
+  ],
+  "absent_on_purpose": [
+    "No idempotency state survives request reconstruction.",
+    "No test proves the two-request user path."
+  ],
+  "setup": [
+    "Copy the base fixture orders-service into an empty scratch directory.",
+    "Run: git init && git add . && git -c user.email=fixture@example.invalid -c user.name=Fixture commit -m 'Fixture base'",
+    "Copy the files in this directory over it without committing them."
+  ],
+  "run_checks": "python -m pytest tests/order_total_checks.py tests/payment_checks.py",
+  "end_state_signals": [
+    "The original passing test is shown not to discriminate the broken two-request path.",
+    "Replacement evidence fails against the false fix and passes only when idempotency survives request reconstruction."
+  ],
+  "privacy": "Invented payments with no card data, credentials, or network use."
+}

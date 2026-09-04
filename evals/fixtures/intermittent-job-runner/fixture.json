@@ -1,0 +1,24 @@
+{
+  "id": "intermittent-job-runner",
+  "summary": "A tiny job runner whose use of a set makes execution order vary with Python's hash seed, while its check requires stable priority order.",
+  "kind": "checked-in fixture",
+  "synthetic": true,
+  "planted": [
+    "runner.py converts ready jobs to a set before iteration.",
+    "tests/job_runner_checks.py expects priority order and fails under some PYTHONHASHSEED values."
+  ],
+  "absent_on_purpose": [
+    "No retry plugin, quarantine, tolerance, or permitted seed pin.",
+    "No tracker, remote, or workflow instructions."
+  ],
+  "setup": [
+    "Copy this fixture into an empty scratch directory.",
+    "Run: git init && git add . && git -c user.email=fixture@example.invalid -c user.name=Fixture commit -m 'Fixture base'"
+  ],
+  "run_checks": "for seed in 1 2 3 4 5 6 7 8 9 10; do PYTHONHASHSEED=$seed python -m pytest -q tests/job_runner_checks.py || exit 1; done",
+  "end_state_signals": [
+    "The check fails for at least one recorded seed before the repair and passes across the recorded seed set after it.",
+    "runner.py preserves stable priority order without depending on PYTHONHASHSEED."
+  ],
+  "privacy": "Invented jobs, no personal data, credentials, or network use."
+}

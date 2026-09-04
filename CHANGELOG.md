@@ -2,6 +2,35 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 4.0.0 (2026-09-04)
+
+SkipHow is again an adaptive virtual CTO rather than only a compact authority contract. One accountable lead agent owns the technical lifecycle from current-state inspection through research, architecture, planning, implementation, review, integration, verification, and operational learning, while the owner keeps product choices and protected actions. This changes the owner-facing role and default activation contract, so it is a major release. No model run has exercised this wording: the behavior is `UNVERIFIED` and the release rests on the encoded contract and deterministic checks.
+
+### Changed
+
+- The always-loaded kernel now carries the CTO responsibilities and the observable conditions that trigger them. It requires current-state reconciliation, build-versus-reuse research, proportionate end-to-end decomposition, deliberate model and effort configuration, risk-scaled review of every change, durable disposition of material findings, process and environment diagnosis, and proof at the authorized destination.
+- The owner boundary is narrower and clearer. The agent owns engineering choices and asks the owner only for unresolved product consequences, an exact protected-action grant, or an explicitly human step. Capture and triage requests may write the named records; read-only analysis may not.
+- Existing project tracking becomes an adaptive engineering tool for programmes, multi-session or multi-writer work, durable decisions, and separable material defects. SkipHow still creates no tracker, schema, or tracking convention.
+- Focused guidance remains eight conditional playbooks. `operations` replaces contributor-only prompt-writing guidance and covers feedback loops, releasability, work-in-progress, lifetime cost, and learning from system failures.
+- Default ordinary-language governance now uses one reversible line in the host's trusted global user instructions. Explicit invocation remains the diagnostic fallback. The support matrix distinguishes documented loading from unmeasured automatic selection.
+- The evaluation corpus separates activation, forced-activation behavior, and host smoke; records positive success observables separately from required absence; centralizes terminal-state evidence eligibility; and adds technical quality, proportionality, and completion honesty as separate scoring dimensions. Every model case remains `UNVERIFIED`.
+
+### Removed
+
+- The reminder hook. It printed text but neither loaded the policy nor restored state, and no controlled comparison justified its executable surface.
+- `writing-for-agents` from the runtime package. Contributor prompt rules remain repository policy; they are not a virtual-CTO playbook.
+- Fixed ceremony from the earlier autonomous-CTO design: prescribed control loops, state databases, leases, mandatory role counts, and owner-operated stages. Host sessions, permissions, worktrees, waits, Git, CI, and the project's existing tracker provide those mechanics when useful.
+
+### Review
+
+- Independent review found and the release fixes four contract defects: protected grants were excluded by an over-broad product-question condition, a tracker paragraph counted obsolete authorization grounds, public documentation retained the narrower 3.x tracking contract, and hook tests still depended on the deleted package file.
+- The review also found stale hook arms and missing CTO scenarios in the evaluation design, stale 3.x evidence and activation claims, and insufficient regression guards for the CTO kernel. Those qualified findings were fixed before release. Pure rewording preferences were not applied.
+
+### Evidence
+
+- `python scripts/check.py`, `git diff --check`, and the host capability matrix are the release gates. Host or behavior rows without a fresh receipt remain visible as `UNVERIFIED`.
+- Historical 2.x receipts informed the restoration: risk-scaled independent review caught false fixes; method and model-routing guidance often failed to reach long sessions; false worktree isolation destroyed peer work; and large fixed orchestration machinery consumed time without necessarily producing product evidence. No controlled run compares 4.0 with 3.0.1 or a base host.
+
 ## 3.0.1 (2026-09-04)
 
 Corrections that pull three default side effects back inside the contract 3.0.0 already promised, and a repository hardened around them. Nothing here widens what a request grants. A run commits less often, never repairs under a review-only request, and leaves earlier runs' branches alone unless asked; an owner who relied on any of the old defaults gets the same result by asking for it. The behavioral corpus, the release pipeline, the host matrix, and the deterministic validator were reworked to match. No run has been made on this package or on any 3.x package: every behavioral claim below is the text's, and stays `UNVERIFIED`.
