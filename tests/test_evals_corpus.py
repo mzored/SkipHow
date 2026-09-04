@@ -712,7 +712,15 @@ def test_minimum_cto_scenarios_are_concrete_and_complete() -> None:
 
 
 def _cto_document() -> dict:
-    return json.loads((EVALS / "cto-cases.json").read_text(encoding="utf-8"))
+    data = json.loads((EVALS / "cto-cases.json").read_text(encoding="utf-8"))
+    for case in data["cases"]:
+        case["result"] = {"status": "not_run", "evidence_label": "UNVERIFIED", "runs": []}
+    data["suite_status"] = "not_run"
+    data["summary"]["observed_scenarios"] = 0
+    for host in data["summary"]["by_host"].values():
+        host["observed_scenarios"] = 0
+        host["covered_minimum_scenarios"] = 0
+    return data
 
 
 def _validate_synthetic_cto(data: dict) -> None:

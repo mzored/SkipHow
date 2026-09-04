@@ -46,7 +46,7 @@ page under `learn.chatgpt.com`; the redirect target is the page actually read.
 
 | Capability | What the source says | Source | Verified | Tested version | Status |
 | --- | --- | --- | --- | --- | --- |
-| Skill loading | Plugin skills are discovered at `<plugin>/skills/<name>/SKILL.md` and namespaced `/<plugin>:<skill>`. The description sits in context and the body loads on invocation; description plus `when_to_use` is truncated at 1,536 characters in the listing. Both explicit `/name` and automatic invocation are available unless `disable-model-invocation` or `user-invocable` restricts them. | [Skills](https://code.claude.com/docs/en/skills) | 2026-09-04 | none | `UNVERIFIED` (documented; no activation run on record) |
+| Skill loading | Plugin skills are discovered at `<plugin>/skills/<name>/SKILL.md` and namespaced `/<plugin>:<skill>`. The description sits in context and the body loads on invocation; description plus `when_to_use` is truncated at 1,536 characters in the listing. Both explicit `/name` and automatic invocation are available unless `disable-model-invocation` or `user-invocable` restricts them. | [Skills](https://code.claude.com/docs/en/skills) | 2026-09-04 | 2.1.260 | `PASS` for explicit invocation of exact 4.0.1 in the retained pilots; automatic selection remains `UNVERIFIED` and did not occur in one bare-prompt pilot |
 | Persistent instruction loading | User `CLAUDE.md` and user rules apply to every project. The optional SkipHow activation line is added without replacing existing instructions and removed to disable it. The file is behavioral guidance, not client enforcement. | [Memory](https://code.claude.com/docs/en/memory) | 2026-09-04 | none | `UNVERIFIED` (documented loading; no automatic-selection run) |
 | Per-agent read-only controls | Subagent frontmatter takes a `tools` allowlist, `disallowedTools`, and `permissionMode`, whose values include `plan` for read-only exploration. | [Subagents](https://code.claude.com/docs/en/sub-agents) | 2026-09-04 | none | `UNVERIFIED` (documented) |
 | Worktree isolation | `isolation: worktree` runs a subagent in a temporary git worktree. | [Subagents](https://code.claude.com/docs/en/sub-agents) | 2026-09-04 | none | `UNVERIFIED` (documented) |
@@ -80,8 +80,10 @@ than the CLI.
 | IDE extension | Does not support plugins. Whether the same skill loads there as a standalone `.agents/skills` entry is not stated. | 2026-09-04 | `UNVERIFIED` (unsupported as a plugin per the page) |
 | Cloud and web Codex | Not mentioned on the page read. | 2026-09-04 | `UNVERIFIED` |
 
-Behavioral status is `UNVERIFIED` on both hosts, and it is a separate claim from every row
-above. No host documents that identical instruction text produces equivalent behavior,
+Behavioral coverage is partial on Claude Code and `UNVERIFIED` on Codex, and it is a
+separate claim from every row above. Four of twelve current CTO scenarios have eligible
+Claude receipts; four other minimum scenarios failed their observable. No host documents
+that identical instruction text produces equivalent behavior,
 and the two loading models differ materially: one keeps every description in context,
 the other lists a capped inventory and loads the file on selection. What runs have and
 have not shown is in [current evidence](docs/evidence.md).

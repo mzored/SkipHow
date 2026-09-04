@@ -6,8 +6,10 @@ policy adherence, task success, technical quality, proportionality, and honest
 completion separate. Required absence is explicit, while every success
 observable is a positive act rather than merely doing nothing.
 
-Nothing in this corpus has been run. Every case is recorded as `UNVERIFIED`,
-which is the honest state for a behavior no receipt has shown. See
+The 4.0.1 ledger contains a bounded Claude Code pilot on each of the eight
+minimum CTO scenarios and one confirmation. Four scenarios have eligible
+`Observed` receipts; four failed to reach their observable. Coverage remains
+partial, every Codex cell is `UNVERIFIED`, and no rate is inferred. See
 [`../docs/evidence.md`](../docs/evidence.md) for what the labels mean and for
 the receipt every future run has to leave behind.
 
@@ -171,8 +173,8 @@ active suite and continuity remains a separate expensive host scenario. Each nam
 verbatim adherence and autonomy prompts where both are useful, a positive
 observable, a required absence, and its own result. The suite has a coverage
 status, an autonomy-only scenario count, and separate counts for each host. It never
-has an aggregate behavioral label. All scenarios begin `not_run` and
-`UNVERIFIED`; they are specifications for bounded receipts, not claims.
+has an aggregate behavioral label. Unrun scenarios remain `not_run` and
+`UNVERIFIED`; recorded scenarios derive their state from their own receipts.
 
 The maintainer-only case about missing check pins was removed from this
 corpus. The behavior it observed is repository policy in `AGENTS.md`, and

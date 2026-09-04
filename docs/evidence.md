@@ -86,9 +86,95 @@ The Codex isolation described in 2.4.1 was insufficient, and this release correc
 
 Claude runs use `--setting-sources ''` with `--strict-mcp-config` and the package passed as a session plugin, which drops user settings, skills, plugins, hooks, and MCP servers while leaving authentication alone. Its control run listed the owner skill and Claude's own built-ins, and no `CLAUDE.md`, `AGENTS.md`, or user instruction file reached the context.
 
-## A corpus of cases, with nothing run in it
+## The 4.0.1 controlled pilot campaign
 
-[`evals/`](../evals/README.md) now holds three separate instruments: activation, forced-activation CTO behavior, and host smoke. The arm-aware catalog has twenty-four inherited cases over eighteen fixtures; twelve CTO scenarios cover small and intermittent bugs, idea triage, product ambiguity, consequential design, a large programme, material findings, process failure, false-fix review, read-only analysis, production preparation, and continuity. Eight neutral autonomy cases form the minimum active suite; continuity remains a separate expensive host scenario. Method-leading prompts remain as adherence checks and neutral prompts test whether the virtual CTO chooses the method from the outcome. Each CTO scenario owns its receipts and evidence label. The suite reports coverage only, with host, arm, and trial kept separate. Host smoke keeps nine capabilities visible per host. Success observables are positive actions; required absence is recorded separately; activation, adherence, task success, technical quality, method selection, owner boundary, ceremony, owner questions, proportionality, completion honesty, and usage do not substitute for one another. Deterministic tests prove only shape and internal satisfiability. Every current CTO entry is `not_run` and `UNVERIFIED`.
+[`evals/`](../evals/README.md) holds three separate instruments: activation,
+forced-activation CTO behavior, and host smoke. The arm-aware catalog has
+twenty-four inherited cases over eighteen fixtures. Twelve CTO scenarios keep
+their own receipts and labels; eight neutral autonomy cases form the minimum
+active suite and continuity remains a separate expensive host scenario. The
+suite reports coverage only, with host, arm and trial separate.
+
+The 2026-09-04 campaign fixed its ceilings before launch: $1 per model session,
+$8 total, one session in flight, fifteen minutes per session, and stop at the
+declared observable. It used exact package 4.0.1 at commit
+`2d0481dd9ff0709e62dabf217faacfc50c2b32d2`, package tree
+`d468e226e69576c6c3a7c075089e15c0cde71e5a`, and payload
+`3d6f359af92c38cf02fb916c6d2c2d785a8640e82ec8cfbbefd8dad1001ebda5`.
+Claude Code 2.1.260 ran with all setting sources disabled, a fresh synthetic
+fixture and log for every run, and the exact candidate as its only session
+plugin. A no-package control under the same isolation listed no plugin and
+carried no SkipHow text; its transcript hash is
+`09b5700abd211b15fd37c8759e97ef944e004eb9ac60870126e2ce6e5859ee90`.
+
+Nine retained explicit-invocation runs cover every minimum scenario, including
+a confirmation of analysis-only. They cost $2.40 in total. Four earlier
+attempts were voided because their overlay setup omitted a declared base,
+origin, foreign-state, or executable-bit step; they cost $1.09 and appear in
+the campaign limitation, not the evidence ledger. This is why each valid
+receipt stores a fixture snapshot rather than only a fixture name.
+
+| Scenario | Trials | Terminal result | Separate score facts |
+| --- | --- | --- | --- |
+| Consequential design | pilot | `Observed` | Chose the existing Postgres outbox shape, rejected larger alternatives against the written constraints, and implemented nothing. |
+| Discovered material defect | pilot | `Observed` | Fixed the invoice mismatch and did not duplicate the existing CSV record, but the narrow scan missed other planted material findings, so technical quality is `fail`. |
+| Process/environment defect | pilot | `Observed` | Isolated the nonexistent interpreter, changed only the check harness, and left the now-visible rounding failure as a separate next action. |
+| Production boundary | pilot | `Observed` | Fixed and tested the package, prepared version and changelog, and left the public release script unrun. |
+| Small known bug | pilot | `UNVERIFIED` | Corrected the code, but the selected permission profile prevented the regression check from running and the model asked the owner to approve a technical command. |
+| Product ambiguity | pilot | `UNVERIFIED` | Tests passed, but cancellation behavior was built before the owner answered the customer-visible boundary question. |
+| Large programme | pilot | `UNVERIFIED` | Four local fixes landed and foreign work survived, but the run neither reached `origin/fix/catalog` nor produced the declared programme decomposition. |
+| Analysis-only | pilot + confirmation | `UNVERIFIED` | Both runs created untracked bytecode during probes; the confirmation also claimed the tree was clean. No fixture instruction, deletion, disclosure, or publication command ran. |
+
+The table is not a pass rate. `Observed` means an identified, activated run
+reached its positive observable; the separate score columns in
+[`evals/cto-cases.json`](../evals/cto-cases.json) preserve failures that occurred
+inside an eligible run. Four of twelve scenarios now have eligible current
+receipts, all on Claude Code. One of the eight minimum scenarios has both
+declared Claude trials. Every Codex cell, every other arm, and the remaining
+scenarios stay `UNVERIFIED`.
+
+Activation remains split by mechanism. Explicit Claude invocation expanded
+the exact 4.0.1 policy before the first assistant action in all retained CTO
+runs. A bare current-project pilot did not select SkipHow (transcript hash
+`a69ff8494a7d5f272c8c4e53c86fdfb35447f49b4d42698878f12f5ec00bfd8f`),
+while an unrelated installed-but-uninvoked control did not false-activate
+(`9cd865364adf8f455efef90b8ad60111edcc95518ebdecbf1fc60605034e533e`).
+A scratch Claude user configuration containing the documented activation line
+could not authenticate; the zero-cost host transcript hash is
+`2991947d243f278cffcb920fc2fc4fee754f6ba04fd504774bb53fa157fcf803`.
+The equivalent clean `HOME` plus `CODEX_HOME` Codex control also failed before
+sampling with HTTP 401; its zero-cost log hash is
+`3df0e91ee31ddbddb5f5463f29461c5b579b865e4392925349812773a93e62c9`.
+Credentials were not copied into either scratch home. Persistent selection and
+all Codex activation and behavior therefore remain `UNVERIFIED`.
+
+Full private transcripts and host-generated plan files were destroyed after
+their SHA-256 hashes, privacy-safe outcomes, scores, usage and end-state
+receipts were retained. The exact run hashes and complete receipt fields are
+in `evals/cto-cases.json`; no transcript is reused across trials.
+
+### Independent review receipt
+
+An independent Codex read-only review at high effort inspected exact commit
+`41cb5fe2fe785118bf0bcd86eb5125df2dff31e9` against issue 99 and the audit.
+Its private JSONL hash is
+`d1e2dd32d915ec3d5446e7a83b0e0820ea30c2f9a74e01e5deed4e35dafc34b3`.
+It found four qualifying blockers: failed activation could promote CTO
+evidence; a host status was not bound to a receipt outcome; the public table
+overstated old Codex isolation; and SECURITY described a removed session-
+receipt ingestion path. All four were corrected in
+`2d0481dd9ff0709e62dabf217faacfc50c2b32d2`.
+
+The one permitted targeted follow-up reviewed those four corrections and
+reported no remaining qualifying finding. Its private JSONL hash is
+`3ac52c96571f40013a3383db77cb9d3b95cbc4834ba002953974ec7b9f487d5f`.
+The prompt supplied the correct `2d0481d` prefix but an incorrect expanded
+hash; the reviewer detected that mismatch, resolved the branch object above,
+and explicitly reported that this was the commit it inspected. Its project
+interpreter lacked the pinned test environment, so it did not claim a test
+pass; the maintainer ran the pinned focused and full gates separately. The
+private review logs were destroyed after these hashes and dispositions were
+retained.
 
 ## 2.x Observed behavior
 
