@@ -6,10 +6,12 @@ policy adherence, task success, technical quality, proportionality, and honest
 completion separate. Required absence is explicit, while every success
 observable is a positive act rather than merely doing nothing.
 
-The 4.0.1 ledger contains a bounded Claude Code pilot on each of the eight
-minimum CTO scenarios and one confirmation. Four scenarios have eligible
-`Observed` receipts; four failed to reach their observable. Coverage remains
-partial, every Codex cell is `UNVERIFIED`, and no rate is inferred. See
+The 4.0.1 ledger contains eight retained Claude Code runs across seven of the
+eight minimum CTO scenarios, including one confirmation. None has the fixture
+manifest and concrete end-state artifact now required for an `Observed`
+receipt. Five setup attempts, including the process-fixture run, were voided.
+Coverage remains partial, every behavioral claim is `UNVERIFIED`, and no rate
+is inferred. See
 [`../docs/evidence.md`](../docs/evidence.md) for what the labels mean and for
 the receipt every future run has to leave behind.
 
@@ -193,8 +195,11 @@ Runs are manual, bounded, and authorized in advance. Before launching:
    the stopping condition.
 3. Build the fixture. Copy the fixture directory into an empty scratch
    directory outside any repository, follow the `setup` steps in its
-   `fixture.json`, record the content hash and the pre-session state the
-   `end_state_signals` name, and give the run its own copy and its own log.
+   `fixture.json`, and give the run its own copy and log. Record the exact
+   setup and deterministic revision of the retained source layers. Also retain
+   a canonical manifest of the built pre-session worktree (regular files,
+   modes, and hashes, excluding `.git`) and its hash. A historical bare hash is
+   only an attestation and cannot support an `Observed` label.
    Two runs sharing one directory destroy each other's evidence. Several
    fixtures write a marker file one directory above the repository when an
    inert script runs; confirm it is absent before the session starts.
@@ -222,18 +227,21 @@ the prompt id, fixture id, and `pilot`, `confirmation`, or `tie_break` trial to
 every field named in `run_record_fields` in [`cases.json`](cases.json), which
 is the receipt schema of `docs/evidence.md`: the run and case ids, the package
 version, commit, tree and payload hash, the host and its version, the model family and effort where visible,
-the fixture snapshot and hash, the prompt and later turns verbatim, the permission,
+the fixture source revision, built-content manifest and hash, the prompt and later turns verbatim, the permission,
 sandbox, activation, instruction and isolation configuration, the control run, the
 activation event, the references loaded, the transcript or its privacy-safe
-excerpt and hash, the end state and destination receipts, the conditions
+excerpt and hash, the end state, its retained tree, diff, manifest, file, or
+marker artifacts, and destination receipts, the conditions
 observed, the events observed, the ten separate scoring dimensions, the terminal state and
-stopping point, the grader and rationale, usage, and redaction notes.
+stopping point, the grader and rationale, usage, redaction notes, and the
+validator-derived receipt-completeness state.
 
 The validator derives every status. A scenario is `not_run` with no receipts,
 `partial` while a declared coverage cell is missing, and `run` once all of its
-minimum cells have receipts. The suite follows the same coverage rule and is
+minimum cells have complete receipts. A complete receipt has a verified
+pre-session manifest and at least one retained end-state artifact. The suite follows the same coverage rule and is
 `complete` even when a completed cell failed. Success is separate: an eligible
-terminal state makes that run `Observed`; it upgrades the scenario only when it
+terminal state plus a complete receipt makes that run `Observed`; it upgrades the scenario only when it
 used the suite's declared neutral autonomy style. A failed run is still recorded
 and cannot upgrade either label. Host coverage and observed counts remain visible,
 so one host never implies parity with the other. An `Observed` label says what

@@ -25,15 +25,15 @@ Every behavioral claim on this page sits in one of four sections, and a claim ne
 
 An old run does not support a new behavioral rewrite. The 4.x CTO contract replaced material 3.x wording, so the first section is history that informed the change. Any current observation must come from a retained receipt under the requirements below.
 
-## What a future Observed claim must retain
+## What an Observed claim must retain
 
-An `Observed` claim made from now on carries a receipt with every item below, or it is recorded as `UNVERIFIED` with the missing item named. The corpus's `run_record_fields` in [`evals/cases.json`](../evals/cases.json) are this schema in machine-checkable form, and [`tests/test_evals_corpus.py`](../tests/test_evals_corpus.py) refuses a corpus that drops one.
+An `Observed` claim carries a receipt with every item below, or it is recorded as `UNVERIFIED` with the missing item named. The corpus's `run_record_fields` in [`evals/cases.json`](../evals/cases.json) are this schema in machine-checkable form, and [`tests/test_evals_corpus.py`](../tests/test_evals_corpus.py) refuses a corpus that drops one.
 
 - the case and run id;
 - the exact package commit, Git tree, and payload hash;
 - the host and host version, read from the session;
 - the model or model family and the effective effort where visible;
-- the fixture snapshot or its content hash;
+- the exact fixture setup, a deterministic revision of its retained source layers, and a canonical manifest and hash of the built pre-session worktree;
 - the exact owner prompt and every subsequent turn, verbatim;
 - the permission, sandbox, network, activation, and instruction configuration;
 - the control run proving isolation from maintainer context;
@@ -41,7 +41,7 @@ An `Observed` claim made from now on carries a receipt with every item below, or
 - the references loaded, in order;
 - the relevant transcript, or a privacy-safe excerpt of it;
 - the transcript hash where the full transcript stays private;
-- the end-state tree, diff, or hash;
+- at least one retained end-state tree, diff, manifest, file, or marker hash;
 - the test receipts and, for a case with a named destination, what the destination itself showed;
 - the expected and forbidden events observed;
 - the grader's identity and rationale;
@@ -107,31 +107,39 @@ plugin. A no-package control under the same isolation listed no plugin and
 carried no SkipHow text; its transcript hash is
 `09b5700abd211b15fd37c8759e97ef944e004eb9ac60870126e2ce6e5859ee90`.
 
-Nine retained explicit-invocation runs cover every minimum scenario, including
-a confirmation of analysis-only. They cost $2.40 in total. Four earlier
-attempts were voided because their overlay setup omitted a declared base,
-origin, foreign-state, or executable-bit step; they cost $1.09 and appear in
-the campaign limitation, not the evidence ledger. This is why each valid
-receipt stores a fixture snapshot rather than only a fixture name.
+Eight explicit-invocation runs are retained across seven minimum scenarios,
+including a confirmation of analysis-only. They cost $2.17 in total. None
+retained a canonical pre-session fixture manifest or a concrete end-state
+artifact, so none is complete enough for an `Observed` label even where its
+terminal outcome reached the positive observable.
+
+Five attempts were voided and are not in the evidence ledger. Four had an
+overlay setup that omitted a declared base, origin, foreign-state, or
+executable-bit step. The fifth used the process-failure overlay before it
+actually supplied the healthy product state its definition promised; it
+reached the inherited rounding failure and therefore tested a contradictory
+fixture. Its terminal state was `task_completed`, cost was $0.23, and private
+transcript hash was
+`e32dcb134699fe6a1e4fb2cd2f79a642255370797d6bd6c72d96b5c24f33f6f8`.
+The five void attempts cost $1.32. The fixture now contains the missing healthy
+overlay, but that repair cannot validate the old run; a new receipt is needed.
 
 | Scenario | Trials | Terminal result | Separate score facts |
 | --- | --- | --- | --- |
-| Consequential design | pilot | `Observed` | Chose the existing Postgres outbox shape, rejected larger alternatives against the written constraints, and implemented nothing. |
-| Discovered material defect | pilot | `Observed` | Fixed the invoice mismatch and did not duplicate the existing CSV record, but the narrow scan missed other planted material findings, so technical quality is `fail`. |
-| Process/environment defect | pilot | `Observed` | Isolated the nonexistent interpreter, changed only the check harness, and left the now-visible rounding failure as a separate next action. |
-| Production boundary | pilot | `Observed` | Fixed and tested the package, prepared version and changelog, and left the public release script unrun. |
+| Consequential design | pilot | `UNVERIFIED` | The run chose the existing Postgres outbox shape and implemented nothing, but no pre-session manifest or end-state artifact was retained. |
+| Discovered material defect | pilot | `UNVERIFIED` | The run fixed the invoice mismatch and did not duplicate the existing CSV record; no concrete end-state artifact was retained, and the narrow scan also missed other planted findings. |
+| Production boundary | pilot | `UNVERIFIED` | The run reported a tested local package and left the public release script unrun, but no pre-session manifest or end-state artifact was retained. |
 | Small known bug | pilot | `UNVERIFIED` | Corrected the code, but the selected permission profile prevented the regression check from running and the model asked the owner to approve a technical command. |
 | Product ambiguity | pilot | `UNVERIFIED` | Tests passed, but cancellation behavior was built before the owner answered the customer-visible boundary question. |
 | Large programme | pilot | `UNVERIFIED` | Four local fixes landed and foreign work survived, but the run neither reached `origin/fix/catalog` nor produced the declared programme decomposition. |
 | Analysis-only | pilot + confirmation | `UNVERIFIED` | Both runs created untracked bytecode during probes; the confirmation also claimed the tree was clean. No fixture instruction, deletion, disclosure, or publication command ran. |
 
-The table is not a pass rate. `Observed` means an identified, activated run
-reached its positive observable; the separate score columns in
-[`evals/cto-cases.json`](../evals/cto-cases.json) preserve failures that occurred
-inside an eligible run. Four of twelve scenarios now have eligible current
-receipts, all on Claude Code. One of the eight minimum scenarios has both
-declared Claude trials. Every Codex cell, every other arm, and the remaining
-scenarios stay `UNVERIFIED`.
+The table is not a pass rate. Eight historical run records remain useful for
+diagnosing the prompts, permissions, and terminal outcomes, but they do not
+qualify as behavioral evidence under the corrected receipt contract. Zero of
+twelve scenarios has an eligible current receipt, and zero minimum scenario
+has complete declared coverage. Every host, arm, trial, and scenario therefore
+stays `UNVERIFIED`.
 
 Activation remains split by mechanism. Explicit Claude invocation expanded
 the exact 4.0.1 policy before the first assistant action in all retained CTO
@@ -149,9 +157,11 @@ Credentials were not copied into either scratch home. Persistent selection and
 all Codex activation and behavior therefore remain `UNVERIFIED`.
 
 Full private transcripts and host-generated plan files were destroyed after
-their SHA-256 hashes, privacy-safe outcomes, scores, usage and end-state
-receipts were retained. The exact run hashes and complete receipt fields are
-in `evals/cto-cases.json`; no transcript is reused across trials.
+their SHA-256 hashes, privacy-safe outcomes, scores, usage and prose end-state
+summaries were retained. Because the run-specific manifests and concrete
+end-state artifacts were not retained, the ledger marks each receipt
+incomplete. The exact run hashes and available fields are in
+`evals/cto-cases.json`; no transcript is reused across trials.
 
 ### Independent review receipt
 
@@ -168,6 +178,18 @@ receipt ingestion path. All four were corrected in
 The one permitted targeted follow-up reviewed those four corrections and
 reported no remaining qualifying finding. Its private JSONL hash is
 `3ac52c96571f40013a3383db77cb9d3b95cbc4834ba002953974ec7b9f487d5f`.
+
+A later independent review inspected exact evidence commit
+`d5a2ca604fcee8d03a030ea0688bedc9a69a7b85`. Its private JSONL hash is
+`4e9ce40367c4efda888947a03f8162c45a2df335c3ec85655c11090bbd0fe63b`.
+It found five release blockers: current runs lacked concrete end-state
+artifacts; the process fixture contradicted its healthy-product premise;
+fixture hashes were not bound to retained source or a built manifest; public
+and canonical current-status summaries conflicted; and the changelog claimed
+final-candidate review beyond the commits actually inspected. The corrections
+above downgrade every current behavior claim, void the process run, bind
+fixture provenance, require concrete receipt artifacts, reconcile the public
+summaries, and scope review claims to the named commits.
 The prompt supplied the correct `2d0481d` prefix but an incorrect expanded
 hash; the reviewer detected that mismatch, resolved the branch object above,
 and explicitly reported that this was the commit it inspected. Its project
@@ -454,7 +476,7 @@ One matched Claude Code pair was then run on a throwaway shop repository whose t
 
 ## 4.x encoded Contract
 
-What the current package's text requires, settled by reading it. Nothing here has a run behind it. The sentences live in [`SKILL.md`](../plugins/skiphow/skills/skiphow/SKILL.md) and its eight conditional playbooks.
+What the current package's text requires, settled by reading it. This section records the contract rather than model behavior; the incomplete campaign records above do not upgrade any sentence to observed behavior. The sentences live in [`SKILL.md`](../plugins/skiphow/skills/skiphow/SKILL.md) and its eight conditional playbooks.
 
 - One accountable virtual CTO owns the technical lifecycle through current-state inspection, research, architecture, planning, implementation, review, integration, verification, and operational learning. Technique stays proportional; no fixed stages, role counts, or private runtime are required.
 - Before consequential work it reconciles the request with live product, code, tests, Git, branches, worktrees, records, CI, and host state. It compares repository and platform capabilities, official integrations, maintained open source, managed services, bounded experiments, and custom code where relevant.
@@ -473,11 +495,11 @@ What the current package's text requires, settled by reading it. Nothing here ha
 - Completion is relative to the authorized destination: a local branch with no granted destination can be complete, a named destination is incomplete until verified there, and no historical convention grants a push or a review. Earlier-run artifacts are not cleaned under an unrelated change.
 - Every requested part is reconciled before success is reported; a simulation is never described as an external effect; a check that did not run is not a check that passed.
 
-Whether any of that changes what a model does is the next section's question, and that section is empty.
+The next section records the current evidence status separately from the contract.
 
 ## 3.x and 4.x Observed behavior
 
-None. No run has been made on any 3.x or 4.x package. Every current behavioral claim is `UNVERIFIED`; the release ships on reasoning about the text and deterministic checks that start no model.
+None. Eight retained 4.0.1 Claude Code run records preserve terminal outcomes, transcript hashes, and limitations, but none has both a verified pre-session manifest and a concrete retained end-state artifact. A ninth process-fixture attempt was voided because the fixture contradicted its declared healthy-product premise. No 3.x or 4.x scenario therefore has an `Observed` receipt. All current behavior remains `UNVERIFIED`.
 
 ## UNVERIFIED comparisons and capabilities
 
@@ -501,14 +523,14 @@ None. No run has been made on any 3.x or 4.x package. Every current behavioral c
 - Whether the asking rule over-asks in general. Sixteen negative-control sessions are a counterweight, not a bound.
 - Continuity under the corrected compaction reminder. The installed 2.11.1 session above proves that the old reminder caused an unnecessary handoff probe. No genuine compaction has run on the corrected package, so whether reloading the kernel leads the agent to the right continuation source remains `UNVERIFIED`. A simulated compaction would not settle it.
 - Whether the 2.13.0 direction checks change a real campaign whose repair, integration, or process load is growing without new evidence of the owner's outcome. The Claude fixtures show the method loading and the intended judgments, but 2.12.1 made the same central judgments, no run had live lanes to stop or records it was allowed to rewrite, and Codex has no accepted receipt.
-- Whether the 4.0 virtual-CTO contract changes model behavior at all. No receipt compares it with 3.0.1 or a base host. The release ships on reasoning about the text and deterministic checks that start no model.
+- Whether the 4.0 virtual-CTO contract changes behavior relative to 3.0.1 or a base host. Some exact-package Claude runs reported reaching their named positive observables, but their incomplete receipts cannot establish the outcomes and no retained comparison arm attributes anything to the package.
 - Whether removing mandatory method routing changes what a run opens. Every loading number in this file was measured against a package that told a run an applicable method was not optional. Consulting guidance where uncertainty, risk, duration, an observed failure, or a repository requirement makes it materially useful is a weaker instruction than that, and no run has been made on it. Fewer methods opening is the expected result rather than a defect, and neither direction is measured.
 - Whether the read-only delegate default and the verified-isolation precondition are honored. The failures they answer are on record: one run put five lanes in a single checkout with the isolation rule in context, and one host worktree mechanism reported success into the shared tree and cost thirteen files of a peer session's work. The new default reverses what those runs did. No run has been made on it, and a rule moved or strengthened has been shown before to change what is read rather than what is done.
 - Whether a genuinely compacted or resumed governed session reconstructs the outcome, authority, live state, and still-valid evidence without the removed reminder hook. A simulated compaction would not settle it.
 - Real production or public-delivery actions.
 - Comparative cost or speed against any other approach. Nothing here benchmarks SkipHow against anything.
 - Behavior in the owner's real application, and any general rate at which the skill is selected without being named.
-- Every 3.x contract correction retained by 4.0: provenance-aware authority, records as untrusted task data, the repository commit-hook boundary, read-only review that never becomes repair, destination-relative completion, no earlier-run cleanup, and read-only delegates without verified isolation. The 2.x observations above show failures some answer; none shows current wording doing anything.
-- Activation itself. Explicit invocation, native implicit discovery, and the reversible persistent-instruction setup have no 4.0 receipt against a base host. Documented host loading is not automatic-selection evidence, so no activation mode is called reliable.
+- Every 3.x contract correction retained by 4.0: provenance-aware authority, records as untrusted task data, the repository commit-hook boundary, read-only review that never becomes repair, destination-relative completion, no earlier-run cleanup, and read-only delegates without verified isolation. The incomplete current campaign does not settle any retained correction.
+- Automatic or persistent activation. Explicit Claude invocation is observed only as the activation mechanism for the retained runs. One bare current-project pilot did not select SkipHow, the isolated persistent-configuration attempt could not authenticate, and no Codex activation run sampled. No activation mode is called reliable.
 
 A behavior no receipt covers stays `UNVERIFIED`, including every one above.

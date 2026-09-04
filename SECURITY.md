@@ -80,9 +80,10 @@ than the CLI.
 | IDE extension | Does not support plugins. Whether the same skill loads there as a standalone `.agents/skills` entry is not stated. | 2026-09-04 | `UNVERIFIED` (unsupported as a plugin per the page) |
 | Cloud and web Codex | Not mentioned on the page read. | 2026-09-04 | `UNVERIFIED` |
 
-Behavioral coverage is partial on Claude Code and `UNVERIFIED` on Codex, and it is a
-separate claim from every row above. Four of twelve current CTO scenarios have eligible
-Claude receipts; four other minimum scenarios failed their observable. No host documents
+Behavioral coverage is `UNVERIFIED` on both hosts and is a separate claim from every
+row above. Eight Claude run records remain useful for diagnosis, but none retained both
+the verified pre-session manifest and concrete end-state artifact required for an
+eligible receipt. No host documents
 that identical instruction text produces equivalent behavior,
 and the two loading models differ materially: one keeps every description in context,
 the other lists a capped inventory and loads the file on selection. What runs have and

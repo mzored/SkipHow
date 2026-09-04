@@ -136,7 +136,7 @@
     "host": "The host that ran the session.",
     "host_version": "The host's own version string, read from the session, not from memory.",
     "model_family": "The model or model family the host reported, and the effective effort where visible.",
-    "fixture_snapshot": "An object with the fixture id, the setup steps actually used to build the scratch copy, and a SHA-256 content hash of the built fixture.",
+    "fixture_snapshot": "An object with the fixture id, exact declared setup, deterministic retained-source revision, and built-content proof. Historical hash-only builds remain attested; future complete receipts retain a canonical manifest.",
     "owner_prompt": "The prompt sent, verbatim.",
     "subsequent_answers": "Every later owner turn, verbatim, in order.",
     "permission_configuration": "The permission mode and any allow or deny list the session ran under.",
@@ -151,6 +151,7 @@
     "transcript_reference": "Where the transcript and log for this run are kept, or the privacy-safe excerpt retained here.",
     "transcript_hash": "A hash of the full transcript where it stays private.",
     "end_state": "What the fixture looked like when the session stopped: the working tree, the commit graph, any record the session wrote, and a hash or diff of it.",
+    "end_state_artifacts": "Retained end-state manifests, trees, diffs, or hashes that support the prose end_state. Each entry names its kind, SHA-256 digest, description, and retained reference.",
     "destination_receipts": "What the named destination itself showed, for a case with one: the remote's branch list, the marker files above the repository.",
     "test_receipts": "The checks that ran and what they showed.",
     "conditions_observed": "The value of every condition variable the case uses, as observed in this run.",
@@ -168,7 +169,8 @@
     "measures": "The measures above, scored for this run where the case makes them observable.",
     "usage": "Tokens, turns, tool calls, latency and cost, where the host reports them.",
     "redaction_notes": "What was removed from the retained material and why.",
-    "evidence_label": "Derived from terminal_states.observed_eligible. A failed positive observable leaves the case UNVERIFIED."
+    "receipt_complete": "Whether the retained receipt contains every artifact required to support an Observed label. False preserves the run outcome but prevents an evidence upgrade.",
+    "evidence_label": "Derived from terminal_states.observed_eligible and receipt_complete. A failed positive observable or incomplete receipt leaves the case UNVERIFIED."
   },
   "cases": [
     {

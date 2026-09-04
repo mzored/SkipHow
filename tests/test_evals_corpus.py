@@ -120,6 +120,7 @@ REQUIRED_RUN_FIELDS = frozenset(
         "transcript_reference",
         "transcript_hash",
         "end_state",
+        "end_state_artifacts",
         "destination_receipts",
         "test_receipts",
         "conditions_observed",
@@ -137,6 +138,7 @@ REQUIRED_RUN_FIELDS = frozenset(
         "measures",
         "usage",
         "redaction_notes",
+        "receipt_complete",
         "evidence_label",
     }
 )
@@ -196,6 +198,129 @@ def fixture_record(name: str) -> dict:
     value = json.loads((FIXTURES / name / "fixture.json").read_text(encoding="utf-8"))
     assert isinstance(value, dict)
     return value
+
+
+def fixture_source_sha256(name: str) -> str:
+    """Hash the retained source layers that define a synthetic fixture."""
+    layers: list[str] = []
+
+    def add_layer(layer: str) -> None:
+        record = fixture_record(layer)
+        base = record.get("derives_from")
+        if base is not None:
+            add_layer(base)
+        layers.append(layer)
+
+    add_layer(name)
+    payload: dict[str, dict[str, object]] = {}
+    for layer in layers:
+        root = FIXTURES / layer
+        for path in sorted(item for item in root.rglob("*") if item.is_file()):
+            payload[f"{layer}/{path.relative_to(root).as_posix()}"] = {
+                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                "executable": bool(path.stat().st_mode & 0o111),
+            }
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def validate_fixture_snapshot(snapshot: object, name: str) -> bool:
+    """Validate fixture provenance and return whether built content has a manifest."""
+    assert isinstance(snapshot, dict), "fixture snapshot must be an object"
+    assert set(snapshot) == {
+        "id",
+        "setup",
+        "fixture_revision_sha256",
+        "built_content",
+    }, "fixture snapshot has unknown or missing fields"
+    assert snapshot["id"] == name, "fixture snapshot mismatch"
+    assert snapshot["setup"] == fixture_record(name)["setup"], "fixture snapshot setup mismatch"
+    assert snapshot["fixture_revision_sha256"] == fixture_source_sha256(name), "fixture revision mismatch"
+    built = snapshot["built_content"]
+    assert isinstance(built, dict) and set(built) == {
+        "verification",
+        "sha256",
+        "manifest",
+    }, "fixture built-content proof is malformed"
+    assert re.fullmatch(r"[0-9a-f]{64}", str(built["sha256"])), "invalid built fixture hash"
+    assert built["sha256"] != "0" * 64, "invalid built fixture hash"
+    if built["verification"] == "attested":
+        assert built["manifest"] is None, "attested fixture build cannot claim a manifest"
+        return False
+    assert built["verification"] == "manifest", "unknown fixture verification"
+    manifest = built["manifest"]
+    assert isinstance(manifest, dict) and set(manifest) == {"schema", "scope", "files"}, "fixture manifest is malformed"
+    assert manifest["schema"] == 1
+    assert manifest["scope"] == "pre-session worktree regular files excluding .git"
+    assert isinstance(manifest["files"], list) and manifest["files"], "fixture manifest files are empty"
+    paths: list[str] = []
+    for entry in manifest["files"]:
+        assert isinstance(entry, dict) and set(entry) == {"path", "mode", "sha256"}, "fixture manifest entry is malformed"
+        path = entry["path"]
+        assert isinstance(path, str) and path and not path.startswith("/")
+        assert ".." not in Path(path).parts and "\\" not in path, "unsafe fixture manifest path"
+        assert entry["mode"] in {"100644", "100755"}, "invalid fixture manifest mode"
+        assert re.fullmatch(r"[0-9a-f]{64}", str(entry["sha256"])), "invalid fixture manifest hash"
+        paths.append(path)
+    assert paths == sorted(set(paths)), "fixture manifest paths must be unique and sorted"
+    encoded = json.dumps(manifest, sort_keys=True, separators=(",", ":")).encode()
+    assert hashlib.sha256(encoded).hexdigest() == built["sha256"], "built fixture manifest hash mismatch"
+    return True
+
+
+def validate_end_state_artifacts(value: object) -> bool:
+    """Validate retained end-state evidence and return whether any is present."""
+    assert isinstance(value, list), "end-state artifacts must be a list"
+    for artifact in value:
+        assert isinstance(artifact, dict) and set(artifact) == {
+            "kind",
+            "sha256",
+            "description",
+            "reference",
+        }, "end-state artifact is malformed"
+        assert artifact["kind"] in {"tree", "diff", "manifest", "file", "marker"}
+        assert re.fullmatch(r"[0-9a-f]{64}", str(artifact["sha256"])), "invalid end-state artifact hash"
+        assert artifact["sha256"] != "0" * 64, "invalid end-state artifact hash"
+        assert isinstance(artifact["description"], str) and artifact["description"].strip()
+        assert isinstance(artifact["reference"], str) and artifact["reference"].strip()
+    return bool(value)
+
+
+def synthetic_fixture_snapshot(name: str) -> dict:
+    """Build a complete in-memory receipt for validator unit tests."""
+    manifest = {
+        "schema": 1,
+        "scope": "pre-session worktree regular files excluding .git",
+        "files": [
+            {
+                "path": "receipt.txt",
+                "mode": "100644",
+                "sha256": hashlib.sha256(b"synthetic fixture").hexdigest(),
+            }
+        ],
+    }
+    encoded = json.dumps(manifest, sort_keys=True, separators=(",", ":")).encode()
+    return {
+        "id": name,
+        "setup": fixture_record(name)["setup"],
+        "fixture_revision_sha256": fixture_source_sha256(name),
+        "built_content": {
+            "verification": "manifest",
+            "sha256": hashlib.sha256(encoded).hexdigest(),
+            "manifest": manifest,
+        },
+    }
+
+
+def synthetic_end_state_artifacts() -> list[dict]:
+    return [
+        {
+            "kind": "manifest",
+            "sha256": hashlib.sha256(b"synthetic end state").hexdigest(),
+            "description": "Synthetic end-state manifest for validator tests.",
+            "reference": "inline synthetic receipt",
+        }
+    ]
 
 
 def heading_anchors(path: Path) -> set[str]:
@@ -592,11 +717,7 @@ def validate_cto_instrument(
             prompt = prompt_by_id[run["prompt_id"]]
             assert run["owner_prompt"] == prompt["text"], "CTO receipt prompt mismatch"
             assert run["fixture"] == case["fixture"], "CTO receipt fixture mismatch"
-            fixture_snapshot = run["fixture_snapshot"]
-            assert isinstance(fixture_snapshot, dict), "CTO fixture snapshot must be an object"
-            assert fixture_snapshot.get("id") == case["fixture"], "CTO fixture snapshot mismatch"
-            assert isinstance(fixture_snapshot.get("setup"), list), "CTO fixture setup must be a list"
-            assert re.fullmatch(r"[0-9a-f]{64}", str(fixture_snapshot.get("sha256", ""))), "invalid CTO fixture hash"
+            manifest_verified = validate_fixture_snapshot(run["fixture_snapshot"], case["fixture"])
             assert run["host"] in coverage["hosts"], "unknown CTO host"
             assert run["arm"] in arm_by_id, "unknown CTO arm"
             assert run["trial"] in {"pilot", "confirmation", "tie_break"}, "unknown CTO trial"
@@ -614,7 +735,12 @@ def validate_cto_instrument(
             else:
                 assert all(run[field] == "not_applicable" for field in package_fields), "base arm carries package identity"
             assert run["terminal_state"] in terminal_states
-            eligible = terminal_states[run["terminal_state"]]["observed_eligible"]
+            eligible_terminal = terminal_states[run["terminal_state"]]["observed_eligible"]
+            artifacts_retained = validate_end_state_artifacts(run["end_state_artifacts"])
+            receipt_complete = manifest_verified and artifacts_retained
+            assert isinstance(run["receipt_complete"], bool), "CTO receipt_complete must be boolean"
+            assert run["receipt_complete"] is receipt_complete, "CTO receipt completeness is not derived"
+            eligible = eligible_terminal and receipt_complete
             expected_label = "Observed" if eligible else "UNVERIFIED"
             assert run["evidence_label"] == expected_label, "CTO run evidence label is not derived"
             assert run["method_selection"] in {"pass", "fail", "not_applicable"}
@@ -669,7 +795,8 @@ def validate_cto_instrument(
                 and run["arm"] in coverage["arms"]
                 and run["trial"] in coverage["trials"]
             ):
-                covered_cells.add((run["host"], run["arm"], run["trial"]))
+                if receipt_complete:
+                    covered_cells.add((run["host"], run["arm"], run["trial"]))
         required_cells = {
             (host, arm, trial)
             for host in coverage["hosts"]
@@ -757,7 +884,7 @@ def _add_cto_run(
             "package_payload_sha256": "c" * 64,
             "host": host,
             "owner_prompt": prompt["text"],
-            "fixture_snapshot": {"id": case["fixture"], "setup": [], "sha256": "0" * 64},
+            "fixture_snapshot": synthetic_fixture_snapshot(case["fixture"]),
             "terminal_state": terminal_state,
             "evidence_label": "Observed" if eligible else "UNVERIFIED",
             "transcript_hash": hashlib.sha256(receipt_run_id.encode()).hexdigest(),
@@ -775,6 +902,7 @@ def _add_cto_run(
             "technical_quality": "pass",
             "proportionality": "pass",
             "completion_honesty": "pass",
+            "receipt_complete": True,
             "activated": True,
             "subsequent_answers": [],
             "references_loaded": [],
@@ -784,6 +912,7 @@ def _add_cto_run(
             "measures": {},
             "usage": {},
             "destination_receipts": {},
+            "end_state_artifacts": synthetic_end_state_artifacts(),
         }
     )
     if not next(arm_spec for arm_spec in corpus()["arms"] if arm_spec["id"] == arm)["package_present"]:
@@ -975,6 +1104,24 @@ def test_cto_instrument_rejects_prompt_and_fixture_mismatches() -> None:
     with pytest.raises(AssertionError, match="snapshot mismatch"):
         _validate_synthetic_cto(data)
 
+    data = _cto_document()
+    run = _add_cto_run(data)
+    run["fixture_snapshot"]["setup"] = list(reversed(run["fixture_snapshot"]["setup"]))
+    with pytest.raises(AssertionError, match="setup mismatch"):
+        _validate_synthetic_cto(data)
+
+    data = _cto_document()
+    run = _add_cto_run(data)
+    run["fixture_snapshot"]["fixture_revision_sha256"] = "f" * 64
+    with pytest.raises(AssertionError, match="fixture revision mismatch"):
+        _validate_synthetic_cto(data)
+
+    data = _cto_document()
+    run = _add_cto_run(data)
+    run["fixture_snapshot"]["built_content"]["sha256"] = "e" * 64
+    with pytest.raises(AssertionError, match="manifest hash mismatch"):
+        _validate_synthetic_cto(data)
+
 
 @pytest.mark.parametrize(
     ("field", "value", "message"),
@@ -1007,6 +1154,31 @@ def test_failed_cto_run_cannot_upgrade_run_or_scenario() -> None:
     data["cases"][0]["result"]["evidence_label"] = "Observed"
     data["summary"]["observed_scenarios"] = 1
     with pytest.raises(AssertionError, match="scenario evidence label"):
+        _validate_synthetic_cto(data)
+
+
+def test_incomplete_cto_receipt_preserves_outcome_but_cannot_upgrade() -> None:
+    data = _cto_document()
+    run = _add_cto_run(data)
+    run["end_state_artifacts"] = []
+    run["receipt_complete"] = False
+    run["evidence_label"] = "UNVERIFIED"
+    data["cases"][0]["result"]["evidence_label"] = "UNVERIFIED"
+    data["summary"]["observed_scenarios"] = 0
+    data["summary"]["by_host"]["claude-code"]["observed_scenarios"] = 0
+    _validate_synthetic_cto(data)
+    assert run["terminal_state"] == "task_completed"
+
+    run["receipt_complete"] = True
+    with pytest.raises(AssertionError, match="receipt completeness"):
+        _validate_synthetic_cto(data)
+
+
+def test_cto_receipt_rejects_malformed_end_state_artifact() -> None:
+    data = _cto_document()
+    run = _add_cto_run(data)
+    run["end_state_artifacts"][0]["sha256"] = "0" * 64
+    with pytest.raises(AssertionError, match="invalid end-state artifact hash"):
         _validate_synthetic_cto(data)
 
 
@@ -1210,10 +1382,7 @@ def validate_case_results(
             assert run["trial"] in {"pilot", "confirmation", "tie_break"}
             assert run["host"] in {"claude-code", "codex"}
             assert run["owner_prompt"] == case["owner_prompt"]
-            snapshot = run["fixture_snapshot"]
-            assert isinstance(snapshot, dict) and snapshot.get("id") == case["fixture"]
-            assert isinstance(snapshot.get("setup"), list)
-            assert re.fullmatch(r"[0-9a-f]{64}", str(snapshot.get("sha256", "")))
+            manifest_verified = validate_fixture_snapshot(run["fixture_snapshot"], case["fixture"])
             arm = arm_by_id[run["arm"]]
             package_fields = (
                 "package_version",
@@ -1228,7 +1397,12 @@ def validate_case_results(
             else:
                 identity_validator(run)
             assert run["terminal_state"] in terminal_states
-            eligible = terminal_states[run["terminal_state"]]["observed_eligible"]
+            eligible_terminal = terminal_states[run["terminal_state"]]["observed_eligible"]
+            artifacts_retained = validate_end_state_artifacts(run["end_state_artifacts"])
+            receipt_complete = manifest_verified and artifacts_retained
+            assert isinstance(run["receipt_complete"], bool)
+            assert run["receipt_complete"] is receipt_complete
+            eligible = eligible_terminal and receipt_complete
             assert run["evidence_label"] == ("Observed" if eligible else "UNVERIFIED")
             assert run["activation_score"] in {"pass", "fail", "not_applicable"}
             assert run["adherence"] in {"pass", "fail", "not_applicable"}
@@ -1252,7 +1426,8 @@ def validate_case_results(
                 "redaction_notes",
             ):
                 assert isinstance(run[field], str) and run[field].strip(), f"empty case receipt {field}"
-            seen_arms.add(run["arm"])
+            if receipt_complete:
+                seen_arms.add(run["arm"])
             if eligible:
                 observed_arms.add(run["arm"])
         expected_pending = tuple(arm for arm in REQUIRED_ARMS if arm not in seen_arms)
@@ -1284,12 +1459,13 @@ def _add_case_run(data: dict, *, arm: str = "m1-explicit-skiphow") -> dict:
             "package_payload_sha256": "c" * 64,
             "host": "claude-code",
             "owner_prompt": case["owner_prompt"],
-            "fixture_snapshot": {"id": case["fixture"], "setup": [], "sha256": "0" * 64},
+            "fixture_snapshot": synthetic_fixture_snapshot(case["fixture"]),
             "subsequent_answers": case["subsequent_answers"],
             "activated": True,
             "references_loaded": [],
             "transcript_hash": hashlib.sha256(run_id.encode()).hexdigest(),
             "destination_receipts": {},
+            "end_state_artifacts": synthetic_end_state_artifacts(),
             "conditions_observed": {},
             "expected_events_observed": [],
             "forbidden_events_observed": [],
@@ -1299,6 +1475,7 @@ def _add_case_run(data: dict, *, arm: str = "m1-explicit-skiphow") -> dict:
             "technical_quality": "pass",
             "proportionality": "pass",
             "completion_honesty": "pass",
+            "receipt_complete": True,
             "terminal_state": "task_completed",
             "measures": {},
             "usage": {},
