@@ -1,6 +1,6 @@
 {
   "corpus_version": 4,
-  "package_under_test": "4.0.1",
+  "package_under_test": "4.1.0",
   "purpose": "Synthetic cases for three separate instruments: activation, forced-activation CTO behavior, and host smoke. Every case names a positive success observable, the product result shared across comparison arms, and explicit required-absence events. Nothing here has been run.",
   "not_a_gate": "No model run gates a pull request. python scripts/check.py and the pytest suite validate shape and internal satisfiability and never start a model. A run happens only when the owner authorizes a paid receipt, under the limits recorded in run_limits. A deterministic check passing is never evidence of behavior.",
   "evidence_labels": {
@@ -28,10 +28,22 @@
     "host_smoke": "Exercises clean install, persistent-instruction setup, explicit fallback, playbook loading, permissions, worktree isolation, compact or resume, disable, and uninstall. It reports host capabilities separately from model behavior."
   },
   "terminal_states": {
-    "observable_reached": {"observed_eligible": true, "meaning": "The positive observable landed, and the session was allowed to continue."},
-    "task_completed": {"observed_eligible": true, "meaning": "The session reached its own end with the positive observable landed."},
-    "stopped_at_observable": {"observed_eligible": true, "meaning": "The session was stopped deliberately as soon as the positive observable landed under the run limits."},
-    "failed_to_reach_observable": {"observed_eligible": false, "meaning": "The session ended, was cancelled, or ran out of budget without the positive observable. The case stays UNVERIFIED."}
+    "observable_reached": {
+      "observed_eligible": true,
+      "meaning": "The positive observable landed, and the session was allowed to continue."
+    },
+    "task_completed": {
+      "observed_eligible": true,
+      "meaning": "The session reached its own end with the positive observable landed."
+    },
+    "stopped_at_observable": {
+      "observed_eligible": true,
+      "meaning": "The session was stopped deliberately as soon as the positive observable landed under the run limits."
+    },
+    "failed_to_reach_observable": {
+      "observed_eligible": false,
+      "meaning": "The session ended, was cancelled, or ran out of budget without the positive observable. The case stays UNVERIFIED."
+    }
   },
   "conditions": {
     "delegate_used": "true when the session dispatched at least one delegate, read from the transcript.",
@@ -5793,5 +5805,10 @@
         "runs": []
       }
     }
-  ]
+  ],
+  "historical_evidence": {
+    "package_version": "4.0.1",
+    "source": "https://github.com/mzored/SkipHow/blob/b3c4a6aa6830c1cac26389cac1d3d4221ebecf6f/evals/cases.json",
+    "scope": "Historical receipts retain their original arms, prompts, outcomes, and package identities at this immutable source. They do not establish current-candidate behavior."
+  }
 }

@@ -18,7 +18,9 @@ SkipHow now carries authorized work through an established non-production delive
 
 This is a minor release because the new shared-delivery capability requires an established owner-authorized workflow, and setup tooling is optional. Existing grants, restrictions, and protected-action boundaries survive the upgrade. The public skill name and record formats are unchanged.
 
-Deterministic and host results, audit disposition, and bounded experiment receipts are recorded in [docs/evidence.md](docs/evidence.md). Clean isolated host authentication remains unavailable on this machine; clean installed ordinary-language loading and full coordinated recovery on both hosts remain `UNVERIFIED`. No reliability or superiority claim follows from this release. The release-runner matrix below reports only checks performed by that runner.
+Deterministic and host results, audit disposition, and bounded experiment receipts are recorded in [docs/evidence.md](docs/evidence.md). Both schema validators and Claude clean install/uninstall passed. Codex clean installation was blocked by managed source policy. Clean isolated model authentication remains unavailable on this machine, so installed ordinary-language loading and genuine resume remain `UNVERIFIED`.
+
+A narrow Claude pilot delivered four correct repairs to a synthetic Git remote. A separate explicit coordination diagnostic demonstrated configured delegates and a distinct writer checkout, but failed remote delivery and changed shipping to an incorrect calculation. It does not establish dependable orchestration. A capture failure lost one earlier attempt's trace; its exact cost remains unknown, and the loss prompted tested capture-before-cleanup repairs. Known reported model spend was $0.8127273, plus that attempt with a configured $1 limit. No further campaign or reliability claim followed. The release-runner matrix below reports only checks performed by that runner.
 
 ## 4.0.1 (2026-09-04)
 

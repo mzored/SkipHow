@@ -5,9 +5,13 @@ from __future__ import annotations
 
 import argparse
 import difflib
+import os
 from pathlib import Path
 import re
+import signal
+import stat
 import sys
+import tempfile
 
 
 ACTIVATION = (
@@ -48,13 +52,38 @@ def transform(original: bytes | None, action: str) -> bytes | None:
         if block is None:
             return original
         start, end, created = block
-        remaining = data[:start] + data[end:]
+        prefix, suffix = data[:start], data[end:]
+        needs_separator = prefix and suffix and not prefix.endswith((b"\n", b"\r")) and not suffix.startswith((b"\n", b"\r"))
+        separator = b"\n" if needs_separator else b""
+        remaining = prefix + separator + suffix
         return None if created and not remaining else remaining
     if block is not None:
         return original
     separator = bool(data and not data.endswith(b"\n"))
     start = f"<!-- skiphow activation v1 separator={int(separator)} created={int(original is None)} -->\n"
     return data + (b"\n" if separator else b"") + start.encode() + ACTIVATION.encode() + b"\n" + END
+
+
+def atomic_write(target: Path, original: bytes | None, changed: bytes) -> None:
+    """Stage the complete file before publishing it; leave the original on failure."""
+    temporary: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(dir=target.parent, prefix=f".{target.name}.", delete=False) as stream:
+            temporary = Path(stream.name)
+            if original is not None:
+                temporary.chmod(stat.S_IMODE(target.stat().st_mode))
+            stream.write(changed)
+            stream.flush()
+            os.fsync(stream.fileno())
+        if target.is_symlink() or (target.read_bytes() if target.exists() else None) != original:
+            raise ValueError("The target changed since inspection; rerun the preview.")
+        if original is None:
+            os.link(temporary, target)  # Publish only if the target is still absent.
+        else:
+            os.replace(temporary, target)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -96,11 +125,8 @@ def main(argv: list[str] | None = None) -> int:
                 raise ValueError("The target changed since inspection; rerun the preview.")
             if changed is None:
                 target.unlink()
-            elif original is None:
-                with target.open("xb") as destination:
-                    destination.write(changed)
             else:
-                target.write_bytes(changed)
+                atomic_write(target, original, changed)
             print("Applied.")
         else:
             print("Preview only. Add --apply to write this change.")
@@ -111,4 +137,11 @@ def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
+    # Convert normal process cancellation into unwinding so staged files are removed.
+    def terminate(signum, _frame):
+        raise SystemExit(128 + signum)
+
+    signal.signal(signal.SIGTERM, terminate)
+    if hasattr(signal, "SIGHUP"):
+        signal.signal(signal.SIGHUP, terminate)
     raise SystemExit(main())

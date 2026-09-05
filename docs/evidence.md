@@ -73,10 +73,57 @@ For the exact 4.0.1 package (`d468e226e69576c6c3a7c075089e15c0cde71e5a`,
 payload `3d6f359af92c38cf02fb916c6d2c2d785a8640e82ec8cfbbefd8dad1001ebda5`),
 Claude Code 2.1.260 installed all fifteen regular files byte for byte in an
 empty host home and removed the package successfully on 2026-09-04. The flat
-`PASS` receipts are retained in [`evals/host-smoke.json`](../evals/host-smoke.json).
+`PASS` receipts are retained in the [immutable 4.0.1 host ledger](https://github.com/mzored/SkipHow/blob/b3c4a6aa6830c1cac26389cac1d3d4221ebecf6f/evals/host-smoke.json).
 The same Codex attempt on CLI 0.153.0 was refused by the machine's managed
 marketplace-source policy before installation, so Codex clean install remains
 `UNVERIFIED`; nothing was installed. Neither result is activation evidence.
+
+## The 4.1.0 delivery audit
+
+The September 5 independent audit was checked against the source. Its eight findings have the following disposition. Implementation and acceptance evidence remain separate.
+
+| Finding | Delivered correction | Evidence and remaining acceptance work |
+| --- | --- | --- |
+| F1, maintenance objective | [Canonical owner outcomes](outcome-contract.md), symmetric change/removal criteria, removal of incidental wording vetoes | Source review confirms preserved CTO duties. The component allowlist still describes the reviewed package; it can change with a justified adapter and safety checks. No new packaged agent or hook was justified. |
+| F2, ordinary-language activation | [Previewable activation setup](guide.md#activate-it), owned block, idempotent update, status, exact removal, atomic writes, preserved unrelated content | Deterministic lifecycle tests cover configured state. Clean isolated model authentication is blocked on both hosts. Fresh installed loading, unrelated/discussion/analysis selection, compaction, and post-uninstall behavior remain `UNVERIFIED`. |
+| F3, delivery authority | Established owner-authorized non-production delivery, applicable prior grants, downstream production-effect checks, safe upgrade semantics | Source review and active/absent/expired/production synthetic regression definitions. A narrow Claude local-remote delivery pilot succeeded, but no matched comparison establishes a wording effect; real GitHub and production-boundary behavior remain `UNVERIFIED`. |
+| F4, first-use tracking | Enabled GitHub Issues within authorized workflow, permissions and audience; recoverable pending obligations when unavailable | Source review and runnable simulated first-use case. Real GitHub creation, deduplication and recovery remain `UNVERIFIED`; no repository settings were changed or private records published. |
+| F5, ownership | Assignments and status are advisory; one coordinator, explicit lanes, live-state reconciliation and preserved foreign work | GitHub's [assignee API](https://docs.github.com/en/rest/issues/assignees#add-assignees-to-an-issue) adds users and supplies no exclusive session claim. A same-account synthetic recovery case is retained. Simultaneous live-session ownership remains `UNVERIFIED`; no lock service was invented. |
+| F6, evidence capture | Deterministic source materialization, pre-session configuration/manifest and baseline, bound fixture identity, retained sanitized trace and final artifacts | [Synthetic interrupted receipt](../evals/receipts/capture-synthetic-pilot.json) and [real failed broad-observable pilot](../evals/receipts/host-pilot-20260905/README.md) retain inspectable content. Local preflight does not prove host permissions; the real pilot recorded no permission denials. Capture never grades or upgrades behavior. |
+| F7, connected orchestration | Preserve verified writer isolation and safe fallback; inspect actual host capabilities before choosing a binding | The narrow delivery pilot dispatched no delegates. Distinct writer checkout, read-only challenge, failed-lane recovery, and continuity on both hosts remain `UNVERIFIED` unless a separately scoped receipt below establishes one. |
+| F8, review proportionality | Small clear low-risk visible edits may use cold self-review across several files; material consequences require independent challenge | Source review and a tiny two-file visible fixture. No paid ablation was needed to remove the literal contradiction. Behavioral cost or quality improvement remains `UNVERIFIED`. |
+
+These unresolved acceptance checks remain release limitations, not a completed cross-host CTO demonstration. An isolated host login established through the host's own secure flow is needed before the blocked installed-session comparisons can proceed. A future bounded check should start there, then cover selection and resume before adding an adapter. Repeating unauthenticated model calls or installing a speculative hook would not resolve the blocker.
+
+### Bounded real pilot and capture
+
+The final runtime payload was committed at `42765cd212b414788d67dcdc17447eb740a66811`. The [pilot records](../evals/receipts/host-pilot-20260905/README.md) bind its package identity, host, effective model, configuration, source fixture revision, baseline manifest, exact prompts, sanitized trace and final artifacts. A derived fixture corrects the old setup's missing `fix/catalog` branch before any spend; historical fixtures and receipts remain intact.
+
+One Claude Code 2.1.261 no-package control cost $0.066477. One explicit session-plugin candidate cost $0.2145018, for $0.2809788 total. Limits were $0.25 for the control, $1 for the candidate, $8 for the campaign, one session in flight, and fifteen minutes for the candidate. The read-only control showed no plugin, no MCP servers, and only fixture reads. It is an isolation check with a different prompt, not a base-host outcome comparison.
+
+The candidate repaired four catalog modules, passed independent replay of retained final artifacts, and delivered only those modules to a local bare Git remote. Foreign bytes were preserved and the publication marker stayed absent. The larger observable required reviewed coordinated delivery; no delegate, independent review or playbook loading was observed, and stream output did not establish that the complete skill body loaded. Its failed broad-observable terminal remains unchanged. This useful narrow result cannot become CTO coverage or a claim of improvement over the base host. All temporary fixture and replay directories were removed after capture.
+
+A subsequent explicit coordination diagnostic exposed another capture defect. A forwarded child event contained a string `message`; the runner's signature sanitizer expected an object and raised before capture. Its temporary-directory cleanup then removed the full trace and final fixture. A separately retained [live worktree snapshot](../evals/receipts/host-pilot-20260905/coordination-live-worktrees.json) shows a distinct writer checkout, matching base, and partial pricing edit. It proves neither final integration nor recovery. This attempt has no complete receipt and no recoverable exact final cost; the configured host budget was $1. It cannot count as a successful scenario or be reconstructed from the summary. Any retry first requires offline mixed-message and failure-retention tests and remains inside the original $8 campaign ceiling.
+
+The driver correction passed eighteen focused tests before one repeat was authorized. Seven exercise mixed message shapes, failed enrichment, failed capture with retained private recovery state, pre-model cleanup, and rejection of existing output files before spend. The other eleven exercise fixture capture and retained content hashes. The new order saves evidence before optional result interpretation. The failed attempt remains documented separately and cannot be overwritten by its repeat.
+
+The [one corrected coordination repeat](../evals/receipts/host-pilot-20260905/coordination-repeat.md) retained complete trace, artifact, destination and independent replay evidence. It cost $0.5317485 including its two delegates. Known reported campaign spend is therefore $0.8127273, plus the unknown cost of the lost-capture attempt with its configured $1 ceiling. No further session ran.
+
+The repeat demonstrated configured writer/reviewer dispatch, a distinct writer checkout and reconciliation of an empty limited lane. The reviewer had read-only tools. It did not demonstrate recovery of a durable partial writer edit, actual effective effort, or full policy loading. More seriously, it left the explicitly authorized remote unchanged and changed one-parcel shipping into per-quantity shipping. Independent replay found $9.90 where the original two-line/one-box case required $4.95. Pricing, case-insensitive search and oversell checks passed. These are failed diagnostic outcomes, not a passing CTO scenario or a comparison with the base host. The receipt does not justify shipping a new worker adapter or more mandatory prompt steps on inference alone. Full coordinated delivery remains unresolved; all experiment workspaces were removed after the successful capture.
+
+### Authentication and host evidence
+
+The local deterministic gate passed. Both host schema validators passed. Claude Code 2.1.261 clean install and uninstall passed against package tree `5cad1341bdcc20b701945c154bf6c40364a91482`, payload `e79048fdcd69ebe9d282dd7068ace85c6d4ec21d44ced98a1569a7fd7a43d55c`. Codex CLI 0.153.0 clean installation was refused by managed marketplace-source policy before installation. [Exact host receipts](../evals/host-smoke.json) preserve these results; the [local host matrix](../evals/receipts/host-validation-20260905.md) reports its capabilities separately from model evidence.
+
+Read-only authentication checks on September 5 found Claude Code 2.1.261 and Codex CLI 0.153.0 authenticated in their normal profiles. Claude with isolated `HOME` and `CLAUDE_CONFIG_DIR` reported `loggedIn: false` and `authMethod: none`. Codex with isolated `HOME` and `CODEX_HOME` reported no login; explicit keyring storage reported no default keychain. No credentials were copied, no account settings were changed, and no model request was sent through those failed profiles. Scratch directories were removed.
+
+The relevant native mechanisms are documented in [Claude memory](https://code.claude.com/docs/en/memory), [Claude subagents](https://code.claude.com/docs/en/sub-agents), [Codex authentication](https://learn.chatgpt.com/docs/auth), and [Codex subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents), read on September 5. Documented capability does not establish SkipHow behavior. In particular, a plugin subagent's ignored `permissionMode` field cannot prove read-only enforcement.
+
+### Review and evidence integrity corrections
+
+Independent review of capture found that a preparation from directory A could capture directory B, and that empty files became a placeholder string. Both were corrected with negative tests. Independent activation review found separator loss around appended owner content, truncating in-place writes, and an uninstall path leaving stale activation; all were corrected with lifecycle and failure tests. A documentation review found a historical pilot called current and an unsupported claim of increased behavioral odds; both claims were corrected. No policy was removed to make a behavioral failure pass.
+
+The current candidate's canonical CTO suite is `not_run`, with zero observed scenarios. Historical 4.0.1 records remain available in their [immutable ledger](https://github.com/mzored/SkipHow/blob/b3c4a6aa6830c1cac26389cac1d3d4221ebecf6f/evals/cto-cases.json). Diagnostic captures are separate and do not silently replace that suite's fixture or eligibility requirements.
 
 ## How these runs were made
 
@@ -88,7 +135,7 @@ Claude runs use `--setting-sources ''` with `--strict-mcp-config` and the packag
 
 ## The 4.0.1 controlled pilot campaign
 
-[`evals/`](../evals/README.md) holds three separate instruments: activation,
+The [immutable 4.0.1 corpus](https://github.com/mzored/SkipHow/tree/b3c4a6aa6830c1cac26389cac1d3d4221ebecf6f/evals) holds three separate instruments: activation,
 forced-activation CTO behavior, and host smoke. The arm-aware catalog has
 twenty-four inherited cases over eighteen fixtures. Twelve CTO scenarios keep
 their own receipts and labels; eight neutral autonomy cases form the minimum
@@ -494,12 +541,12 @@ What the current package's text requires, settled by reading it. This section re
 
 - One accountable virtual CTO owns the technical lifecycle through current-state inspection, research, architecture, planning, implementation, review, integration, verification, and operational learning. Technique stays proportional; no fixed stages, role counts, or private runtime are required.
 - Before consequential work it reconciles the request with live product, code, tests, Git, branches, worktrees, records, CI, and host state. It compares repository and platform capabilities, official integrations, maintained open source, managed services, bounded experiments, and custom code where relevant.
-- Programmes split into observable end-to-end outcomes with real dependency edges. Existing authorized tracking is used when work has several deliverables, spans sessions or writers, needs a durable decision, or leaves a separable material defect; tiny same-session work gets no ceremony.
+- Programmes split into observable end-to-end outcomes with real dependency edges. Authorized tracking is used when work has several deliverables, spans sessions or writers, needs a durable decision, or leaves a separable material defect. Enabled Issues are the first-use default within an authorized GitHub workflow; tiny same-session work gets no ceremony. Assignment metadata alone grants no exclusive session ownership.
 - Models and effort are configured deliberately for the actual task. Every change gets review scaled to consequence, with an independent read for substantive or high-risk work. Process and environment failures are diagnosed at their own root cause rather than converted into product changes.
 
 - Authority comes from the owner's messages and trusted host-, user-, organization-, or administrator-managed policy. Repository instruction files are applicable project procedure within authority already granted, evidence until their provenance is established in an untrusted revision, and never a grant of mutation, secret access, disclosure, network egress, permission change, cleanup, or protected external effect. Records the owner points at authorize pursuing the outcome, and stay untrusted task data.
-- A read-only request writes nothing. A change request grants in-scope local edits and non-destructive validation, and may include a clean local commit of owned changes when the commit path is known not to cross another boundary; otherwise the work stays uncommitted with the reason stated, and that is not implementation failure.
-- Protected actions need an exact grant. Broad autonomy language, project procedure, issue text, and tool capability do not supply one.
+- A read-only request writes nothing. A change request grants in-scope local edits and non-destructive validation and carries through an established owner-authorized non-production workflow. Covered actions do not need repeated permission. An upgrade creates no grant and preserves restrictions.
+- Protected effects need applicable explicit owner authorization, including when triggered by an ordinary push, merge, tag, or CI workflow. Existing authorization remains usable while its scope and conditions hold. Broad autonomy language, project procedure, issue text, and tool capability do not supply a grant.
 - Product consequences are the owner's; engineering mechanics are the agent's. One outcome-level question, independent work continues, dependent behavior waits.
 - Foreign work is preserved. Delegates are read-only without verified distinct isolation, and the root serializes writes. A delegate's surface is a boundary on its authority, not a plan; its model and effort are chosen for the task's consequence and complexity rather than by a fixed tier or a floor at the session's own level, and naming a level in the root's own message does not set it.
 - A read-only review reports confirmed defects and modifies nothing; urgency, including a security finding, does not widen the request, and a sensitive finding stays private without a disclosure grant. Repair happens only when it was authorized.

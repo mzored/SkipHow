@@ -4,13 +4,32 @@
 
 | Version | Supported |
 | --- | --- |
-| 4.0.x | Yes |
+| 4.1.x | Yes |
+| 4.0.x | No; upgrade to 4.1.x without changing existing authorization |
 | 3.0.x and earlier | No |
 
 Security review covers the packaged owner skill, its linked playbooks, host manifests,
 marketplace metadata, release checks, and documented authority
 boundaries. Codex, Claude Code, GitHub, Git, operating systems, and third-party
 services keep their own security policies.
+
+## Current package validation, 2026-09-05
+
+The 4.1.0 candidate passed both host schema validators. Claude Code 2.1.261
+installed all fifteen regular files byte for byte and uninstalled them in a
+clean host configuration. Codex CLI 0.153.0 clean installation remains
+`UNVERIFIED` because managed marketplace-source policy refused the local source.
+The [candidate receipts](evals/host-smoke.json) and
+[per-capability matrix](evals/receipts/host-validation-20260905.md) retain the exact
+package identity and scope. Clean installation does not establish model loading.
+
+Clean isolated model profiles on both hosts could not authenticate. Ordinary-language
+bootstrap, installed activation and genuine resume remain `UNVERIFIED`. The
+[bounded session-plugin diagnostics](docs/evidence.md#the-410-delivery-audit)
+do not establish clean installed behavior. Claude's documented plugin subagents
+ignore `permissionMode`; a declared field alone must not be described as an
+enforced read-only boundary. Actual tool restrictions and workspace identity need
+their own evidence. See [Claude subagents](https://code.claude.com/docs/en/sub-agents).
 
 ## Host support, as of 2026-09-04
 
