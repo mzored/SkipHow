@@ -15,7 +15,7 @@ services keep their own security policies.
 
 ## Package validation, 2026-09-06
 
-Version 4.2.0 is validated per capability in [`evals/host-smoke.json`](evals/host-smoke.json): Claude Code 2.1.261 clean install and uninstall, and Codex CLI 0.153.0 clean install from the approved Git source, uninstall, persistent setup, explicit fallback, and playbook load each carry a receipt; a row without a fresh 4.2.0 receipt stays `UNVERIFIED` there. The [dated support summary](docs/evidence.md#support-summary-as-of-2026-09-06) states what each host has shown for this package. The previous 4.1.1 receipts remain in `evals/receipts/host-validation-411-20260905/`, and the isolated Codex diagnostics remain 4.1.0 observations.
+Version 4.2.0 is validated per capability in [`evals/host-smoke.json`](evals/host-smoke.json): Claude Code 2.1.261 clean install and uninstall, and Codex CLI 0.153.0 clean install from the approved Git source, uninstall, persistent setup, explicit fallback, and playbook load each carry a receipt; a row without a fresh 4.2.0 receipt stays `UNVERIFIED` there. The [dated support summary](docs/evidence.md#support-summary-as-of-2026-09-06) states what each host has shown for this package. The previous 4.1.1 receipts remain in `evals/receipts/host-validation-411-20260905/`; the September 5 isolated Codex diagnostics remain 4.1.0 observations, and the [September 6 diagnostics](evals/receipts/isolated-host-420-20260906/README.md) are separate 4.2.0 observations.
 
 The historical 4.1.0 candidate passed both host schema validators. Claude Code 2.1.261
 installed all fifteen regular files byte for byte and uninstalled them in a

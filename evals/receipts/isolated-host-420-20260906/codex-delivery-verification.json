@@ -15,6 +15,7 @@
   "README.md": true,
   "catalog/reviews.py": true
  },
+ "host_stderr_excerpt": "2026-09-05T22:46:59.853619Z ERROR codex_core::tools::router: error=exec_command failed: CreateProcess { message: \"Rejected(\\\"`/bin/zsh -lc 'test -d <temporary-delivery-clone> && test -d <temporary-verification-clone> && rm -rf -- <temporary-delivery-clone> <temporary-verification-clone> && test ! -e <temporary-delivery-clone> && test ! -e <temporary-verification-clone> && echo '\\\\\\\"'owned temporary clones removed'\\\\\\\"` rejected: rm -f style commands are not permitted. Use a safer approach\\\")\" }",
  "kernel_complete_body_loaded_in_events": [
   "item_5"
  ],
@@ -27,7 +28,7 @@
   "catalog/shipping.py"
  ],
  "scope": "Independent deterministic read of the final synthetic bare remote after the 4.2.0 override-path delivery session. The session loaded the kernel from the AGENTS.override.md block, read integration, tracked-work and verification, performed a cold self-review, committed from an owned temporary clone because the host sandbox kept the checkout's .git read-only, pushed fix/catalog, verified a fresh clone of the destination, and reverted its own working-copy edits. No delegate ran. No real GitHub delivery, tracker write, or compaction was demonstrated.",
- "temporary_clones_note": "The session's final rm -rf of its two temporary clones was rejected by the host sandbox's command policy and the session did not report the failure; the operator removed both directories after capture.",
+ "temporary_clones_note": "The session's final removal of its two temporary clones was rejected by the host sandbox's command policy. The rejection reached only the host's stderr, quoted in host_stderr_excerpt; the retained JSON trace holds neither the command nor the rejection, and the session's final report did not mention it. The operator removed both directories after capture.",
  "temporary_clones_removed_by_session": false,
  "verification": "see scripts/grade_catalog.py result recorded in the README beside this record"
 }

@@ -50,8 +50,8 @@ output. Most input was cached. Billing is by subscription; no dollar figure exis
   flag and the operator's shell was in the repository. In that turn the agent
   read the repository's `.codex/config.toml`, which disables the plugin for
   contributor sessions, and the machine's managed `/etc/codex/config.toml`. The
-  managed file's content is omitted from the receipt because it lists the
-  operator's personal project paths. The disable consent turn was resumed from
+  managed file's content is retained with the operator's project paths, notify
+  script, and default model replaced by placeholders. The disable consent turn was resumed from
   the fixture directory.
 - In the same consent turn the agent ran `codex plugin add skiphow@skiphow`
   again when the host listed the plugin as disabled, instead of naming the
@@ -63,9 +63,11 @@ output. Most input was cached. Billing is by subscription; no dollar figure exis
   the wrong path was not determined.
 - The host sandbox kept the fixture's `.git` read-only, so the delivery went
   through an owned temporary clone. The session's final removal of its two
-  temporary clones was rejected by the sandbox command policy, and the session's
-  final report did not mention it. The operator removed both directories after
-  capture. The destination record carries this note.
+  temporary clones was rejected by the sandbox command policy. That rejection
+  reached only the host's stderr, which is quoted in the destination record; the
+  retained JSON trace holds neither the command nor the rejection, and the
+  session's final report did not mention it. The operator removed both
+  directories after capture.
 - After the sessions the plugin was removed with `codex plugin remove`; the host
   inventory no longer listed it and its cache directory was left empty. The
   isolated home was restored to its login-only state.
