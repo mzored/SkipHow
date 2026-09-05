@@ -1,6 +1,6 @@
 {
   "instrument": "host_smoke",
-  "package_under_test": "4.1.0",
+  "package_under_test": "4.1.1",
   "scope": "external_candidate_receipts",
   "checks": {
     "clean_install": {
@@ -60,23 +60,8 @@
     "claude-code": {
       "results": {
         "clean_install": {
-          "receipt": {
-            "check": "clean_install",
-            "cleanup_result": "plugin absent before scratch host home cleanup",
-            "command_or_session": "host marketplace add, install, list, inspect, uninstall, list",
-            "configuration": "empty CLAUDE_CONFIG_DIR; exact local marketplace snapshot",
-            "date": "2026-09-05",
-            "host": "claude-code",
-            "host_version": "2.1.261 (Claude Code)",
-            "observable_evidence": "installed regular files exactly matched the candidate payload",
-            "outcome": "PASS",
-            "package_commit": "de55df23287b38463c16ef6616534442f2576c6a",
-            "package_payload_sha256": "e79048fdcd69ebe9d282dd7068ace85c6d4ec21d44ced98a1569a7fd7a43d55c",
-            "package_tree": "5cad1341bdcc20b701945c154bf6c40364a91482",
-            "package_version": "4.1.0",
-            "source": "scripts/check_hosts.py --smoke"
-          },
-          "status": "PASS"
+          "receipt": null,
+          "status": "UNVERIFIED"
         },
         "persistent_setup": {
           "status": "UNVERIFIED",
@@ -107,23 +92,8 @@
           "receipt": null
         },
         "uninstall": {
-          "receipt": {
-            "check": "uninstall",
-            "cleanup_result": "plugin absent before scratch host home cleanup",
-            "command_or_session": "host marketplace add, install, list, inspect, uninstall, list",
-            "configuration": "empty CLAUDE_CONFIG_DIR; exact local marketplace snapshot",
-            "date": "2026-09-05",
-            "host": "claude-code",
-            "host_version": "2.1.261 (Claude Code)",
-            "observable_evidence": "host inventory no longer listed SkipHow",
-            "outcome": "PASS",
-            "package_commit": "de55df23287b38463c16ef6616534442f2576c6a",
-            "package_payload_sha256": "e79048fdcd69ebe9d282dd7068ace85c6d4ec21d44ced98a1569a7fd7a43d55c",
-            "package_tree": "5cad1341bdcc20b701945c154bf6c40364a91482",
-            "package_version": "4.1.0",
-            "source": "scripts/check_hosts.py --smoke"
-          },
-          "status": "PASS"
+          "receipt": null,
+          "status": "UNVERIFIED"
         }
       }
     },

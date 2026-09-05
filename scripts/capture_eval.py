@@ -12,6 +12,7 @@ import subprocess
 import shutil
 
 from check_hosts import _payload, package_identity
+from receipt_privacy import sanitize as sanitize_receipt, sanitize_text
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "evals/fixtures"
@@ -184,9 +185,7 @@ def capture(fixture: Path, prepared: Path, trace: Path, output: Path,
     replacements = {str(fixture.resolve()): "<fixture>", **redactions}
 
     def redact(text: str) -> str:
-        for key in sorted(replacements, key=len, reverse=True):
-            text = text.replace(key, replacements[key])
-        return text
+        return sanitize_text(text, replacements)
 
     artifacts = []
     for path in files(fixture):
@@ -216,16 +215,7 @@ def capture(fixture: Path, prepared: Path, trace: Path, output: Path,
                           "content": marker_content, "sha256": digest(marker_content.encode())})
     sanitized_trace = redact(trace.read_text())
     # Sanitize configuration and baseline as well as trace and final artifacts.
-    def sanitize(item: object) -> object:
-        if isinstance(item, str):
-            return redact(item)
-        if isinstance(item, list):
-            return [sanitize(child) for child in item]
-        if isinstance(item, dict):
-            return {key: sanitize(child) for key, child in item.items()}
-        return item
-
-    preparation = sanitize(value)
+    preparation = sanitize_receipt(value, replacements)
     # Manifest paths come from invented fixture files and must retain their identity.
     if preparation["fixture_snapshot"] != value["fixture_snapshot"]:
         raise ValueError("redaction would alter fixture identity; use synthetic paths")

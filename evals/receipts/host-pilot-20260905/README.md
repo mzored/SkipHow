@@ -52,3 +52,9 @@ its removal. Retained traces replace operator and scratch paths and omit opaque
 host thinking signatures that can carry account metadata. Each capture records
 the signature count and a hash of the sanitized trace. Exact model IDs, tool
 calls, outputs, destination evidence and terminal outcomes are preserved.
+
+The later privacy review removed account quota and authentication-source metadata
+from these retained files and replaced host UUIDs with consistent pseudonyms.
+Retained content hashes and replay references now identify those sanitized bytes.
+This is a privacy redaction of the original runs, not a new run or observation;
+the recorded outcomes and fixture artifacts are unchanged.
