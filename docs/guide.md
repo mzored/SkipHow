@@ -36,7 +36,7 @@ python scripts/activation.py remove --target /absolute/path/to/trusted-instructi
 python scripts/activation.py remove --target /absolute/path/to/trusted-instructions.md --apply
 ```
 
-Installation is idempotent, including after a plugin update. The block references the installed skill by name, so it contains no copied policy or version-specific cache path. Removal preserves unrelated content and restores the original trailing-newline state; a file created solely for the block is removed when it has no other content. Edited or duplicate blocks require inspection rather than automatic replacement. If you previously added the README line manually, remove that exact line yourself before installing a managed block; the tool does not claim ownership of existing prose.
+Installation is idempotent, including after a plugin update. The block references the installed skill by name, so it contains no copied policy or version-specific cache path. Removal preserves unrelated content and restores the original trailing-newline state when no content follows the block. If you append more instructions, removal keeps the newline needed to separate them from earlier content. A file created solely for the block is removed when it has no other content. Updates stage the complete file beside the target before replacing it, preserving its permissions and leaving the original intact if staging fails. Edited or duplicate blocks require inspection rather than automatic replacement. If you previously added the README line manually, remove that exact line yourself before installing a managed block; the tool does not claim ownership of existing prose.
 
 `status` checks only whether the owned block is intact. It cannot prove that the plugin is installed or that a session loaded its policy. Check the host's plugin inventory, start a fresh session, and inspect its loading evidence before consequential action. An instruction asking the model to load the skill is not proof that it did.
 
@@ -56,7 +56,7 @@ claude plugin marketplace update skiphow
 claude plugin update skiphow@skiphow
 ```
 
-Uninstall with `codex plugin remove skiphow@skiphow` or `claude plugin uninstall skiphow@skiphow`.
+Before uninstalling, remove the managed activation block from the same trusted file with `python scripts/activation.py remove --target /absolute/path/to/trusted-instructions.md --apply`. If you added the README line manually, remove that exact line instead. Then uninstall with `codex plugin remove skiphow@skiphow` or `claude plugin uninstall skiphow@skiphow`. Plugin removal alone does not edit your trusted instructions and would leave a request to load an unavailable skill.
 
 ## Ask for the outcome
 

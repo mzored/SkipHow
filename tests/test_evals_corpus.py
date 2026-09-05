@@ -1366,6 +1366,10 @@ def test_every_referenced_fixture_exists_and_describes_itself() -> None:
         assert base is None or base in directories
     cto = json.loads((EVALS / "cto-cases.json").read_text(encoding="utf-8"))
     referenced = {case["fixture"] for case in cases()} | {case["fixture"] for case in cto["cases"]}
+    for receipt_path in (EVALS / "receipts").rglob("*.json"):
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        if isinstance(receipt, dict) and receipt.get("kind") == "manual-evaluation-capture":
+            referenced.add(receipt["preparation"]["fixture_snapshot"]["id"])
     assert referenced <= directories
     # A fixture nothing points at is dead weight in a corpus this small.
     assert directories - referenced == set()
@@ -1553,7 +1557,10 @@ def test_the_corpus_stays_offline_privacy_safe_and_uncollected() -> None:
         assert not path.stat().st_mode & 0o111, relative
         text = path.read_text(encoding="utf-8")
         assert not check.PERSONAL_PATH.search(text), relative
-        assert not check.CONCRETE_MODEL_ID.search(text), relative
+        # Recorded evidence must identify the actual model. Fixtures and prompts
+        # stay portable; a trace is a historical fact, not shared model policy.
+        if not path.is_relative_to(EVALS / "receipts"):
+            assert not check.CONCRETE_MODEL_ID.search(text), relative
     for case in cases():
         for text in [case["owner_prompt"], *case["subsequent_answers"]]:
             assert not PACKAGE_NAME.search(text), case["id"]

@@ -1,0 +1,14 @@
+{
+  "scope": "Independent replay of retained final artifacts, not another model run",
+  "candidate_capture_sha256": "4f0fa4d3cc0bf1767f11e4c0f0f803c330429b2112f4c4a1a843520b52655de0",
+  "argv": [
+    "python",
+    "-B",
+    "-c",
+    "from catalog.pricing import discounted\nfrom catalog.search import matching\nfrom catalog.inventory import reserve, STOCK\nfrom catalog.shipping import charge, PARCEL_RATE\nassert discounted(100, 50) == 50\nfor invalid in (-1, 101):\n    try: discounted(100, invalid)\n    except ValueError: pass\n    else: raise AssertionError('invalid discount accepted')\nassert matching(['Fern Pot', 'moss ball'], 'FERN') == ['Fern Pot']\nbefore = STOCK.copy()\ntry: reserve('moss-02', 1)\nexcept ValueError: pass\nelse: raise AssertionError('overselling accepted')\nassert STOCK == before\nassert reserve('fern-01', 2) == 2\nassert charge([('fern-01', 1), ('moss-02', 2)]) == PARCEL_RATE\nassert charge([]) == 0\nprint('PASS: four catalog repairs, failed-reservation state preservation, and ordinary boundary checks')\n"
+  ],
+  "returncode": 0,
+  "stdout": "PASS: four catalog repairs, failed-reservation state preservation, and ordinary boundary checks\n",
+  "stderr": "",
+  "cleanup_confirmed": true
+}

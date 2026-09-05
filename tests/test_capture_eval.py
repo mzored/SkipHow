@@ -71,6 +71,22 @@ def test_source_hash_and_manifest_match_existing_corpus(fixture):
     }, "orders-service")
 
 
+def test_retained_capture_content_matches_its_hashes():
+    for path in (ROOT / "evals/receipts").rglob("*.json"):
+        receipt = json.loads(path.read_text())
+        if not isinstance(receipt, dict) or receipt.get("kind") != "manual-evaluation-capture":
+            continue
+        trace = receipt["trace"]
+        assert capture.digest(trace["content"].encode()) == trace["sha256"], path
+        for artifact in receipt["end_state_artifacts"]:
+            assert capture.digest(artifact["content"].encode()) == artifact["sha256"], path
+            if artifact["kind"] == "tree":
+                item = json.loads(artifact["content"])
+                content = item["content"].encode()
+                assert len(content) == item["byte_size"], path
+                assert capture.digest(content) == item["sha256"], path
+
+
 def test_failed_baseline_never_writes_ready_record(fixture, tmp_path):
     configuration = config()
     configuration["baseline"]["returncode"] = 0

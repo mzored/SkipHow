@@ -315,6 +315,21 @@ external candidate ledger and in `docs/evidence.md`.
 
 ## Privacy and safety
 
+The [September 5 diagnostic driver](receipts/host-pilot-20260905/run.py) is an
+explicit paid-run tool, never invoked by checks. It preserves a sanitized
+stream and concrete capture before parsing results, querying the destination,
+or grading. Mixed forwarded message shapes and failures in those later steps
+must not destroy the original evidence. Existing captures or sidecars stop a
+duplicate invocation before setup or spend. If complete capture fails after a
+model starts, the ignored private workspace remains with a printed recovery
+path until its evidence can be retained and the workspace removed. The
+offline lifecycle tests inject these failures without starting a model.
+
+Recorded traces retain exact model identities for provenance. Portable
+fixture definitions and prompts still contain no concrete model IDs. Privacy
+checks cover all retained files, including traces, and retained hash checks
+detect changed artifact content without grading the outcome.
+
 The fixtures are invented: invented products, invented prices, invented
 workshop notes, invented account holders at an invalid domain. There is no
 customer data, no personal path, no account identifier, no host token, and no

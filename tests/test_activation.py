@@ -22,7 +22,9 @@ def test_lifecycle_restores_exact_original(original):
 
 def test_later_unrelated_edits_survive_removal():
     installed = activation.transform(b"Original without newline", "install")
-    assert activation.transform(b"Before\n" + installed + b"After\n", "remove") == b"Before\nOriginal without newlineAfter\n"
+    assert activation.transform(b"Before\n" + installed + b"After\n", "remove") == b"Before\nOriginal without newline\nAfter\n"
+    assert activation.transform(installed + b"\nAfter\n", "remove") == b"Original without newline\nAfter\n"
+    assert activation.transform(installed + b"\r\nAfter\r\n", "remove") == b"Original without newline\r\nAfter\r\n"
     new_file = activation.transform(None, "install")
     assert activation.transform(new_file + b"Owner addition\n", "remove") == b"Owner addition\n"
 
@@ -66,3 +68,37 @@ def test_cli_preserves_modes_and_rejects_symlinks_and_edited_blocks(tmp_path):
     before = target.read_bytes()
     assert activation.main(["remove", "--target", str(target), "--apply"]) == 1
     assert target.read_bytes() == before
+
+
+@pytest.mark.parametrize("failure", [OSError("write failed"), KeyboardInterrupt()])
+@pytest.mark.parametrize("original", [None, b"Existing private instructions\n"])
+def test_failed_or_interrupted_staged_write_preserves_target_and_cleans_up(tmp_path, monkeypatch, failure, original):
+    target = tmp_path / "AGENTS.md"
+    if original is not None:
+        target.write_bytes(original)
+        target.chmod(0o640)
+
+    def fail_flush(_descriptor):
+        # The staged file already holds bytes; no partial write may reach the target.
+        raise failure
+
+    monkeypatch.setattr(activation.os, "fsync", fail_flush)
+    with pytest.raises(type(failure)):
+        activation.atomic_write(target, original, b"Replacement content\n")
+    assert (target.read_bytes() if target.exists() else None) == original
+    if original is not None:
+        assert target.stat().st_mode & 0o777 == 0o640
+    assert list(tmp_path.iterdir()) == ([target] if original is not None else [])
+
+
+def test_failed_atomic_replacement_preserves_original_and_cleans_up(tmp_path, monkeypatch):
+    target = tmp_path / "AGENTS.md"
+    target.write_bytes(b"Owner instructions\n")
+
+    def fail_replace(_source, _target):
+        raise OSError("replace failed")
+
+    monkeypatch.setattr(activation.os, "replace", fail_replace)
+    assert activation.main(["install", "--target", str(target), "--apply"]) == 1
+    assert target.read_bytes() == b"Owner instructions\n"
+    assert list(tmp_path.iterdir()) == [target]
