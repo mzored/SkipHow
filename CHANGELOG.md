@@ -2,6 +2,24 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 4.1.0 (2026-09-05)
+
+SkipHow now carries authorized work through an established non-production delivery workflow without repeated technical permission questions. Enabled GitHub Issues can hold material shared work on first use. Existing restrictions remain binding, and installation or upgrade grants no new authority. Production effects and public publication still require applicable explicit owner authorization.
+
+### Changed
+
+- A canonical owner-outcome contract governs maintenance decisions. Additions, removals, and retained complexity receive equal scrutiny; missing receipts no longer justify deleting required responsibilities. Incidental lexical vetoes were removed while package, security, and release checks remain.
+- The kernel and playbooks share effects-based delivery rules, recoverable tracking obligations, advisory tracker assignments, and a clear low-risk review exception. File count and visibility alone do not require a delegate. Consequential work still requires independent challenge and final integrated evidence.
+- An optional repository setup utility previews, installs, checks, and removes an owned activation block while preserving existing trusted instructions. It does not copy the kernel, mutate configuration during plugin installation, or claim that configuration proves loading.
+- A manual evaluation preparation/capture utility retains the built baseline, exact configuration, sanitized trace, and final artifacts before cleanup. It rejects mismatched baselines and cross-run fixture capture. It never starts a model or upgrades an outcome into behavioral evidence.
+- Focused synthetic regression cases cover standing and expired delivery authority, downstream production effects, first-use tracking, interrupted same-account ownership, and tiny visible two-file changes. Synthetic destinations are identified as such.
+
+### Compatibility and evidence
+
+This is a minor release because the new shared-delivery capability requires an established owner-authorized workflow, and setup tooling is optional. Existing grants, restrictions, and protected-action boundaries survive the upgrade. The public skill name and record formats are unchanged.
+
+Deterministic and host results, audit disposition, and bounded experiment receipts are recorded in [docs/evidence.md](docs/evidence.md). Clean isolated host authentication remains unavailable on this machine; clean installed ordinary-language loading and full coordinated recovery on both hosts remain `UNVERIFIED`. No reliability or superiority claim follows from this release. The release-runner matrix below reports only checks performed by that runner.
+
 ## 4.0.1 (2026-09-04)
 
 This patch repairs the evidence system around the 4.x virtual-CTO contract and closes narrow safety ambiguities found by an independent audit. It does not add automatic push, pull-request, merge, or release authority. Current model behavior stays `UNVERIFIED` unless the evidence section below names a retained run.

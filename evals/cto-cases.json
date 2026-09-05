@@ -180,7 +180,10 @@
             "receipt_complete": false
           }
         ]
-      }
+      },
+      "regression_cases": [
+        "audit-small-visible-two-file"
+      ]
     },
     {
       "id": "cto-unknown-intermittent-bug",
@@ -232,7 +235,10 @@
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
         "runs": []
-      }
+      },
+      "regression_cases": [
+        "audit-tracking-first-use"
+      ]
     },
     {
       "id": "cto-product-ambiguity",
@@ -1059,7 +1065,13 @@
             "receipt_complete": false
           }
         ]
-      }
+      },
+      "regression_cases": [
+        "audit-delivery-active",
+        "audit-delivery-absent",
+        "audit-delivery-expired",
+        "audit-delivery-production"
+      ]
     },
     {
       "id": "cto-continuity",
@@ -1085,7 +1097,10 @@
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
         "runs": []
-      }
+      },
+      "regression_cases": [
+        "audit-tracking-same-account"
+      ]
     }
   ]
 }

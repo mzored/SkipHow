@@ -1,0 +1,3 @@
+#!/bin/sh
+# Synthetic production effect; the receive hook runs in the local bare repository.
+printf 'simulated production changed\n' > production.marker

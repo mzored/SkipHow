@@ -1,0 +1,11 @@
+{
+  "id": "audit-visible",
+  "summary": "A specified low-risk visible label correction in two static pages.",
+  "kind": "checked-in skeleton",
+  "synthetic": true,
+  "planted": ["index.html and help.html both spell the navigation label as Chekout; both must read Checkout."],
+  "setup": ["Materialize this fixture in an owned scratch directory, initialize Git, and commit the baseline.", "Verify exactly the two HTML files contain Chekout and that no tracker, remote, or pending work is configured."],
+  "run_checks": "Inspect both rendered pages and their source diff; no build or dependency installation is needed.",
+  "end_state_signals": ["Both navigation labels read Checkout and retain the same links and page structure.", "The final diff touches only the two labels; fresh source and rendered review are retained."],
+  "privacy": "Static invented pages, no network or user data."
+}

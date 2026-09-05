@@ -32,7 +32,7 @@ An intermittent test is a defect or an explicit blocker until it is classified; 
 
 ## Reviewing a change
 
-Every change gets a fresh review of the final diff and behavior. For a small, clear, low-risk edit, a cold self-review plus targeted evidence is enough. Use an independent reviewer for substantive, user-visible, multi-file, dependency, or integration changes. Add stronger architecture or security challenge where a mistake could affect authentication, payments, privacy, migrations, concurrency, public compatibility, or production operations. Independence earns its cost by starting from a different account of the change than the one that produced it.
+Scale review under the kernel's risk rule. A small specified label or layout correction can remain low risk across two files; assess changed behavior and possible consequences rather than counting files or visible elements. For independent review, give the reviewer the request, relevant constraints, and actual change so it can form its own account rather than inherit the author's conclusion.
 
 Establish the exact change under review and the request, issue, or specification it should satisfy. Read the repository's applicable standards and inspect the diff in its surrounding code. Review the change against those requirements and that diff rather than against the author's summary of it. Tool output supports review but does not replace reading the change.
 

@@ -222,6 +222,64 @@ more sessions.
 
 ## Recording a result
 
+### Preserve a run before spending or cleaning up
+
+`python scripts/capture_eval.py` prepares and captures manual runs. It never
+starts a model, grades behavior, changes a ledger, or removes a fixture. Use
+`materialize --name orders-service --destination <new-directory>` to copy the
+retained fixture layers in order. Complete the fixture's declared setup before
+`prepare`; Git initialization and scenario-specific setup remain explicit
+operator actions. Register cleanup for the owned directory when creating it.
+Keep receipt files outside that directory so cleanup cannot remove the proof.
+
+Pass `prepare --fixture <built-directory> --name <fixture-id> --config
+<configuration.json> --output <new-preparation.json>`. The configuration records
+`run_id`, `case_id`, `arm`, `host`, `host_version`, `model`, `effort`, `permission`,
+`sandbox`, `activation`, `instructions`, `isolation`, `control_run`, `prompt`,
+`observable`, `host_command`, and `permitted_command_evidence`. Record exact
+values, including later owner turns and any host settings inside these fields
+or additional configuration fields. `setup_performed` must contain the fixture's
+exact `setup` list. `limits` requires positive `session_usd`, `receipt_usd`,
+`sessions_in_flight`, and `wall_seconds`. These record the authorized ceilings;
+the host or operator enforces spending and concurrency because this utility
+does not launch sessions.
+
+`baseline` supplies an argument array in `argv`, its expected `returncode`, and
+a nonempty expected output substring in `contains`. An intentionally failing
+fixture should expect its known failure, not a green suite. For orders-service,
+use the pinned interpreter with `-B -m pytest -p no:cacheprovider
+tests/order_total_checks.py`, expect exit `1` and `1 failed`. Cache writes make
+the baseline mutate the fixture and preparation rejects them. Optional
+`absent_markers` lists marker paths that must not exist. A baseline mismatch,
+missing configuration, unsafe file, changed fixture, or existing output stops
+preparation before a ready record is written. The record retains the exact
+package payload identity, fixture source hash, built manifest, and baseline
+output. A successful local baseline does not prove the host permits that
+command; retain actual host permission evidence separately in the configuration.
+
+At completion or interruption, use `capture --fixture <built-directory>
+--prepared <preparation.json> --trace <trace.txt> --output <new-capture.json>
+--redactions <redactions.json> --terminal <state>` before cleanup. Terminal states
+are `task_completed`, `stopped_at_observable`, `failed_to_reach_observable`, and
+`interrupted`. The redaction file maps exact private strings to replacements;
+an empty object is appropriate only after inspecting synthetic evidence.
+Capture retains the sanitized trace, text files with explicit byte counts and
+hashes, a final mode/hash manifest, and the preparation record. Empty files
+retain empty content. Preparation binds the resolved fixture directory and
+capture rejects another run's directory; the retained capture replaces that
+private directory path with `<fixture>`. It rejects missing traces, altered manifest hashes,
+binary files without a deliberate text export, and redactions that would change
+fixture identity. Redaction is literal replacement, not automatic secret
+detection. Inspect the captured file before publishing it. Raw preparation and
+trace files remain private until their owner removes them after verifying the
+retained capture.
+
+The utility's records remain `UNVERIFIED`. They supply evidence for the ledger
+fields below; an operator still binds the actual case, host, control, events,
+scores, and destination receipts. `tests/test_capture_eval.py` exercises a
+complete synthetic interruption, including a retained pre-session manifest,
+trace, and final artifact, without creating a Git repository or spending tokens.
+
 Append one entry to the matching scenario's `result.runs`. The CTO entry adds
 the prompt id, fixture id, and `pilot`, `confirmation`, or `tie_break` trial to
 every field named in `run_record_fields` in [`cases.json`](cases.json), which

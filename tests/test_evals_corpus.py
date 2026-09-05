@@ -683,6 +683,10 @@ def validate_cto_instrument(
     for case in data["cases"]:
         assert case["fixture"] in fixture_ids
         assert case["fixture"] == compatible_fixtures[case["scenario"]]
+        regression_cases = case.get("regression_cases", [])
+        assert isinstance(regression_cases, list)
+        assert len(regression_cases) == len(set(regression_cases)), "duplicate focused regression case"
+        assert set(regression_cases) <= {item["id"] for item in corpus_data["cases"]}, "unknown focused regression case"
         assert case["prompts"]
         prompt_by_id: dict[str, dict] = {}
         for prompt in case["prompts"]:
@@ -1231,6 +1235,18 @@ def test_cto_instrument_rejects_stale_summary_and_duplicate_case_ids() -> None:
     data = _cto_document()
     data["cases"][1]["id"] = data["cases"][0]["id"]
     with pytest.raises(AssertionError):
+        _validate_synthetic_cto(data)
+
+
+def test_cto_focused_regressions_reference_existing_unique_cases() -> None:
+    data = _cto_document()
+    _validate_synthetic_cto(data)
+    data["cases"][0]["regression_cases"] = ["missing-case"]
+    with pytest.raises(AssertionError, match="unknown focused regression case"):
+        _validate_synthetic_cto(data)
+    case_id = corpus()["cases"][0]["id"]
+    data["cases"][0]["regression_cases"] = [case_id, case_id]
+    with pytest.raises(AssertionError, match="duplicate focused regression case"):
         _validate_synthetic_cto(data)
 
 

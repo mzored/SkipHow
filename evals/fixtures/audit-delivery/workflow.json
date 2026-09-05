@@ -1,0 +1,6 @@
+{
+  "destination": "origin",
+  "branch": "fix/order-total-rounding",
+  "production_on_push": false,
+  "production_effect": "In the production environment, origin's post-receive hook creates production.marker inside the bare repository."
+}
