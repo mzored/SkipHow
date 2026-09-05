@@ -226,7 +226,7 @@ codex plugin add skiphow@skiphow</code></pre>
 claude plugin install skiphow@skiphow</code></pre>
           </article>
         </div>
-        <p>For ordinary-language governance, add the activation line from the <a href="https://github.com/mzored/SkipHow#activate-it-for-ordinary-language">README</a> to the global <code>AGENTS.md</code> in your Codex home or your Claude Code user <code>CLAUDE.md</code>, preserving the file's existing content, then start a new session. This reversible setup installs no hook and grants no action. Automatic selection remains unmeasured; use <code>$skiphow</code> in Codex or <code>/skiphow:skiphow</code> in Claude Code as the explicit fallback. Updates and uninstall steps are in the <a href="https://github.com/mzored/SkipHow/blob/main/docs/guide.md">owner guide</a>; the dated host support matrix is in the <a href="https://github.com/mzored/SkipHow/blob/main/SECURITY.md">security policy</a>.</p>
+        <p>For ordinary-language governance, ask the installed skill once to enable itself: <code>$skiphow Enable SkipHow as my default virtual CTO on this machine.</code> in Codex, or the same request through <code>/skiphow:skiphow</code> in Claude Code. It resolves the instruction file your host actually reads, previews the change, writes one reversible block after you confirm, and reports configured, available, and loaded as separate facts. This setup installs no hook and grants no action. Ordinary-language loading was observed once on Codex with the exact 4.1.0 package and has not been observed on Claude Code; no activation mode has a measured reliability. <code>$skiphow</code> and <code>/skiphow:skiphow</code> remain the explicit fallback. Updates and uninstall steps are in the <a href="https://github.com/mzored/SkipHow/blob/main/docs/guide.md">owner guide</a>; what each host has shown is in the <a href="https://github.com/mzored/SkipHow/blob/main/docs/evidence.md#support-summary-as-of-2026-09-06">dated support summary</a> and the <a href="https://github.com/mzored/SkipHow/blob/main/SECURITY.md">security policy</a>.</p>
       </div>
     </section>
 
@@ -270,7 +270,7 @@ claude plugin install skiphow@skiphow</code></pre>
             </details>
             <details>
               <summary>Will it deploy or change access without asking?</summary>
-              <p>No. Production, staging, public releases, credentials, access changes, repository settings, payments, and material deletion require an explicit grant naming the protected action.</p>
+              <p>Not beyond what you have already authorized. An established owner-authorized non-production workflow covers routine push, pull request, CI, and merge, and the agent checks that the destination and its actual effects are still covered. Production and live-data changes, public releases, credentials, access changes, repository settings, payments, and material deletion require applicable explicit authorization; staging and other isolated non-production environments are ordinary engineering unless your own rules say otherwise.</p>
             </details>
           </div>
           <p><a href="https://github.com/mzored/SkipHow/blob/main/docs/faq.md">Read the complete FAQ →</a></p>

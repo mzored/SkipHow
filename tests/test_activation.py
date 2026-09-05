@@ -1,14 +1,19 @@
-"""Owned activation edits preserve trusted user instructions."""
+"""Owned activation edits preserve trusted user instructions and land where the host reads them."""
 
 import importlib.util
+import json
 from pathlib import Path
+import sys
 
 import pytest
 
 
-spec = importlib.util.spec_from_file_location("skiphow_activation", Path(__file__).resolve().parents[1] / "scripts/activation.py")
+ROOT = Path(__file__).resolve().parents[1]
+SCRIPT = ROOT / "plugins/skiphow/skills/skiphow/scripts/activation.py"
+spec = importlib.util.spec_from_file_location("skiphow_activation", SCRIPT)
 assert spec and spec.loader
 activation = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = activation
 spec.loader.exec_module(activation)
 
 
@@ -102,3 +107,215 @@ def test_failed_atomic_replacement_preserves_original_and_cleans_up(tmp_path, mo
     assert activation.main(["install", "--target", str(target), "--apply"]) == 1
     assert target.read_bytes() == b"Owner instructions\n"
     assert list(tmp_path.iterdir()) == [target]
+
+
+# --- Host-aware resolution -------------------------------------------------
+
+
+@pytest.fixture
+def codex_home(tmp_path, monkeypatch):
+    home = tmp_path / "codex-home"
+    home.mkdir()
+    monkeypatch.setenv("CODEX_HOME", str(home))
+    monkeypatch.setattr(activation, "MANAGED_POLICY", {"codex": (), "claude-code": ()})
+    return home
+
+
+@pytest.fixture
+def claude_home(tmp_path, monkeypatch):
+    home = tmp_path / "claude-config"
+    home.mkdir()
+    monkeypatch.setenv("CLAUDE_CONFIG_DIR", str(home))
+    monkeypatch.setattr(activation, "MANAGED_POLICY", {"codex": (), "claude-code": ()})
+    return home
+
+
+def status(host):
+    return activation.status_report(activation.resolve(host))
+
+
+def test_ordinary_codex_home_installs_into_agents_md_only(codex_home):
+    agents = codex_home / "AGENTS.md"
+    agents.write_bytes(b"Use short answers.\n")
+    assert activation.main(["install", "--host", "codex", "--apply"]) == 0
+    assert agents.read_bytes() == activation.transform(b"Use short answers.\n", "install")
+    assert not (codex_home / "AGENTS.override.md").exists()
+    report = status("codex")
+    assert report["configured"] is True and report["effective_file"] == str(agents)
+    assert report["shadowed_blocks"] == []
+    assert activation.main(["remove", "--host", "codex", "--apply"]) == 0
+    assert agents.read_bytes() == b"Use short answers.\n"
+
+
+def test_nonempty_override_is_the_effective_codex_file(codex_home, capsys):
+    override = codex_home / "AGENTS.override.md"
+    agents = codex_home / "AGENTS.md"
+    override.write_bytes(b"Prefer British spelling.\n")
+    agents.write_bytes(b"Use short answers.\n")
+    report = status("codex")
+    assert report["effective_file"] == str(override)
+    assert any("does not read AGENTS.md" in note for note in report["notes"])
+    assert activation.main(["install", "--host", "codex", "--apply"]) == 0
+    assert override.read_bytes() == activation.transform(b"Prefer British spelling.\n", "install")
+    assert agents.read_bytes() == b"Use short answers.\n"
+    assert status("codex")["configured"] is True
+    assert activation.main(["remove", "--host", "codex", "--apply"]) == 0
+    assert override.read_bytes() == b"Prefer British spelling.\n"
+    assert agents.read_bytes() == b"Use short answers.\n"
+
+
+def test_a_block_left_in_the_shadowed_file_is_reported_and_moved(codex_home):
+    override = codex_home / "AGENTS.override.md"
+    agents = codex_home / "AGENTS.md"
+    override.write_bytes(b"Prefer British spelling.\n")
+    agents.write_bytes(activation.transform(b"Use short answers.\n", "install"))
+    report = status("codex")
+    assert report["configured"] is False
+    assert report["shadowed_blocks"] == [str(agents)]
+    assert activation.main(["install", "--host", "codex", "--apply"]) == 0
+    assert override.read_bytes() == activation.transform(b"Prefer British spelling.\n", "install")
+    assert agents.read_bytes() == b"Use short answers.\n"
+    assert status("codex")["configured"] is True
+
+
+def test_custom_codex_home_that_does_not_exist_is_reported_without_writing(tmp_path, monkeypatch, capsys):
+    missing = tmp_path / "absent-home"
+    monkeypatch.setenv("CODEX_HOME", str(missing))
+    monkeypatch.setattr(activation, "MANAGED_POLICY", {"codex": (), "claude-code": ()})
+    report = status("codex")
+    assert report["availability"].startswith("not installed")
+    assert activation.main(["install", "--host", "codex", "--apply"]) == 1
+    assert "must already exist" in capsys.readouterr().err
+    assert not missing.exists()
+
+
+def test_edited_block_in_the_effective_file_stops_every_change(codex_home, capsys):
+    override = codex_home / "AGENTS.override.md"
+    override.write_bytes(activation.transform(b"", "install").replace(b"adaptive", b"edited"))
+    before = override.read_bytes()
+    assert status("codex")["edited_blocks"] == [str(override)]
+    assert activation.main(["install", "--host", "codex", "--apply"]) == 1
+    assert activation.main(["remove", "--host", "codex", "--apply"]) == 1
+    assert override.read_bytes() == before
+
+
+def test_codex_availability_reads_the_plugin_cache_and_config(codex_home):
+    assert status("codex")["availability"].startswith("not installed")
+    cache = codex_home / "plugins/cache/skiphow/skiphow/4.2.0"
+    cache.mkdir(parents=True)
+    assert status("codex")["availability"].startswith("installed: cached versions 4.2.0")
+    (codex_home / "config.toml").write_text('[plugins."skiphow@skiphow"]\nenabled = false\n')
+    assert status("codex")["availability"].startswith("installed but disabled")
+
+
+def test_empty_override_is_skipped_and_left_alone(codex_home):
+    override = codex_home / "AGENTS.override.md"
+    agents = codex_home / "AGENTS.md"
+    override.write_bytes(b"  \n")
+    agents.write_bytes(b"Use short answers.\n")
+    report = status("codex")
+    assert report["effective_file"] == str(agents)
+    assert report["read_by_host"] == [str(agents)]
+    assert any("empty" in note for note in report["notes"])
+    assert activation.main(["install", "--host", "codex", "--apply"]) == 0
+    assert agents.read_bytes() == activation.transform(b"Use short answers.\n", "install")
+    assert override.read_bytes() == b"  \n"
+    assert status("codex")["configured"] is True
+
+
+def test_codex_enablement_is_unknown_when_config_cannot_be_parsed(codex_home, monkeypatch):
+    (codex_home / "plugins/cache/skiphow/skiphow/4.2.0").mkdir(parents=True)
+    config = codex_home / "config.toml"
+    config.write_text('[plugins."skiphow@skiphow"\nenabled = false\n')
+    assert status("codex")["availability"].startswith("installed, enablement unknown")
+    config.write_text('[plugins."skiphow@skiphow"]\nenabled = false\n')
+    monkeypatch.setattr(activation, "tomllib", None)
+    assert "enablement unknown" in status("codex")["availability"]
+
+
+def test_claude_config_dir_installs_into_claude_md_and_consolidates_rule_copies(claude_home):
+    primary = claude_home / "CLAUDE.md"
+    rules = claude_home / "rules"
+    rules.mkdir()
+    primary.write_bytes(b"# Preferences\n")
+    (rules / "skiphow.md").write_bytes(activation.transform(None, "install"))
+    report = status("claude-code")
+    assert report["effective_file"] == str(primary)
+    assert report["configured"] is True, "Claude reads an unconditional user rule for every project"
+    assert report["active_blocks"] == [str(rules / "skiphow.md")]
+    assert report["shadowed_blocks"] == []
+    assert activation.main(["install", "--host", "claude-code", "--apply"]) == 0
+    assert primary.read_bytes() == activation.transform(b"# Preferences\n", "install")
+    assert not (rules / "skiphow.md").exists()
+    assert status("claude-code")["configured"] is True
+    assert activation.main(["remove", "--host", "claude-code", "--apply"]) == 0
+    assert primary.read_bytes() == b"# Preferences\n"
+
+
+def test_conditional_rules_are_shadowed_and_linked_rules_are_preserved(claude_home, tmp_path, capsys):
+    primary = claude_home / "CLAUDE.md"
+    rules = claude_home / "rules"
+    rules.mkdir()
+    primary.write_bytes(b"# Preferences\n")
+    conditional = rules / "frontend.md"
+    conditional.write_bytes(b"---\npaths:\n  - src/**/*.tsx\n---\n" + activation.transform(None, "install"))
+    shared = tmp_path / "shared-rules" / "team.md"
+    shared.parent.mkdir()
+    shared.write_bytes(b"Team conventions.\n")
+    (rules / "team.md").symlink_to(shared)
+    report = status("claude-code")
+    assert report["configured"] is False
+    assert report["shadowed_blocks"] == [str(conditional)]
+    assert report["linked_files"] == [str(rules / "team.md")]
+    assert activation.main(["install", "--host", "claude-code", "--apply"]) == 0
+    assert primary.read_bytes() == activation.transform(b"# Preferences\n", "install")
+    assert conditional.read_bytes() == b"---\npaths:\n  - src/**/*.tsx\n---\n"
+    assert shared.read_bytes() == b"Team conventions.\n" and (rules / "team.md").is_symlink()
+    shared.write_bytes(activation.transform(b"Team conventions.\n", "install"))
+    report = status("claude-code")
+    assert report["configured"] is True and report["duplicate_blocks"] == [str(rules / "team.md")]
+    assert activation.main(["remove", "--host", "claude-code", "--apply"]) == 0
+    assert "left in place" in capsys.readouterr().err
+    assert primary.read_bytes() == b"# Preferences\n"
+    assert shared.read_bytes() == activation.transform(b"Team conventions.\n", "install")
+
+
+def test_claude_availability_reads_the_inventory_and_settings(claude_home):
+    assert status("claude-code")["availability"].startswith("not installed")
+    plugins = claude_home / "plugins"
+    plugins.mkdir()
+    inventory = plugins / "installed_plugins.json"
+    inventory.write_text(json.dumps({"plugins": {"skiphow@skiphow": [
+        {"scope": "project", "projectPath": "/somewhere/app", "version": "4.1.1"}]}}))
+    assert status("claude-code")["availability"].startswith("installed for specific projects only")
+    inventory.write_text(json.dumps({"plugins": {"skiphow@skiphow": [{"scope": "user", "version": "4.2.0"}]}}))
+    assert status("claude-code")["availability"] == "installed: user 4.2.0"
+    (claude_home / "settings.json").write_text(json.dumps({"enabledPlugins": {"skiphow@skiphow": False}}))
+    assert status("claude-code")["availability"].startswith("installed but disabled")
+    (claude_home / "settings.json").write_text("{not json")
+    assert "enablement unknown" in status("claude-code")["availability"]
+
+
+def test_managed_policy_files_are_reported_not_evaluated(codex_home, tmp_path, monkeypatch, capsys):
+    policy = tmp_path / "requirements.toml"
+    policy.write_text('[marketplaces]\nrestrict_to_allowed_sources = true\n')
+    monkeypatch.setattr(activation, "MANAGED_POLICY", {"codex": (policy,), "claude-code": ()})
+    assert status("codex")["managed_policy"] == [str(policy)]
+    assert activation.main(["status", "--host", "codex"]) == 0
+    assert "managed policy present" in capsys.readouterr().out
+    assert policy.read_text().startswith("[marketplaces]")
+
+
+def test_json_status_carries_every_fact_separately(codex_home, capsys):
+    assert activation.main(["status", "--host", "codex", "--json"]) == 0
+    report = json.loads(capsys.readouterr().out)
+    assert set(report) >= {"host", "effective_file", "read_by_host", "block", "configured", "active_blocks",
+                           "duplicate_blocks", "shadowed_blocks", "edited_blocks", "linked_files",
+                           "availability", "managed_policy", "loading"}
+    assert report["configured"] is False
+    assert "observed only in a fresh session" in report["loading"]
+
+
+def test_packaged_helper_is_a_plain_non_executable_resource():
+    assert not SCRIPT.stat().st_mode & 0o111
+    assert "scripts/activation.py" in (ROOT / "plugins/skiphow/skills/skiphow/references/setup.md").read_text()

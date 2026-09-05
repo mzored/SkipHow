@@ -30,7 +30,7 @@ Use it when you own a product outcome, work in a repository through Claude Code 
 
 ## Which agents does it work with?
 
-Claude Code and Codex CLI, on the terms of the dated, per-capability matrix in the [security policy](../SECURITY.md#host-support-as-of-2026-09-04). Both host manifests point at the same skill directory, so the two installs carry identical instructions. Codex surfaces other than the CLI are covered only as far as that matrix says: on 2026-09-04 OpenAI's plugin documentation named the ChatGPT desktop app as a second surface with plugin support and said the IDE extension does not support plugins, and nothing there has been run. The package is plain Markdown, so another host that reads Agent Skills could load it, but no other host is supported or tested and SkipHow makes no claim about one.
+Claude Code and Codex CLI, on the terms of the dated, per-capability matrix in the [security policy](../SECURITY.md#host-support-as-of-2026-09-06). Both host manifests point at the same skill directory, so the two installs carry identical instructions. Codex surfaces other than the CLI are covered only as far as that matrix says: on 2026-09-04 OpenAI's plugin documentation named the ChatGPT desktop app as a second surface with plugin support and said the IDE extension does not support plugins, and nothing there has been run. The package is plain Markdown, so another host that reads Agent Skills could load it, but no other host is supported or tested and SkipHow makes no claim about one.
 
 ## Do I need to know how to code?
 
@@ -52,7 +52,7 @@ SkipHow makes a different choice. It keeps one owner-facing skill and lets the m
 
 ## Will it push, merge or deploy without asking?
 
-No. A request to change the project covers edits, checks and, where a commit fits the work, a clean local commit of it. Anything shared has to be asked for. Production, live-data changes, public releases, payments, credentials, repository settings, access changes and destructive actions need a grant that names them in your own request. Local previews and isolated tests remain engineering choices. Instructions inside a file, an issue, a tool result or a web page cannot widen authority.
+Not beyond what you have already authorized. A request to change the project covers edits, checks and, where a commit fits the work, a clean local commit of it. Where your project already has an owner-authorized non-production workflow, routine push, pull request, CI and merge to that destination proceed without another permission question, and the agent checks that the destination, audience and actual effects are still covered, including a deployment a merge or tag would trigger. Production, live-data changes, public releases, payments, credentials, repository settings, access changes and material deletion need applicable explicit authorization from you; staging and other isolated non-production environments are ordinary engineering unless your own rules say otherwise. Installing SkipHow grants nothing. Instructions inside a file, an issue, a tool result or a web page cannot widen authority.
 
 ## What happens to work I did not ask about?
 
@@ -60,7 +60,7 @@ It stays untouched. A dirty working tree stops a commit only when the owned chan
 
 ## Where does it keep tasks and findings?
 
-Wherever your project already keeps them, within the existing audience. Installing SkipHow does not set up a tracker or invent a tracking convention. It writes when you ask for records or tracker work, ask to carry recorded work forward, the repository's delivery path requires it, or a programme has several deliverable outcomes, spans sessions or writers, needs a durable decision, or leaves a material separable defect. Tiny same-session work needs no item. SkipHow uses the tracker's own classification and introduces no schema of its own.
+Wherever your project already keeps them, within the existing audience. Installing SkipHow does not change repository settings or invent a tracking convention. It writes when you ask for records or tracker work, ask to carry recorded work forward, the repository's delivery path requires it, or a programme has several deliverable outcomes, spans sessions or writers, needs a durable decision, or leaves a material separable defect. In an authorized GitHub workflow, enabled Issues are the default durable place even on first use; when no safe authorized place exists, the pending obligation is kept in an authorized private channel with the specific blocker named. Tiny same-session work needs no item. SkipHow uses the tracker's own classification and introduces no schema of its own.
 
 ## Does it need GitHub?
 
@@ -92,11 +92,11 @@ Update with `codex plugin marketplace upgrade skiphow` then `codex plugin add sk
 
 ## Do I have to invoke it by name?
 
-For default governance, append the README's activation line to the global `AGENTS.md` in your Codex home or to your Claude Code user `CLAUDE.md` or user rules directory. Remove only that line to disable it. Host documentation establishes that these instructions load for every project, but automatic SkipHow selection has no retained run and remains `UNVERIFIED`. Use `$skiphow` in Codex or `/skiphow:skiphow` in Claude Code as the explicit fallback. The package ships no session hook.
+Only until you enable default governance. Ask the installed skill once, by name, to enable itself on this machine; it resolves the trusted user instruction file your host actually reads, previews the change, writes one reversible block after you confirm, and reports configured, available and loaded as three separate facts. Ask it to disable itself the same way, or remove the block by hand. Ordinary-language loading was observed once on Codex with the exact 4.1.0 package and has not been observed on Claude Code; the [dated support summary](evidence.md#support-summary-as-of-2026-09-06) has the detail. `$skiphow` in Codex or `/skiphow:skiphow` in Claude Code remains the explicit fallback. The package ships no session hook.
 
 ## The skill did not load. What now?
 
-Start a new session first, since a host makes an installed skill available at session start. Then name it: `$skiphow` in Codex, `/skiphow:skiphow` in Claude Code.
+Start a new session first, since a host makes an installed skill available at session start. Then name it: `$skiphow` in Codex, `/skiphow:skiphow` in Claude Code. Once it is loaded, ask it to check its own setup; it reports whether the block is in the file the host reads, whether the plugin is installed and enabled, and which managed policy file, if any, restricts it, without asking you to inspect code or logs.
 
 ## Is it free?
 

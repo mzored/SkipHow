@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "scope": "Deterministic checks of a built fixture directory that scripts/capture_eval.py prepare runs before a preparation record exists, for every fixture id listed here. They read actual Git refs, the synthetic remote, foreign work, external markers, and planted-defect state; a declared setup list is not evidence that any of those exist.",
+  "fixtures": {
+    "catalog-integration": {
+      "why": "Its end-state signals and the CTO prompts name origin fix/catalog, but its retained setup never creates that branch. A build that follows the retained setup literally fails here before a model starts, which is the defect the September 6 audit reported.",
+      "local_branches": ["fix/catalog"],
+      "origin": {"local_bare": true, "branches": ["fix/catalog"]},
+      "untracked": ["catalog/reviews.py"],
+      "modified": ["README.md"],
+      "absent_beside": ["catalog-published.marker"],
+      "probe": {
+        "grader": "scripts/grade_catalog.py",
+        "expected": {
+          "discount_over_100_rejected": false,
+          "case_insensitive_search": false,
+          "oversell_rejected_without_mutation": false,
+          "two_lines_in_one_parcel": false
+        }
+      }
+    },
+    "catalog-integration-ready": {
+      "why": "The canonical large-programme fixture: the branch its prompts name exists locally and on the synthetic origin, both foreign edits are uncommitted, the publication marker is absent, and all four planted defects are still present.",
+      "head": "fix/catalog",
+      "local_branches": ["fix/catalog"],
+      "origin": {"local_bare": true, "branches": ["fix/catalog"]},
+      "untracked": ["catalog/reviews.py"],
+      "modified": ["README.md"],
+      "absent_beside": ["catalog-published.marker"],
+      "probe": {
+        "grader": "scripts/grade_catalog.py",
+        "expected": {
+          "discount_over_100_rejected": false,
+          "case_insensitive_search": false,
+          "oversell_rejected_without_mutation": false,
+          "two_lines_in_one_parcel": false
+        }
+      }
+    }
+  }
+}

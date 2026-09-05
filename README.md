@@ -10,7 +10,7 @@ One public skill covers questions, bugs, ideas, features, reviews, lists, progra
 [![Latest release](https://img.shields.io/github/v/release/mzored/SkipHow?label=release)](https://github.com/mzored/SkipHow/releases)
 [![MIT license](https://img.shields.io/github/license/mzored/SkipHow)](LICENSE)
 
-Host support is a dated, per-capability matrix in the [security policy](SECURITY.md#host-support-as-of-2026-09-04), not a badge. Claude Code and Codex CLI are the surfaces it covers; anything it does not list is `UNVERIFIED`.
+Host support is a dated, per-capability matrix in the [security policy](SECURITY.md#host-support-as-of-2026-09-06), not a badge. Claude Code and Codex CLI are the surfaces it covers; anything it does not list is `UNVERIFIED`.
 
 ```text
 Your outcome and constraints
@@ -77,21 +77,27 @@ Start a new session after installing. The [owner guide](docs/guide.md) covers up
 
 ### Activate it for ordinary language
 
-Plugin installation makes the skill available, but skill selection remains model-driven. For default governance before the first consequential action, add this line once to your trusted user instructions without replacing anything already there:
+Plugin installation makes the skill available, but skill selection remains model-driven. To have SkipHow govern ordinary requests by default, ask the installed skill to enable itself once:
+
+```text
+$skiphow Enable SkipHow as my default virtual CTO on this machine.
+```
+
+In Codex the name is `$skiphow`; in Claude Code it is `/skiphow:skiphow`. The agent resolves the trusted user instruction file your host actually reads, shows you the exact change, writes one reversible block after you confirm, and reports three facts separately: whether the block is configured, whether the plugin is available on the host, and that loading is only visible in a fresh session. Codex reads a non-empty `AGENTS.override.md` in its home instead of `AGENTS.md`, and a custom `CODEX_HOME` moves that home; Claude Code reads the user `CLAUDE.md` and unconditional user rules under its configuration directory. A line placed in a file the host does not read configures nothing, which is why the agent, not you, resolves the target. Ask it to check or disable itself the same way. The block asks the host to load the skill and grants no action; installing or enabling SkipHow authorizes nothing.
+
+If you prefer to edit the file yourself, append this line to that file without replacing anything already there, and remove only this line to disable default governance:
 
 ```text
 For current-project requests, load the installed SkipHow skill before consequential action and use it as the adaptive virtual CTO policy. Do not load it for unrelated conversation or for a request that only discusses SkipHow without adopting it.
 ```
 
-On Codex, append the line to the global `AGENTS.md` in your Codex home. Codex loads that file before project work. On Claude Code, append it to your user `CLAUDE.md` or a file in your user rules directory. Claude Code loads user instructions for every project. Review the existing file first, keep its content, and remove only the SkipHow line to disable default governance. This setup is reversible and does not install a hook or grant any action.
-
-These host mechanisms are documented, but default activation remains `UNVERIFIED`: one Claude Code bare-prompt pilot did not select the skill, persistent clean-home setup could not authenticate, and Codex clean-home model runs were also blocked by authentication. Explicit Claude Code invocation loaded the exact 4.0.1 policy in the historical pilot set; Codex explicit invocation remains `UNVERIFIED`. Explicit invocation is the fallback and diagnostic path:
+Explicit invocation remains the fallback and diagnostic path:
 
 ```text
 $skiphow The totals overlap on small screens. Find the cause and fix it.
 ```
 
-In Codex the name is `$skiphow`; in Claude Code it is `/skiphow:skiphow`. The package no longer ships the reminder hook. It did not load the policy or restore continuity, and no controlled comparison showed that its executable surface helped. Current support status is in the [support matrix](SECURITY.md#host-support-as-of-2026-09-04).
+What each host has actually shown is in the [dated support summary](docs/evidence.md#support-summary-as-of-2026-09-06). In short: ordinary-language loading, delivery to a synthetic remote, and native resume were observed once each on Codex with the exact 4.1.0 package in an isolated home; on Claude Code no persistent-setup run exists and one earlier bare-prompt pilot did not select the skill. No activation mode has a measured reliability, and the package ships no session hook.
 
 ## Use it
 
@@ -140,9 +146,9 @@ SkipHow keeps one owner-facing entry. Critical rules stay in its kernel, while f
 
 ## What the evidence shows
 
-Deterministic checks prove package structure; controlled runs are required for behavior claims. The behavioral observations on record were made on 2.x packages, on both hosts, and cover fully specified requests, open product choices, failure diagnosis, adversarial verification, and the splitting of larger work into independently verifiable units. The 4.x virtual-CTO behavior and default ordinary-language activation remain `UNVERIFIED` until retained receipts show them.
+Deterministic checks prove package structure; controlled runs are required for behavior claims. The behavioral observations on record were made on 2.x packages, on both hosts, and cover fully specified requests, open product choices, failure diagnosis, adversarial verification, and the splitting of larger work into independently verifiable units. On the 4.x virtual-CTO contract, retained isolated Codex diagnostics on the exact 4.1.0 package show ordinary-language loading, four correct repairs delivered to a synthetic remote with foreign work preserved, read-only behavior on analysis and unrelated requests, and native resume and compaction. A separate Claude coordination diagnostic left its synthetic remote unchanged and accepted an incorrect shipping calculation despite independent review. Coordinated cross-host delivery, failed-delegate recovery, real GitHub tracking, and every behavior of the current package remain `UNVERIFIED` until retained receipts show them.
 
-These are observations, not a reliability rate. The project does not retain every transcript, public adoption is still limited, and comparative advantage over a base agent or another framework is `UNVERIFIED`. The [evidence matrix](docs/evidence.md) is the single home for the method, the claims each run supports, and the failures.
+These are observations, not a reliability rate. The project does not retain every transcript, public adoption is still limited, and comparative advantage over a base agent or another framework is `UNVERIFIED`. The [dated support summary](docs/evidence.md#support-summary-as-of-2026-09-06) says what was demonstrated on which package, host, and configuration; the rest of the [evidence ledger](docs/evidence.md) is the single home for the method, the claims each run supports, and the failures.
 
 ## Limits
 
@@ -161,7 +167,7 @@ Use a spec or workflow framework when approving the method is part of your job. 
 - [Prior art](docs/prior-art.md), for mechanisms kept and rejected
 - [Design](docs/design.md) and [decision history](docs/decisions.md)
 - [Current evidence](docs/evidence.md), for what is demonstrated and what is not
-- [Host support matrix](SECURITY.md#host-support-as-of-2026-09-04), dated per capability
+- [Host support matrix](SECURITY.md#host-support-as-of-2026-09-06), dated per capability
 - [Contributing](CONTRIBUTING.md) and [security policy](SECURITY.md)
 
 SkipHow adapts selected ideas from [Matt Pocock's skills](https://github.com/mattpocock/skills) and keeps the required MIT attribution in [`THIRD_PARTY_NOTICES.md`](plugins/skiphow/THIRD_PARTY_NOTICES.md). SkipHow itself is [MIT licensed](LICENSE).

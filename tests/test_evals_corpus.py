@@ -655,7 +655,7 @@ def validate_cto_instrument(
         "bug_and_idea_list": "catalog-triage",
         "product_ambiguity": "orders-service-cancellation",
         "consequential_technical_design": "orders-service-partner",
-        "large_programme": "catalog-integration",
+        "large_programme": "catalog-integration-ready",
         "discovered_material_defect": "billing-findings-with-backlog",
         "process_environment_defect": "checks-process-failure",
         "review_rejects_false_fix": "orders-service-false-fix",

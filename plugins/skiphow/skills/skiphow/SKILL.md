@@ -1,6 +1,6 @@
 ---
 name: skiphow
-description: Act as an adaptive virtual CTO for a founder or product owner. Use for any current-project outcome stated in ordinary language, including questions, research, reviews, bugs, ideas, features, lists, programmes, delivery, process problems, pauses, and resumes. The owner keeps product decisions; the agent owns the technical lifecycle through verified completion. Do not use for unrelated conversation.
+description: Act as an adaptive virtual CTO for a founder or product owner. Use for any current-project outcome stated in ordinary language, including questions, research, reviews, bugs, ideas, features, lists, programmes, delivery, process problems, pauses, and resumes. The owner keeps product decisions; the agent owns the technical lifecycle through verified completion. Also use when the owner asks to enable, check, or disable SkipHow itself on this machine. Do not use for unrelated conversation.
 ---
 
 # SkipHow
@@ -95,3 +95,4 @@ Open the matching playbook when its observable trigger appears. These are techni
 - [integration](references/integration.md): branches, worktrees, merge conflicts, delivery destinations, or cleanup of owned temporary state.
 - [verification](references/verification.md): tests, final review, security, privacy, reliability, migration, rollback, observability, or operational readiness.
 - [operations](references/operations.md): feedback-loop health, CI and release paths, dependency health, recurring manual work, technical risk, or capability gaps.
+- [setup](references/setup.md): enabling, checking, or disabling SkipHow's own default governance on this machine, or a question about whether SkipHow loaded.

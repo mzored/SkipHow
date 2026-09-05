@@ -24,23 +24,26 @@ Start a new session after installing or updating.
 
 ## Activate it
 
-Plugin installation makes the skill available. For ordinary-language default governance, append the activation line from the README to the global `AGENTS.md` in your Codex home, or to your Claude Code user `CLAUDE.md` or user rules directory. Inspect the existing file first and preserve it. Remove only that line to disable default governance.
+Plugin installation makes the skill available. For ordinary-language default governance, ask the installed skill to enable itself once, in a fresh session:
 
-If you have a checkout of this repository, `scripts/activation.py` can manage that line in an owned block. It is repository tooling, not an executable installed by the plugin. Supply the trusted user instruction file explicitly; the tool never chooses a host configuration path. Preview first, then add `--apply` to make the displayed change:
-
-```sh
-python scripts/activation.py install --target /absolute/path/to/trusted-instructions.md
-python scripts/activation.py install --target /absolute/path/to/trusted-instructions.md --apply
-python scripts/activation.py status --target /absolute/path/to/trusted-instructions.md
-python scripts/activation.py remove --target /absolute/path/to/trusted-instructions.md
-python scripts/activation.py remove --target /absolute/path/to/trusted-instructions.md --apply
+```text
+$skiphow Enable SkipHow as my default virtual CTO on this machine.
 ```
 
-Installation is idempotent, including after a plugin update. The block references the installed skill by name, so it contains no copied policy or version-specific cache path. Removal preserves unrelated content and restores the original trailing-newline state when no content follows the block. If you append more instructions, removal keeps the newline needed to separate them from earlier content. A file created solely for the block is removed when it has no other content. Updates stage the complete file beside the target before replacing it, preserving its permissions and leaving the original intact if staging fails. Edited or duplicate blocks require inspection rather than automatic replacement. If you previously added the README line manually, remove that exact line yourself before installing a managed block; the tool does not claim ownership of existing prose.
+Use `/skiphow:skiphow` instead of `$skiphow` in Claude Code. The agent resolves the trusted user instruction file your host reads, previews the exact change, asks for one confirmation, writes one owned block, and reports three separate facts: configured (the block is in the effective file), available (the host lists the plugin installed and enabled), and loaded (only a fresh session shows this). Ask it to check or disable itself the same way. It never presents a configuration check as loading evidence, and if a managed policy on your machine restricts plugins or instructions it reports the exact file rather than working around it.
 
-`status` checks only whether the owned block is intact. It cannot prove that the plugin is installed or that a session loaded its policy. Check the host's plugin inventory, start a fresh session, and inspect its loading evidence before consequential action. An instruction asking the model to load the skill is not proof that it did.
+The agent uses a helper shipped inside the plugin, `skills/skiphow/scripts/activation.py`, which you can also run yourself with any Python 3 interpreter. It resolves the file the way the host discovers it: Codex reads `AGENTS.override.md` in its home when that file exists and is not empty, and `AGENTS.md` otherwise, with `CODEX_HOME` relocating the home; Claude Code reads `CLAUDE.md` and unconditional `rules/*.md` files under its configuration directory, with `CLAUDE_CONFIG_DIR` relocating it. Preview first, then add `--apply` to make the displayed change:
 
-The package ships no session hook. Persistent user instructions are the smallest host-native setup that is present before the first project action without silently editing configuration or adding an executable surface. Their loading is documented on both hosts, but automatic SkipHow selection under this setup remains `UNVERIFIED`. Use `$skiphow` in Codex or `/skiphow:skiphow` in Claude Code as the explicit fallback and diagnostic path. The dated, per-capability host matrix is in the [security policy](../SECURITY.md#host-support-as-of-2026-09-04).
+```sh
+python <installed plugin>/skills/skiphow/scripts/activation.py status --host codex
+python <installed plugin>/skills/skiphow/scripts/activation.py install --host codex
+python <installed plugin>/skills/skiphow/scripts/activation.py install --host codex --apply
+python <installed plugin>/skills/skiphow/scripts/activation.py remove --host claude-code --apply
+```
+
+Installation is idempotent, including after a plugin update. The block references the installed skill by name, so it contains no copied policy or version-specific cache path. `install` also moves a block found in a file the host does not read, such as `AGENTS.md` beside a non-empty `AGENTS.override.md`, and consolidates a duplicate copy from a Claude rule; `remove` deletes every copy it may edit. Linked files are inspected and reported, never written through. Removal preserves unrelated content and restores the original trailing-newline state when no content follows the block. A file created solely for the block is removed when it has no other content. Updates stage the complete file beside the target before replacing it, preserving its permissions and leaving the original intact if staging fails. Edited or duplicate blocks require inspection rather than automatic replacement. If you previously added the README line manually, remove that exact line yourself before installing a managed block; the tool does not claim ownership of existing prose. `--target <file>` names another trusted file explicitly when you keep your instructions elsewhere.
+
+The package ships no session hook. Persistent user instructions are the smallest host-native setup that is present before the first project action without silently editing configuration or adding an executable surface. Their loading is documented on both hosts. What has been observed on each host is in the [dated support summary](evidence.md#support-summary-as-of-2026-09-06); the per-capability host matrix is in the [security policy](../SECURITY.md#host-support-as-of-2026-09-06). Use `$skiphow` in Codex or `/skiphow:skiphow` in Claude Code as the explicit fallback and diagnostic path.
 
 Update Codex:
 
@@ -56,7 +59,7 @@ claude plugin marketplace update skiphow
 claude plugin update skiphow@skiphow
 ```
 
-Before uninstalling, remove the managed activation block from the same trusted file with `python scripts/activation.py remove --target /absolute/path/to/trusted-instructions.md --apply`. If you added the README line manually, remove that exact line instead. Then uninstall with `codex plugin remove skiphow@skiphow` or `claude plugin uninstall skiphow@skiphow`. Plugin removal alone does not edit your trusted instructions and would leave a request to load an unavailable skill.
+Before uninstalling, ask SkipHow to disable itself, or run the helper's `remove --host <host> --apply` yourself. If you added the README line manually, remove that exact line instead. Then uninstall with `codex plugin remove skiphow@skiphow` or `claude plugin uninstall skiphow@skiphow`. Plugin removal alone does not edit your trusted instructions and would leave a request to load an unavailable skill.
 
 ## Ask for the outcome
 

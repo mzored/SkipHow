@@ -12,10 +12,12 @@ import subprocess
 import shutil
 
 from check_hosts import _payload, package_identity
+from grade_catalog import probe_directory
 from receipt_privacy import sanitize as sanitize_receipt, sanitize_text
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "evals/fixtures"
+PREFLIGHT = ROOT / "evals/preflight.json"
 
 
 def digest(content: bytes) -> str:
@@ -100,6 +102,69 @@ def materialize(name: str, destination: Path) -> None:
         raise
 
 
+def _git(args: list[str], cwd: Path) -> str:
+    result = subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True, timeout=60, check=False)
+    if result.returncode != 0:
+        raise ValueError(f"git {' '.join(args)} failed: {result.stderr.strip()}")
+    return result.stdout
+
+
+def preflight(fixture: Path, name: str) -> list[str]:
+    """Check the built fixture against the actual state its registered entry declares.
+
+    Returns the list of problems; an unregistered fixture returns none.
+    """
+    registry = json.loads(PREFLIGHT.read_text(encoding="utf-8"))["fixtures"]
+    spec = registry.get(name)
+    if spec is None:
+        return []
+    if not (fixture / ".git").is_dir():
+        return ["the built fixture is not a Git repository"]
+    problems: list[str] = []
+    head = _git(["rev-parse", "--abbrev-ref", "HEAD"], fixture).strip()
+    if "head" in spec and head != spec["head"]:
+        problems.append(f"HEAD is {head}, expected {spec['head']}")
+    local = set(_git(["for-each-ref", "--format=%(refname:short)", "refs/heads"], fixture).split())
+    problems.extend(f"local branch {branch} is missing" for branch in spec.get("local_branches", []) if branch not in local)
+    origin = spec.get("origin")
+    if origin:
+        try:
+            url = _git(["remote", "get-url", "origin"], fixture).strip()
+        except ValueError:
+            problems.append("remote origin is missing")
+        else:
+            if "://" in url or url.startswith("git@") or ":" in url.split("/", 1)[0]:
+                problems.append("origin is not a local synthetic path")
+            else:
+                path = Path(url) if Path(url).is_absolute() else (fixture / url)
+                path = path.resolve()
+                if path.is_relative_to(fixture.resolve()):
+                    problems.append("origin lives inside the fixture")
+                elif origin.get("local_bare") and _git(["--git-dir", str(path), "rev-parse", "--is-bare-repository"], fixture).strip() != "true":
+                    problems.append("origin is not a bare repository")
+                else:
+                    remote = set(_git(["--git-dir", str(path), "for-each-ref", "--format=%(refname:short)", "refs/heads"], fixture).split())
+                    problems.extend(f"origin branch {branch} is missing" for branch in origin.get("branches", []) if branch not in remote)
+    status = _git(["status", "--porcelain=v1", "--untracked-files=all"], fixture).splitlines()
+    untracked = {line[3:] for line in status if line.startswith("?? ")}
+    modified = {line[3:] for line in status if line[:2] in {" M", "MM", "M "}}
+    problems.extend(f"foreign untracked file {path} is missing" for path in spec.get("untracked", []) if path not in untracked)
+    problems.extend(f"foreign unstaged edit {path} is missing" for path in spec.get("modified", []) if path not in modified)
+    problems.extend(f"external marker {marker} already exists beside the fixture" for marker in spec.get("absent_beside", []) if (fixture.parent / marker).exists())
+    probe = spec.get("probe")
+    if probe:
+        try:
+            actual = probe_directory(fixture)
+        except ValueError as exc:
+            problems.append(f"planted-defect probe failed: {exc}")
+        else:
+            problems.extend(
+                f"planted defect state differs: {check} is {actual.get(check)}, expected {expected}"
+                for check, expected in probe["expected"].items() if actual.get(check) != expected
+            )
+    return problems
+
+
 def write_new(path: Path, value: dict) -> None:
     with path.open("x", encoding="utf-8") as stream:
         json.dump(value, stream, indent=2, ensure_ascii=False)
@@ -133,10 +198,15 @@ def prepare(fixture: Path, name: str, config: dict, output: Path) -> dict:
     record, revision = source(name)
     if config["setup_performed"] != record["setup"]:
         raise ValueError("record the exact fixture setup before preparing")
+    before = manifest(fixture)
+    problems = preflight(fixture, name)
+    if problems:
+        raise ValueError("preflight failed; no model run is ready: " + "; ".join(problems))
+    if manifest(fixture) != before:
+        raise ValueError("preflight changed fixture files; restore the fixture and retry")
     for marker in config.get("absent_markers", []):
         if Path(marker).exists():
             raise ValueError("a forbidden pre-session marker already exists")
-    before = manifest(fixture)
     baseline = config["baseline"]
     result = subprocess.run(baseline["argv"], cwd=fixture, capture_output=True,
                             text=True, timeout=config["limits"]["wall_seconds"], check=False)
@@ -156,6 +226,7 @@ def prepare(fixture: Path, name: str, config: dict, output: Path) -> dict:
                               "manifest": before},
         },
         "baseline": {"argv": baseline["argv"], "returncode": result.returncode, "output": combined},
+        "preflight": {"registered": name in json.loads(PREFLIGHT.read_text(encoding="utf-8"))["fixtures"], "problems": []},
         "evidence_label": "UNVERIFIED",
     }
     write_new(output, value)
