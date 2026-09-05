@@ -130,8 +130,23 @@
     "codex": {
       "results": {
         "clean_install": {
-          "status": "UNVERIFIED",
-          "receipt": null
+          "status": "PASS",
+          "receipt": {
+            "host": "codex",
+            "package_version": "4.1.1",
+            "package_commit": "548b6806dccf3b19c05b9076c78f9a95940c0153",
+            "package_tree": "030028064993ea4c9c0bb8d3a803cde8a6395972",
+            "package_payload_sha256": "bc4193ff597ce90edc0c3514d3530b9bb63c55fb62a328d29cd1071afa7d0ea1",
+            "host_version": "codex-cli 0.153.0",
+            "date": "2026-09-05",
+            "check": "clean_install",
+            "outcome": "PASS",
+            "configuration": "empty operating-system and Codex homes; approved Git source; exact installed payload comparison",
+            "command_or_session": "codex plugin marketplace add, plugin add, payload comparison, plugin remove, plugin list",
+            "observable_evidence": "All 15 regular package files matched the candidate",
+            "cleanup_result": "owned scratch homes removed after capture",
+            "source": "evals/receipts/host-validation-411-20260905/codex-approved-git-install.json"
+          }
         },
         "persistent_setup": {
           "status": "UNVERIFIED",
@@ -162,8 +177,23 @@
           "receipt": null
         },
         "uninstall": {
-          "status": "UNVERIFIED",
-          "receipt": null
+          "status": "PASS",
+          "receipt": {
+            "host": "codex",
+            "package_version": "4.1.1",
+            "package_commit": "548b6806dccf3b19c05b9076c78f9a95940c0153",
+            "package_tree": "030028064993ea4c9c0bb8d3a803cde8a6395972",
+            "package_payload_sha256": "bc4193ff597ce90edc0c3514d3530b9bb63c55fb62a328d29cd1071afa7d0ea1",
+            "host_version": "codex-cli 0.153.0",
+            "date": "2026-09-05",
+            "check": "uninstall",
+            "outcome": "PASS",
+            "configuration": "empty operating-system and Codex homes; approved Git source; exact installed payload comparison",
+            "command_or_session": "codex plugin marketplace add, plugin add, payload comparison, plugin remove, plugin list",
+            "observable_evidence": "Native uninstall removed the installed package cache",
+            "cleanup_result": "owned scratch homes removed after capture",
+            "source": "evals/receipts/host-validation-411-20260905/codex-approved-git-install.json"
+          }
         }
       }
     }

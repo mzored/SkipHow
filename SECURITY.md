@@ -15,7 +15,7 @@ services keep their own security policies.
 
 ## Package validation, 2026-09-05
 
-Version 4.1.1 passes both schema validators and exact Claude install/uninstall. The managed Codex source requires the candidate on the approved default branch before its final install check. Current host receipts are retained in `evals/receipts/host-validation-411-20260905/`. Model diagnostics below concern 4.1.0, not new runs of 4.1.1.
+Version 4.1.1 passes both schema validators and exact install/uninstall on Claude and Codex. Codex used the approved Git source in empty host homes after the candidate reached the default branch. Current host receipts are retained in `evals/receipts/host-validation-411-20260905/`. Model diagnostics below concern 4.1.0, not new runs of 4.1.1.
 
 The historical 4.1.0 candidate passed both host schema validators. Claude Code 2.1.261
 installed all fifteen regular files byte for byte and uninstalled them in a
