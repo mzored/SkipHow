@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "kind": "native-approved-source-install",
+  "package": {
+    "version": "4.1.1",
+    "commit": "548b6806dccf3b19c05b9076c78f9a95940c0153",
+    "git_tree": "030028064993ea4c9c0bb8d3a803cde8a6395972",
+    "payload_sha256": "bc4193ff597ce90edc0c3514d3530b9bb63c55fb62a328d29cd1071afa7d0ea1"
+  },
+  "host_version": "codex-cli 0.153.0",
+  "source": "https://github.com/mzored/SkipHow.git",
+  "steps": [
+    {
+      "argv": [
+        "codex",
+        "plugin",
+        "marketplace",
+        "add",
+        "https://github.com/mzored/SkipHow.git",
+        "--json"
+      ],
+      "exit_code": 0,
+      "output": "{\"marketplaceName\": \"skiphow\", \"installedRoot\": \"<scratch-home>/config/.tmp/marketplaces/skiphow\", \"alreadyAdded\": false}"
+    },
+    {
+      "argv": [
+        "codex",
+        "plugin",
+        "add",
+        "skiphow@skiphow",
+        "--json"
+      ],
+      "exit_code": 0,
+      "output": "{\"pluginId\": \"skiphow@skiphow\", \"name\": \"skiphow\", \"marketplaceName\": \"skiphow\", \"version\": \"4.1.1\", \"installedPath\": \"<scratch-home>/config/plugins/cache/skiphow/skiphow/4.1.1\", \"authPolicy\": \"ON_INSTALL\"}"
+    },
+    {
+      "argv": [
+        "codex",
+        "plugin",
+        "remove",
+        "skiphow@skiphow"
+      ],
+      "exit_code": 0,
+      "output": "Removed plugin `skiphow` from marketplace `skiphow`.\n"
+    },
+    {
+      "argv": [
+        "codex",
+        "plugin",
+        "list",
+        "--json"
+      ],
+      "exit_code": 0,
+      "output": "{\n  \"installed\": [],\n  \"available\": []\n}\n"
+    }
+  ],
+  "installed_payload": {
+    "SOURCES.json": "d74f6ccef12488b27e195bdfc677781c130bc81b514a1bca6218eaf82b93093b",
+    "LICENSE": "f6c21980331ae32f64afe9585dabbb60098b5b26b09e7873505fe23042cb99df",
+    "THIRD_PARTY_NOTICES.md": "aa6eb608121360a0f46f4c153ce6c29cf7e52d2952b2d9c85938a3ec43444263",
+    ".claude-plugin/plugin.json": "5f00a21321eadd432305c2e05c17fbe4af4c35181c9d453b849ea2ba91c3321c",
+    ".codex-plugin/plugin.json": "26dc98ce18560f50ff7127bf2ef6fcf6ecf79be81cef6dce5672b2f54068206d",
+    "skills/skiphow/SKILL.md": "c9688f7f65cbdba24b3df91646c8205749c43e7d0a28aa56f0f4e57a985b1aa9",
+    "skills/skiphow/references/product.md": "b4e098938fe93db53cdf026de09c54c1f6fb1839eaa42b057ab10d883c377ac6",
+    "skills/skiphow/references/operations.md": "def02aa656056dd0a35fcd1c3ce72a67698b95d71098612b365b6f8490c166d0",
+    "skills/skiphow/references/integration.md": "15323ec9e72a2deffbf45fec519de426b3582cd21fd325ba5ea8d283dcc5a045",
+    "skills/skiphow/references/delegation.md": "99f1f2ed6da74e868a747801534ff4cee420071375cc6f2c23fc0bb951341503",
+    "skills/skiphow/references/verification.md": "b5455bc13104590589a46623ba33ae9f57841f42b4dea0c67fbd912740766640",
+    "skills/skiphow/references/tracked-work.md": "df6a5a00caa2a1bc30a5a518185658e4cc10f3f18fb18a71179554c95a8927f8",
+    "skills/skiphow/references/diagnosis.md": "8d0f337437d9ee3982e6df27ed1a58b89a01269e500e81b4dfce553c3976deb4",
+    "skills/skiphow/references/technical-design.md": "24e94087743cf14747e59920d3fb12d9ac6a0ae51bff52fb43b7a491acbf87b8",
+    "skills/skiphow/agents/openai.yaml": "c7ba7daa2c66aef3a99c7e5dd001905baa0976913b9e903f94726d4bc2904f51"
+  },
+  "checks": {
+    "exact_package_install": "PASS",
+    "uninstall_cache_absent": "PASS"
+  },
+  "scope": "Empty operating-system and Codex homes; approved default-branch Git source; installed payload compared to exact 4.1.1 candidate; no credentials or model calls.",
+  "cleanup": "scratch homes removed by owned context on exit"
+}

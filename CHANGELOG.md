@@ -8,7 +8,7 @@ Public evaluation receipts now omit account quota and authentication metadata, m
 
 The owner authorized removal of the affected history. The 4.1.0 immutable release and tag were withdrawn because GitHub does not permit moving or reusing that tag. This replacement preserves the runtime behavior while correcting public evidence handling. Branch protection was restored after the cleanup. GitHub pull-request refs, caches, existing clones and release attestations are outside a branch rewrite; complete server-side removal remains pending GitHub Support.
 
-New, separately retained 4.1.0 Codex diagnostics establish installed ordinary-language loading, correct delivery to a synthetic Git remote, read-only and unrelated-request behavior, native resume, and native compaction followed by continuation. They are not relabeled as runs of 4.1.1 or as canonical CTO-suite coverage. Cross-host coordinated delivery, durable failed-delegate recovery and real GitHub tracking remain unverified. See [docs/evidence.md](docs/evidence.md) for exact scope and receipts.
+New, separately retained 4.1.0 Codex diagnostics establish installed ordinary-language loading, correct delivery to a synthetic Git remote, read-only and unrelated-request behavior, native resume, and native compaction followed by continuation. They are not relabeled as runs of 4.1.1 or as canonical CTO-suite coverage. Cross-host coordinated delivery, durable failed-delegate recovery and real GitHub tracking remain unverified. Both host schema validators and exact 4.1.1 install/uninstall checks pass. See [docs/evidence.md](docs/evidence.md) for exact scope and receipts.
 
 ## 4.1.0 (2026-09-05)
 
