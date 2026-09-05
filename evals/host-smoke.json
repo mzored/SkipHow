@@ -60,8 +60,23 @@
     "claude-code": {
       "results": {
         "clean_install": {
-          "receipt": null,
-          "status": "UNVERIFIED"
+          "receipt": {
+            "check": "clean_install",
+            "cleanup_result": "plugin absent before scratch host home cleanup",
+            "command_or_session": "host marketplace add, install, list, inspect, uninstall, list",
+            "configuration": "empty CLAUDE_CONFIG_DIR; exact local marketplace snapshot",
+            "date": "2026-09-05",
+            "host": "claude-code",
+            "host_version": "2.1.261 (Claude Code)",
+            "observable_evidence": "installed regular files exactly matched the candidate payload",
+            "outcome": "PASS",
+            "package_commit": "2084ae59a83b2d1c21ceb0589f85bf9947fafd1d",
+            "package_payload_sha256": "bc4193ff597ce90edc0c3514d3530b9bb63c55fb62a328d29cd1071afa7d0ea1",
+            "package_tree": "030028064993ea4c9c0bb8d3a803cde8a6395972",
+            "package_version": "4.1.1",
+            "source": "scripts/check_hosts.py --smoke"
+          },
+          "status": "PASS"
         },
         "persistent_setup": {
           "status": "UNVERIFIED",
@@ -92,8 +107,23 @@
           "receipt": null
         },
         "uninstall": {
-          "receipt": null,
-          "status": "UNVERIFIED"
+          "receipt": {
+            "check": "uninstall",
+            "cleanup_result": "plugin absent before scratch host home cleanup",
+            "command_or_session": "host marketplace add, install, list, inspect, uninstall, list",
+            "configuration": "empty CLAUDE_CONFIG_DIR; exact local marketplace snapshot",
+            "date": "2026-09-05",
+            "host": "claude-code",
+            "host_version": "2.1.261 (Claude Code)",
+            "observable_evidence": "host inventory no longer listed SkipHow",
+            "outcome": "PASS",
+            "package_commit": "2084ae59a83b2d1c21ceb0589f85bf9947fafd1d",
+            "package_payload_sha256": "bc4193ff597ce90edc0c3514d3530b9bb63c55fb62a328d29cd1071afa7d0ea1",
+            "package_tree": "030028064993ea4c9c0bb8d3a803cde8a6395972",
+            "package_version": "4.1.1",
+            "source": "scripts/check_hosts.py --smoke"
+          },
+          "status": "PASS"
         }
       }
     },
