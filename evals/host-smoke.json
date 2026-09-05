@@ -1,6 +1,6 @@
 {
   "instrument": "host_smoke",
-  "package_under_test": "4.1.0",
+  "package_under_test": "4.1.1",
   "scope": "external_candidate_receipts",
   "checks": {
     "clean_install": {
@@ -70,10 +70,10 @@
             "host_version": "2.1.261 (Claude Code)",
             "observable_evidence": "installed regular files exactly matched the candidate payload",
             "outcome": "PASS",
-            "package_commit": "de55df23287b38463c16ef6616534442f2576c6a",
-            "package_payload_sha256": "e79048fdcd69ebe9d282dd7068ace85c6d4ec21d44ced98a1569a7fd7a43d55c",
-            "package_tree": "5cad1341bdcc20b701945c154bf6c40364a91482",
-            "package_version": "4.1.0",
+            "package_commit": "2084ae59a83b2d1c21ceb0589f85bf9947fafd1d",
+            "package_payload_sha256": "bc4193ff597ce90edc0c3514d3530b9bb63c55fb62a328d29cd1071afa7d0ea1",
+            "package_tree": "030028064993ea4c9c0bb8d3a803cde8a6395972",
+            "package_version": "4.1.1",
             "source": "scripts/check_hosts.py --smoke"
           },
           "status": "PASS"
@@ -117,10 +117,10 @@
             "host_version": "2.1.261 (Claude Code)",
             "observable_evidence": "host inventory no longer listed SkipHow",
             "outcome": "PASS",
-            "package_commit": "de55df23287b38463c16ef6616534442f2576c6a",
-            "package_payload_sha256": "e79048fdcd69ebe9d282dd7068ace85c6d4ec21d44ced98a1569a7fd7a43d55c",
-            "package_tree": "5cad1341bdcc20b701945c154bf6c40364a91482",
-            "package_version": "4.1.0",
+            "package_commit": "2084ae59a83b2d1c21ceb0589f85bf9947fafd1d",
+            "package_payload_sha256": "bc4193ff597ce90edc0c3514d3530b9bb63c55fb62a328d29cd1071afa7d0ea1",
+            "package_tree": "030028064993ea4c9c0bb8d3a803cde8a6395972",
+            "package_version": "4.1.1",
             "source": "scripts/check_hosts.py --smoke"
           },
           "status": "PASS"

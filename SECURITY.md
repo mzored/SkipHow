@@ -13,9 +13,11 @@ marketplace metadata, release checks, and documented authority
 boundaries. Codex, Claude Code, GitHub, Git, operating systems, and third-party
 services keep their own security policies.
 
-## Current package validation, 2026-09-05
+## Package validation, 2026-09-05
 
-The 4.1.0 candidate passed both host schema validators. Claude Code 2.1.261
+Version 4.1.1 passes both schema validators and exact Claude install/uninstall. The managed Codex source requires the candidate on the approved default branch before its final install check. Current host receipts are retained in `evals/receipts/host-validation-411-20260905/`. Model diagnostics below concern 4.1.0, not new runs of 4.1.1.
+
+The historical 4.1.0 candidate passed both host schema validators. Claude Code 2.1.261
 installed all fifteen regular files byte for byte and uninstalled them in a
 clean host configuration. Codex CLI 0.153.0 clean installation remains
 `UNVERIFIED` because managed marketplace-source policy refused the local source.

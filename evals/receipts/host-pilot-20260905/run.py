@@ -12,6 +12,7 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / 'scripts'))
 import capture_eval as capture
+from receipt_privacy import sanitize_text
 
 
 def parse_events(text):
@@ -27,26 +28,7 @@ def parse_events(text):
 
 
 def sanitized_trace(text, redactions):
-    def redact(value):
-        if isinstance(value, str):
-            for old in sorted(redactions, key=len, reverse=True):
-                value = value.replace(old, redactions[old])
-            return value
-        if isinstance(value, list):
-            return [redact(item) for item in value]
-        if isinstance(value, dict):
-            return {key: '[host signature omitted]' if key == 'signature' else redact(item)
-                    for key, item in value.items()}
-        return value
-    lines = []
-    for line in text.splitlines():
-        try:
-            value = json.loads(line)
-        except json.JSONDecodeError:
-            lines.append(redact(line))
-        else:
-            lines.append(json.dumps(redact(value), ensure_ascii=False))
-    return '\n'.join(lines) + '\n'
+    return sanitize_text(text, redactions).rstrip('\n') + '\n'
 
 
 @contextmanager
@@ -205,9 +187,9 @@ def main():
         }
         with destination.with_suffix('.destination.json').open('x') as stream:
             stream.write(sanitized_trace(json.dumps(receipts), redactions))
-        print(json.dumps({'arm': arm, 'exit_code': code, 'result': results, 'init': initial,
+        print(sanitized_trace(json.dumps({'arm': arm, 'exit_code': code, 'result': results, 'init': initial,
                           'foreign_bytes_preserved': receipts['foreign_bytes_preserved'],
-                          'receipt': str(destination)}, default=str), flush=True)
+                          'receipt': str(destination)}, default=str), redactions), flush=True)
     print(json.dumps({'cleanup': not scratch.exists()}), flush=True)
 
 
