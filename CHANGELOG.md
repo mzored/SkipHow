@@ -2,6 +2,34 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 4.2.0 (2026-09-06)
+
+SkipHow can now enable, check, and disable its own default governance when an installed user asks it to. The activation helper ships inside the skill, resolves the trusted user instruction file each host actually reads, and reports configured, available, and loaded as three separate facts. Installing, enabling, or upgrading SkipHow still grants no authority.
+
+### Changed
+
+- A `setup` playbook handles requests to enable, check, or disable SkipHow on this machine, or to explain why it did not load: one preview, one confirmation before writing, three separate facts, and managed policy reported rather than bypassed.
+- The activation helper moved from the repository into the skill package as `scripts/activation.py`. It follows host discovery: Codex reads `AGENTS.override.md` in its home when that file exists and `AGENTS.md` otherwise, with `CODEX_HOME` relocating the home; Claude Code reads `CLAUDE.md` under `CLAUDE_CONFIG_DIR` or its default directory. It moves a block found in a file the host does not read, removes every copy on disable, and reads each host's plugin inventory to report availability. `--target` still names any trusted file explicitly.
+- The integration playbook chooses failed-merge recovery by consequence. Evidence and unrelated work are preserved first; a disposable failure may stay in place for diagnosis; a shared target that other work, CI, or a deployment depends on is contained or restored to its last good state; restoring production keeps its grant.
+
+### Evaluation instrument
+
+- The canonical large-programme case names the `catalog-integration-ready` fixture, whose setup creates the `fix/catalog` branch the prompt refers to, and carries a scope note that the fixture is four separable repairs rather than a dependency-laden programme.
+- `evals/preflight.json` registers the expected pre-session state of each fixture, and `capture_eval.py prepare` refuses a fixture whose branches, remote, foreign work, marker, or planted defects do not match it.
+- The continuity oracle bans outcomes rather than implementations: no stale grant acted on, no invented end state, no lost obligation, no duplicated work.
+- `scripts/grade_catalog.py` states the four expected catalog behaviors independently of any implementation and grades retained captures or destination records without starting a model.
+
+### Documentation
+
+- One dated support summary in `docs/evidence.md` states per host what was validated, configured, observed loaded, and left unknown. README, guide, FAQ, security policy, and site link to it instead of restating limitations that belonged to earlier packages.
+- Authority text on the site and in the FAQ follows effects. Staging and other isolated non-production environments are ordinary engineering unless the owner's own rules say otherwise; production, live data, public releases, credentials, access, repository settings, payments, and material deletion keep their explicit authorization.
+
+### Compatibility and evidence
+
+This is a minor release because the setup playbook and packaged helper are new opt-in capability and the recovery rule widens what the integration playbook permits within existing authority. Existing grants, restrictions, and protected-action boundaries survive the upgrade. The public skill name and record formats are unchanged.
+
+Deterministic checks, the September 6 audit disposition, and grader results on retained end states are recorded in [docs/evidence.md](docs/evidence.md). Every 4.2.0 behavior is `UNVERIFIED`: whether a session loads the skill from an `AGENTS.override.md` block, whether the agent operates the setup playbook as written, and whether the recovery rule changes what a run does. Host receipts for the exact 4.2.0 package are recorded in `evals/host-smoke.json` when they land.
+
 ## 4.1.1 (2026-09-05)
 
 Public evaluation receipts now omit account quota and authentication metadata, mask common credential formats and private paths, and pseudonymize trace identifiers. Capture applies this filtering before saving evidence, and an offline test checks every retained receipt. Per-run usage and synthetic fixture artifacts remain available for replay. The runtime instructions are unchanged; only the package version metadata changes.

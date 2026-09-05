@@ -1,6 +1,6 @@
 {
   "instrument": "host_smoke",
-  "package_under_test": "4.1.1",
+  "package_under_test": "4.2.0",
   "scope": "external_candidate_receipts",
   "checks": {
     "clean_install": {
@@ -60,23 +60,8 @@
     "claude-code": {
       "results": {
         "clean_install": {
-          "receipt": {
-            "check": "clean_install",
-            "cleanup_result": "plugin absent before scratch host home cleanup",
-            "command_or_session": "host marketplace add, install, list, inspect, uninstall, list",
-            "configuration": "empty CLAUDE_CONFIG_DIR; exact local marketplace snapshot",
-            "date": "2026-09-05",
-            "host": "claude-code",
-            "host_version": "2.1.261 (Claude Code)",
-            "observable_evidence": "installed regular files exactly matched the candidate payload",
-            "outcome": "PASS",
-            "package_commit": "2084ae59a83b2d1c21ceb0589f85bf9947fafd1d",
-            "package_payload_sha256": "bc4193ff597ce90edc0c3514d3530b9bb63c55fb62a328d29cd1071afa7d0ea1",
-            "package_tree": "030028064993ea4c9c0bb8d3a803cde8a6395972",
-            "package_version": "4.1.1",
-            "source": "scripts/check_hosts.py --smoke"
-          },
-          "status": "PASS"
+          "status": "UNVERIFIED",
+          "receipt": null
         },
         "persistent_setup": {
           "status": "UNVERIFIED",
@@ -107,46 +92,16 @@
           "receipt": null
         },
         "uninstall": {
-          "receipt": {
-            "check": "uninstall",
-            "cleanup_result": "plugin absent before scratch host home cleanup",
-            "command_or_session": "host marketplace add, install, list, inspect, uninstall, list",
-            "configuration": "empty CLAUDE_CONFIG_DIR; exact local marketplace snapshot",
-            "date": "2026-09-05",
-            "host": "claude-code",
-            "host_version": "2.1.261 (Claude Code)",
-            "observable_evidence": "host inventory no longer listed SkipHow",
-            "outcome": "PASS",
-            "package_commit": "2084ae59a83b2d1c21ceb0589f85bf9947fafd1d",
-            "package_payload_sha256": "bc4193ff597ce90edc0c3514d3530b9bb63c55fb62a328d29cd1071afa7d0ea1",
-            "package_tree": "030028064993ea4c9c0bb8d3a803cde8a6395972",
-            "package_version": "4.1.1",
-            "source": "scripts/check_hosts.py --smoke"
-          },
-          "status": "PASS"
+          "status": "UNVERIFIED",
+          "receipt": null
         }
       }
     },
     "codex": {
       "results": {
         "clean_install": {
-          "status": "PASS",
-          "receipt": {
-            "host": "codex",
-            "package_version": "4.1.1",
-            "package_commit": "548b6806dccf3b19c05b9076c78f9a95940c0153",
-            "package_tree": "030028064993ea4c9c0bb8d3a803cde8a6395972",
-            "package_payload_sha256": "bc4193ff597ce90edc0c3514d3530b9bb63c55fb62a328d29cd1071afa7d0ea1",
-            "host_version": "codex-cli 0.153.0",
-            "date": "2026-09-05",
-            "check": "clean_install",
-            "outcome": "PASS",
-            "configuration": "empty operating-system and Codex homes; approved Git source; exact installed payload comparison",
-            "command_or_session": "codex plugin marketplace add, plugin add, payload comparison, plugin remove, plugin list",
-            "observable_evidence": "All 15 regular package files matched the candidate",
-            "cleanup_result": "owned scratch homes removed after capture",
-            "source": "evals/receipts/host-validation-411-20260905/codex-approved-git-install.json"
-          }
+          "status": "UNVERIFIED",
+          "receipt": null
         },
         "persistent_setup": {
           "status": "UNVERIFIED",
@@ -177,31 +132,16 @@
           "receipt": null
         },
         "uninstall": {
-          "status": "PASS",
-          "receipt": {
-            "host": "codex",
-            "package_version": "4.1.1",
-            "package_commit": "548b6806dccf3b19c05b9076c78f9a95940c0153",
-            "package_tree": "030028064993ea4c9c0bb8d3a803cde8a6395972",
-            "package_payload_sha256": "bc4193ff597ce90edc0c3514d3530b9bb63c55fb62a328d29cd1071afa7d0ea1",
-            "host_version": "codex-cli 0.153.0",
-            "date": "2026-09-05",
-            "check": "uninstall",
-            "outcome": "PASS",
-            "configuration": "empty operating-system and Codex homes; approved Git source; exact installed payload comparison",
-            "command_or_session": "codex plugin marketplace add, plugin add, payload comparison, plugin remove, plugin list",
-            "observable_evidence": "Native uninstall removed the installed package cache",
-            "cleanup_result": "owned scratch homes removed after capture",
-            "source": "evals/receipts/host-validation-411-20260905/codex-approved-git-install.json"
-          }
+          "status": "UNVERIFIED",
+          "receipt": null
         }
       }
     }
   },
   "rule": "Record each capability separately. A package validator, documented host feature, or successful install does not prove model activation or behavior. Use scratch host homes and retain exact package bytes, the package tree and candidate commit, host version, outcome, configuration, command or session result, source, date, and cleanup result. The receipt outcome must match its ledger status. Release-runner capability is a separate matrix.",
   "historical_evidence": {
-    "package_version": "4.0.1",
-    "source": "https://github.com/mzored/SkipHow/blob/b3c4a6aa6830c1cac26389cac1d3d4221ebecf6f/evals/host-smoke.json",
+    "package_version": "4.1.1",
+    "source": "https://github.com/mzored/SkipHow/blob/c4303c96967ab5c226b1357e4a07267add4fcbea/evals/host-smoke.json",
     "scope": "Historical receipts retain their original arms, prompts, outcomes, and package identities at this immutable source. They do not establish current-candidate behavior."
   }
 }

@@ -4,8 +4,8 @@
 
 | Version | Supported |
 | --- | --- |
-| 4.1.x | Yes |
-| 4.0.x | No; upgrade to 4.1.x without changing existing authorization |
+| 4.2.x | Yes |
+| 4.1.x and 4.0.x | No; upgrade to 4.2.x without changing existing authorization |
 | 3.0.x and earlier | No |
 
 Security review covers the packaged owner skill, its linked playbooks, host manifests,
@@ -13,9 +13,9 @@ marketplace metadata, release checks, and documented authority
 boundaries. Codex, Claude Code, GitHub, Git, operating systems, and third-party
 services keep their own security policies.
 
-## Package validation, 2026-09-05
+## Package validation, 2026-09-06
 
-Version 4.1.1 passes both schema validators and exact install/uninstall on Claude and Codex. Codex used the approved Git source in empty host homes after the candidate reached the default branch. Current host receipts are retained in `evals/receipts/host-validation-411-20260905/`. Model diagnostics below concern 4.1.0, not new runs of 4.1.1.
+Version 4.2.0 is validated per capability in [`evals/host-smoke.json`](evals/host-smoke.json); a row without a fresh 4.2.0 receipt stays `UNVERIFIED` there. The [dated support summary](docs/evidence.md#support-summary-as-of-2026-09-06) states what each host has shown for this package. The previous 4.1.1 receipts remain in `evals/receipts/host-validation-411-20260905/`, and the isolated Codex diagnostics remain 4.1.0 observations.
 
 The historical 4.1.0 candidate passed both host schema validators. Claude Code 2.1.261
 installed all fifteen regular files byte for byte and uninstalled them in a
@@ -25,15 +25,17 @@ The [candidate receipts](evals/host-smoke.json) and
 [per-capability matrix](evals/receipts/host-validation-20260905.md) retain the exact
 package identity and scope. Clean installation does not establish model loading.
 
-Clean isolated model profiles on both hosts could not authenticate. Ordinary-language
-bootstrap, installed activation and genuine resume remain `UNVERIFIED`. The
-[bounded session-plugin diagnostics](docs/evidence.md#the-410-delivery-audit)
-do not establish clean installed behavior. Claude's documented plugin subagents
+An isolated Codex profile authenticated natively on 2026-09-05; an isolated Claude Code
+profile still cannot. Ordinary-language loading, delivery to a synthetic remote, and
+native resume were observed once each on the exact 4.1.0 package in the
+[isolated Codex diagnostics](docs/evidence.md#later-isolated-codex-diagnostics); nothing
+comparable exists for Claude Code, and no activation mode has a measured reliability on
+either host. Claude's documented plugin subagents
 ignore `permissionMode`; a declared field alone must not be described as an
 enforced read-only boundary. Actual tool restrictions and workspace identity need
 their own evidence. See [Claude subagents](https://code.claude.com/docs/en/sub-agents).
 
-## Host support, as of 2026-09-04
+## Host support, as of 2026-09-06
 
 Host behavior changes. Each row below is only as current as its verification date, and
 each row cites the first-party page it was read from. Check that page again before
@@ -68,7 +70,7 @@ page under `learn.chatgpt.com`; the redirect target is the page actually read.
 | Capability | What the source says | Source | Verified | Tested version | Status |
 | --- | --- | --- | --- | --- | --- |
 | Skill loading | Plugin skills are discovered at `<plugin>/skills/<name>/SKILL.md` and namespaced `/<plugin>:<skill>`. The description sits in context and the body loads on invocation; description plus `when_to_use` is truncated at 1,536 characters in the listing. Both explicit `/name` and automatic invocation are available unless `disable-model-invocation` or `user-invocable` restricts them. | [Skills](https://code.claude.com/docs/en/skills) | 2026-09-04 | 2.1.260 | `PASS` for explicit invocation of exact 4.0.1 in the retained pilots; automatic selection remains `UNVERIFIED` and did not occur in one bare-prompt pilot |
-| Persistent instruction loading | User `CLAUDE.md` and user rules apply to every project. The optional SkipHow activation line is added without replacing existing instructions and removed to disable it. The file is behavioral guidance, not client enforcement. | [Memory](https://code.claude.com/docs/en/memory) | 2026-09-04 | none | `UNVERIFIED` (documented loading; no automatic-selection run) |
+| Persistent instruction loading | User `CLAUDE.md` and `rules/*.md` in the configuration directory apply to every project and load before project instructions; `CLAUDE_CONFIG_DIR` relocates that directory; managed policy `CLAUDE.md` loads first and cannot be excluded. The packaged helper writes its owned block to that `CLAUDE.md` and removes copies from `rules/`. The page says the file is context, not enforcement. | [Memory](https://code.claude.com/docs/en/memory) | 2026-09-06 | none | `UNVERIFIED` (documented loading; the isolated Claude profile still cannot authenticate, so no persistent-setup run exists) |
 | Per-agent read-only controls | Subagent frontmatter takes a `tools` allowlist, `disallowedTools`, and `permissionMode`, whose values include `plan` for read-only exploration. | [Subagents](https://code.claude.com/docs/en/sub-agents) | 2026-09-04 | none | `UNVERIFIED` (documented) |
 | Worktree isolation | `isolation: worktree` runs a subagent in a temporary git worktree. | [Subagents](https://code.claude.com/docs/en/sub-agents) | 2026-09-04 | none | `UNVERIFIED` (documented) |
 | Plugin validation | Manifest `.claude-plugin/plugin.json`; `claude plugin validate <path>` validates it and `--strict` treats warnings as errors. | [Plugins](https://code.claude.com/docs/en/plugins) | 2026-09-04 | 2.1.259 | `PASS` (`scripts/check_hosts.py`, 2026-09-04) |
@@ -79,7 +81,7 @@ page under `learn.chatgpt.com`; the redirect target is the page actually read.
 | Capability | What the source says | Source | Verified | Tested version | Status |
 | --- | --- | --- | --- | --- | --- |
 | Skill loading | Skills are discovered from `.agents/skills` in the current, parent, and repository-root directories, the user-level `.agents/skills` directory in the home directory, `/etc/codex/skills`, and system skills. Progressive disclosure lists name and description within 2 per cent of the context window, or 8,000 characters where that is unknown; the full file loads on selection. Explicit `$skill` invocation and implicit invocation are both available; `allow_implicit_invocation` in `agents/openai.yaml` defaults to true. | [Skills](https://developers.openai.com/codex/skills) | 2026-09-04 | none | `UNVERIFIED` (documented; no activation run on record) |
-| Persistent instruction loading | Codex reads global `AGENTS.md` before project work, then layers project instructions. The optional SkipHow activation line is added without replacing existing instructions and removed to disable it. | [AGENTS.md](https://developers.openai.com/codex/guides/agents-md) | 2026-09-04 | none | `UNVERIFIED` (documented loading; no automatic-selection run) |
+| Persistent instruction loading | Codex reads `AGENTS.override.md` in its home when that file exists and `AGENTS.md` otherwise, then layers project files with the same precedence per directory; `CODEX_HOME` relocates the home; empty files are skipped and the combined size is capped by `project_doc_max_bytes` (32 KiB by default). The packaged helper targets the file this rule makes effective and moves a block left in the shadowed file. | [AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md) | 2026-09-06 | 0.153.0 | `Observed` once on exact 4.1.0: the kernel loaded before edits in the isolated bootstrap diagnostic with the block in `AGENTS.md` and no override present; 4.2.0 and the override path `UNVERIFIED` until a receipt |
 | Per-agent read-only controls | Custom agents are TOML files in the Codex home `agents/` directory or the project `.codex/agents/` and may set `sandbox_mode` per agent; the page names marking one agent read-only as the example. Absent an override, subagents inherit the parent's sandbox policy and permission mode. | [Subagents](https://developers.openai.com/codex/subagents) | 2026-09-04 | none | `UNVERIFIED` (documented; corrects the earlier claim that no declarable per-delegate profile exists) |
 | Worktree isolation | The subagents page documents no worktree or separate-checkout option for a subagent. | [Subagents](https://developers.openai.com/codex/subagents) | 2026-09-04 | none | `UNVERIFIED` (not documented either way) |
 | Plugin validation | Manifest `.codex-plugin/plugin.json`. There is no `codex plugin validate` subcommand; validation runs the `validate_plugin.py` script shipped with the plugin-creator system skill in the Codex repository, which CI checks out at a pinned commit. | [openai/codex plugin-creator scripts](https://github.com/openai/codex/tree/333beecd41281b1350688b417a2f20c66e2a743e/codex-rs/skills/src/assets/samples/plugin-creator/scripts) | 2026-09-04 | none locally | `UNVERIFIED` locally (validator not on this machine); required to `PASS` in CI |

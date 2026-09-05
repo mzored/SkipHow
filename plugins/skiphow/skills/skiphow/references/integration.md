@@ -14,7 +14,9 @@ Where the request or the repository's workflow puts this work in a tracker, [tra
 
 ## Verifying the integrated state
 
-Verify against the integrated state, not the branch. The merged result is a state neither side ran its checks on, so an earlier pass on the branch alone does not carry. If the merged result fails, leave everything in place and diagnose it there; nothing is gained by unwinding a merge you are about to redo.
+Verify against the integrated state, not the branch. The merged result is a state neither side ran its checks on, so an earlier pass on the branch alone does not carry.
+
+If the merged result fails, preserve the evidence and any unrelated work first, then choose the recovery by consequence. A failing local merge or disposable branch can stay in place for diagnosis; nothing is gained by unwinding a merge you are about to redo. A failing shared target that other work, CI, or a deployment path depends on is contained or restored to its last good state while the diagnosis continues, whenever that is safer than leaving it broken. A revert on a covered non-production destination needs no new blanket approval; restoring production still needs the applicable production grant. In either case the failed state is not reported as delivered.
 
 ## When it conflicts
 

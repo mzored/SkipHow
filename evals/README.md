@@ -184,6 +184,22 @@ corpus. The behavior it observed is repository policy in `AGENTS.md`, and
 deterministic regression for it; it is not a runtime product behavior and
 never belonged in an arm comparison.
 
+The large-programme case names `catalog-integration-ready`, the derived
+fixture whose setup creates `fix/catalog`; the older `catalog-integration`
+fixture never created that branch and stays only because retained receipts are
+hash-bound to its bytes. Its scope note records that the fixture is four
+separable repairs, and the continuity oracle bans lost obligations and invented
+end states rather than any particular implementation.
+
+`preflight.json` registers the expected pre-session state of each fixture that
+has one: branches, remote refs, foreign work, the absent marker, and the planted
+defects. `capture_eval.py prepare` checks a built fixture against that registry
+and refuses to prepare one that does not match, so no model runs against a
+fixture the prompt does not describe. `../scripts/grade_catalog.py` states the
+four expected catalog behaviors independently of any implementation and grades
+a retained capture or destination record without starting a model; a pass is a
+fact about retained bytes and never an evidence label.
+
 ## Running one case by hand
 
 Runs are manual, bounded, and authorized in advance. Before launching:
