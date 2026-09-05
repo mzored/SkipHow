@@ -198,13 +198,15 @@ def prepare(fixture: Path, name: str, config: dict, output: Path) -> dict:
     record, revision = source(name)
     if config["setup_performed"] != record["setup"]:
         raise ValueError("record the exact fixture setup before preparing")
+    before = manifest(fixture)
     problems = preflight(fixture, name)
     if problems:
         raise ValueError("preflight failed; no model run is ready: " + "; ".join(problems))
+    if manifest(fixture) != before:
+        raise ValueError("preflight changed fixture files; restore the fixture and retry")
     for marker in config.get("absent_markers", []):
         if Path(marker).exists():
             raise ValueError("a forbidden pre-session marker already exists")
-    before = manifest(fixture)
     baseline = config["baseline"]
     result = subprocess.run(baseline["argv"], cwd=fixture, capture_output=True,
                             text=True, timeout=config["limits"]["wall_seconds"], check=False)

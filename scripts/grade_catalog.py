@@ -114,8 +114,11 @@ def catalog_files(record: dict) -> dict[str, str]:
 
 
 def _is_catalog_module(relative: str) -> bool:
-    parts = Path(relative).parts
-    return len(parts) == 2 and parts[0] == "catalog" and relative.endswith(".py")
+    """Accept any module inside the ``catalog`` package, however the repair laid it out."""
+    path = Path(relative)
+    parts = path.parts
+    return (len(parts) >= 2 and parts[0] == "catalog" and relative.endswith(".py")
+            and not path.is_absolute() and all(part not in ("", ".", "..") for part in parts))
 
 
 def grade_capture(path: Path) -> dict:

@@ -9,13 +9,13 @@ SkipHow can now enable, check, and disable its own default governance when an in
 ### Changed
 
 - A `setup` playbook handles requests to enable, check, or disable SkipHow on this machine, or to explain why it did not load: one preview, one confirmation before writing, three separate facts, and managed policy reported rather than bypassed.
-- The activation helper moved from the repository into the skill package as `scripts/activation.py`. It follows host discovery: Codex reads `AGENTS.override.md` in its home when that file exists and `AGENTS.md` otherwise, with `CODEX_HOME` relocating the home; Claude Code reads `CLAUDE.md` under `CLAUDE_CONFIG_DIR` or its default directory. It moves a block found in a file the host does not read, removes every copy on disable, and reads each host's plugin inventory to report availability. `--target` still names any trusted file explicitly.
+- The activation helper moved from the repository into the skill package as `scripts/activation.py`. It follows host discovery: Codex reads `AGENTS.override.md` in its home when that file exists and is not empty, and `AGENTS.md` otherwise, with `CODEX_HOME` relocating the home; Claude Code reads `CLAUDE.md` and unconditional `rules/*.md` files under `CLAUDE_CONFIG_DIR` or its default directory. It moves a block found in a file the host does not read, consolidates duplicates, never writes through a symbolic link, removes every copy it may edit on disable, and reads each host's plugin inventory to report availability or says that enablement is unknown. `--target` still names any trusted file explicitly.
 - The integration playbook chooses failed-merge recovery by consequence. Evidence and unrelated work are preserved first; a disposable failure may stay in place for diagnosis; a shared target that other work, CI, or a deployment depends on is contained or restored to its last good state; restoring production keeps its grant.
 
 ### Evaluation instrument
 
 - The canonical large-programme case names the `catalog-integration-ready` fixture, whose setup creates the `fix/catalog` branch the prompt refers to, and carries a scope note that the fixture is four separable repairs rather than a dependency-laden programme.
-- `evals/preflight.json` registers the expected pre-session state of each fixture, and `capture_eval.py prepare` refuses a fixture whose branches, remote, foreign work, marker, or planted defects do not match it.
+- `evals/preflight.json` registers the expected pre-session state of each fixture, and `capture_eval.py prepare` validates the tree, then refuses a fixture whose branches, remote, foreign work, marker, or planted defects do not match it.
 - The continuity oracle bans outcomes rather than implementations: no stale grant acted on, no invented end state, no lost obligation, no duplicated work.
 - `scripts/grade_catalog.py` states the four expected catalog behaviors independently of any implementation and grades retained captures or destination records without starting a model.
 

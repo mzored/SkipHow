@@ -4,7 +4,7 @@ Open this when the owner asks to enable, check, or disable SkipHow's default gov
 
 ## What the host reads
 
-Default governance is one owned block in the trusted user instruction file the host reads before project work. Codex reads `AGENTS.override.md` in its home when that file exists and `AGENTS.md` otherwise, and `CODEX_HOME` relocates the home. Claude Code reads `CLAUDE.md` and `rules/*.md` in its configuration directory for every project, and `CLAUDE_CONFIG_DIR` relocates that directory. A block in a file the host does not read configures nothing, and a second copy in another file is litter that becomes active later.
+Default governance is one owned block in the trusted user instruction file the host reads before project work. Codex reads `AGENTS.override.md` in its home when that file exists and is not empty, and `AGENTS.md` otherwise; `CODEX_HOME` relocates the home. Claude Code reads `CLAUDE.md` and every unconditional `rules/*.md` file in its configuration directory for every project, a rule with `paths:` frontmatter only for matching files; `CLAUDE_CONFIG_DIR` relocates that directory. A block in a file the host does not read configures nothing, and a second copy in another file is litter that may become active later.
 
 The helper beside this skill, [`scripts/activation.py`](../scripts/activation.py), resolves that file the same way and writes only its own block. Run it with the interpreter available on the machine, giving the directory that holds this skill's `SKILL.md`:
 
@@ -15,7 +15,7 @@ python <skill directory>/scripts/activation.py install --host claude-code --appl
 python <skill directory>/scripts/activation.py remove --host codex --apply
 ```
 
-`install` adds the block to the effective file and moves a block found in a file the host does not read; `remove` deletes it from every file it inspects. Without `--apply` each command shows the exact diff and changes nothing. Use `--target <file>` only when the owner names another trusted file. Where no Python interpreter is available, append the block text shown by the preview yourself and remove exactly that text to disable.
+`install` adds the block to the effective file and moves a copy found in any other file it may edit; `remove` deletes every copy it may edit. It never writes through a symbolic link: a linked file is inspected and reported, and its target is left for the owner. Without `--apply` each command shows the exact diff and changes nothing. Use `--target <file>` only when the owner names another trusted file. Where no Python interpreter is available, append the block text shown by the preview yourself and remove exactly that text to disable.
 
 ## One confirmation, three facts
 

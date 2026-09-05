@@ -4,15 +4,17 @@
 The helper resolves the trusted user instruction file the way the host itself
 discovers it, so the owned activation block lands where the host will read it:
 
-- Codex reads ``AGENTS.override.md`` in its home when that file exists and
-  ``AGENTS.md`` otherwise; ``CODEX_HOME`` relocates the home.
-- Claude Code reads ``CLAUDE.md`` in its configuration directory for every
-  project; ``CLAUDE_CONFIG_DIR`` relocates that directory.
+- Codex reads ``AGENTS.override.md`` in its home when that file exists and is
+  not empty, and ``AGENTS.md`` otherwise; ``CODEX_HOME`` relocates the home.
+- Claude Code reads ``CLAUDE.md`` and every unconditional ``rules/*.md`` file
+  in its configuration directory for every project; ``CLAUDE_CONFIG_DIR``
+  relocates that directory. A rule with ``paths:`` frontmatter is conditional.
 
-It reports three facts separately: whether the block is configured in the
-effective file, whether the plugin appears installed and enabled on the host,
+It reports three facts separately: whether the block is configured in a file
+the host reads, whether the plugin appears installed and enabled on the host,
 and that loading is only ever observed inside a session. It writes nothing
-without ``--apply``, changes only its own block, and preserves every other byte.
+without ``--apply``, changes only its own block, never writes through a
+symbolic link, and preserves every other byte.
 """
 
 from __future__ import annotations
@@ -127,10 +129,14 @@ class Layout:
     home: Path | None
     effective: Path
     candidates: list[Path]
-    shadowed: list[Path] = field(default_factory=list)
+    read_by_host: list[Path] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
     managed: list[Path] = field(default_factory=list)
     availability: str = "not checked; an explicit target names no host"
+
+    def __post_init__(self) -> None:
+        if not self.read_by_host:
+            self.read_by_host = [self.effective]
 
 
 def _codex_availability(home: Path) -> str:
@@ -139,14 +145,17 @@ def _codex_availability(home: Path) -> str:
     if not versions:
         return "not installed: no plugin cache for skiphow in this Codex home"
     config = home / "config.toml"
-    enabled: object = None
-    if config.is_file() and tomllib is not None:
-        try:
-            enabled = tomllib.loads(config.read_text(encoding="utf-8")).get("plugins", {}).get(PLUGIN_ID, {}).get("enabled")
-        except (OSError, UnicodeError, ValueError):
-            enabled = None
+    cached = f"cached versions {', '.join(versions)}"
+    if not config.is_file():
+        return f"installed: {cached}; no config.toml"
+    if tomllib is None:
+        return f"installed, enablement unknown: this interpreter cannot parse config.toml (Python 3.11 or later can); {cached}"
+    try:
+        enabled = tomllib.loads(config.read_text(encoding="utf-8")).get("plugins", {}).get(PLUGIN_ID, {}).get("enabled")
+    except (OSError, UnicodeError, ValueError):
+        return f"installed, enablement unknown: config.toml could not be parsed; {cached}"
     state = "installed" if enabled is not False else "installed but disabled in config.toml"
-    return f"{state}: cached versions {', '.join(versions)}"
+    return f"{state}: {cached}"
 
 
 def _claude_availability(home: Path) -> str:
@@ -166,14 +175,14 @@ def _claude_availability(home: Path) -> str:
         scope = entry.get("scope", "?")
         version = entry.get("version", "?")
         scopes.append(f"{scope} {version}" if scope != "project" else f"project {version} ({entry.get('projectPath', '?')})")
-    disabled = False
+    state = "installed"
     settings = home / "settings.json"
     if settings.is_file():
         try:
-            disabled = json.loads(settings.read_text(encoding="utf-8")).get("enabledPlugins", {}).get(PLUGIN_ID) is False
+            if json.loads(settings.read_text(encoding="utf-8")).get("enabledPlugins", {}).get(PLUGIN_ID) is False:
+                state = "installed but disabled in settings.json"
         except (OSError, UnicodeError, ValueError):
-            disabled = False
-    state = "installed but disabled in settings.json" if disabled else "installed"
+            state = "installed, enablement unknown: settings.json could not be read"
     if not any(scope.startswith("user ") for scope in scopes):
         state += " for specific projects only"
     return f"{state}: {'; '.join(scopes)}"
@@ -186,19 +195,26 @@ def resolve(host: str, environ: dict[str, str] | None = None) -> Layout:
         home = Path(environ.get("CODEX_HOME") or (Path.home() / ".codex")).expanduser().absolute()
         override, agents = home / "AGENTS.override.md", home / "AGENTS.md"
         layout = Layout("codex", home, agents, [agents], availability=_codex_availability(home) if home.is_dir() else "not installed: the Codex home does not exist")
-        layout.notes.append("Codex reads AGENTS.override.md in its home when that file exists and AGENTS.md otherwise; CODEX_HOME relocates the home.")
+        layout.notes.append("Codex reads AGENTS.override.md in its home when that file exists and is not empty, and AGENTS.md otherwise; CODEX_HOME relocates the home.")
         if override.exists():
-            layout.effective, layout.candidates, layout.shadowed = override, [override, agents], [agents]
-            layout.notes.append(f"{override.name} exists, so Codex does not read {agents.name} here.")
+            if _nonempty(override):
+                layout.effective, layout.candidates, layout.read_by_host = override, [override, agents], [override]
+                layout.notes.append(f"{override.name} has content, so Codex does not read {agents.name} here.")
+            else:
+                layout.candidates = [agents, override]
+                layout.notes.append(f"{override.name} exists but is empty, so Codex skips it and reads {agents.name}; the empty file is left alone.")
     elif host == "claude-code":
         home = Path(environ.get("CLAUDE_CONFIG_DIR") or (Path.home() / ".claude")).expanduser().absolute()
         primary = home / "CLAUDE.md"
-        candidates = [primary]
+        candidates, read_by_host = [primary], [primary]
         rules = home / "rules"
         if rules.is_dir():
-            candidates.extend(sorted(path for path in rules.rglob("*.md") if path.is_file()))
-        layout = Layout("claude-code", home, primary, candidates, availability=_claude_availability(home) if home.is_dir() else "not installed: the Claude Code configuration directory does not exist")
-        layout.notes.append("Claude Code reads CLAUDE.md and rules/*.md in its configuration directory for every project; CLAUDE_CONFIG_DIR relocates that directory.")
+            for path in sorted(path for path in rules.rglob("*.md") if path.is_file()):
+                candidates.append(path)
+                if not _conditional(path):
+                    read_by_host.append(path)
+        layout = Layout("claude-code", home, primary, candidates, read_by_host, availability=_claude_availability(home) if home.is_dir() else "not installed: the Claude Code configuration directory does not exist")
+        layout.notes.append("Claude Code reads CLAUDE.md and every unconditional rules/*.md file in its configuration directory for every project; a rule with paths: frontmatter applies only to matching files; CLAUDE_CONFIG_DIR relocates that directory.")
     else:
         raise ValueError(f"unknown host {host!r}; choose one of {', '.join(HOSTS)}")
     layout.managed = [path for path in MANAGED_POLICY[host] if path.exists()]
@@ -209,37 +225,63 @@ def explicit(target: Path) -> Layout:
     return Layout(None, None, target, [target])
 
 
+def _nonempty(path: Path) -> bool:
+    try:
+        return bool(path.read_bytes().strip())
+    except OSError:
+        return False
+
+
+def _conditional(path: Path) -> bool:
+    """A Claude rule whose frontmatter names ``paths:`` applies only to matching files."""
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return False
+    if not text.startswith("---"):
+        return False
+    end = text.find("\n---", 3)
+    return end != -1 and re.search(r"^paths:", text[3:end], re.MULTILINE) is not None
+
+
+def linked(target: Path) -> bool:
+    return target.is_symlink() or any(parent.is_symlink() for parent in target.parents)
+
+
 def read(target: Path) -> bytes | None:
-    if target.is_symlink() or any(parent.is_symlink() for parent in target.parents):
+    if linked(target):
         raise ValueError(f"Use an ordinary path without symbolic links: {target}")
     return target.read_bytes() if target.exists() else None
 
 
 def block_state(target: Path) -> str:
-    try:
-        data = read(target)
-    except ValueError:
-        return "symlink"
-    if data is None:
+    """Inspect a file, following a link for inspection only; writes never follow links."""
+    if not target.exists():
         return "missing"
     try:
+        data = target.read_bytes()
         return "present" if locate(data) else "absent"
-    except (ValueError, UnicodeError):
+    except (OSError, ValueError, UnicodeError):
         return "edited"
 
 
 def status_report(layout: Layout) -> dict:
     states = {str(path): block_state(path) for path in layout.candidates}
-    effective_state = states[str(layout.effective)]
-    stray = [path for path, state in states.items() if state == "present" and path != str(layout.effective)]
+    read_paths = {str(path) for path in layout.read_by_host}
+    present = [path for path, state in states.items() if state == "present"]
+    active = [path for path in present if path in read_paths]
     return {
         "host": layout.host,
         "home": str(layout.home) if layout.home else None,
         "effective_file": str(layout.effective),
+        "read_by_host": sorted(read_paths),
         "block": states,
-        "configured": effective_state == "present" and not stray,
-        "shadowed_blocks": stray,
+        "configured": bool(active),
+        "active_blocks": active,
+        "duplicate_blocks": active[1:] if len(active) > 1 else [],
+        "shadowed_blocks": [path for path in present if path not in read_paths],
         "edited_blocks": [path for path, state in states.items() if state == "edited"],
+        "linked_files": [str(path) for path in layout.candidates if linked(path)],
         "availability": layout.availability,
         "managed_policy": [str(path) for path in layout.managed],
         "notes": layout.notes,
@@ -252,12 +294,17 @@ def print_status(report: dict) -> None:
         print(f"host: {report['host']} (home {report['home']})")
     print(f"effective file: {report['effective_file']}")
     for path, state in report["block"].items():
-        print(f"{path}: owned activation block {state}.")
+        suffix = "" if path in report["read_by_host"] else " (not read by the host for every project)"
+        print(f"{path}: owned activation block {state}{suffix}.")
     if report["shadowed_blocks"]:
         print("A block exists in a file the host does not read; run install to move it, or remove to delete it.")
+    if report["duplicate_blocks"]:
+        print("More than one file the host reads holds the block; install consolidates it into the effective file.")
     if report["edited_blocks"]:
         print("An edited or duplicated block needs inspection before the helper will change that file.")
-    print(f"configured in the effective file: {'yes' if report['configured'] else 'no'}")
+    if report["linked_files"]:
+        print("Linked files are inspected but never edited by the helper: " + ", ".join(report["linked_files"]))
+    print(f"configured in a file the host reads: {'yes' if report['configured'] else 'no'}")
     print(f"plugin availability: {report['availability']}")
     for path in report["managed_policy"]:
         print(f"managed policy present: {path} (loads before user instructions and may restrict plugins; not evaluated here)")
@@ -269,9 +316,13 @@ def print_status(report: dict) -> None:
 def plan(layout: Layout, action: str) -> list[tuple[Path, bytes | None, bytes | None]]:
     """Return (path, original, changed) for every file the action touches."""
     changes = []
-    for index, path in enumerate(layout.candidates):
+    for path in layout.candidates:
+        wanted = action if path == layout.effective else "remove"
+        if path != layout.effective and linked(path):
+            if block_state(path) == "present":
+                print(f"{path}: linked file holds the block and is left in place; edit its target yourself.", file=sys.stderr)
+            continue
         original = read(path)
-        wanted = action if index == 0 else "remove"
         changed = transform(original, wanted)
         if changed != original:
             changes.append((path, original, changed))

@@ -203,12 +203,37 @@ def test_codex_availability_reads_the_plugin_cache_and_config(codex_home):
     assert status("codex")["availability"].startswith("not installed")
     cache = codex_home / "plugins/cache/skiphow/skiphow/4.2.0"
     cache.mkdir(parents=True)
-    assert status("codex")["availability"] == "installed: cached versions 4.2.0"
+    assert status("codex")["availability"].startswith("installed: cached versions 4.2.0")
     (codex_home / "config.toml").write_text('[plugins."skiphow@skiphow"]\nenabled = false\n')
     assert status("codex")["availability"].startswith("installed but disabled")
 
 
-def test_claude_config_dir_installs_into_claude_md_and_removes_rule_copies(claude_home):
+def test_empty_override_is_skipped_and_left_alone(codex_home):
+    override = codex_home / "AGENTS.override.md"
+    agents = codex_home / "AGENTS.md"
+    override.write_bytes(b"  \n")
+    agents.write_bytes(b"Use short answers.\n")
+    report = status("codex")
+    assert report["effective_file"] == str(agents)
+    assert report["read_by_host"] == [str(agents)]
+    assert any("empty" in note for note in report["notes"])
+    assert activation.main(["install", "--host", "codex", "--apply"]) == 0
+    assert agents.read_bytes() == activation.transform(b"Use short answers.\n", "install")
+    assert override.read_bytes() == b"  \n"
+    assert status("codex")["configured"] is True
+
+
+def test_codex_enablement_is_unknown_when_config_cannot_be_parsed(codex_home, monkeypatch):
+    (codex_home / "plugins/cache/skiphow/skiphow/4.2.0").mkdir(parents=True)
+    config = codex_home / "config.toml"
+    config.write_text('[plugins."skiphow@skiphow"\nenabled = false\n')
+    assert status("codex")["availability"].startswith("installed, enablement unknown")
+    config.write_text('[plugins."skiphow@skiphow"]\nenabled = false\n')
+    monkeypatch.setattr(activation, "tomllib", None)
+    assert "enablement unknown" in status("codex")["availability"]
+
+
+def test_claude_config_dir_installs_into_claude_md_and_consolidates_rule_copies(claude_home):
     primary = claude_home / "CLAUDE.md"
     rules = claude_home / "rules"
     rules.mkdir()
@@ -216,13 +241,43 @@ def test_claude_config_dir_installs_into_claude_md_and_removes_rule_copies(claud
     (rules / "skiphow.md").write_bytes(activation.transform(None, "install"))
     report = status("claude-code")
     assert report["effective_file"] == str(primary)
-    assert report["shadowed_blocks"] == [str(rules / "skiphow.md")]
+    assert report["configured"] is True, "Claude reads an unconditional user rule for every project"
+    assert report["active_blocks"] == [str(rules / "skiphow.md")]
+    assert report["shadowed_blocks"] == []
     assert activation.main(["install", "--host", "claude-code", "--apply"]) == 0
     assert primary.read_bytes() == activation.transform(b"# Preferences\n", "install")
     assert not (rules / "skiphow.md").exists()
     assert status("claude-code")["configured"] is True
     assert activation.main(["remove", "--host", "claude-code", "--apply"]) == 0
     assert primary.read_bytes() == b"# Preferences\n"
+
+
+def test_conditional_rules_are_shadowed_and_linked_rules_are_preserved(claude_home, tmp_path, capsys):
+    primary = claude_home / "CLAUDE.md"
+    rules = claude_home / "rules"
+    rules.mkdir()
+    primary.write_bytes(b"# Preferences\n")
+    conditional = rules / "frontend.md"
+    conditional.write_bytes(b"---\npaths:\n  - src/**/*.tsx\n---\n" + activation.transform(None, "install"))
+    shared = tmp_path / "shared-rules" / "team.md"
+    shared.parent.mkdir()
+    shared.write_bytes(b"Team conventions.\n")
+    (rules / "team.md").symlink_to(shared)
+    report = status("claude-code")
+    assert report["configured"] is False
+    assert report["shadowed_blocks"] == [str(conditional)]
+    assert report["linked_files"] == [str(rules / "team.md")]
+    assert activation.main(["install", "--host", "claude-code", "--apply"]) == 0
+    assert primary.read_bytes() == activation.transform(b"# Preferences\n", "install")
+    assert conditional.read_bytes() == b"---\npaths:\n  - src/**/*.tsx\n---\n"
+    assert shared.read_bytes() == b"Team conventions.\n" and (rules / "team.md").is_symlink()
+    shared.write_bytes(activation.transform(b"Team conventions.\n", "install"))
+    report = status("claude-code")
+    assert report["configured"] is True and report["duplicate_blocks"] == [str(rules / "team.md")]
+    assert activation.main(["remove", "--host", "claude-code", "--apply"]) == 0
+    assert "left in place" in capsys.readouterr().err
+    assert primary.read_bytes() == b"# Preferences\n"
+    assert shared.read_bytes() == activation.transform(b"Team conventions.\n", "install")
 
 
 def test_claude_availability_reads_the_inventory_and_settings(claude_home):
@@ -237,6 +292,8 @@ def test_claude_availability_reads_the_inventory_and_settings(claude_home):
     assert status("claude-code")["availability"] == "installed: user 4.2.0"
     (claude_home / "settings.json").write_text(json.dumps({"enabledPlugins": {"skiphow@skiphow": False}}))
     assert status("claude-code")["availability"].startswith("installed but disabled")
+    (claude_home / "settings.json").write_text("{not json")
+    assert "enablement unknown" in status("claude-code")["availability"]
 
 
 def test_managed_policy_files_are_reported_not_evaluated(codex_home, tmp_path, monkeypatch, capsys):
@@ -252,8 +309,9 @@ def test_managed_policy_files_are_reported_not_evaluated(codex_home, tmp_path, m
 def test_json_status_carries_every_fact_separately(codex_home, capsys):
     assert activation.main(["status", "--host", "codex", "--json"]) == 0
     report = json.loads(capsys.readouterr().out)
-    assert set(report) >= {"host", "effective_file", "block", "configured", "shadowed_blocks",
-                           "edited_blocks", "availability", "managed_policy", "loading"}
+    assert set(report) >= {"host", "effective_file", "read_by_host", "block", "configured", "active_blocks",
+                           "duplicate_blocks", "shadowed_blocks", "edited_blocks", "linked_files",
+                           "availability", "managed_policy", "loading"}
     assert report["configured"] is False
     assert "observed only in a fresh session" in report["loading"]
 
