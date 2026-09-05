@@ -683,6 +683,10 @@ def validate_cto_instrument(
     for case in data["cases"]:
         assert case["fixture"] in fixture_ids
         assert case["fixture"] == compatible_fixtures[case["scenario"]]
+        regression_cases = case.get("regression_cases", [])
+        assert isinstance(regression_cases, list)
+        assert len(regression_cases) == len(set(regression_cases)), "duplicate focused regression case"
+        assert set(regression_cases) <= {item["id"] for item in corpus_data["cases"]}, "unknown focused regression case"
         assert case["prompts"]
         prompt_by_id: dict[str, dict] = {}
         for prompt in case["prompts"]:
@@ -1234,6 +1238,18 @@ def test_cto_instrument_rejects_stale_summary_and_duplicate_case_ids() -> None:
         _validate_synthetic_cto(data)
 
 
+def test_cto_focused_regressions_reference_existing_unique_cases() -> None:
+    data = _cto_document()
+    _validate_synthetic_cto(data)
+    data["cases"][0]["regression_cases"] = ["missing-case"]
+    with pytest.raises(AssertionError, match="unknown focused regression case"):
+        _validate_synthetic_cto(data)
+    case_id = corpus()["cases"][0]["id"]
+    data["cases"][0]["regression_cases"] = [case_id, case_id]
+    with pytest.raises(AssertionError, match="duplicate focused regression case"):
+        _validate_synthetic_cto(data)
+
+
 def test_host_smoke_instrument_keeps_each_capability_visible() -> None:
     data = json.loads((EVALS / "host-smoke.json").read_text(encoding="utf-8"))
     assert data["instrument"] == "host_smoke"
@@ -1350,6 +1366,10 @@ def test_every_referenced_fixture_exists_and_describes_itself() -> None:
         assert base is None or base in directories
     cto = json.loads((EVALS / "cto-cases.json").read_text(encoding="utf-8"))
     referenced = {case["fixture"] for case in cases()} | {case["fixture"] for case in cto["cases"]}
+    for receipt_path in (EVALS / "receipts").rglob("*.json"):
+        receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+        if isinstance(receipt, dict) and receipt.get("kind") == "manual-evaluation-capture":
+            referenced.add(receipt["preparation"]["fixture_snapshot"]["id"])
     assert referenced <= directories
     # A fixture nothing points at is dead weight in a corpus this small.
     assert directories - referenced == set()
@@ -1537,7 +1557,10 @@ def test_the_corpus_stays_offline_privacy_safe_and_uncollected() -> None:
         assert not path.stat().st_mode & 0o111, relative
         text = path.read_text(encoding="utf-8")
         assert not check.PERSONAL_PATH.search(text), relative
-        assert not check.CONCRETE_MODEL_ID.search(text), relative
+        # Recorded evidence must identify the actual model. Fixtures and prompts
+        # stay portable; a trace is a historical fact, not shared model policy.
+        if not path.is_relative_to(EVALS / "receipts"):
+            assert not check.CONCRETE_MODEL_ID.search(text), relative
     for case in cases():
         for text in [case["owner_prompt"], *case["subsequent_answers"]]:
             assert not PACKAGE_NAME.search(text), case["id"]

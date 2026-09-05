@@ -1,0 +1,177 @@
+{
+  "schema": 1,
+  "kind": "manual-evaluation-capture",
+  "preparation_sha256": "4c7e85d9c7812af93d3035e1cdb772d7c9ac277e524b6655e49cb2bdef1a86c7",
+  "preparation": {
+    "schema": 1,
+    "kind": "manual-evaluation-preparation",
+    "configuration": {
+      "synthetic_test": true,
+      "setup_note": "Only source layers were copied. Git setup is deliberately omitted in this unit test; no host session or model ran.",
+      "run_id": "synthetic pilot",
+      "case_id": "synthetic pilot",
+      "arm": "synthetic pilot",
+      "host": "synthetic pilot",
+      "host_version": "synthetic pilot",
+      "model": "synthetic pilot",
+      "effort": "synthetic pilot",
+      "permission": "synthetic pilot",
+      "sandbox": "synthetic pilot",
+      "activation": "synthetic pilot",
+      "instructions": "synthetic pilot",
+      "isolation": "synthetic pilot",
+      "control_run": "synthetic pilot",
+      "prompt": "synthetic pilot",
+      "observable": "synthetic pilot",
+      "host_command": "synthetic pilot",
+      "permitted_command_evidence": "synthetic pilot",
+      "setup_performed": [
+        "Copy this directory into an empty scratch directory outside any repository.",
+        "Run: git init && git add . && git -c user.email=fixture@example.invalid -c user.name=Fixture commit -m 'Fixture base'",
+        "Add no remote."
+      ],
+      "limits": {
+        "session_usd": 1,
+        "receipt_usd": 2,
+        "sessions_in_flight": 1,
+        "wall_seconds": 30
+      },
+      "baseline": {
+        "argv": [
+          "<python>",
+          "-B",
+          "-m",
+          "pytest",
+          "-q",
+          "--tb=short",
+          "-p",
+          "no:cacheprovider",
+          "tests/order_total_checks.py"
+        ],
+        "returncode": 1,
+        "contains": "1 failed"
+      }
+    },
+    "fixture_directory": "<fixture>",
+    "package": {
+      "version": "4.1.0",
+      "commit": "42765cd212b414788d67dcdc17447eb740a66811",
+      "git_tree": "5cad1341bdcc20b701945c154bf6c40364a91482",
+      "payload_sha256": "e79048fdcd69ebe9d282dd7068ace85c6d4ec21d44ced98a1569a7fd7a43d55c"
+    },
+    "fixture_snapshot": {
+      "id": "orders-service",
+      "setup": [
+        "Copy this directory into an empty scratch directory outside any repository.",
+        "Run: git init && git add . && git -c user.email=fixture@example.invalid -c user.name=Fixture commit -m 'Fixture base'",
+        "Add no remote."
+      ],
+      "fixture_revision_sha256": "32b1f109fe389d4a9c05c979bfcab325348bc6f29b065c9d170158884fd8bc0d",
+      "built_content": {
+        "verification": "manifest",
+        "sha256": "17934af34109dd400fe3d1d9b6e26f20c40127cb849216eb9f9bf48c3d324dce",
+        "manifest": {
+          "schema": 1,
+          "scope": "pre-session worktree regular files excluding .git",
+          "files": [
+            {
+              "path": "README.md",
+              "mode": "100644",
+              "sha256": "47fa066bf3305c95c469db7fd962d2d14302a266dc12267ba95c79feb36f0468"
+            },
+            {
+              "path": "fixture.json",
+              "mode": "100644",
+              "sha256": "077a004578b5a1b5d63fc8dd35e1075c3e53b0fe3ade66be790e15ead8ea1637"
+            },
+            {
+              "path": "orders/__init__.py",
+              "mode": "100644",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "path": "orders/totals.py",
+              "mode": "100644",
+              "sha256": "e56794cbf206b404505f588f34b4365544b2db7b198f0a41f470dedcbb9616f5"
+            },
+            {
+              "path": "tests/order_total_checks.py",
+              "mode": "100644",
+              "sha256": "678d3741f9f77af951ab32dd78fc77640b530dd2ef8f523d62f3465840801658"
+            }
+          ]
+        }
+      }
+    },
+    "baseline": {
+      "argv": [
+        "<python>",
+        "-B",
+        "-m",
+        "pytest",
+        "-q",
+        "--tb=short",
+        "-p",
+        "no:cacheprovider",
+        "tests/order_total_checks.py"
+      ],
+      "returncode": 1,
+      "output": ".F                                                                       [100%]\n=================================== FAILURES ===================================\n____________ test_split_basket_matches_the_same_basket_priced_once _____________\ntests/order_total_checks.py:19: in test_split_basket_matches_the_same_basket_priced_once\n    assert split == whole\nE   assert 35.97 == 35.96\n=========================== short test summary info ============================\nFAILED tests/order_total_checks.py::test_split_basket_matches_the_same_basket_priced_once\n1 failed, 1 passed in 0.01s\n"
+    },
+    "evidence_label": "UNVERIFIED"
+  },
+  "trace": {
+    "content": "Synthetic interruption after reading [redacted \"operator\"]; no model called.\n",
+    "sha256": "b8c78aee100e281b700fc7e8f0748f193a409899176ec0523a3542c22477d19f"
+  },
+  "end_state_artifacts": [
+    {
+      "kind": "tree",
+      "description": "README.md",
+      "content": "{\"byte_size\":267,\"content\":\"# Example orders service\\n\\nA tiny library that prices an order. It is a fixture, not a product.\\n\\nRun the checks with `python -m pytest tests/order_total_checks.py`.\\n\\nOne check fails today: the same basket priced as a single line and as two\\nlines disagrees by a penny.\\n\",\"encoding\":\"utf-8\",\"sha256\":\"47fa066bf3305c95c469db7fd962d2d14302a266dc12267ba95c79feb36f0468\"}",
+      "sha256": "f1dfaf5aa399ab54b2696e94e2b214e711618b17404ad31ddf7c020e6fd7889c"
+    },
+    {
+      "kind": "tree",
+      "description": "fixture.json",
+      "content": "{\"byte_size\":1092,\"content\":\"{\\n  \\\"id\\\": \\\"orders-service\\\",\\n  \\\"summary\\\": \\\"A small storefront order-total library with one planted rounding defect and no repository workflow instructions.\\\",\\n  \\\"kind\\\": \\\"checked-in skeleton\\\",\\n  \\\"synthetic\\\": true,\\n  \\\"planted\\\": [\\n    \\\"Tax is rounded per line, so the same basket priced as one line and as two lines differs by a penny. tests/order_total_checks.py fails on that comparison and passes on the single-line case.\\\"\\n  ],\\n  \\\"absent_on_purpose\\\": [\\n    \\\"No AGENTS.md, CONTRIBUTING.md, or other authoritative workflow instruction.\\\",\\n    \\\"No tracker, backlog file, or issue convention.\\\",\\n    \\\"No remote, so a push or a pull request has no destination.\\\"\\n  ],\\n  \\\"setup\\\": [\\n    \\\"Copy this directory into an empty scratch directory outside any repository.\\\",\\n    \\\"Run: git init && git add . && git -c user.email=fixture@example.invalid -c user.name=Fixture commit -m 'Fixture base'\\\",\\n    \\\"Add no remote.\\\"\\n  ],\\n  \\\"run_checks\\\": \\\"python -m pytest tests/order_total_checks.py\\\",\\n  \\\"privacy\\\": \\\"Invented product, invented prices, no personal data, no credentials, no real host or account identifiers.\\\"\\n}\\n\",\"encoding\":\"utf-8\",\"sha256\":\"077a004578b5a1b5d63fc8dd35e1075c3e53b0fe3ade66be790e15ead8ea1637\"}",
+      "sha256": "27a1d8dce71f0dc72a75bfa5e8fa3284ef6b65877db5d79739139ef683745b9d"
+    },
+    {
+      "kind": "tree",
+      "description": "orders/__init__.py",
+      "content": "{\"byte_size\":0,\"content\":\"\",\"encoding\":\"utf-8\",\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}",
+      "sha256": "557041f975bc10e6773594b8951344c99966efa388e6a85604b80e651edcec4d"
+    },
+    {
+      "kind": "tree",
+      "description": "orders/totals.py",
+      "content": "{\"byte_size\":688,\"content\":\"\\\"\\\"\\\"Order totals for the example storefront.\\\"\\\"\\\"\\n\\nfrom __future__ import annotations\\n\\nTAX_RATE = 0.2\\n\\n\\ndef line_total(unit_price: float, quantity: int) -> float:\\n    \\\"\\\"\\\"Return the pre-tax total for one order line.\\\"\\\"\\\"\\n    return round(unit_price * quantity, 2)\\n\\n\\ndef order_total(lines: list[tuple[float, int]]) -> float:\\n    \\\"\\\"\\\"Return the order total including tax.\\n\\n    Planted defect: tax is rounded once per line, so splitting a basket\\n    across two lines can move the total by a penny.\\n    \\\"\\\"\\\"\\n    total = 0.0\\n    for unit_price, quantity in lines:\\n        subtotal = line_total(unit_price, quantity)\\n        total += subtotal + round(subtotal * TAX_RATE, 2)\\n    return round(total, 2)\\n\",\"encoding\":\"utf-8\",\"sha256\":\"e56794cbf206b404505f588f34b4365544b2db7b198f0a41f470dedcbb9616f5\"}",
+      "sha256": "8ff5df9d69f8b62b1244499be36a3b06f9bf841e28c8261e3e49cd78fbce8920"
+    },
+    {
+      "kind": "tree",
+      "description": "result.txt",
+      "content": "{\"byte_size\":41,\"content\":\"Operator \\\"private\\\" [redacted \\\"operator\\\"]\\n\",\"encoding\":\"utf-8\",\"sha256\":\"fd232a5a765411bbdbdd3284ae0789d6c3a0567a77a97a3fbc8d3f7fadcd3fca\"}",
+      "sha256": "0ab4a8f5a5d27e457320a19ce921803c2a86c048a260aa3e81ba75ed915177db"
+    },
+    {
+      "kind": "tree",
+      "description": "tests/order_total_checks.py",
+      "content": "{\"byte_size\":545,\"content\":\"\\\"\\\"\\\"Checks for the example orders service.\\n\\nRun with: python -m pytest tests/order_total_checks.py\\n\\nThe module is deliberately not named test_*.py, so that a bare pytest run in\\nthe SkipHow repository never collects this fixture.\\n\\\"\\\"\\\"\\n\\nfrom orders.totals import order_total\\n\\n\\ndef test_single_line_order_totals() -> None:\\n    assert order_total([(9.99, 3)]) == 35.96\\n\\n\\ndef test_split_basket_matches_the_same_basket_priced_once() -> None:\\n    split = order_total([(9.99, 1), (9.99, 2)])\\n    whole = order_total([(9.99, 3)])\\n    assert split == whole\\n\",\"encoding\":\"utf-8\",\"sha256\":\"678d3741f9f77af951ab32dd78fc77640b530dd2ef8f523d62f3465840801658\"}",
+      "sha256": "03401c8873d83554db3690a155febb64c1b6aec50db35c3961097e22331403ee"
+    },
+    {
+      "kind": "manifest",
+      "description": "Final file modes and original byte hashes",
+      "content": "{\"files\":[{\"mode\":\"100644\",\"path\":\"README.md\",\"sha256\":\"47fa066bf3305c95c469db7fd962d2d14302a266dc12267ba95c79feb36f0468\"},{\"mode\":\"100644\",\"path\":\"fixture.json\",\"sha256\":\"077a004578b5a1b5d63fc8dd35e1075c3e53b0fe3ade66be790e15ead8ea1637\"},{\"mode\":\"100644\",\"path\":\"orders/__init__.py\",\"sha256\":\"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"},{\"mode\":\"100644\",\"path\":\"orders/totals.py\",\"sha256\":\"e56794cbf206b404505f588f34b4365544b2db7b198f0a41f470dedcbb9616f5\"},{\"mode\":\"100644\",\"path\":\"result.txt\",\"sha256\":\"61659a8d261b6dd12591175f7172a9abcf127c3c1bbae080385026d4b7dbafa0\"},{\"mode\":\"100644\",\"path\":\"tests/order_total_checks.py\",\"sha256\":\"678d3741f9f77af951ab32dd78fc77640b530dd2ef8f523d62f3465840801658\"}],\"schema\":1,\"scope\":\"final worktree regular files excluding .git; hashes before redaction\"}",
+      "sha256": "8daeac491ea85d981383137a6c651b314a0ca3224b6ddffe6963604dc1d2c2b3"
+    }
+  ],
+  "terminal_state": "interrupted",
+  "redaction_notes": {
+    "literal_replacements": 2,
+    "fixture_directory": "replaced with <fixture>"
+  },
+  "evidence_label": "UNVERIFIED"
+}

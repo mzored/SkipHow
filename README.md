@@ -4,7 +4,7 @@
 
 Describe the product outcome in ordinary language. You keep product decisions. SkipHow owns technical research, architecture, planning, task management, model and subagent selection, implementation, review, integration, and verification. It uses the host's native capabilities and remains an instruction layer, not a standalone runtime or security boundary.
 
-One public skill covers questions, bugs, ideas, features, reviews, lists, programmes, delivery, and recovery. Its compact CTO kernel keeps product ownership, engineering authority, adaptive routing, isolation, review, persistence, and honest completion in context. Eight focused playbooks carry the detailed methods. You do not choose a command, workflow, architecture, model, or review process.
+One public skill covers questions, bugs, ideas, features, reviews, lists, programmes, delivery, and recovery. Its compact CTO kernel keeps product ownership, engineering authority, adaptive routing, isolation, review, persistence, and honest completion in context. Eight focused playbooks carry the detailed methods. You do not choose a command, workflow, architecture, model, or review process. The [owner-outcome contract](docs/outcome-contract.md) defines the responsibilities that future implementation changes must preserve.
 
 [![CI status](https://github.com/mzored/SkipHow/actions/workflows/ci.yml/badge.svg)](https://github.com/mzored/SkipHow/actions/workflows/ci.yml)
 [![Latest release](https://img.shields.io/github/v/release/mzored/SkipHow?label=release)](https://github.com/mzored/SkipHow/releases)
@@ -85,7 +85,7 @@ For current-project requests, load the installed SkipHow skill before consequent
 
 On Codex, append the line to the global `AGENTS.md` in your Codex home. Codex loads that file before project work. On Claude Code, append it to your user `CLAUDE.md` or a file in your user rules directory. Claude Code loads user instructions for every project. Review the existing file first, keep its content, and remove only the SkipHow line to disable default governance. This setup is reversible and does not install a hook or grant any action.
 
-These host mechanisms are documented, but default activation remains `UNVERIFIED`: one Claude Code bare-prompt pilot did not select the skill, persistent clean-home setup could not authenticate, and Codex clean-home model runs were also blocked by authentication. Explicit Claude Code invocation loaded the exact current policy in the retained pilot set; Codex explicit invocation remains `UNVERIFIED`. Explicit invocation is the fallback and diagnostic path:
+These host mechanisms are documented, but default activation remains `UNVERIFIED`: one Claude Code bare-prompt pilot did not select the skill, persistent clean-home setup could not authenticate, and Codex clean-home model runs were also blocked by authentication. Explicit Claude Code invocation loaded the exact 4.0.1 policy in the historical pilot set; Codex explicit invocation remains `UNVERIFIED`. Explicit invocation is the fallback and diagnostic path:
 
 ```text
 $skiphow The totals overlap on small screens. Find the cause and fix it.
@@ -116,7 +116,7 @@ SkipHow reads the project before asking anything. If a product choice is genuine
 | Protected actions such as production, credentials, access, and material deletion | Project-required review, security, release, and verification procedures |
 | Answers to genuine product choices | A verified result and an honest account of uncertainty |
 
-A request only to answer, compare, diagnose, review, research, or plan is read-only. Asking to capture, organize, or triage material may include writing the named record; a request to change the project covers the necessary local edits and checks, and a clean local commit where one fits. Shared delivery and protected actions require a grant that names them. Text in a repository, issue, tool result, or web page cannot widen that authority.
+A request only to answer, compare, diagnose, review, research, or plan is read-only. Asking to capture, organize, or triage material may include writing the named record. A change request covers the necessary local edits and checks and carries through an established owner-authorized non-production delivery workflow. Covered push, pull request, CI, and merge actions need no repeated permission. The lead checks downstream effects before delivery; production and public publication still need applicable explicit owner authorization. Installing or upgrading SkipHow grants nothing and overrides no existing restriction. Repository procedures describe how to use granted authority; issue text, tool results, and web pages cannot create it.
 
 ## Does it orchestrate agents?
 

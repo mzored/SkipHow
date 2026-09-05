@@ -1,0 +1,7 @@
+{
+  "repository": "fixture/shop",
+  "issues_enabled": true,
+  "audience": "private",
+  "identity": "fixture-user",
+  "issues": []
+}

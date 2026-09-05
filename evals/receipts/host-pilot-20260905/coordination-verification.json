@@ -1,0 +1,15 @@
+{
+  "scope": "Independent behavior probes against retained repeat artifacts; no model run",
+  "capture_sha256": "4f9eac442c225a5529a0854526f71ea452fc956b41ba081ad3fc5165b9d019f5",
+  "argv": [
+    "python",
+    "-B",
+    "-c",
+    "import json\nfrom catalog.pricing import discounted\nfrom catalog.search import matching\nfrom catalog.inventory import reserve, STOCK\nfrom catalog.shipping import charge, PARCEL_RATE\nresults = {}\ntry:\n    discounted(100, 101)\nexcept ValueError:\n    results['discount_over_100_rejected'] = True\nelse:\n    results['discount_over_100_rejected'] = False\nresults['case_insensitive_search'] = matching(['Fern Pot', 'moss ball'], 'FERN') == ['Fern Pot']\nbefore = STOCK.copy()\ntry:\n    reserve('moss-02', 1)\nexcept ValueError:\n    results['oversell_rejected_without_mutation'] = STOCK == before\nelse:\n    results['oversell_rejected_without_mutation'] = False\nactual = charge([('fern-01', 1), ('moss-02', 1)])\nresults['two_lines_in_one_parcel'] = {'expected': PARCEL_RATE, 'actual': actual, 'pass': actual == PARCEL_RATE}\nprint(json.dumps(results, sort_keys=True))\n"
+  ],
+  "returncode": 0,
+  "stdout": "{\"case_insensitive_search\": true, \"discount_over_100_rejected\": true, \"oversell_rejected_without_mutation\": true, \"two_lines_in_one_parcel\": {\"actual\": 9.9, \"expected\": 4.95, \"pass\": false}}\n",
+  "stderr": "",
+  "shipping_expectation_source": "Original catalog-audit/catalog/shipping.py planted problem states a shopper pays twice for one box; two lines in that box should incur one PARCEL_RATE.",
+  "cleanup_confirmed": true
+}

@@ -1,0 +1,127 @@
+{
+  "date": "2026-09-05",
+  "detail": "exact candidate installed, inspected, and uninstalled from a clean host home",
+  "host": "claude-code",
+  "host_version": "2.1.261 (Claude Code)",
+  "installed_files": {
+    ".claude-plugin/plugin.json": "6efde7a3ad899de7bbd0be4130632a21f09d3efb60d10ee2da76a8d52b64cc4b",
+    ".codex-plugin/plugin.json": "40d346dcd337f04a1cf80e6af8d9e2051ea7033597d2e921e6dd40c837afb664",
+    "LICENSE": "f6c21980331ae32f64afe9585dabbb60098b5b26b09e7873505fe23042cb99df",
+    "SOURCES.json": "d74f6ccef12488b27e195bdfc677781c130bc81b514a1bca6218eaf82b93093b",
+    "THIRD_PARTY_NOTICES.md": "aa6eb608121360a0f46f4c153ce6c29cf7e52d2952b2d9c85938a3ec43444263",
+    "skills/skiphow/SKILL.md": "c9688f7f65cbdba24b3df91646c8205749c43e7d0a28aa56f0f4e57a985b1aa9",
+    "skills/skiphow/agents/openai.yaml": "c7ba7daa2c66aef3a99c7e5dd001905baa0976913b9e903f94726d4bc2904f51",
+    "skills/skiphow/references/delegation.md": "99f1f2ed6da74e868a747801534ff4cee420071375cc6f2c23fc0bb951341503",
+    "skills/skiphow/references/diagnosis.md": "8d0f337437d9ee3982e6df27ed1a58b89a01269e500e81b4dfce553c3976deb4",
+    "skills/skiphow/references/integration.md": "15323ec9e72a2deffbf45fec519de426b3582cd21fd325ba5ea8d283dcc5a045",
+    "skills/skiphow/references/operations.md": "def02aa656056dd0a35fcd1c3ce72a67698b95d71098612b365b6f8490c166d0",
+    "skills/skiphow/references/product.md": "b4e098938fe93db53cdf026de09c54c1f6fb1839eaa42b057ab10d883c377ac6",
+    "skills/skiphow/references/technical-design.md": "24e94087743cf14747e59920d3fb12d9ac6a0ae51bff52fb43b7a491acbf87b8",
+    "skills/skiphow/references/tracked-work.md": "df6a5a00caa2a1bc30a5a518185658e4cc10f3f18fb18a71179554c95a8927f8",
+    "skills/skiphow/references/verification.md": "b5455bc13104590589a46623ba33ae9f57841f42b4dea0c67fbd912740766640"
+  },
+  "result": "PASS",
+  "results": {
+    "clean_install": {
+      "receipt": {
+        "check": "clean_install",
+        "cleanup_result": "plugin absent before scratch host home cleanup",
+        "command_or_session": "host marketplace add, install, list, inspect, uninstall, list",
+        "configuration": "empty CLAUDE_CONFIG_DIR; exact local marketplace snapshot",
+        "date": "2026-09-05",
+        "host": "claude-code",
+        "host_version": "2.1.261 (Claude Code)",
+        "observable_evidence": "installed regular files exactly matched the candidate payload",
+        "outcome": "PASS",
+        "package_commit": "de55df23287b38463c16ef6616534442f2576c6a",
+        "package_payload_sha256": "e79048fdcd69ebe9d282dd7068ace85c6d4ec21d44ced98a1569a7fd7a43d55c",
+        "package_tree": "5cad1341bdcc20b701945c154bf6c40364a91482",
+        "package_version": "4.1.0",
+        "source": "scripts/check_hosts.py --smoke"
+      },
+      "status": "PASS"
+    },
+    "uninstall": {
+      "receipt": {
+        "check": "uninstall",
+        "cleanup_result": "plugin absent before scratch host home cleanup",
+        "command_or_session": "host marketplace add, install, list, inspect, uninstall, list",
+        "configuration": "empty CLAUDE_CONFIG_DIR; exact local marketplace snapshot",
+        "date": "2026-09-05",
+        "host": "claude-code",
+        "host_version": "2.1.261 (Claude Code)",
+        "observable_evidence": "host inventory no longer listed SkipHow",
+        "outcome": "PASS",
+        "package_commit": "de55df23287b38463c16ef6616534442f2576c6a",
+        "package_payload_sha256": "e79048fdcd69ebe9d282dd7068ace85c6d4ec21d44ced98a1569a7fd7a43d55c",
+        "package_tree": "5cad1341bdcc20b701945c154bf6c40364a91482",
+        "package_version": "4.1.0",
+        "source": "scripts/check_hosts.py --smoke"
+      },
+      "status": "PASS"
+    }
+  },
+  "schema": "skiphow-host-smoke-bundle/1",
+  "steps": [
+    {
+      "detail": "",
+      "status": "PASS",
+      "step": "plain marketplace"
+    },
+    {
+      "detail": "",
+      "status": "PASS",
+      "step": "clean host home"
+    },
+    {
+      "detail": "",
+      "status": "PASS",
+      "step": "marketplace"
+    },
+    {
+      "detail": "",
+      "status": "PASS",
+      "step": "install"
+    },
+    {
+      "detail": "",
+      "status": "PASS",
+      "step": "list"
+    },
+    {
+      "detail": "15 regular files, exact candidate bytes, no symlinks",
+      "status": "PASS",
+      "step": "inspect installed files"
+    },
+    {
+      "detail": "package ships no hook",
+      "status": "UNVERIFIED",
+      "step": "inspect hook trust/state"
+    },
+    {
+      "detail": "",
+      "status": "PASS",
+      "step": "uninstall"
+    },
+    {
+      "detail": "",
+      "status": "PASS",
+      "step": "list after uninstall"
+    },
+    {
+      "detail": "",
+      "status": "PASS",
+      "step": "verify uninstall"
+    },
+    {
+      "detail": "9.5 step 5: starts a model; not run by this script",
+      "status": "UNVERIFIED",
+      "step": "start a clean session"
+    },
+    {
+      "detail": "9.5 step 6: starts a model; not run by this script",
+      "status": "UNVERIFIED",
+      "step": "verify explicit invocation"
+    }
+  ]
+}

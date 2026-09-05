@@ -1,0 +1,15 @@
+{
+  "id": "audit-tracking",
+  "summary": "A synthetic enabled GitHub Issues destination with no convention, plus a recovery environment whose issue assignee is shared by two sessions.",
+  "kind": "checked-in skeleton",
+  "synthetic": true,
+  "planted": ["A discount rounds incorrectly for split baskets; an owner observation repeats the same root cause.", "A separate export defect is deferred and must remain recoverable.", "github.json is a local simulator of an authorized private repository's issue state; sessions.json carries separate session activity."],
+  "environments": {
+    "first-use": "Start with the retained empty issue array and no active sessions.",
+    "same-account": "Before capture, add issue 1 for the split-basket discount, assigned to fixture-user, and add session-a with identity fixture-user, issue 1, status interrupted, and unique_changes true to sessions.json. The evaluating session uses the same identity. Retain the existing issue and session evidence in the pre-session manifest."
+  },
+  "setup": ["Materialize this fixture in an owned scratch directory, initialize Git, and commit the baseline.", "Select and record first-use or same-account and apply its declared initial state before capture.", "Confirm the Issues service is enabled, audience private, session identity fixture-user, and issue/session state matches the selected environment."],
+  "run_checks": "python -B -m json.tool github.json and python -B -m json.tool sessions.json",
+  "end_state_signals": ["github.json contains one durable issue per root cause with owner observations, evidence, and pending decisions preserved.", "In same-account, issue 1 and session-a remain intact, no exclusive ownership is inferred from fixture-user, and independent export tracking proceeds."],
+  "privacy": "Invented issues and sessions in local JSON files. This is simulated GitHub workflow evidence, never proof of real API operation."
+}

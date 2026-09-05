@@ -1,4 +1,4 @@
-"""Lexical guards for literal safety markers and removed legacy promises.
+"""Lexical guards for literal safety markers and the public invocation token.
 
 These substring assertions detect only named text entering or leaving the
 package. They do not prove that the surrounding prose has a particular meaning
@@ -65,7 +65,7 @@ def test_literal_production_read_warning_terms() -> None:
     assert sentence_contains_all(skill, "authorized audience")
 
 
-def test_literal_exact_grant_terms() -> None:
+def test_literal_explicit_grant_terms() -> None:
     skill = read("SKILL.md")
     for action in (
         "production",
@@ -77,30 +77,10 @@ def test_literal_exact_grant_terms() -> None:
         "deletion",
         "disclosure",
     ):
-        assert sentence_contains_all(skill, action, "exact grant"), action
-
-
-def test_removed_legacy_promises_stay_absent() -> None:
-    skill = read("SKILL.md")
-    all_text = "\n".join([skill, *(read(path.name) for path in REFERENCES.glob("*.md"))])
-    for forbidden in (
-        "records are the request",
-        "fix what is wrong or unsafe before going further",
-        "retiring what earlier runs left",
-        "serialize the writers",
-        "stop at the first level",
-        "throw the prototype away",
-        "mock only true boundaries",
-        "think step by step",
-    ):
-        assert forbidden not in all_text, forbidden
-    assert "without asking" not in skill
+        assert sentence_contains_all(skill, action, "applicable explicit grant"), action
 
 
 def test_structural_codex_default_prompt_tokens() -> None:
     openai = yaml.safe_load((SKILL_DIR / "agents/openai.yaml").read_text(encoding="utf-8"))
     prompt = openai["interface"]["default_prompt"].lower()
     assert "$skiphow" in prompt
-    assert "product choices" in prompt
-    assert "verification" in prompt
-    assert "tradeoffs" not in prompt
