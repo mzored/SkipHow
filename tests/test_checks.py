@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import importlib.util
+import inspect
 import json
 import os
 from pathlib import Path
 import re
 import shutil
+import subprocess
 import sys
 import threading
 from unittest.mock import patch
@@ -1897,24 +1899,66 @@ def test_file_enumeration_falls_back_without_git(tmp_path: Path) -> None:
         assert check.validate_diff(None) == []
 
 
-def test_the_test_run_writes_no_bytecode_into_the_package() -> None:
+PACKAGE = ROOT / "plugins/skiphow"
+
+
+def bytecode_probe(extra: list[str]) -> tuple[list[str], subprocess.CompletedProcess[str]]:
+    """Run one tiny pytest selection that imports a shipped script, and report the bytecode.
+
+    The subprocess inherits neither `PYTHONDONTWRITEBYTECODE` nor
+    `PYTHONPYCACHEPREFIX`, so only `tests/conftest.py` can keep the interpreter
+    from writing into the package. Any directory found is removed here, because
+    the package identity hashes every file under the package root.
+    """
+    environment = os.environ.copy()
+    environment.pop("PYTHONDONTWRITEBYTECODE", None)
+    environment.pop("PYTHONPYCACHEPREFIX", None)
+    for stale in list(PACKAGE.rglob("__pycache__")):
+        shutil.rmtree(stale, ignore_errors=True)
+    try:
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "pytest",
+                "-q",
+                "-p",
+                "no:cacheprovider",
+                "tests/test_activation.py",
+                "-k",
+                "lifecycle",
+                *extra,
+            ],
+            cwd=ROOT,
+            env=environment,
+            capture_output=True,
+            text=True,
+            timeout=120,
+            check=False,
+        )
+        written = sorted(path.relative_to(ROOT).as_posix() for path in PACKAGE.rglob("__pycache__"))
+    finally:
+        for path in list(PACKAGE.rglob("__pycache__")) + list((ROOT / "tests").rglob("__pycache__")):
+            shutil.rmtree(path, ignore_errors=True)
+    return written, result
+
+
+def test_a_direct_pytest_run_writes_no_bytecode_into_the_package() -> None:
     """`tests/conftest.py` keeps a direct pytest run out of the package identity.
 
-    Importing a shipped script would otherwise create `__pycache__` under
-    `plugins/skiphow/`, which the payload hash treats as a package change.
+    Importing a shipped script writes `__pycache__` under `plugins/skiphow/`,
+    which the payload hash treats as a package change.
     """
-    assert sys.dont_write_bytecode
-    assert os.environ.get("PYTHONDONTWRITEBYTECODE") == "1"
-    script = ROOT / "plugins/skiphow/skills/skiphow/scripts/activation.py"
-    spec = importlib.util.spec_from_file_location("skiphow_activation_bytecode_probe", script)
-    assert spec and spec.loader
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = module
-    try:
-        spec.loader.exec_module(module)
-    finally:
-        sys.modules.pop(spec.name, None)
-    assert not list((ROOT / "plugins/skiphow").rglob("__pycache__"))
+    written, result = bytecode_probe([])
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert written == [], f"a direct pytest run polluted the package: {written}"
+
+
+def test_without_the_conftest_the_same_run_writes_bytecode_into_the_package() -> None:
+    """The conftest is the mechanism, not an incidental environment setting."""
+    written, result = bytecode_probe(["--noconftest"])
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert written == ["plugins/skiphow/skills/skiphow/scripts/__pycache__"]
 
 
 def test_the_full_pytest_run_asks_for_durations_and_prints_them(capsys) -> None:
@@ -1930,7 +1974,7 @@ def test_the_full_pytest_run_asks_for_durations_and_prints_them(capsys) -> None:
 
     def fake_checked(command, **kwargs):
         commands.append(list(command))
-        assert kwargs.get("timeout", 120) == 120
+        assert "timeout" not in kwargs
         return True, fake if "pytest" in command else ""
 
     with patch.object(check, "checked", side_effect=fake_checked):
@@ -1940,6 +1984,7 @@ def test_the_full_pytest_run_asks_for_durations_and_prints_them(capsys) -> None:
     assert "--durations=10" in pytest_commands[0]
     assert pytest_commands[0][-3:-1] == ["-p", "no:cacheprovider"]
     assert "3.10s call" in capsys.readouterr().err
+    assert inspect.signature(check.checked).parameters["timeout"].default == 120
 
 
 def test_slowest_durations_extracts_only_the_duration_block() -> None:
