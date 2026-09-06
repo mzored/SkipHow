@@ -1,6 +1,6 @@
 {
   "instrument": "host_smoke",
-  "package_under_test": "4.2.0",
+  "package_under_test": "4.3.0",
   "scope": "external_candidate_receipts",
   "checks": {
     "clean_install": {
@@ -60,23 +60,8 @@
     "claude-code": {
       "results": {
         "clean_install": {
-          "status": "PASS",
-          "receipt": {
-            "check": "clean_install",
-            "cleanup_result": "plugin absent before scratch host home cleanup",
-            "command_or_session": "host marketplace add, install, list, inspect, uninstall, list",
-            "configuration": "empty CLAUDE_CONFIG_DIR; exact local marketplace snapshot",
-            "date": "2026-09-05",
-            "host": "claude-code",
-            "host_version": "2.1.261 (Claude Code)",
-            "observable_evidence": "installed regular files exactly matched the candidate payload",
-            "outcome": "PASS",
-            "package_commit": "5ff757ed54ad562b4097cae0d1dbd6b667166eb2",
-            "package_payload_sha256": "5bcd09d16b8381331bf866dae0c7cc56a8c72a1ec461aeb881c4cbc1b06cb400",
-            "package_tree": "fc5e38c5d49fb77b75f54822e356a2716ea8d772",
-            "package_version": "4.2.0",
-            "source": "scripts/check_hosts.py --smoke"
-          }
+          "status": "UNVERIFIED",
+          "receipt": null
         },
         "persistent_setup": {
           "status": "UNVERIFIED",
@@ -107,103 +92,28 @@
           "receipt": null
         },
         "uninstall": {
-          "status": "PASS",
-          "receipt": {
-            "check": "uninstall",
-            "cleanup_result": "plugin absent before scratch host home cleanup",
-            "command_or_session": "host marketplace add, install, list, inspect, uninstall, list",
-            "configuration": "empty CLAUDE_CONFIG_DIR; exact local marketplace snapshot",
-            "date": "2026-09-05",
-            "host": "claude-code",
-            "host_version": "2.1.261 (Claude Code)",
-            "observable_evidence": "host inventory no longer listed SkipHow",
-            "outcome": "PASS",
-            "package_commit": "5ff757ed54ad562b4097cae0d1dbd6b667166eb2",
-            "package_payload_sha256": "5bcd09d16b8381331bf866dae0c7cc56a8c72a1ec461aeb881c4cbc1b06cb400",
-            "package_tree": "fc5e38c5d49fb77b75f54822e356a2716ea8d772",
-            "package_version": "4.2.0",
-            "source": "scripts/check_hosts.py --smoke"
-          }
+          "status": "UNVERIFIED",
+          "receipt": null
         }
       }
     },
     "codex": {
       "results": {
         "clean_install": {
-          "status": "PASS",
-          "receipt": {
-            "package_version": "4.2.0",
-            "package_commit": "5ff757ed54ad562b4097cae0d1dbd6b667166eb2",
-            "package_tree": "fc5e38c5d49fb77b75f54822e356a2716ea8d772",
-            "package_payload_sha256": "5bcd09d16b8381331bf866dae0c7cc56a8c72a1ec461aeb881c4cbc1b06cb400",
-            "host": "codex",
-            "host_version": "codex-cli 0.153.0",
-            "date": "2026-09-06",
-            "check": "clean_install",
-            "outcome": "PASS",
-            "configuration": "isolated CODEX_HOME with native login only; approved Git marketplace source https://github.com/mzored/SkipHow.git at main",
-            "command_or_session": "codex plugin marketplace add, codex plugin add skiphow@skiphow --json, codex plugin list --json, operator byte comparison of the plugin cache against git ls-tree HEAD:plugins/skiphow",
-            "observable_evidence": "all 17 installed regular files matched the committed package; payload sha256 equal; no symlink or extra file",
-            "cleanup_result": "plugin removed after the diagnostics; isolated home restored to login-only state",
-            "source": "operator procedure recorded in evals/receipts/isolated-host-420-20260906/README.md"
-          }
+          "status": "UNVERIFIED",
+          "receipt": null
         },
         "persistent_setup": {
-          "status": "PASS",
-          "receipt": {
-            "package_version": "4.2.0",
-            "package_commit": "5ff757ed54ad562b4097cae0d1dbd6b667166eb2",
-            "package_tree": "fc5e38c5d49fb77b75f54822e356a2716ea8d772",
-            "package_payload_sha256": "5bcd09d16b8381331bf866dae0c7cc56a8c72a1ec461aeb881c4cbc1b06cb400",
-            "host": "codex",
-            "host_version": "codex-cli 0.153.0",
-            "date": "2026-09-06",
-            "check": "persistent_setup",
-            "outcome": "PASS",
-            "configuration": "owned activation block written by the enable session into a non-empty AGENTS.override.md beside an AGENTS.md; both synthetic sentences preserved; clean session on the catalog-integration-ready fixture",
-            "command_or_session": "codex exec with the cto-large-programme adherence prompt, which does not name SkipHow",
-            "observable_evidence": "the complete kernel loaded at event item_5 before any edit; integration, tracked-work and verification loaded before delivery",
-            "cleanup_result": "fixture and synthetic origin removed after capture",
-            "source": "evals/receipts/isolated-host-420-20260906/codex-override-delivery.json"
-          }
+          "status": "UNVERIFIED",
+          "receipt": null
         },
         "explicit_fallback": {
-          "status": "PASS",
-          "receipt": {
-            "package_version": "4.2.0",
-            "package_commit": "5ff757ed54ad562b4097cae0d1dbd6b667166eb2",
-            "package_tree": "fc5e38c5d49fb77b75f54822e356a2716ea8d772",
-            "package_payload_sha256": "5bcd09d16b8381331bf866dae0c7cc56a8c72a1ec461aeb881c4cbc1b06cb400",
-            "host": "codex",
-            "host_version": "codex-cli 0.153.0",
-            "date": "2026-09-06",
-            "check": "explicit_fallback",
-            "outcome": "PASS",
-            "configuration": "no activation block before the session; exact 4.2.0 plugin installed",
-            "command_or_session": "codex exec with $skiphow Enable SkipHow as my default virtual CTO on this machine.",
-            "observable_evidence": "the exact 4.2.0 SKILL.md loaded before any configuration change; the first read used a path missing one directory level and the session located the installed copy",
-            "cleanup_result": "block removed again by the disable session; plugin removed afterwards",
-            "source": "evals/receipts/isolated-host-420-20260906/codex-setup-enable.json"
-          }
+          "status": "UNVERIFIED",
+          "receipt": null
         },
         "playbook_load": {
-          "status": "PASS",
-          "receipt": {
-            "package_version": "4.2.0",
-            "package_commit": "5ff757ed54ad562b4097cae0d1dbd6b667166eb2",
-            "package_tree": "fc5e38c5d49fb77b75f54822e356a2716ea8d772",
-            "package_payload_sha256": "5bcd09d16b8381331bf866dae0c7cc56a8c72a1ec461aeb881c4cbc1b06cb400",
-            "host": "codex",
-            "host_version": "codex-cli 0.153.0",
-            "date": "2026-09-06",
-            "check": "playbook_load",
-            "outcome": "PASS",
-            "configuration": "explicit enable request whose need for the setup playbook is named in the kernel's focused guidance",
-            "command_or_session": "codex exec enable session, first turn",
-            "observable_evidence": "references/setup.md loaded and no other playbook loaded; the disable session behaved the same",
-            "cleanup_result": "none needed",
-            "source": "evals/receipts/isolated-host-420-20260906/codex-setup-enable.json"
-          }
+          "status": "UNVERIFIED",
+          "receipt": null
         },
         "permissions": {
           "status": "UNVERIFIED",
@@ -222,31 +132,16 @@
           "receipt": null
         },
         "uninstall": {
-          "status": "PASS",
-          "receipt": {
-            "package_version": "4.2.0",
-            "package_commit": "5ff757ed54ad562b4097cae0d1dbd6b667166eb2",
-            "package_tree": "fc5e38c5d49fb77b75f54822e356a2716ea8d772",
-            "package_payload_sha256": "5bcd09d16b8381331bf866dae0c7cc56a8c72a1ec461aeb881c4cbc1b06cb400",
-            "host": "codex",
-            "host_version": "codex-cli 0.153.0",
-            "date": "2026-09-06",
-            "check": "uninstall",
-            "outcome": "PASS",
-            "configuration": "same isolated CODEX_HOME after the three diagnostic sessions",
-            "command_or_session": "codex plugin remove skiphow@skiphow, codex plugin list --json",
-            "observable_evidence": "host inventory no longer listed skiphow; the plugin cache directory for skiphow was left empty; unrelated host state remained until the operator cleared the isolated home",
-            "cleanup_result": "isolated home restored to auth.json and the credential-store line",
-            "source": "operator procedure recorded in evals/receipts/isolated-host-420-20260906/README.md"
-          }
+          "status": "UNVERIFIED",
+          "receipt": null
         }
       }
     }
   },
   "rule": "Record each capability separately. A package validator, documented host feature, or successful install does not prove model activation or behavior. Use scratch host homes and retain exact package bytes, the package tree and candidate commit, host version, outcome, configuration, command or session result, source, date, and cleanup result. The receipt outcome must match its ledger status. Release-runner capability is a separate matrix.",
   "historical_evidence": {
-    "package_version": "4.1.1",
-    "source": "https://github.com/mzored/SkipHow/blob/c4303c96967ab5c226b1357e4a07267add4fcbea/evals/host-smoke.json",
+    "package_version": "4.2.0",
+    "source": "https://github.com/mzored/SkipHow/blob/f684eb2f3d2e7baf8b8488e8efb5ac4703d67cff/evals/host-smoke.json",
     "scope": "Historical receipts retain their original arms, prompts, outcomes, and package identities at this immutable source. They do not establish current-candidate behavior."
   }
 }

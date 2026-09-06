@@ -97,7 +97,7 @@ Explicit invocation remains the fallback and diagnostic path:
 $skiphow The totals overlap on small screens. Find the cause and fix it.
 ```
 
-What each host has actually shown is in the [dated support summary](docs/evidence.md#support-summary-as-of-2026-09-06). In short: on Codex, the current package enabled and disabled itself through the skill once each, and one ordinary-language request loaded the kernel from the written block and delivered four correct repairs to a synthetic remote; 4.1.0 showed loading, delivery, and native resume once each before that. On Claude Code no persistent-setup run exists and one earlier bare-prompt pilot did not select the skill. No activation mode has a measured reliability, and the package ships no session hook.
+What each host has actually shown is in the [dated support summary](docs/evidence.md#support-summary-as-of-2026-09-06). In short: on Codex, the current package enabled and disabled itself through the skill once each, and one request that did not name SkipHow, though it named the destination branch and asked for verification, loaded the kernel from the written block and delivered four correct repairs to a synthetic remote; 4.1.0 showed loading, delivery, and native resume once each before that. On Claude Code no persistent-setup run exists and one earlier bare-prompt pilot did not select the skill. No activation mode has a measured reliability, and the package ships no session hook.
 
 ## Use it
 
