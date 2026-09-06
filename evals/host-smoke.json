@@ -60,8 +60,23 @@
     "claude-code": {
       "results": {
         "clean_install": {
-          "status": "UNVERIFIED",
-          "receipt": null
+          "receipt": {
+            "check": "clean_install",
+            "cleanup_result": "plugin absent before scratch host home cleanup",
+            "command_or_session": "host marketplace add, install, list, inspect, uninstall, list",
+            "configuration": "empty CLAUDE_CONFIG_DIR; exact local marketplace snapshot",
+            "date": "2026-09-06",
+            "host": "claude-code",
+            "host_version": "2.1.263 (Claude Code)",
+            "observable_evidence": "installed regular files exactly matched the candidate payload",
+            "outcome": "PASS",
+            "package_commit": "335912b6de00fa1411a954183f1a4c9b82a4c148",
+            "package_payload_sha256": "a0901a3927c4a33b74e28da6677e42329156b9bbca6b9ba388350866aaf9dc89",
+            "package_tree": "c96108f395ac278823b772d9c678cd52b1aeb6e0",
+            "package_version": "4.3.0",
+            "source": "scripts/check_hosts.py --smoke"
+          },
+          "status": "PASS"
         },
         "persistent_setup": {
           "status": "UNVERIFIED",
@@ -92,16 +107,46 @@
           "receipt": null
         },
         "uninstall": {
-          "status": "UNVERIFIED",
-          "receipt": null
+          "receipt": {
+            "check": "uninstall",
+            "cleanup_result": "plugin absent before scratch host home cleanup",
+            "command_or_session": "host marketplace add, install, list, inspect, uninstall, list",
+            "configuration": "empty CLAUDE_CONFIG_DIR; exact local marketplace snapshot",
+            "date": "2026-09-06",
+            "host": "claude-code",
+            "host_version": "2.1.263 (Claude Code)",
+            "observable_evidence": "host inventory no longer listed SkipHow",
+            "outcome": "PASS",
+            "package_commit": "335912b6de00fa1411a954183f1a4c9b82a4c148",
+            "package_payload_sha256": "a0901a3927c4a33b74e28da6677e42329156b9bbca6b9ba388350866aaf9dc89",
+            "package_tree": "c96108f395ac278823b772d9c678cd52b1aeb6e0",
+            "package_version": "4.3.0",
+            "source": "scripts/check_hosts.py --smoke"
+          },
+          "status": "PASS"
         }
       }
     },
     "codex": {
       "results": {
         "clean_install": {
-          "status": "UNVERIFIED",
-          "receipt": null
+          "status": "PASS",
+          "receipt": {
+            "package_version": "4.3.0",
+            "package_commit": "da1154c730efd6e7efa037841a6e5bad07a74578",
+            "package_tree": "c96108f395ac278823b772d9c678cd52b1aeb6e0",
+            "package_payload_sha256": "a0901a3927c4a33b74e28da6677e42329156b9bbca6b9ba388350866aaf9dc89",
+            "host": "codex",
+            "host_version": "codex-cli 0.153.0",
+            "date": "2026-09-06",
+            "source": "operator procedure recorded in evals/receipts/host-validation-430-20260906.md",
+            "check": "clean_install",
+            "outcome": "PASS",
+            "configuration": "isolated CODEX_HOME with native login only; approved Git marketplace source https://github.com/mzored/SkipHow.git at main (da1154c)",
+            "command_or_session": "codex plugin marketplace add, codex plugin add skiphow@skiphow --json, codex plugin list --json, operator byte comparison of the plugin cache against the committed plugins/skiphow tree with scripts/check_hosts.py _payload",
+            "observable_evidence": "all 17 installed regular files matched the committed package; payload sha256 equal; no symlink or extra file; host listed the plugin as installed and disabled",
+            "cleanup_result": "plugin removed immediately after inspection; isolated home restored to auth.json and config.toml"
+          }
         },
         "persistent_setup": {
           "status": "UNVERIFIED",
@@ -132,8 +177,23 @@
           "receipt": null
         },
         "uninstall": {
-          "status": "UNVERIFIED",
-          "receipt": null
+          "status": "PASS",
+          "receipt": {
+            "package_version": "4.3.0",
+            "package_commit": "da1154c730efd6e7efa037841a6e5bad07a74578",
+            "package_tree": "c96108f395ac278823b772d9c678cd52b1aeb6e0",
+            "package_payload_sha256": "a0901a3927c4a33b74e28da6677e42329156b9bbca6b9ba388350866aaf9dc89",
+            "host": "codex",
+            "host_version": "codex-cli 0.153.0",
+            "date": "2026-09-06",
+            "source": "operator procedure recorded in evals/receipts/host-validation-430-20260906.md",
+            "check": "uninstall",
+            "outcome": "PASS",
+            "configuration": "same isolated CODEX_HOME directly after the install check; no model session ran",
+            "command_or_session": "codex plugin remove skiphow@skiphow, codex plugin list --json",
+            "observable_evidence": "host inventory no longer listed skiphow@skiphow; the marketplace entry itself is configured by the machine's managed /etc/codex/config.toml and stayed",
+            "cleanup_result": "plugin cache and temporary marketplace snapshot removed from the isolated home"
+          }
         }
       }
     }
