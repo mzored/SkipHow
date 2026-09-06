@@ -4,8 +4,8 @@
 
 | Version | Supported |
 | --- | --- |
-| 4.3.x | Yes |
-| 4.2.x, 4.1.x, and 4.0.x | No; upgrade to 4.3.x without changing existing authorization |
+| 4.4.x | Yes |
+| 4.3.x, 4.2.x, 4.1.x, and 4.0.x | No; upgrade to 4.4.x without changing existing authorization |
 | 3.0.x and earlier | No |
 
 Security review covers the packaged owner skill, its linked playbooks, host manifests,
