@@ -127,6 +127,31 @@ def _payload(root: Path) -> dict[str, str]:
     return result
 
 
+def _payload_difference(expected: dict[str, str], observed: dict[str, str]) -> str:
+    """Name the package-relative paths that make two payloads differ.
+
+    Paths are extra, missing, or changed as seen from the expected payload. A
+    stray file such as a `__pycache__` entry written into the checkout changes
+    the package identity, so the report names the paths instead of leaving the
+    reader to guess which side moved.
+    """
+    groups = (
+        ("extra", sorted(set(observed) - set(expected))),
+        ("missing", sorted(set(expected) - set(observed))),
+        ("changed", sorted(path for path in set(expected) & set(observed) if expected[path] != observed[path])),
+    )
+    named = [f"{label} {', '.join(paths)}" for label, paths in groups if paths]
+    return "; ".join(named) if named else "identical per-file payloads"
+
+
+def _committed_payload_difference(commit: str) -> str:
+    """Describe how the checkout's package differs from the one that commit holds."""
+    try:
+        return _payload_difference(committed_package_payload(commit), _payload(PLUGIN_ROOT))
+    except (OSError, ValueError) as exc:
+        return f"per-file difference unavailable ({exc})"
+
+
 def package_identity() -> dict[str, str]:
     """Identify the exact package bytes and their committed Git tree when available."""
     payload = _payload(PLUGIN_ROOT)
@@ -159,24 +184,12 @@ def package_identity() -> dict[str, str]:
     return identity
 
 
-def committed_package_identity(commit: str) -> dict[str, str]:
-    """Read version and package tree from one existing commit."""
-    tree = subprocess.run(
-        ["git", "rev-parse", f"{commit}:plugins/skiphow"],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    version = subprocess.run(
-        ["git", "show", f"{commit}:VERSION"],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    if tree.returncode != 0 or version.returncode != 0:
-        raise ValueError("receipt package_commit is unavailable")
+def committed_package_payload(commit: str) -> dict[str, str]:
+    """Read the per-file package payload of one existing commit.
+
+    The receipt schema keeps only the payload digest, so the individual paths
+    come from here when a mismatch has to be explained.
+    """
     listing = subprocess.run(
         ["git", "ls-tree", "-r", "-z", commit, "--", "plugins/skiphow"],
         cwd=ROOT,
@@ -206,6 +219,28 @@ def committed_package_identity(commit: str) -> dict[str, str]:
         payload[path.removeprefix(prefix)] = hashlib.sha256(content.stdout).hexdigest()
     if not payload:
         raise ValueError("receipt package_commit payload is empty")
+    return payload
+
+
+def committed_package_identity(commit: str) -> dict[str, str]:
+    """Read version and package tree from one existing commit."""
+    tree = subprocess.run(
+        ["git", "rev-parse", f"{commit}:plugins/skiphow"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    version = subprocess.run(
+        ["git", "show", f"{commit}:VERSION"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if tree.returncode != 0 or version.returncode != 0:
+        raise ValueError("receipt package_commit is unavailable")
+    payload = committed_package_payload(commit)
     encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
     return {
         "version": version.stdout.strip(),
@@ -255,7 +290,10 @@ def validate_committed_package_identity(
         if field == "package_commit":
             continue
         if value[field] != current[current_key]:
-            raise ValueError(f"receipt {field} does not match the candidate")
+            message = f"receipt {field} does not match the candidate"
+            if field == "package_payload_sha256":
+                message = f"{message}: {_committed_payload_difference(commit)}"
+            raise ValueError(message)
 
 
 def validate_host_receipt(value: dict[str, str], *, host: str, check: str, status: str) -> None:
@@ -313,8 +351,10 @@ def verify_plain_marketplace_source(source: str, host: str) -> tuple[bool, str]:
         if (marketplace / manifest).read_bytes() != candidate_manifest.read_bytes():
             return False, "marketplace manifest does not match the candidate"
         plugin_payload = _payload(PLUGIN_ROOT)
-        if _payload(marketplace / "plugins/skiphow") != plugin_payload:
-            return False, "marketplace plugin payload does not match the candidate"
+        marketplace_plugin = _payload(marketplace / "plugins/skiphow")
+        if marketplace_plugin != plugin_payload:
+            difference = _payload_difference(plugin_payload, marketplace_plugin)
+            return False, f"marketplace plugin payload does not match the candidate: {difference}"
         expected = {
             manifest: hashlib.sha256(candidate_manifest.read_bytes()).hexdigest(),
             **{f"plugins/skiphow/{name}": digest for name, digest in plugin_payload.items()},
@@ -538,9 +578,11 @@ class _InstallCycle:
             )
             installed = _require_isolated_path(installed, host_home)
             self.inventory = _payload(installed)
-            if self.inventory != _payload(PLUGIN_ROOT):
-                self.record("inspect installed files", "FAIL", "payload does not match")
-                return False, "installed plugin payload does not match the candidate"
+            candidate = _payload(PLUGIN_ROOT)
+            if self.inventory != candidate:
+                difference = _payload_difference(candidate, self.inventory)
+                self.record("inspect installed files", "FAIL", f"payload does not match: {difference}")
+                return False, f"installed plugin payload does not match the candidate: {difference}"
         except (OSError, ValueError, json.JSONDecodeError) as exc:
             self.record("inspect installed files", "FAIL", str(exc))
             return False, str(exc)

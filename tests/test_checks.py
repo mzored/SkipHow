@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import importlib.util
+import inspect
 import json
 import os
 from pathlib import Path
 import re
 import shutil
+import subprocess
 import sys
 import threading
 from unittest.mock import patch
@@ -1895,3 +1897,111 @@ def test_file_enumeration_falls_back_without_git(tmp_path: Path) -> None:
     ):
         assert list(check.repository_files({".md"})) == [expected]
         assert check.validate_diff(None) == []
+
+
+PACKAGE = ROOT / "plugins/skiphow"
+
+
+def bytecode_probe(extra: list[str]) -> tuple[list[str], subprocess.CompletedProcess[str]]:
+    """Run one tiny pytest selection that imports a shipped script, and report the bytecode.
+
+    The subprocess inherits neither `PYTHONDONTWRITEBYTECODE` nor
+    `PYTHONPYCACHEPREFIX`, so only `tests/conftest.py` can keep the interpreter
+    from writing into the package. Any directory found is removed here, because
+    the package identity hashes every file under the package root.
+    """
+    environment = os.environ.copy()
+    environment.pop("PYTHONDONTWRITEBYTECODE", None)
+    environment.pop("PYTHONPYCACHEPREFIX", None)
+    for stale in list(PACKAGE.rglob("__pycache__")):
+        shutil.rmtree(stale, ignore_errors=True)
+    try:
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "pytest",
+                "-q",
+                "-p",
+                "no:cacheprovider",
+                "tests/test_activation.py",
+                "-k",
+                "lifecycle",
+                *extra,
+            ],
+            cwd=ROOT,
+            env=environment,
+            capture_output=True,
+            text=True,
+            timeout=120,
+            check=False,
+        )
+        written = sorted(path.relative_to(ROOT).as_posix() for path in PACKAGE.rglob("__pycache__"))
+    finally:
+        for path in list(PACKAGE.rglob("__pycache__")) + list((ROOT / "tests").rglob("__pycache__")):
+            shutil.rmtree(path, ignore_errors=True)
+    return written, result
+
+
+def test_a_direct_pytest_run_writes_no_bytecode_into_the_package() -> None:
+    """`tests/conftest.py` keeps a direct pytest run out of the package identity.
+
+    Importing a shipped script writes `__pycache__` under `plugins/skiphow/`,
+    which the payload hash treats as a package change.
+    """
+    written, result = bytecode_probe([])
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert written == [], f"a direct pytest run polluted the package: {written}"
+
+
+def test_without_the_conftest_the_same_run_writes_bytecode_into_the_package() -> None:
+    """The conftest is the mechanism, not an incidental environment setting."""
+    written, result = bytecode_probe(["--noconftest"])
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert written == ["plugins/skiphow/skills/skiphow/scripts/__pycache__"]
+
+
+def test_the_full_pytest_run_asks_for_durations_and_prints_them(capsys) -> None:
+    """The bounded run reports its slowest tests even when it passes."""
+    fake = "\n".join(
+        [
+            "============================= slowest 10 durations =============================",
+            "3.10s call     tests/test_checks.py::test_local_package_and_document_checks_pass",
+            "============================== 324 passed in 21.9s =============================",
+        ]
+    )
+    commands: list[list[str]] = []
+
+    def fake_checked(command, **kwargs):
+        commands.append(list(command))
+        assert "timeout" not in kwargs
+        return True, fake if "pytest" in command else ""
+
+    with patch.object(check, "checked", side_effect=fake_checked):
+        check.offline_checks()
+    pytest_commands = [command for command in commands if "pytest" in command]
+    assert len(pytest_commands) == 1
+    assert "--durations=10" in pytest_commands[0]
+    assert pytest_commands[0][-3:-1] == ["-p", "no:cacheprovider"]
+    assert "3.10s call" in capsys.readouterr().err
+    assert inspect.signature(check.checked).parameters["timeout"].default == 120
+
+
+def test_slowest_durations_extracts_only_the_duration_block() -> None:
+    output = "\n".join(
+        [
+            "...........",
+            "============================= slowest 10 durations =============================",
+            "3.10s call     tests/test_checks.py::test_local_package_and_document_checks_pass",
+            "0.40s setup    tests/test_hosts.py::test_smoke",
+            "(12 durations < 0.005s hidden.  Use -vv to show these durations.)",
+            "324 passed in 21.9s",
+        ]
+    )
+    report = check.slowest_durations(output)
+    assert report.splitlines()[0] == "slowest 10 durations"
+    assert "3.10s call     tests/test_checks.py::test_local_package_and_document_checks_pass" in report
+    assert "0.40s setup    tests/test_hosts.py::test_smoke" in report
+    assert "12 durations < 0.005s hidden" in report
+    assert "324 passed" not in report
+    assert check.slowest_durations("no durations here") == ""

@@ -10,8 +10,10 @@ The 4.0.1 ledger contains eight retained Claude Code runs across seven of the
 eight minimum CTO scenarios, including one confirmation. None has the fixture
 manifest and concrete end-state artifact now required for an `Observed`
 receipt. Five setup attempts, including the process-fixture run, were voided.
-Coverage remains partial, every behavioral claim is `UNVERIFIED`, and no rate
-is inferred. See
+Suite coverage remains partial and no scenario has an `Observed` receipt.
+Separately from suite coverage, individual claims are judged per claim against
+the records that carry them, described below, and no rate is inferred from
+either. See
 [`../docs/evidence.md`](../docs/evidence.md) for what the labels mean and for
 the receipt every future run has to leave behind.
 
@@ -150,6 +152,41 @@ Every run also records one terminal state: `observable_reached`,
 `task_completed`, `stopped_at_observable`, or `failed_to_reach_observable`.
 Only the first three can carry an `Observed` label.
 
+## Per-claim eligibility
+
+Scoring above is per run. Evidence labels are not. A record that settles what
+a session loaded settles nothing about what it delivered, and a record that
+settles delivery settles nothing about comparative benefit, so eligibility is
+decided per claim against the records that carry it. Each receipt directory
+holds a `claims.json` naming, for each claim, the records that carry its
+evidence and the exact fields or grader involved.
+[`../scripts/claim_eligibility.py`](../scripts/claim_eligibility.py) reads that
+file and prints one row per claim: the claim, the package version, the host
+and its version, the status, and the reason or the missing item. It starts no model, changes no
+ledger, and upgrades nothing. The rules for `loaded`,
+`delivered_at_destination`, `foreign_work_preserved`, `completion_honesty`, and
+`comparative_benefit`, and what makes each one `Observed`, `FAIL`, or
+`UNVERIFIED`, are stated in
+[`../docs/evidence.md`](../docs/evidence.md#what-an-observed-claim-must-retain).
+
+Run it over a retained directory with:
+
+```sh
+python scripts/claim_eligibility.py evals/receipts/isolated-host-420-20260906
+```
+
+`--check-declared` exits nonzero when a declared status differs from the
+derived one.
+[`../tests/test_claim_eligibility.py`](../tests/test_claim_eligibility.py)
+holds the same comparison for every retained directory, so a published status
+cannot drift from the records under it. A confirmed failure stays a failure
+there and is never reported as missing evidence, and no run is made to earn a
+label: the point of the file is what the retained records already settle.
+
+Per-run derivation is unchanged. Canonical suite coverage in `cto-cases.json`
+still needs the complete run record, and a per-claim `Observed` never supplies
+it.
+
 ## What the validator rejects
 
 [`../tests/test_evals_corpus.py`](../tests/test_evals_corpus.py) rejects a
@@ -230,6 +267,12 @@ Runs are manual, bounded, and authorized in advance. Before launching:
 6. Stop the session as soon as the observable lands where the case says
    `stop_at_observable`. Paying for delegates to finish buys nothing when the
    observable is what happened at the dispatch.
+7. Retain the host's stderr stream in its own file beside the JSON event
+   stream, and keep both. In the 4.2.0 delivery receipt the sandbox refused the
+   session's own cleanup command; that refusal reached only stderr and is
+   absent from the retained trace, so the capture cannot show what the model
+   saw and what the operator saw as separate facts. Redirect the two streams
+   separately at launch, because a merged stream cannot be separated afterwards.
 
 Run one pilot per arm, then one more per arm, and a third only when the first
 two disagree. When the pilot does not produce the behavior at all, fix the
@@ -277,7 +320,9 @@ At completion or interruption, use `capture --fixture <built-directory>
 --prepared <preparation.json> --trace <trace.txt> --output <new-capture.json>
 --redactions <redactions.json> --terminal <state>` before cleanup. Terminal states
 are `task_completed`, `stopped_at_observable`, `failed_to_reach_observable`, and
-`interrupted`. The redaction file maps exact private strings to replacements;
+`interrupted`. Keep the separately retained stderr file from step 7 with the
+capture, and quote in the record any host refusal or diagnostic that appears
+only there. The redaction file maps exact private strings to replacements;
 an empty object is appropriate only after inspecting synthetic evidence.
 Capture retains the sanitized trace, text files with explicit byte counts and
 hashes, a final mode/hash manifest, and the preparation record. Empty files

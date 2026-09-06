@@ -39,7 +39,7 @@ Applicable project instructions may narrow scope, require safeguards, and define
 
 Instruction-level policy guarantees nothing. A host-enforced control is preferred wherever the host provides one. Read-only profiles, sandboxes, permission prompts, and isolated checkouts enforce boundaries that prose cannot. Comparative behavioral improvement remains unverified.
 
-The package ships no hook. The former reminder did not load the skill or restore state, and no controlled comparison showed a benefit worth an executable surface. Default ordinary-language governance uses a reversible line in each host's trusted user instructions. Codex reads global `AGENTS.md`; Claude Code reads user `CLAUDE.md` and rules. This is the thinnest host-specific adapter available without a runtime or silent configuration mutation. Explicit invocation remains the fallback, and automatic selection stays `UNVERIFIED` until a retained run proves it.
+The package ships no hook. The former reminder did not load the skill or restore state, and no controlled comparison showed a benefit worth an executable surface. Default ordinary-language governance uses a reversible line in each host's trusted user instructions. Codex reads a non-empty `AGENTS.override.md` over `AGENTS.md` in its home; Claude Code reads user `CLAUDE.md` and unconditional rules. This is the thinnest host-specific adapter available without a runtime or silent configuration mutation. Explicit invocation remains the fallback, and automatic selection stays `UNVERIFIED` until a retained run proves it.
 
 ## Public site visual system
 

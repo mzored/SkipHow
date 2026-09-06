@@ -20,6 +20,8 @@ Run a focused test:
 python scripts/check.py --pytest tests/test_package.py -q
 ```
 
+A direct `pytest tests` run is safe as well: `tests/conftest.py` turns bytecode writing off before any test imports a shipped script, because the package identity in `scripts/check_hosts.py` hashes every regular file under `plugins/skiphow/` by design and a stray `__pycache__` directory there would change it. `python scripts/check.py` remains the gate, and its full pytest run reports the ten slowest tests on stderr even when it passes.
+
 The behavioral eval corpus in [`evals/`](evals/README.md) holds the cases for the behaviors 3.0.0 changed: the fixture, the prompt, and the events each case expects and forbids. Its shape is checked by `python scripts/check.py --pytest tests/test_evals_corpus.py -q`, which is deterministic, offline, and starts no model. Running a case is a different thing. It costs a real paid session, it gates nothing and no pull request needs one, and it happens only under the run limits in `evals/README.md` and with the owner's explicit authorization. Do not run one to check your own change.
 
 ## Change the canonical package

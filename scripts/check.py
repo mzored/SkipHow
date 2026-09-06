@@ -1999,6 +1999,26 @@ def validate_diff(base: str | None) -> list[str]:
     return errors
 
 
+def slowest_durations(output: str) -> str:
+    """Return pytest's per-test duration block so a passing run still reports it.
+
+    A passing run hides its output, and the run is bounded at 120 seconds, so the
+    slowest tests are the only warning that the bound is approaching.
+    """
+    lines = output.splitlines()
+    for index, line in enumerate(lines):
+        if "slowest" in line and "durations" in line:
+            block = [line.strip("= ").strip()]
+            for candidate in lines[index + 1:]:
+                stripped = candidate.strip()
+                entry = re.match(r"\d+\.\d+s\s+(call|setup|teardown)\s", stripped)
+                if not (entry or stripped.startswith("(")):
+                    break
+                block.append(candidate.rstrip())
+            return "\n".join(block)
+    return ""
+
+
 def offline_checks(base: str | None = None, lint: list[str] | None = None) -> list[str]:
     errors = (
         validate_json()
@@ -2011,12 +2031,16 @@ def offline_checks(base: str | None = None, lint: list[str] | None = None) -> li
         + validate_release_version_change(base)
     )
     commands = [
-        [sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider"],
+        [sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider", "--durations=10"],
     ]
     for command in commands:
         passed, output = checked(command)
         if not passed:
             errors.append(f"failed {' '.join(command)}: {output}")
+            continue
+        report = slowest_durations(output)
+        if report:
+            print(report, file=sys.stderr)
     return errors + validate_diff(base)
 
 

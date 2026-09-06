@@ -2,6 +2,37 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 4.3.0 (2026-09-06)
+
+The always-loaded kernel regains the duties an independent audit found weakened since the 4.0 restoration: a direction rule for work that has come to wait on the owner, one point-of-use obligation before dispatching a delegate, a routing rule the model can apply without evidence it does not have, owned temporary state in the completion reconciliation, and a refusal rule that names the missing permission instead of asking the owner to choose a command. The delegation playbook states per host what delegate controls exist and what a run must verify. The evidence instrument judges receipts per claim. Installing or upgrading SkipHow still grants no authority.
+
+### Changed
+
+- When part of the result waits on the owner, a grant, or an external party, the run continues only independent authorized work that demonstrably advances the remaining acceptance conditions, creates no new prerequisites to fill free capacity, and hands the owner one batch of blockers when none remains. This restores in shorter form the criterion 2.14.0 added after a 36.8-hour campaign and the 4.0 restoration dropped without recording it.
+- Before dispatching a delegate the run has the `delegation` playbook in context, the one loading obligation the 2.15.x receipts measured working. Playbook entries name the act as well as the topic (before a tracker item is created or closed, a merge or rebase stopped on a conflict, a check that failed for an unknown reason, work growing without new evidence of the owner's result), and an unchanged playbook already in context is not read again.
+- Model and effort are chosen from the reasoning the lane demands, the consequence of a wrong answer, and how cheaply the lead can check the result, and set through the host's per-delegate control where it exposes one. Inheriting a suitable session setting is a choice; silence is not. With no evidence the cheaper option serves only a bounded task the lead will verify, and a miss moves up or splits. A high-consequence review gets enough independent capability, which may exceed the session's own. "Demonstrated adequate" is gone.
+- Completion reconciliation covers clones and scratch checkouts the run created, and a material intended effect that did not happen, such as a refused cleanup, is reported even when the main result is complete. A host or sandbox refusal is never bypassed; when no authorized alternative remains, the run names the exact blocker and, where the host has a permission interface, the exact permission.
+- Sensitive findings are not disclosed outside their authorized audience and are minimized inside it, replacing the narrower "never publish".
+- The delegation playbook carries host mechanics read on 2026-09-06 for Claude Code 2.1.261 and Codex CLI 0.153.0: the Agent tool `model` parameter with effort and tool allowlists living only in agent definitions, `permissionMode` ignored for plugin subagents, and `isolation: worktree`; `spawn_agent` `model` and `reasoning_effort` where the configuration exposes them, no per-delegate directory, worktree, or sandbox, `.git` read-only under `workspace-write`, two untried writer-lane candidates, and read-and-verify lanes with the lead writing as the current fallback rather than a norm.
+- The verification playbook makes an independent source of expected behavior the reviewer's obligation, derived from the request and the product rules before reading the change, with contested expectations recorded rather than adopted. The reviewer checks the exact candidate before integration; the lead verifies the authorized destination after it.
+
+### Evaluation instrument
+
+- Receipt eligibility is judged per claim rather than per run: a loading claim, a delivery-at-destination claim, a foreign-work-preservation claim, a completion-honesty claim, and a comparative-benefit claim each name the evidence they need. A confirmed failure is recorded as a failure observation, distinct from missing evidence, a loading observation labels nothing else, and unknown cost blocks no other fact. A deterministic validator applies the rules to the retained captures, and the ledger now states what the 4.1.0 and 4.2.0 Codex and Claude receipts do and do not establish per claim. The public meaning of `Observed` is unchanged.
+- A direct `pytest` run no longer writes bytecode under the package, so it no longer corrupts the package identity of the checkout it runs in; an identity mismatch names the extra, missing, and changed paths; the deterministic gate records its slowest tests and keeps its time limit.
+- The run protocol in `evals/README.md` now requires the host's stderr to be retained in its own file beside the event stream, because the 4.2.0 delivery receipt shows a sandbox refusal that reached only stderr. The capture utility itself is unchanged.
+
+### Documentation
+
+- The security policy says that the Codex custom-agent `sandbox_mode` field is documented but not applied in the 0.153.0 source, that `spawn_agent` takes no directory, worktree, or sandbox parameter, that `project_doc_max_bytes` caps project files while the home instruction file is read without a byte limit, and that Claude's `permissionMode` is not a read-only boundary for plugin subagents. The README says the 4.2.0 delivery prompt did not name SkipHow but did name the destination and the verification. The design page names the Codex override file order.
+- The decision history and the evidence ledger record the audit's disposition, including what was not adopted: no hook or import before the staged activation comparison, no fixed routing ladder, no test-count target, no tracked-bytes package identity, no single-writer Codex norm.
+
+### Compatibility and evidence
+
+This is a minor release. The kernel widens what a run does within existing authority: it stops and hands over one batch when the result waits on the owner, reads `delegation` before dispatching, and names the permission it lacks. The delegation playbook adds host mechanics. No authority boundary, public skill name, or record format changes, and existing grants and restrictions survive the upgrade.
+
+Every behavioral consequence is `UNVERIFIED`; acceptance is static. The experiments the audit designed, a three-mechanism Claude activation comparison, a refused-command capture test on Codex, a fixture at the drift point for the direction rule, a fixed known-bad candidate for the revised reviewer, and a Codex writer lane, need the owner's grant and are recorded with their designs in [docs/evidence.md](docs/evidence.md). Host receipts for the exact 4.3.0 package are recorded in `evals/host-smoke.json` when they exist; until then every row there is `UNVERIFIED` and the 4.2.0 receipts remain at their immutable source.
+
 ## 4.2.0 (2026-09-06)
 
 SkipHow can now enable, check, and disable its own default governance when an installed user asks it to. The activation helper ships inside the skill, resolves the trusted user instruction file each host actually reads, and reports configured, available, and loaded as three separate facts. Installing, enabling, or upgrading SkipHow still grants no authority.
