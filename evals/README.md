@@ -161,8 +161,8 @@ decided per claim against the records that carry it. Each receipt directory
 holds a `claims.json` naming, for each claim, the records that carry its
 evidence and the exact fields or grader involved.
 [`../scripts/claim_eligibility.py`](../scripts/claim_eligibility.py) reads that
-file and prints one row per claim: the claim, the package version, the host,
-the status, and the reason or the missing item. It starts no model, changes no
+file and prints one row per claim: the claim, the package version, the host
+and its version, the status, and the reason or the missing item. It starts no model, changes no
 ledger, and upgrades nothing. The rules for `loaded`,
 `delivered_at_destination`, `foreign_work_preserved`, `completion_honesty`, and
 `comparative_benefit`, and what makes each one `Observed`, `FAIL`, or
