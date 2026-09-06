@@ -1895,3 +1895,68 @@ def test_file_enumeration_falls_back_without_git(tmp_path: Path) -> None:
     ):
         assert list(check.repository_files({".md"})) == [expected]
         assert check.validate_diff(None) == []
+
+
+def test_the_test_run_writes_no_bytecode_into_the_package() -> None:
+    """`tests/conftest.py` keeps a direct pytest run out of the package identity.
+
+    Importing a shipped script would otherwise create `__pycache__` under
+    `plugins/skiphow/`, which the payload hash treats as a package change.
+    """
+    assert sys.dont_write_bytecode
+    assert os.environ.get("PYTHONDONTWRITEBYTECODE") == "1"
+    script = ROOT / "plugins/skiphow/skills/skiphow/scripts/activation.py"
+    spec = importlib.util.spec_from_file_location("skiphow_activation_bytecode_probe", script)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    try:
+        spec.loader.exec_module(module)
+    finally:
+        sys.modules.pop(spec.name, None)
+    assert not list((ROOT / "plugins/skiphow").rglob("__pycache__"))
+
+
+def test_the_full_pytest_run_asks_for_durations_and_prints_them(capsys) -> None:
+    """The bounded run reports its slowest tests even when it passes."""
+    fake = "\n".join(
+        [
+            "============================= slowest 10 durations =============================",
+            "3.10s call     tests/test_checks.py::test_local_package_and_document_checks_pass",
+            "============================== 324 passed in 21.9s =============================",
+        ]
+    )
+    commands: list[list[str]] = []
+
+    def fake_checked(command, **kwargs):
+        commands.append(list(command))
+        assert kwargs.get("timeout", 120) == 120
+        return True, fake if "pytest" in command else ""
+
+    with patch.object(check, "checked", side_effect=fake_checked):
+        check.offline_checks()
+    pytest_commands = [command for command in commands if "pytest" in command]
+    assert len(pytest_commands) == 1
+    assert "--durations=10" in pytest_commands[0]
+    assert pytest_commands[0][-3:-1] == ["-p", "no:cacheprovider"]
+    assert "3.10s call" in capsys.readouterr().err
+
+
+def test_slowest_durations_extracts_only_the_duration_block() -> None:
+    output = "\n".join(
+        [
+            "...........",
+            "============================= slowest 10 durations =============================",
+            "3.10s call     tests/test_checks.py::test_local_package_and_document_checks_pass",
+            "0.40s setup    tests/test_hosts.py::test_smoke",
+            "(12 durations < 0.005s hidden.  Use -vv to show these durations.)",
+            "324 passed in 21.9s",
+        ]
+    )
+    report = check.slowest_durations(output)
+    assert report.splitlines()[0] == "slowest 10 durations"
+    assert "3.10s call     tests/test_checks.py::test_local_package_and_document_checks_pass" in report
+    assert "0.40s setup    tests/test_hosts.py::test_smoke" in report
+    assert "12 durations < 0.005s hidden" in report
+    assert "324 passed" not in report
+    assert check.slowest_durations("no durations here") == ""

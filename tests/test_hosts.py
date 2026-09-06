@@ -353,7 +353,8 @@ def test_isolated_install_still_requires_exact_payload_bytes(host: str) -> None:
     with patch.object(hosts, "checked", side_effect=corrupting_checked):
         passed, output = hosts.isolated_install(host, f"/bin/{host}")
     assert not passed
-    assert output == "installed plugin payload does not match the candidate"
+    assert output.startswith("installed plugin payload does not match the candidate: ")
+    assert "extra VERSION" in output
 
 
 def test_available_host_install_failure_blocks_release() -> None:
@@ -665,3 +666,42 @@ def test_inventory_absent_accepts_only_a_missing_or_uninstalled_entry() -> None:
     assert not hosts._inventory_absent("codex", json.dumps({"installed": [{"pluginId": "skiphow@skiphow", "installed": True}]}))
     assert hosts._inventory_absent("claude", json.dumps([]))
     assert not hosts._inventory_absent("claude", json.dumps([{"id": "skiphow@skiphow", "enabled": True}]))
+
+
+def test_payload_difference_names_extra_missing_and_changed_paths() -> None:
+    expected = {"SKILL.md": "a", "hooks/hooks.json": "b", "README.md": "c"}
+    observed = {"SKILL.md": "a", "hooks/hooks.json": "changed", "scripts/__pycache__/x.pyc": "d"}
+    report = hosts._payload_difference(expected, observed)
+    assert report == (
+        "extra scripts/__pycache__/x.pyc; missing README.md; changed hooks/hooks.json"
+    )
+    assert hosts._payload_difference(expected, dict(expected)) == "identical per-file payloads"
+
+
+def test_receipt_payload_mismatch_names_the_polluting_path() -> None:
+    """A stray file under the package root is diagnosed, not just reported as a mismatch."""
+    stray = "skills/skiphow/scripts/__pycache__/activation.cpython-313.pyc"
+    committed_payload = hosts._payload(hosts.PLUGIN_ROOT)
+    package = fake_committed_package()
+    receipt = {
+        "package_version": package["version"],
+        "package_commit": "c" * 40,
+        "package_tree": package["git_tree"],
+        "package_payload_sha256": "d" * 64,
+    }
+    committed = {
+        "version": receipt["package_version"],
+        "git_tree": receipt["package_tree"],
+        "payload_sha256": receipt["package_payload_sha256"],
+    }
+    with (
+        patch.object(hosts, "package_identity", return_value=package),
+        patch.object(hosts, "committed_package_identity", return_value=committed),
+        patch.object(hosts, "committed_package_payload", return_value=committed_payload),
+        patch.object(hosts, "_payload", return_value=committed_payload | {stray: "e" * 64}),
+        pytest.raises(ValueError) as error,
+    ):
+        hosts.validate_committed_package_identity(receipt)
+    assert str(error.value) == (
+        f"receipt package_payload_sha256 does not match the candidate: extra {stray}"
+    )
