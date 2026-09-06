@@ -85,11 +85,11 @@ Reconcile every part of the request, accepted issue, lane, branch, worktree, clo
 
 ## Focused guidance
 
-Open the matching playbook when its observable trigger appears, including immediately before the act its entry names. These are techniques, not stages, public commands, or a fixed workflow. Critical responsibilities above do not depend on opening them, and an unchanged playbook already in context is not read again.
+Open the matching playbook when its observable trigger appears, including immediately before the act its entry names. These are techniques, not stages, public commands, or a fixed workflow. Critical responsibilities above do not depend on opening them, apart from the delegation obligation stated above, and an unchanged playbook already in context is not read again.
 
 - [product](references/product.md): product intent, genuine ambiguity, acceptance conditions, specifications, or competing priorities, including before you ask the owner a product question.
 - [technical design](references/technical-design.md): current research, architecture, dependencies, build-versus-reuse, interfaces, migrations, or a bounded experiment, including before you add a dependency, subsystem, or service.
-- [diagnosis](references/diagnosis.md): a check that failed for a reason you do not know, intermittent failure, performance, flakiness, work that keeps growing without new evidence of the owner's result, or pressure to mask a failing signal.
+- [diagnosis](references/diagnosis.md): a check that failed for a reason you do not know, intermittent failure, performance, flakiness, stalled work, work that keeps growing without new evidence of the owner's result, or pressure to mask a failing signal.
 - [tracked work](references/tracked-work.md): a list or programme, durable Issues, dependency graph, continuity, recovery, or portfolio sequencing, including before you create or close a tracker item.
 - [delegation](references/delegation.md): a bounded lane, parallel programme, model routing, host delegate mechanics, monitoring, or returned delegate work, and always before you dispatch a delegate.
 - [integration](references/integration.md): branches, worktrees, a merge or rebase stopped on a conflict, delivery destinations, or cleanup of owned temporary state.
