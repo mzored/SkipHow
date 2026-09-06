@@ -1,6 +1,6 @@
 {
   "instrument": "host_smoke",
-  "package_under_test": "4.3.0",
+  "package_under_test": "4.4.0",
   "scope": "external_candidate_receipts",
   "checks": {
     "clean_install": {
@@ -60,6 +60,7 @@
     "claude-code": {
       "results": {
         "clean_install": {
+          "status": "PASS",
           "receipt": {
             "check": "clean_install",
             "cleanup_result": "plugin absent before scratch host home cleanup",
@@ -70,13 +71,12 @@
             "host_version": "2.1.263 (Claude Code)",
             "observable_evidence": "installed regular files exactly matched the candidate payload",
             "outcome": "PASS",
-            "package_commit": "335912b6de00fa1411a954183f1a4c9b82a4c148",
-            "package_payload_sha256": "a0901a3927c4a33b74e28da6677e42329156b9bbca6b9ba388350866aaf9dc89",
-            "package_tree": "c96108f395ac278823b772d9c678cd52b1aeb6e0",
-            "package_version": "4.3.0",
+            "package_commit": "6ebe0b48f70f7eb1d51259fa44e5792c725d046b",
+            "package_payload_sha256": "5163a3c6b919d807031ffd26b32eda11d32cdb5d6df733a432f731799f6d6ed5",
+            "package_tree": "4816696bc40afc23da4d9149f9dbab1c55d47848",
+            "package_version": "4.4.0",
             "source": "scripts/check_hosts.py --smoke"
-          },
-          "status": "PASS"
+          }
         },
         "persistent_setup": {
           "status": "UNVERIFIED",
@@ -107,6 +107,7 @@
           "receipt": null
         },
         "uninstall": {
+          "status": "PASS",
           "receipt": {
             "check": "uninstall",
             "cleanup_result": "plugin absent before scratch host home cleanup",
@@ -117,36 +118,20 @@
             "host_version": "2.1.263 (Claude Code)",
             "observable_evidence": "host inventory no longer listed SkipHow",
             "outcome": "PASS",
-            "package_commit": "335912b6de00fa1411a954183f1a4c9b82a4c148",
-            "package_payload_sha256": "a0901a3927c4a33b74e28da6677e42329156b9bbca6b9ba388350866aaf9dc89",
-            "package_tree": "c96108f395ac278823b772d9c678cd52b1aeb6e0",
-            "package_version": "4.3.0",
+            "package_commit": "6ebe0b48f70f7eb1d51259fa44e5792c725d046b",
+            "package_payload_sha256": "5163a3c6b919d807031ffd26b32eda11d32cdb5d6df733a432f731799f6d6ed5",
+            "package_tree": "4816696bc40afc23da4d9149f9dbab1c55d47848",
+            "package_version": "4.4.0",
             "source": "scripts/check_hosts.py --smoke"
-          },
-          "status": "PASS"
+          }
         }
       }
     },
     "codex": {
       "results": {
         "clean_install": {
-          "status": "PASS",
-          "receipt": {
-            "package_version": "4.3.0",
-            "package_commit": "da1154c730efd6e7efa037841a6e5bad07a74578",
-            "package_tree": "c96108f395ac278823b772d9c678cd52b1aeb6e0",
-            "package_payload_sha256": "a0901a3927c4a33b74e28da6677e42329156b9bbca6b9ba388350866aaf9dc89",
-            "host": "codex",
-            "host_version": "codex-cli 0.153.0",
-            "date": "2026-09-06",
-            "source": "operator procedure recorded in evals/receipts/host-validation-430-20260906.md",
-            "check": "clean_install",
-            "outcome": "PASS",
-            "configuration": "isolated CODEX_HOME with native login only; approved Git marketplace source https://github.com/mzored/SkipHow.git at main (da1154c)",
-            "command_or_session": "codex plugin marketplace add, codex plugin add skiphow@skiphow --json, codex plugin list --json, operator byte comparison of the plugin cache against the committed plugins/skiphow tree with scripts/check_hosts.py _payload",
-            "observable_evidence": "all 17 installed regular files matched the committed package; payload sha256 equal; no symlink or extra file; host listed the plugin as installed and disabled",
-            "cleanup_result": "plugin removed immediately after inspection; isolated home restored to auth.json and config.toml"
-          }
+          "status": "UNVERIFIED",
+          "receipt": null
         },
         "persistent_setup": {
           "status": "UNVERIFIED",
@@ -177,31 +162,16 @@
           "receipt": null
         },
         "uninstall": {
-          "status": "PASS",
-          "receipt": {
-            "package_version": "4.3.0",
-            "package_commit": "da1154c730efd6e7efa037841a6e5bad07a74578",
-            "package_tree": "c96108f395ac278823b772d9c678cd52b1aeb6e0",
-            "package_payload_sha256": "a0901a3927c4a33b74e28da6677e42329156b9bbca6b9ba388350866aaf9dc89",
-            "host": "codex",
-            "host_version": "codex-cli 0.153.0",
-            "date": "2026-09-06",
-            "source": "operator procedure recorded in evals/receipts/host-validation-430-20260906.md",
-            "check": "uninstall",
-            "outcome": "PASS",
-            "configuration": "same isolated CODEX_HOME directly after the install check; no model session ran",
-            "command_or_session": "codex plugin remove skiphow@skiphow, codex plugin list --json",
-            "observable_evidence": "host inventory no longer listed skiphow@skiphow; the marketplace entry itself is configured by the machine's managed /etc/codex/config.toml and stayed",
-            "cleanup_result": "plugin cache and temporary marketplace snapshot removed from the isolated home"
-          }
+          "status": "UNVERIFIED",
+          "receipt": null
         }
       }
     }
   },
   "rule": "Record each capability separately. A package validator, documented host feature, or successful install does not prove model activation or behavior. Use scratch host homes and retain exact package bytes, the package tree and candidate commit, host version, outcome, configuration, command or session result, source, date, and cleanup result. The receipt outcome must match its ledger status. Release-runner capability is a separate matrix.",
   "historical_evidence": {
-    "package_version": "4.2.0",
-    "source": "https://github.com/mzored/SkipHow/blob/f684eb2f3d2e7baf8b8488e8efb5ac4703d67cff/evals/host-smoke.json",
+    "package_version": "4.3.0",
+    "source": "https://github.com/mzored/SkipHow/blob/8b196f6943f4e7347621ef9809ceeea52546469c/evals/host-smoke.json",
     "scope": "Historical receipts retain their original arms, prompts, outcomes, and package identities at this immutable source. They do not establish current-candidate behavior."
   }
 }

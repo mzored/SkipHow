@@ -2,6 +2,25 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 4.4.0 (2026-09-06)
+
+The kernel gains one request shape it had no name for: an iteration, a change to something the owner will look at before deciding what comes next. Its completion is the shown result, not the integrated one. Installing or upgrading SkipHow still grants no authority.
+
+### Changed
+
+- A request to change a screen, copy, an email, a landing page, or a document that the owner has said they will look at, or is sending as a series of small changes, is an iteration. The run makes the change, shows it where the owner can see it, runs the check that covers what it touched, and stops; the kernel states that this stop is a completed turn rather than unfinished work, so a host that pushes against ending a turn on a pause does not push the run on to integration. The owner's acceptance starts the delivery, and only then do tests, review, tracking, commits, push, and integration follow under the existing grants. Where a visible reversible change could be read either way the run shows it and says what delivery would add; a request that plainly asks for a fix keeps delivering. The shape appears in the skill description and the request-shape list, and the rule lives in the grant section beside the sentence that carries every other change through to the authorized destination. No playbook changed.
+
+### Documentation
+
+- The owner guide names the shape, gives an example request, and adds it to the table of what a request allows. The decision history records why it is one kernel paragraph and not a separate skill, an owner-side instruction, an edit to the stop sentence, a second copy in the verification playbook, or a hook. The evidence ledger records the contract sentence and the fixture that would show it.
+- One independent Codex review round on the kernel wording returned two findings, both confirmed against the file and fixed: the deferred list named review, which contradicted the kernel's rule that every change gets a fresh review of its final state, so the shown result is now reviewed like any other final state and only the wider tests, tracking, commits, push, and integration wait for acceptance; and the recognition rule caught a request that named a destination and added that the owner would look there afterwards, so a request that names a destination or asks to ship is delivery whatever the owner looks at afterwards. Nothing was refused; the round returned no non-qualifying findings.
+
+### Compatibility and evidence
+
+This is a minor release. Within existing authority the kernel withholds one default action, integration, for a shape the owner marks by saying they will look; the same words that ended the drift before, "it is done" or "ship it", start delivery. No authority boundary, public skill name, or record format changes, and existing grants and restrictions survive the upgrade.
+
+The observed defect is the owner's account of one installed session in their own project, not a retained receipt; it proves that the shipped text lacked the shape, which is what one run can prove. The behavior of the new wording is `UNVERIFIED`; the fixture that would show it is listed in [docs/evidence.md](docs/evidence.md). On the exact 4.4.0 package, Claude Code 2.1.263 installed and uninstalled the seventeen files in an empty configuration directory; those two cells of `evals/host-smoke.json` are `PASS` with the receipt in `evals/receipts/host-validation-440-20260906/`, the Codex clean install is `UNVERIFIED` because the machine's managed source policy refuses a local marketplace, every other cell is `UNVERIFIED`, and the 4.3.0 receipts remain at their immutable source.
+
 ## 4.3.0 (2026-09-06)
 
 The always-loaded kernel regains the duties an independent audit found weakened since the 4.0 restoration: a direction rule for work that has come to wait on the owner, one point-of-use obligation before dispatching a delegate, a routing rule the model can apply without evidence it does not have, owned temporary state in the completion reconciliation, and a refusal rule that names the missing permission instead of asking the owner to choose a command. The delegation playbook states per host what delegate controls exist and what a run must verify. The evidence instrument judges receipts per claim. Installing or upgrading SkipHow still grants no authority.

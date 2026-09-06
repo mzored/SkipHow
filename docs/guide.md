@@ -71,7 +71,11 @@ The checkout sometimes hangs after payment. Find the cause and fix it without ch
 Compare these onboarding ideas. Recommend one, but do not change the project.
 
 Save these observations so we can prioritize them tomorrow.
+
+Make the hero headline shorter. I will take a look before we ship.
 ```
+
+The last one is an iteration: a change to something you will look at before deciding what comes next. The instructions require the agent to make the change, show it where you can see it, run the check that covers what it touched, and stop there; tests, review, tracking, commits, and integration follow when you say it is done. That stop is the finished result for such a request, not an interruption. This is contract, not observed behavior; no run has shown it yet.
 
 Rough requests are fine. SkipHow reads the project before it asks you for anything. It brings a question back only when the answer changes product behavior, scope, priority, cost, risk, privacy, or rollout. It also asks when an action needs your explicit grant or only a person can complete it.
 
@@ -86,6 +90,7 @@ You can correct or extend the request while work is running. The agent treats th
 | Answer, compare, diagnose, review, research, or plan | Read and report |
 | Capture, organize, triage, or create a record | Write the requested records in the project's existing authorized system |
 | Change the project | Edit and verify; carry through an established owner-authorized non-production workflow |
+| Change something you will look at first | Edit, show it, check what it touched, and stop; delivery starts when you say it is done |
 | Deliver the change | Use the repository's normal shared path |
 
 A mixed request such as "review and fix" allows a project change. A request only to review does not.
