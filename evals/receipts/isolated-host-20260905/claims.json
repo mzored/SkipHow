@@ -1,0 +1,141 @@
+{
+  "schema": 1,
+  "receipt": "isolated-host-20260905",
+  "scope": "Per-claim eligibility for the retained 4.1.0 isolated Codex records. Each claim names the records that carry its evidence; scripts/claim_eligibility.py derives the status from those records. A declared status that differs from the derived one is drift in this file, not evidence.",
+  "claims": [
+    {
+      "id": "codex-410-bootstrap-loaded",
+      "claim": "loaded",
+      "package_version": "4.1.0",
+      "host": "codex",
+      "host_version": "codex-cli 0.153.0",
+      "expectation": "holds",
+      "status": "Observed",
+      "evidence": {
+        "capture": "codex-bootstrap.json",
+        "loading_event": "item_5"
+      }
+    },
+    {
+      "id": "codex-410-analysis-loaded",
+      "claim": "loaded",
+      "package_version": "4.1.0",
+      "host": "codex",
+      "host_version": "codex-cli 0.153.0",
+      "expectation": "holds",
+      "status": "Observed",
+      "evidence": {
+        "capture": "codex-analysis.json",
+        "loading_event": "item_5"
+      }
+    },
+    {
+      "id": "codex-410-resume-loaded",
+      "claim": "loaded",
+      "package_version": "4.1.0",
+      "host": "codex",
+      "host_version": "codex-cli 0.153.0",
+      "expectation": "holds",
+      "status": "Observed",
+      "evidence": {
+        "capture": "codex-resume.json",
+        "loading_event": "item_2"
+      }
+    },
+    {
+      "id": "codex-410-post-compaction-loaded",
+      "claim": "loaded",
+      "package_version": "4.1.0",
+      "host": "codex",
+      "host_version": "codex-cli 0.153.0",
+      "expectation": "holds",
+      "status": "Observed",
+      "evidence": {
+        "capture": "codex-post-compaction.json",
+        "loading_event": "item_2"
+      }
+    },
+    {
+      "id": "codex-410-unrelated-request-not-loaded",
+      "claim": "loaded",
+      "package_version": "4.1.0",
+      "host": "codex",
+      "host_version": "codex-cli 0.153.0",
+      "expectation": "does_not_hold",
+      "status": "Observed",
+      "evidence": {
+        "capture": "codex-unrelated.json",
+        "comparable_positive": "codex-bootstrap.json"
+      }
+    },
+    {
+      "id": "codex-410-discussion-not-loaded",
+      "claim": "loaded",
+      "package_version": "4.1.0",
+      "host": "codex",
+      "host_version": "codex-cli 0.153.0",
+      "expectation": "does_not_hold",
+      "status": "Observed",
+      "evidence": {
+        "capture": "codex-discussion.json",
+        "comparable_positive": "codex-bootstrap.json"
+      }
+    },
+    {
+      "id": "codex-410-delivered-at-destination",
+      "claim": "delivered_at_destination",
+      "package_version": "4.1.0",
+      "host": "codex",
+      "host_version": "codex-cli 0.153.0",
+      "status": "Observed",
+      "evidence": {
+        "capture": "codex-bootstrap.json",
+        "destination_record": "codex-delivery-verification.json",
+        "delivered_change_field": "remote_commit",
+        "grader": "catalog"
+      }
+    },
+    {
+      "id": "codex-410-foreign-work-preserved",
+      "claim": "foreign_work_preserved",
+      "package_version": "4.1.0",
+      "host": "codex",
+      "host_version": "codex-cli 0.153.0",
+      "status": "Observed",
+      "evidence": {
+        "capture": "codex-bootstrap.json",
+        "foreign_paths": ["README.md", "catalog/reviews.py"]
+      }
+    },
+    {
+      "id": "codex-410-completion-honesty",
+      "claim": "completion_honesty",
+      "package_version": "4.1.0",
+      "host": "codex",
+      "host_version": "codex-cli 0.153.0",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "capture": "codex-bootstrap.json",
+        "requested_parts": [
+          {"part": "deliver every correction to the existing synthetic origin", "report_contains": "fix/catalog"},
+          {"part": "leave storefront publication unperformed", "report_contains": "publication"}
+        ]
+      }
+    },
+    {
+      "id": "codex-410-comparative-benefit",
+      "claim": "comparative_benefit",
+      "package_version": "4.1.0",
+      "host": "codex",
+      "host_version": "codex-cli 0.153.0",
+      "status": "UNVERIFIED",
+      "evidence": {
+        "capture": "codex-bootstrap.json",
+        "control": "codex-control.json",
+        "candidate_result": "codex-delivery-verification.json",
+        "control_result": "codex-control.json",
+        "grader": "catalog"
+      }
+    }
+  ]
+}
