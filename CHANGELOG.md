@@ -20,7 +20,7 @@ The always-loaded kernel regains the duties an independent audit found weakened 
 
 - Receipt eligibility is judged per claim rather than per run: a loading claim, a delivery-at-destination claim, a foreign-work-preservation claim, a completion-honesty claim, and a comparative-benefit claim each name the evidence they need. A confirmed failure is recorded as a failure observation, distinct from missing evidence, a loading observation labels nothing else, and unknown cost blocks no other fact. A deterministic validator applies the rules to the retained captures, and the ledger now states what the 4.1.0 and 4.2.0 Codex and Claude receipts do and do not establish per claim. The public meaning of `Observed` is unchanged.
 - A direct `pytest` run no longer writes bytecode under the package, so it no longer corrupts the package identity of the checkout it runs in; an identity mismatch names the extra, missing, and changed paths; the deterministic gate records its slowest tests and keeps its time limit.
-- The capture method retains the host's stderr beside the event stream, because the 4.2.0 delivery receipt shows a sandbox refusal that reached only stderr.
+- The run protocol in `evals/README.md` now requires the host's stderr to be retained in its own file beside the event stream, because the 4.2.0 delivery receipt shows a sandbox refusal that reached only stderr. The capture utility itself is unchanged.
 
 ### Documentation
 
