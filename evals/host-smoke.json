@@ -60,8 +60,23 @@
     "claude-code": {
       "results": {
         "clean_install": {
-          "status": "UNVERIFIED",
-          "receipt": null
+          "status": "PASS",
+          "receipt": {
+            "check": "clean_install",
+            "cleanup_result": "plugin absent before scratch host home cleanup",
+            "command_or_session": "host marketplace add, install, list, inspect, uninstall, list",
+            "configuration": "empty CLAUDE_CONFIG_DIR; exact local marketplace snapshot",
+            "date": "2026-09-06",
+            "host": "claude-code",
+            "host_version": "2.1.263 (Claude Code)",
+            "observable_evidence": "installed regular files exactly matched the candidate payload",
+            "outcome": "PASS",
+            "package_commit": "6ebe0b48f70f7eb1d51259fa44e5792c725d046b",
+            "package_payload_sha256": "5163a3c6b919d807031ffd26b32eda11d32cdb5d6df733a432f731799f6d6ed5",
+            "package_tree": "4816696bc40afc23da4d9149f9dbab1c55d47848",
+            "package_version": "4.4.0",
+            "source": "scripts/check_hosts.py --smoke"
+          }
         },
         "persistent_setup": {
           "status": "UNVERIFIED",
@@ -92,8 +107,23 @@
           "receipt": null
         },
         "uninstall": {
-          "status": "UNVERIFIED",
-          "receipt": null
+          "status": "PASS",
+          "receipt": {
+            "check": "uninstall",
+            "cleanup_result": "plugin absent before scratch host home cleanup",
+            "command_or_session": "host marketplace add, install, list, inspect, uninstall, list",
+            "configuration": "empty CLAUDE_CONFIG_DIR; exact local marketplace snapshot",
+            "date": "2026-09-06",
+            "host": "claude-code",
+            "host_version": "2.1.263 (Claude Code)",
+            "observable_evidence": "host inventory no longer listed SkipHow",
+            "outcome": "PASS",
+            "package_commit": "6ebe0b48f70f7eb1d51259fa44e5792c725d046b",
+            "package_payload_sha256": "5163a3c6b919d807031ffd26b32eda11d32cdb5d6df733a432f731799f6d6ed5",
+            "package_tree": "4816696bc40afc23da4d9149f9dbab1c55d47848",
+            "package_version": "4.4.0",
+            "source": "scripts/check_hosts.py --smoke"
+          }
         }
       }
     },

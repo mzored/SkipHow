@@ -19,7 +19,7 @@ The kernel gains one request shape it had no name for: an iteration, a change to
 
 This is a minor release. Within existing authority the kernel withholds one default action, integration, for a shape the owner marks by saying they will look; the same words that ended the drift before, "it is done" or "ship it", start delivery. No authority boundary, public skill name, or record format changes, and existing grants and restrictions survive the upgrade.
 
-The observed defect is the owner's account of one installed session in their own project, not a retained receipt; it proves that the shipped text lacked the shape, which is what one run can prove. The behavior of the new wording is `UNVERIFIED`; the fixture that would show it is listed in [docs/evidence.md](docs/evidence.md). HOST_RECEIPT_PLACEHOLDER
+The observed defect is the owner's account of one installed session in their own project, not a retained receipt; it proves that the shipped text lacked the shape, which is what one run can prove. The behavior of the new wording is `UNVERIFIED`; the fixture that would show it is listed in [docs/evidence.md](docs/evidence.md). On the exact 4.4.0 package, Claude Code 2.1.263 installed and uninstalled the seventeen files in an empty configuration directory; those two cells of `evals/host-smoke.json` are `PASS` with the receipt in `evals/receipts/host-validation-440-20260906/`, the Codex clean install is `UNVERIFIED` because the machine's managed source policy refuses a local marketplace, every other cell is `UNVERIFIED`, and the 4.3.0 receipts remain at their immutable source.
 
 ## 4.3.0 (2026-09-06)
 
