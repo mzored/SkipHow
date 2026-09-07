@@ -22,6 +22,8 @@ The validator accepts sibling workflows while requiring the CTO entry and valid 
 
 Independent review found no qualifying contract defects. The full gate caught two remaining tests that still required exactly one skill; those now require the CTO and validate sibling kernel links. Targeted independent review confirmed that the correction preserves package boundaries.
 
+Local validation passed all 381 tests and both host schema validators. Claude Code 2.1.263 installed the exact 22-file candidate and uninstalled it from an isolated configuration directory. Codex clean installation remains `UNVERIFIED` because managed source policy refused the local marketplace. The [host ledger](evals/host-smoke.json) retains the Claude receipts; activation, continuity, and model behavior remain `UNVERIFIED` on 4.5.0.
+
 ## 4.4.0 (2026-09-06)
 
 The kernel gains one request shape it had no name for: an iteration, a change to something the owner will look at before deciding what comes next. Its completion is the shown result, not the integrated one. Installing or upgrading SkipHow still grants no authority.
