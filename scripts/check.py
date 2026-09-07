@@ -51,7 +51,7 @@ CONCRETE_MODEL_ID = re.compile(
 DATED_HOST_SNAPSHOT = re.compile(
     r"(?im)^\s{0,3}#{1,6}\s+.*\bhost(?:[- ]specific)?\s+"
     r"(?:mechanics|controls|capabilities|behaviou?r|support)\b.*\b"
-    r"(?:read on|as of|verified on)\s+\d{4}-\d{2}-\d{2}\b"
+    r"\d{4}-\d{2}-\d{2}\b"
 )
 VERSIONED_HOST_PRODUCT = re.compile(
     r"\b(?:Claude Code|Codex CLI)\s+v?"

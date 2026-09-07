@@ -1340,6 +1340,7 @@ def test_runtime_portability_scan_rejects_host_snapshots_and_versions(
 ) -> None:
     for text in (
         "## Host mechanics, read on 2026-09-06\n",
+        "### Host capabilities (2026-09-06)\n",
         "Use Claude Code 2.1.261 for this path.\n",
         "Validated with Codex CLI 0.153.0.\n",
     ):

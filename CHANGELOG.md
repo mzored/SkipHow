@@ -18,6 +18,8 @@ This patch changes no public skill name, invocation rule, owner authority, workf
 
 The shipped runtime Markdown is 298 words and 1,881 bytes smaller than 4.5.0, from 13,702 words and 90,205 bytes to 13,404 words and 88,324 bytes. The fast-fixes preparation route also stops requiring the unchanged 1,021-word, 6,301-byte `integration` reference before delivery. These are measurements, not a size gate or a claim of behavioral improvement. Context selection and model behavior remain `UNVERIFIED`; no paid behavioral sessions were run.
 
+Both local host schema validators passed on exact candidate commit `4250c7abc55673230946af4ba662fa2d28ef0ab5`. Claude Code 2.1.263 installed the exact 22-file candidate and uninstalled it from an isolated configuration directory. Codex clean installation remains `UNVERIFIED` because managed source policy refused the local marketplace before installation. The [host ledger](evals/host-smoke.json) retains only the actual Claude `PASS` cells; activation, continuity, context selection, and model behavior remain `UNVERIFIED` on 4.5.1.
+
 ## 4.5.0 (2026-09-08)
 
 Five optional workflows now share the existing SkipHow CTO kernel. Ordinary project requests still work without a workflow name.
