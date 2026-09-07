@@ -73,7 +73,8 @@ A small run set is never converted into a percentage reliability claim. Two sess
 - aligned package versions and required release metadata;
 - the absence of an executable package hook and the integrity of the declared activation surfaces;
 - third-party source attribution;
-- package portability boundaries for personal paths and versioned model IDs.
+- package portability boundaries for personal paths and versioned model IDs;
+- runtime portability boundaries for dated host snapshots and version-qualified host products.
 
 From 3.0.0 it prepares no environment and reaches no network. It runs against the interpreter it is given, and where a pinned dependency is missing it says so and stops rather than installing one.
 
@@ -89,6 +90,19 @@ empty host home and removed the package successfully on 2026-09-04. The flat
 The same Codex attempt on CLI 0.153.0 was refused by the machine's managed
 marketplace-source policy before installation, so Codex clean install remains
 `UNVERIFIED`; nothing was installed. Neither result is activation evidence.
+
+## 4.5.1 context routing correction
+
+Version 4.5.1 removes the dated host-mechanics inventory from `delegation` while retaining the portable safety outcome. It also stops `skiphow-fast-fixes` from loading `integration` to prepare a preview; the workflow still requires the isolated workspace directly, and delivery still reaches `integration` through `skiphow-deploy-ready`.
+
+| Removed context | Responsibility that remains | Acceptance evidence |
+| --- | --- | --- |
+| Versioned host mechanics in `delegation` | The kernel requires verified distinct isolation before a delegate writes. `delegation` uses the active host's actual controls and falls back to read-only delegates with the lead as the only writer. | Static package review plus `workflow-longrun-no-writer-isolation` in the unrun behavioral corpus. |
+| Early `integration` link in `skiphow-fast-fixes` | Fast-fixes directly requires an isolated, reusable preview branch and worktree. Delivery enters `skiphow-deploy-ready`, whose contract still loads `integration`. | Static link and contract review plus the `workflow-fast-fixes-feedback` and `workflow-fast-fixes-hook-conflict` cases in the unrun behavioral corpus. |
+
+Against 4.5.0, shipped runtime Markdown changes from 13,702 words and 90,205 bytes to 13,404 words and 88,324 bytes, a reduction of 298 words and 1,881 bytes. The unchanged `integration` reference is 1,021 words and 6,301 bytes that the fast-fixes preparation route no longer requires before delivery. These counts are measurements, not a permanent gate or a behavioral claim. Context selection, efficiency, and model behavior remain `UNVERIFIED`; no paid behavioral sessions were run.
+
+On exact candidate commit `4250c7abc55673230946af4ba662fa2d28ef0ab5`, both local host schema validators passed. Claude Code 2.1.263 installed all 22 regular package files byte for byte, with payload `e00c311c57a57637f71ecdec44086489461416823803f870f509633c68701563`, and uninstalled them from an isolated configuration directory. The [retained receipts](../evals/receipts/host-validation-451-20260908/) and [current host ledger](../evals/host-smoke.json) record those two `PASS` cells. Codex CLI 0.153.0 refused the local marketplace under managed source policy before installing anything, so Codex clean installation remains `UNVERIFIED`; its failed attempt is retained without treating it as a package failure. Scratch host homes were removed. These checks started no model.
 
 ## Optional workflow contract
 

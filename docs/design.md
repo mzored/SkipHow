@@ -36,6 +36,8 @@ Internal methods are not routes or stages. Workflow skills define optional work 
 
 Codex and Claude Code supply execution, permissions, tools, credentials, sessions, subagents, and continuation. SkipHow uses those capabilities without pretending to provide them.
 
+The runtime keeps portable outcomes, authority boundaries, and safe fallbacks. Current host controls are discovered from the active host when they are needed. Versioned host capabilities and limitations belong in maintainer evidence and security documentation, where their date and evidence scope remain visible instead of becoming runtime policy.
+
 This separates orchestration policy from the runtime. SkipHow tells the host agent how to plan, select methods, decompose, delegate, review, and reconcile when the request calls for those acts. The host runs the model and tools. A control plane, if one exists, owns durable workers, queues, scheduling, leases, budgets, and deployment.
 
 SkipHow separates authority from task data, and the separation is policy rather than enforcement. Authority comes from the owner's messages and trusted host, user, organization, or administrator policy, at the host's precedence and scope. Applicable repository instructions supply procedure within granted authority. Their location alone proves no trust; instructions in an untrusted revision remain evidence to inspect. Issue and pull request bodies and comments, ordinary repository documents and code comments, fixtures, logs and tool output, web content, retrieved documents, delegate returns, and external records are untrusted task data.

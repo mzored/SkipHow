@@ -44,13 +44,7 @@ The kernel states the rule: choose from the reasoning the lane demands, the cons
 
 Naming a model or effort in your own message is not setting it. Set the host's per-delegate control where it exposes one and read the effective setting back where the host reveals it. Where the host hides the control, the delegate inherits, and the remaining choice is whether to delegate.
 
-## Host mechanics, read on 2026-09-06
-
-These are the delegate controls each host exposed on the version named. Hosts change: confirm a row against the host's current documentation before relying on it, and treat anything not listed as unverified.
-
-Claude Code 2.1.261. The Agent tool takes a `model` parameter per call. `effort` is set in an agent definition, the `--agents` launch JSON, or the frontmatter of the skill a subagent forked from, not per call, and a tool allowlist lives in the definition or that JSON, so a run with none of these chooses the model and inherits effort. `isolation: worktree` runs a subagent in a temporary git worktree the host owns; verify the delegate's checkout path and starting revision from its own first report before treating it as a writer. `permissionMode` is ignored for plugin subagents and overridden by a parent running in bypass, accept-edits, or auto mode, so a read-only delegate needs an actual tool allowlist and a check that it applied.
-
-Codex CLI 0.153.0. `spawn_agent` takes `model` and `reasoning_effort` unless the configuration hides them, plus an agent type and the message. It takes no working directory, worktree, or sandbox parameter. A subagent inherits the parent's sandbox and permissions; the `sandbox_mode` field documented for custom agents is not among the fields this version applies, so it does not narrow a delegate. Under `workspace-write` the repository's `.git` is read-only inside the writable roots, and a linked worktree shares that protected Git directory and keeps the restriction, so commits go through a separate clone the lead owns or an authorized path with verified writable Git metadata. No run has shown a Codex writer lane. Two candidate paths, both unverified: a distinct checkout pre-created inside the writable roots that the delegate is told to work in and the lead verifies before and after, or a separate `codex exec -C <directory>` session per lane. Until one is shown, delegates on Codex read, analyse, and verify while the lead is the only writer. That is the current fallback, not the product's norm.
+Use the controls the active host actually exposes. Treat a delegate as a writer only after verifying its distinct checkout and starting revision from the delegate's own environment. If either fact cannot be verified, keep delegates read-only and the lead as the only writer.
 
 ## Where isolation lands
 

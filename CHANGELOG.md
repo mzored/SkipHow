@@ -2,6 +2,24 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 4.5.1 (2026-09-08)
+
+Runtime context now carries portable host rules without a dated mechanics snapshot, and the fast-fixes workflow no longer loads delivery guidance while it is only preparing a preview.
+
+### Changed
+
+- `delegation` now uses the controls the active host exposes and keeps delegates read-only unless their distinct checkout and starting revision are verified. Versioned host mechanics remain in maintainer evidence and security documentation.
+- `skiphow-fast-fixes` still requires an isolated, reusable preview workspace, but loads `integration` only through `skiphow-deploy-ready` when delivery is requested.
+- The package gate rejects dated host snapshots and version-qualified Claude Code or Codex CLI names in runtime Markdown while allowing generic host names and historical versions outside the shipped runtime.
+
+### Compatibility and evidence
+
+This patch changes no public skill name, invocation rule, owner authority, workflow outcome, reference set, or activation mechanism. The responsibility ledger in [current evidence](docs/evidence.md#451-context-routing-correction) records the surviving path for delegation safety and preview isolation.
+
+The shipped runtime Markdown is 298 words and 1,881 bytes smaller than 4.5.0, from 13,702 words and 90,205 bytes to 13,404 words and 88,324 bytes. The fast-fixes preparation route also stops requiring the unchanged 1,021-word, 6,301-byte `integration` reference before delivery. These are measurements, not a size gate or a claim of behavioral improvement. Context selection and model behavior remain `UNVERIFIED`; no paid behavioral sessions were run.
+
+Both local host schema validators passed on exact candidate commit `4250c7abc55673230946af4ba662fa2d28ef0ab5`. Claude Code 2.1.263 installed the exact 22-file candidate and uninstalled it from an isolated configuration directory. Codex clean installation remains `UNVERIFIED` because managed source policy refused the local marketplace before installation. The [host ledger](evals/host-smoke.json) retains only the actual Claude `PASS` cells; activation, continuity, context selection, and model behavior remain `UNVERIFIED` on 4.5.1.
+
 ## 4.5.0 (2026-09-08)
 
 Five optional workflows now share the existing SkipHow CTO kernel. Ordinary project requests still work without a workflow name.

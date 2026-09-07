@@ -1335,6 +1335,40 @@ def test_model_scan_covers_every_shipped_file_and_current_families(tmp_path: Pat
     assert any("claude-fable-5" in error for error in errors)
 
 
+def test_runtime_portability_scan_rejects_host_snapshots_and_versions(
+    tmp_path: Path,
+) -> None:
+    for text in (
+        "## Host mechanics, read on 2026-09-06\n",
+        "### Host capabilities (2026-09-06)\n",
+        "Use Claude Code 2.1.261 for this path.\n",
+        "Validated with Codex CLI 0.153.0.\n",
+    ):
+        candidate = tmp_path / "runtime.md"
+        candidate.write_text(text, encoding="utf-8")
+        assert check.runtime_portability_scan([candidate]) != [], text
+
+
+def test_runtime_portability_scan_allows_generic_hosts_and_maintainer_evidence(
+    tmp_path: Path,
+) -> None:
+    package = tmp_path / "plugins/skiphow"
+    runtime = package / "skills/skiphow/references/delegation.md"
+    runtime.parent.mkdir(parents=True)
+    runtime.write_text(
+        "Use the controls available in Claude Code or Codex.\n",
+        encoding="utf-8",
+    )
+    evidence = tmp_path / "docs/evidence.md"
+    evidence.parent.mkdir(parents=True)
+    evidence.write_text(
+        "Historical validation used Codex CLI 0.153.0.\n",
+        encoding="utf-8",
+    )
+    with patch.object(check, "PLUGIN_ROOT", package):
+        assert check.runtime_portability_scan() == []
+
+
 def test_package_shape_rejects_an_extra_shipped_file(tmp_path: Path) -> None:
     """A universal agents directory is not part of the composable skill package."""
     package = tmp_path / "skiphow"
