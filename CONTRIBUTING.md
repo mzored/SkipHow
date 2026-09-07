@@ -1,6 +1,6 @@
 # Contributing
 
-SkipHow ships one canonical plugin for Codex and Claude Code: one autonomous owner skill with a dynamic library of focused Markdown methods. Keep changes small enough to review and large enough to solve one complete problem.
+SkipHow ships one canonical plugin for Codex and Claude Code: one accountable CTO kernel, optional workflow skills, and shared Markdown references. Keep changes small enough to review and large enough to solve one complete problem.
 
 Read the [Code of Conduct](CODE_OF_CONDUCT.md) and use the [private security process](SECURITY.md) for vulnerabilities.
 
@@ -27,12 +27,13 @@ The behavioral eval corpus in [`evals/`](evals/README.md) holds the cases for th
 ## Change the canonical package
 
 - Keep universal authority, autonomy, preservation, and completion invariants in the owner kernel at `plugins/skiphow/skills/skiphow/SKILL.md`.
+- Put an optional workflow in a sibling skill only when it defines a distinct requested work pattern and stopping condition. Require the CTO kernel in context through a relative link before consequential work. Reuse its references rather than duplicating policy. A declared dependency proves no model loading.
 - Put reusable task discipline in a focused Markdown reference under the owner skill. Keep authority, autonomy, preservation, and completion in the root; a method can help with technique, but a missed method must not change the grant or definition of done.
 - Use linked resources for detail that can materially help only some tasks. Keep every Markdown file under the owner skill's `references/` library recursively reachable from `SKILL.md`.
 - Keep Codex and Claude manifests pointed at the same `skills/` directory.
 - Bump `VERSION` whenever `plugins/skiphow/` changes. Claude Code uses the manifest version as its update key.
 - Update `docs/decisions.md` when evidence changes architecture, the product contract, or security policy. Update `docs/evidence.md` when supported claims or known limits change. Link to durable source material instead of adding one file per run or release.
-- `scripts/check.py` validates one top-level owner skill, recursive reachability of every Markdown file under its `references/` library, the safety shape of the session hook where one ships (echo-only command, bounded timeout, no continuation store selected on resume), aligned versions, and the personal-path and provider-model-ID boundaries it scans. Do not reintroduce fixed method counts, role sets, model tiers, prose spellings, marketing sentences, matcher topology, site presentation details, or word budgets; those are class 4 under the validation policy in `AGENTS.md` and are at most a non-blocking lint. Record package-invariant changes and their evidence in `docs/decisions.md`, then update the check in the same change.
+- `scripts/check.py` validates the required CTO entry, sibling workflow links to it, recursive reachability of Markdown references, the safety shape of any shipped hook, aligned versions, and the personal-path and provider-model-ID boundaries it scans. Do not reintroduce fixed method counts, role sets, model tiers, prose spellings, marketing sentences, matcher topology, site presentation details, or word budgets; those are class 4 under the validation policy in `AGENTS.md` and are at most a non-blocking lint. Record package-invariant changes and their evidence in `docs/decisions.md`, then update the check in the same change.
 - Preserve upstream license, copyright, path, and inspected revision whenever a method copies or adapts source text. Record borrowed ideas and rejected alternatives in [the design](docs/design.md) and [decision history](docs/decisions.md).
 - Write direct English prose. Use active voice, sentence-case headings, straight quotes, and concrete claims. Open each method with a scope line repeating the trigger `SKILL.md` carries for it, give any file over roughly four hundred words subheadings, keep one idea to a sentence, and use a list only where the content is already a set. No em dashes; prefer two sentences to a semicolon.
 

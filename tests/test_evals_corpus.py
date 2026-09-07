@@ -67,7 +67,7 @@ CASE_FIELDS = frozenset(
         "result",
     }
 )
-OPTIONAL_CASE_FIELDS = frozenset({"fixture_environment"})
+OPTIONAL_CASE_FIELDS = frozenset({"fixture_environment", "explicit_skill"})
 EVENT_FIELDS = frozenset({"description", "kind", "evidence", "shows"})
 EVENT_KINDS = frozenset({"task", "package"})
 EVIDENCE = frozenset({"transcript", "end_state", "both"})
@@ -439,10 +439,20 @@ def validate_case(case: dict, data: dict) -> None:
                 fail(f"contract ref {ref!r} names no hook matcher")
             continue
         target = SKILL_ROOT / relative
-        if not target.is_file() or not target.resolve().is_relative_to(SKILL_ROOT.resolve()):
+        if not target.is_file() or not target.resolve().is_relative_to(SKILL_ROOT.parent.resolve()):
             fail(f"contract ref {ref!r} is not a shipped package file; contributor policy is not runtime behavior")
         if anchor not in heading_anchors(target):
             fail(f"contract ref {ref!r} names no heading in {relative}")
+    # Explicit invocation changes only candidate activation, never the neutral task.
+    if "explicit_skill" in case:
+        name = case["explicit_skill"]
+        if not isinstance(name, str) or not re.fullmatch(r"skiphow(?:-[a-z]+)*", name):
+            fail("explicit_skill must name a shipped SkipHow skill")
+        entry = SKILL_ROOT.parent / name / "SKILL.md"
+        if not entry.is_file() or not re.search(rf"^name: {re.escape(name)}$", entry.read_text(), re.M):
+            fail("explicit_skill must name a shipped SkipHow skill")
+        if case["arm_expectations"]["m1-explicit-skiphow"]["activation"] != "expected":
+            fail("explicit_skill requires candidate explicit activation")
     # Rule 7, second half: the prompt must not name the package, or the base arm cannot exist.
     for text in [case["owner_prompt"], *case["subsequent_answers"]]:
         if PACKAGE_NAME.search(text):
@@ -1726,3 +1736,16 @@ def test_rejects_a_case_that_cannot_distinguish_doing_nothing_from_restraint() -
         expectation["required"] = []
     case["observable"] = {"event": "tree-unchanged", "source": "end_state", "stop": "run_to_completion"}
     _rejects(case, data, "observable must be a positive action")
+
+
+def test_rejects_an_unknown_workflow_invocation() -> None:
+    data, case = _template()
+    case["explicit_skill"] = "skiphow-missing-workflow"
+    _rejects(case, data, "explicit_skill must name a shipped SkipHow skill")
+
+
+def test_rejects_workflow_invocation_without_explicit_activation() -> None:
+    data, case = _template()
+    case["explicit_skill"] = "skiphow"
+    case["arm_expectations"]["m1-explicit-skiphow"]["activation"] = "not_expected"
+    _rejects(case, data, "explicit_skill requires candidate explicit activation")

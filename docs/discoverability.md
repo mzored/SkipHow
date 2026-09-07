@@ -74,7 +74,7 @@ The success condition at day 90 is directional across matched cells: qualified r
 
 Modern coding agents can already plan, code, test, and delegate. The problem I kept hitting was not missing intelligence. I still had to operate the method: choose commands, approve technical artifacts, move work through phases, or remember which skill to invoke.
 
-SkipHow is an adaptive, instruction-level orchestration layer for Claude Code and Codex. It ships as one public Agent Skill. Product decisions and protected actions stay with the owner; the agent chooses the engineering method, coordinates the work, and proves the result.
+SkipHow is an adaptive, instruction-level orchestration layer for Claude Code and Codex. It ships as a CTO Agent Skill with optional recurring workflows and shared references. Product decisions and protected actions stay with the owner; the agent chooses the engineering method, coordinates the work, and proves the result.
 
 The host still runs the model, tools, permissions, sessions, and subagents. SkipHow provides the orchestration policy, not a scheduler, queue, persistent worker service, or control plane. If your base agent already holds the same contract reliably, use it alone. If you want to approve the method, use a spec or workflow framework. If you need durable workers, budgets, leases, and scheduling, use a runtime orchestrator.
 

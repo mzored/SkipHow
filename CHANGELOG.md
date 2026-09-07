@@ -2,6 +2,28 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 4.5.0 (2026-09-08)
+
+Five optional workflows now share the existing SkipHow CTO kernel. Ordinary project requests still work without a workflow name.
+
+### Added
+
+- `skiphow-bug` repairs the cause of a defect and verifies the original failure and affected general cases.
+- `skiphow-plan` prepares a researched specification, independently reviewed slices, authorized planning records, and an execution prompt, then stops before implementation. Explicit invocation requests durable planning; automatic selection for a read-only question grants no writes.
+- `skiphow-longrun` delivers accepted tracked work through bounded implementation and independent review loops. Without verified writer isolation, the CTO writes and delegates investigate and review.
+- `skiphow-deploy-ready` completes deferred checks, review, commits, and authorized integration. Production still requires an applicable explicit grant, including effects triggered by CI.
+- `skiphow-fast-fixes` shows a reviewed local preview and stops for feedback. The next turn checkpoints the previous shown iteration before further edits. Acceptance stays inside the iteration session; delivery starts on request. Deferred suites cannot run indirectly through commit hooks or be bypassed to commit.
+
+### Compatibility and verification
+
+This is a minor release of optional capabilities. The public CTO name, existing activation mechanism, authority boundaries, and shared references remain available. Each workflow requires the kernel in context through a relative link; package checks verify that declaration, not model compliance.
+
+The validator accepts sibling workflows while requiring the CTO entry and valid relative kernel links. The behavioral corpus covers invocation, planning authority, repair scope, longrun review and recovery, preview checkpoints, production boundaries, and resume preservation. Workflow selection, kernel loading, and behavior remain `UNVERIFIED`; no paid behavioral runs were made for this release. See [the evidence ledger](docs/evidence.md#optional-workflow-contract) and the per-capability release validation matrix.
+
+Independent review found no qualifying contract defects. The full gate caught two remaining tests that still required exactly one skill; those now require the CTO and validate sibling kernel links. Targeted independent review confirmed that the correction preserves package boundaries.
+
+Local validation passed all 381 tests and both host schema validators. Claude Code 2.1.263 installed the exact 22-file candidate and uninstalled it from an isolated configuration directory. Codex clean installation remains `UNVERIFIED` because managed source policy refused the local marketplace. The [host ledger](evals/host-smoke.json) retains the Claude receipts; activation, continuity, and model behavior remain `UNVERIFIED` on 4.5.0.
+
 ## 4.4.0 (2026-09-06)
 
 The kernel gains one request shape it had no name for: an iteration, a change to something the owner will look at before deciding what comes next. Its completion is the shown result, not the integrated one. Installing or upgrading SkipHow still grants no authority.

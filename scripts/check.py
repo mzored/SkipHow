@@ -1866,8 +1866,28 @@ def validate_marketplace_catalogs() -> list[str]:
     return errors
 
 
+def validate_workflow_kernel_link(skill_file: Path, owner_skill: Path) -> list[str]:
+    """Require each workflow to link directly to the shared CTO instructions."""
+    try:
+        targets = markdown_targets(skill_file, include_images=False)
+    except (OSError, UnicodeError) as exc:
+        return [f"cannot read workflow {display_path(skill_file)}: {exc}"]
+    for target in targets:
+        try:
+            candidate = local_link(skill_file, target)
+            relative = not Path(unquote(urlsplit(target).path)).is_absolute()
+        except DisallowedLocalLink:
+            continue
+        if relative and candidate == owner_skill.resolve():
+            return []
+    return [
+        f"workflow {display_path(skill_file)} must contain a relative Markdown link "
+        "to the CTO kernel at skills/skiphow/SKILL.md"
+    ]
+
+
 def validate_plugin_static() -> list[str]:
-    """Check the single-owner-skill package shared by Codex and Claude."""
+    """Check the CTO kernel and optional workflows shared by Codex and Claude."""
     errors = validate_plugin_root_directory()
     if errors:
         return errors
@@ -1972,9 +1992,10 @@ def validate_plugin_static() -> list[str]:
         errors.append(f"plugin must not contain nested SKILL.md files: {', '.join(nested_skills)}")
     for skill_dir in skill_dirs:
         errors.extend(validate_skill_directory(skill_dir))
+        skill_file = skill_dir / "SKILL.md"
+        if skill_file != owner_skill and skill_file.is_file() and not skill_file.is_symlink():
+            errors.extend(validate_workflow_kernel_link(skill_file, owner_skill))
     skill_names = {path.name for path in skill_dirs if (path / "SKILL.md").is_file()}
-    if skill_names != {"skiphow"}:
-        errors.append("plugin must expose exactly one owner entry at skills/skiphow/SKILL.md")
 
     errors.extend(model_id_scan())
     errors.extend(validate_plugin_links())

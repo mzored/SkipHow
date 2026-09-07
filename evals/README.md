@@ -413,3 +413,42 @@ bare `pytest` run in this repository never collects a fixture.
 - [`../tests/test_evals_corpus.py`](../tests/test_evals_corpus.py) is the
   deterministic check on the shape and the semantic possibility of everything
   described here.
+
+## Workflow skill regressions
+
+The `workflow-*` cases in `cases.json` exercise the five optional workflows.
+They reuse the rounding, catalog, private tracker simulator, and static preview
+fixtures, plus a static-preview overlay with a deferred pytest commit hook.
+Their state is `UNVERIFIED`; adding a case does not establish behavior.
+
+A case's optional `explicit_skill` selects the entry to invoke in M1. Use that
+skill's native host invocation instead of the normal CTO invocation, followed by
+the unchanged `owner_prompt`. Do not separately inject the CTO kernel. Record
+that invocation in `activation_configuration` and retain the raw transcript so
+the kernel-before-action event is independently inspectable. Other arms receive
+the neutral prompt through their existing activation mechanism. They never
+invoke a workflow unavailable in their installed package. Contract links may
+point to sibling skills inside the shipped skills directory.
+
+`workflow-plan-invocation-grant` deliberately distinguishes authority conveyed
+by explicit workflow selection from the same neutral planning request in other
+arms. Only M1 requires durable tracker writes there. This case tests invocation
+semantics, not incremental benefit under equal authority. Other planning cases
+state their durable or read-only request directly and share that authority
+across arms. The local tracker fixture proves simulated record disposition;
+it does not prove real GitHub API access.
+
+The longrun case records review correction, reslicing, and process diagnosis
+only when their declared conditions actually occur. A run without those events
+cannot establish those behavioral claims. Writer isolation still applies only
+before a delegate writes; the separate unavailable-isolation case requires the
+lead to write and delegates to remain read-only. The resume case tests live
+state reconstruction from the supplied resumption request; it does not prove
+host compaction or durable scheduling. Existing continuity receipts retain
+those separate evidence requirements.
+
+Send fast-fixes feedback only after the first rendered preview is shown and the
+agent has stopped. Inspect commit order and command traces across both turns.
+The production cases use a local receive hook and marker, never a live service.
+No workflow regression authorizes a paid run, creates a repository from a test,
+or changes the release evidence labels.
