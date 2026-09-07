@@ -1,6 +1,6 @@
 {
   "instrument": "host_smoke",
-  "package_under_test": "4.5.0",
+  "package_under_test": "4.5.1",
   "scope": "external_candidate_receipts",
   "checks": {
     "clean_install": {
@@ -60,23 +60,8 @@
     "claude-code": {
       "results": {
         "clean_install": {
-          "receipt": {
-            "check": "clean_install",
-            "cleanup_result": "plugin absent before scratch host home cleanup",
-            "command_or_session": "host marketplace add, install, list, inspect, uninstall, list",
-            "configuration": "empty CLAUDE_CONFIG_DIR; exact local marketplace snapshot",
-            "date": "2026-09-07",
-            "host": "claude-code",
-            "host_version": "2.1.263 (Claude Code)",
-            "observable_evidence": "installed regular files exactly matched the candidate payload",
-            "outcome": "PASS",
-            "package_commit": "d3a4ebea9750b437b7edf01ed58d166d74b1492b",
-            "package_payload_sha256": "a9e54f3a26b35b1be1d6bf396bc1f40c622792ceab5fe259aa6256fbc8c1254c",
-            "package_tree": "a1a571715d07d22ce39b4da737a50da89367a8b3",
-            "package_version": "4.5.0",
-            "source": "scripts/check_hosts.py --smoke"
-          },
-          "status": "PASS"
+          "status": "UNVERIFIED",
+          "receipt": null
         },
         "persistent_setup": {
           "status": "UNVERIFIED",
@@ -107,23 +92,8 @@
           "receipt": null
         },
         "uninstall": {
-          "receipt": {
-            "check": "uninstall",
-            "cleanup_result": "plugin absent before scratch host home cleanup",
-            "command_or_session": "host marketplace add, install, list, inspect, uninstall, list",
-            "configuration": "empty CLAUDE_CONFIG_DIR; exact local marketplace snapshot",
-            "date": "2026-09-07",
-            "host": "claude-code",
-            "host_version": "2.1.263 (Claude Code)",
-            "observable_evidence": "host inventory no longer listed SkipHow",
-            "outcome": "PASS",
-            "package_commit": "d3a4ebea9750b437b7edf01ed58d166d74b1492b",
-            "package_payload_sha256": "a9e54f3a26b35b1be1d6bf396bc1f40c622792ceab5fe259aa6256fbc8c1254c",
-            "package_tree": "a1a571715d07d22ce39b4da737a50da89367a8b3",
-            "package_version": "4.5.0",
-            "source": "scripts/check_hosts.py --smoke"
-          },
-          "status": "PASS"
+          "status": "UNVERIFIED",
+          "receipt": null
         }
       }
     },
@@ -170,8 +140,8 @@
   },
   "rule": "Record each capability separately. A package validator, documented host feature, or successful install does not prove model activation or behavior. Use scratch host homes and retain exact package bytes, the package tree and candidate commit, host version, outcome, configuration, command or session result, source, date, and cleanup result. The receipt outcome must match its ledger status. Release-runner capability is a separate matrix.",
   "historical_evidence": {
-    "package_version": "4.4.0",
-    "source": "https://github.com/mzored/SkipHow/blob/dca3b674af9cca2e58e630d06fe3e0b0c7aebcfa/evals/host-smoke.json",
+    "package_version": "4.5.0",
+    "source": "https://github.com/mzored/SkipHow/blob/02eb504aa59b372a688bf4ed85b4157f317c70dd/evals/host-smoke.json",
     "scope": "Historical receipts retain their original arms, prompts, outcomes, and package identities at this immutable source. They do not establish current-candidate behavior."
   }
 }

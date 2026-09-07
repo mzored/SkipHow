@@ -7,7 +7,7 @@ description: Iterate on a local screen or other visible result with the owner be
 
 Give the owner a working preview to inspect and revise. Before consequential work, have the [SkipHow CTO kernel](../skiphow/SKILL.md) in context. Read it if absent. The lead remains the CTO; this session's completion boundary is each reviewed and shown iteration.
 
-Use [integration](../skiphow/references/integration.md) to prepare an isolated branch and worktree from the project's current development base. Discover the base, dev startup command, and existing preview conventions rather than assuming branch names or commands. Preserve unrelated changes. Reuse this session's owned workspace on subsequent turns. Keep its preview and worktree available while the iteration session continues, and record their ownership for recovery and eventual cleanup.
+Prepare an isolated branch and worktree from the project's current development base. Discover the base, dev startup command, and existing preview conventions rather than assuming branch names or commands. Preserve unrelated changes. Reuse this session's owned workspace on subsequent turns. Keep its preview and worktree available while the iteration session continues, and record their ownership for recovery and eventual cleanup.
 
 Make the requested bounded change. Use [verification](../skiphow/references/verification.md) for review, rendered inspection, and permitted focused checks. Show the actual running preview at a usable address or through the host's preview tool, with a concise account of the change, then stop for feedback. If the preview cannot run, report the blocker and do not represent an unshown result as shown.
 

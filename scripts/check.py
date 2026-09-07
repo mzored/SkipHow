@@ -48,6 +48,17 @@ CONCRETE_MODEL_ID = re.compile(
     r"(?:opus|sonnet|haiku|fable)-\d[\w.-]*)\b",
     re.IGNORECASE,
 )
+DATED_HOST_SNAPSHOT = re.compile(
+    r"(?im)^\s{0,3}#{1,6}\s+.*\bhost(?:[- ]specific)?\s+"
+    r"(?:mechanics|controls|capabilities|behaviou?r|support)\b.*\b"
+    r"(?:read on|as of|verified on)\s+\d{4}-\d{2}-\d{2}\b"
+)
+VERSIONED_HOST_PRODUCT = re.compile(
+    r"\b(?:Claude Code|Codex CLI)\s+v?"
+    r"(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)"
+    r"(?:[-+][0-9A-Za-z.-]+)?\b",
+    re.IGNORECASE,
+)
 SESSION_START_SOURCES = frozenset({"startup", "clear", "compact", "resume"})
 HOOK_TIMEOUT_CEILING = 60
 SAFE_ECHO_COMMAND = re.compile(r"^echo '([A-Za-z0-9][A-Za-z0-9 .,/:_-]*)'$")
@@ -1249,6 +1260,44 @@ def model_id_scan(paths: Iterable[Path] | None = None) -> list[str]:
     return errors
 
 
+def runtime_portability_scan(paths: Iterable[Path] | None = None) -> list[str]:
+    """Keep dated host mechanics and host versions out of runtime Markdown."""
+    candidates = (
+        list(paths)
+        if paths is not None
+        else [
+            path
+            for path in sorted((PLUGIN_ROOT / "skills").rglob("*"))
+            if path.is_file() and path.suffix.lower() in MARKDOWN_SUFFIXES
+        ]
+    )
+    errors: list[str] = []
+    patterns = (
+        (DATED_HOST_SNAPSHOT, "dated host snapshot"),
+        (VERSIONED_HOST_PRODUCT, "versioned host product"),
+    )
+    for path in candidates:
+        if path.suffix.lower() not in MARKDOWN_SUFFIXES:
+            continue
+        if path.is_symlink():
+            errors.append(f"cannot scan linked runtime policy: {display_path(path)}")
+            continue
+        try:
+            content = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeError) as exc:
+            errors.append(f"cannot scan runtime policy {display_path(path)}: {exc}")
+            continue
+        reported: set[str] = set()
+        for representation in scan_representations(path, content):
+            for pattern, label in patterns:
+                for match in pattern.finditer(representation):
+                    message = f"{label} {match.group(0)!r} in {display_path(path)}"
+                    if message not in reported:
+                        errors.append(message)
+                        reported.add(message)
+    return errors
+
+
 def validate_continuity_hook(path: Path | None = None) -> list[str]:
     """Validate the safety shape of the session hook where one ships.
 
@@ -1998,6 +2047,7 @@ def validate_plugin_static() -> list[str]:
     skill_names = {path.name for path in skill_dirs if (path / "SKILL.md").is_file()}
 
     errors.extend(model_id_scan())
+    errors.extend(runtime_portability_scan())
     errors.extend(validate_plugin_links())
     errors.extend(validate_third_party_sources(skill_names))
     errors.extend(validate_continuity_hook())
