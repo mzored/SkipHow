@@ -75,7 +75,7 @@ Save these observations so we can prioritize them tomorrow.
 Make the hero headline shorter. I will take a look before we ship.
 ```
 
-The last one is an iteration: a change to something you will look at before deciding what comes next. The instructions require the agent to make the change, show it where you can see it, run the check that covers what it touched, and stop there; tests, review, tracking, commits, and integration follow when you say it is done. That stop is the finished result for such a request, not an interruption. This is contract, not observed behavior; no run has shown it yet.
+The last one is an iteration: a change to something you will look at before deciding what comes next. The agent makes and reviews the change, checks and shows the result, then stops. For ordinary iterations, acceptance starts delivery and its wider checks and integration. In an explicitly bounded session such as fast-fixes, the agreed feedback and commit cycle continues until you request delivery. That stop is the finished result for such a request, not an interruption. This is contract, not observed behavior; no run has shown it yet. The [workflow examples](../README.md#recurring-workflows) describe each optional mode and its stopping condition.
 
 Rough requests are fine. SkipHow reads the project before it asks you for anything. It brings a question back only when the answer changes product behavior, scope, priority, cost, risk, privacy, or rollout. It also asks when an action needs your explicit grant or only a person can complete it.
 

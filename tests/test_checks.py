@@ -1505,13 +1505,76 @@ def test_plugin_static_reports_non_utf8_markdown_instead_of_crashing(
     assert any("UTF-8" in error or "utf-8" in error for error in errors)
 
 
-def test_package_shape_rejects_a_second_owner_visible_skill(tmp_path: Path) -> None:
+@pytest.mark.parametrize(
+    "link",
+    [
+        "Read [the CTO kernel](../skiphow/SKILL.md) before consequential work.",
+        "Read [the CTO kernel][kernel].\n\n[kernel]: ../skiphow/SKILL.md",
+    ],
+)
+def test_package_shape_accepts_a_workflow_linked_to_the_cto_kernel(
+    tmp_path: Path, link: str
+) -> None:
+    package = tmp_path / "skiphow"
+    shutil.copytree(check.PLUGIN_ROOT, package)
+    skill = write_skill(package / "skills", "extra-entry") / "SKILL.md"
+    skill.write_text(skill.read_text(encoding="utf-8") + f"\n{link}\n", encoding="utf-8")
+    with patch.object(check, "PLUGIN_ROOT", package):
+        errors = check.validate_plugin_static()
+    assert errors == []
+
+
+@pytest.mark.parametrize(
+    "link",
+    [
+        "",
+        "[self](SKILL.md)",
+        "[module](../skiphow/references/verification.md)",
+        "[remote](https://example.com/skills/skiphow/SKILL.md)",
+        "`[kernel](../skiphow/SKILL.md)`",
+        "```markdown\n[kernel](../skiphow/SKILL.md)\n```",
+        "![kernel](../skiphow/SKILL.md)",
+        "[invalid](http://[)",
+        "[invalid](a%00b.md)",
+    ],
+)
+def test_package_shape_rejects_a_workflow_without_a_real_kernel_link(
+    tmp_path: Path, link: str
+) -> None:
+    package = tmp_path / "skiphow"
+    shutil.copytree(check.PLUGIN_ROOT, package)
+    skill = write_skill(package / "skills", "extra-entry") / "SKILL.md"
+    skill.write_text(skill.read_text(encoding="utf-8") + f"\n{link}\n", encoding="utf-8")
+    with patch.object(check, "PLUGIN_ROOT", package):
+        errors = check.validate_plugin_static()
+    assert any("relative Markdown link to the CTO kernel" in error for error in errors)
+
+
+def test_package_shape_rejects_an_absolute_kernel_link(tmp_path: Path) -> None:
+    package = tmp_path / "skiphow"
+    shutil.copytree(check.PLUGIN_ROOT, package)
+    skill = write_skill(package / "skills", "extra-entry") / "SKILL.md"
+    owner = package / "skills/skiphow/SKILL.md"
+    skill.write_text(
+        skill.read_text(encoding="utf-8") + f"\n[kernel]({owner.as_posix()})\n",
+        encoding="utf-8",
+    )
+    with patch.object(check, "PLUGIN_ROOT", package):
+        errors = check.validate_plugin_static()
+    assert any("relative Markdown link to the CTO kernel" in error for error in errors)
+
+
+def test_package_shape_requires_the_owner_entry_even_with_a_workflow(tmp_path: Path) -> None:
     package = tmp_path / "skiphow"
     shutil.copytree(check.PLUGIN_ROOT, package)
     write_skill(package / "skills", "extra-entry")
+    (package / "skills/skiphow/SKILL.md").unlink()
     with patch.object(check, "PLUGIN_ROOT", package):
         errors = check.validate_plugin_static()
-    assert any("exactly one owner entry" in error for error in errors)
+    assert any(
+        "missing plugin file" in error and "skills/skiphow/SKILL.md" in error
+        for error in errors
+    )
 
 
 @pytest.mark.parametrize("linked_component", ["plugins", "skiphow"])

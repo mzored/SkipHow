@@ -4,8 +4,8 @@
 
 | Version | Supported |
 | --- | --- |
-| 4.4.x | Yes |
-| 4.3.x, 4.2.x, 4.1.x, and 4.0.x | No; upgrade to 4.4.x without changing existing authorization |
+| 4.5.x | Yes |
+| 4.4.x, 4.3.x, 4.2.x, 4.1.x, and 4.0.x | No; upgrade to 4.5.x without changing existing authorization |
 | 3.0.x and earlier | No |
 
 Security review covers the packaged owner skill, its linked playbooks, host manifests,
@@ -13,9 +13,11 @@ marketplace metadata, release checks, and documented authority
 boundaries. Codex, Claude Code, GitHub, Git, operating systems, and third-party
 services keep their own security policies.
 
-## Package validation, 2026-09-06
+## Package validation, 2026-09-08
 
-Version 4.4.0 is validated per capability in [`evals/host-smoke.json`](evals/host-smoke.json); Claude Code 2.1.263 clean install and uninstall carry one receipt on the exact 4.4.0 package in [`evals/receipts/host-validation-440-20260906/`](evals/receipts/host-validation-440-20260906/), and every other row is `UNVERIFIED` until a receipt made on 4.4.0 is recorded. The 4.3.0 receipts, Claude Code 2.1.263 clean install and uninstall and Codex CLI 0.153.0 clean install from the approved Git source and uninstall, remain in [`evals/receipts/host-validation-430-20260906/`](evals/receipts/host-validation-430-20260906/) and at the [immutable 4.3.0 ledger](https://github.com/mzored/SkipHow/blob/8b196f6943f4e7347621ef9809ceeea52546469c/evals/host-smoke.json), and the 4.2.0 receipts, including persistent setup, explicit fallback, and playbook load, remain at their [immutable source](https://github.com/mzored/SkipHow/blob/f684eb2f3d2e7baf8b8488e8efb5ac4703d67cff/evals/host-smoke.json). The [dated support summary](docs/evidence.md#support-summary-as-of-2026-09-06) states what each host has shown for each package it names. The previous 4.1.1 receipts remain in `evals/receipts/host-validation-411-20260905/`; the September 5 isolated Codex diagnostics remain 4.1.0 observations, and the [September 6 diagnostics](evals/receipts/isolated-host-420-20260906/README.md) are separate 4.2.0 observations.
+Version 4.5.0 adds optional workflow skills under the existing authority boundaries. Its per-capability status is in [the current host ledger](evals/host-smoke.json) and the release validation matrix. Historical receipts below apply only to their named versions. Workflow invocation and shared-kernel loading remain `UNVERIFIED`.
+
+Version 4.4.0 was validated per capability in the [immutable 4.4.0 ledger](https://github.com/mzored/SkipHow/blob/dca3b674af9cca2e58e630d06fe3e0b0c7aebcfa/evals/host-smoke.json); Claude Code 2.1.263 clean install and uninstall carry one receipt on the exact 4.4.0 package in [`evals/receipts/host-validation-440-20260906/`](evals/receipts/host-validation-440-20260906/), and every other row is `UNVERIFIED` until a receipt made on 4.4.0 is recorded. The 4.3.0 receipts, Claude Code 2.1.263 clean install and uninstall and Codex CLI 0.153.0 clean install from the approved Git source and uninstall, remain in [`evals/receipts/host-validation-430-20260906/`](evals/receipts/host-validation-430-20260906/) and at the [immutable 4.3.0 ledger](https://github.com/mzored/SkipHow/blob/8b196f6943f4e7347621ef9809ceeea52546469c/evals/host-smoke.json), and the 4.2.0 receipts, including persistent setup, explicit fallback, and playbook load, remain at their [immutable source](https://github.com/mzored/SkipHow/blob/f684eb2f3d2e7baf8b8488e8efb5ac4703d67cff/evals/host-smoke.json). The [dated support summary](docs/evidence.md#support-summary-as-of-2026-09-06) states what each host has shown for each package it names. The previous 4.1.1 receipts remain in `evals/receipts/host-validation-411-20260905/`; the September 5 isolated Codex diagnostics remain 4.1.0 observations, and the [September 6 diagnostics](evals/receipts/isolated-host-420-20260906/README.md) are separate 4.2.0 observations.
 
 The historical 4.1.0 candidate passed both host schema validators. Claude Code 2.1.261
 installed all fifteen regular files byte for byte and uninstalled them in a
@@ -74,7 +76,7 @@ page under `learn.chatgpt.com`; the redirect target is the page actually read.
 | Per-agent read-only controls | Subagent frontmatter takes a `tools` allowlist, `disallowedTools`, and `permissionMode`, whose values include `plan` for read-only exploration. `permissionMode` is ignored for plugin subagents and overridden by a parent in bypass, accept-edits, or auto mode, so only a `tools` allowlist checked to have applied is a read-only boundary. | [Subagents](https://code.claude.com/docs/en/sub-agents) | 2026-09-06 | none | `UNVERIFIED` (documented) |
 | Worktree isolation | `isolation: worktree` runs a subagent in a temporary git worktree. | [Subagents](https://code.claude.com/docs/en/sub-agents) | 2026-09-04 | none | `UNVERIFIED` (documented) |
 | Plugin validation | Manifest `.claude-plugin/plugin.json`; `claude plugin validate <path>` validates it and `--strict` treats warnings as errors. | [Plugins](https://code.claude.com/docs/en/plugins) | 2026-09-04 | 2.1.259 | `PASS` (`scripts/check_hosts.py`, 2026-09-04) |
-| Clean installation | `claude plugin marketplace add`, `claude plugin install --scope user`, `claude plugin uninstall --scope user`; `CLAUDE_CONFIG_DIR` points the host at a scratch home. | [Discover plugins](https://code.claude.com/docs/en/discover-plugins), [Skills](https://code.claude.com/docs/en/skills) | 2026-09-06 | 2.1.263 | `PASS` (`scripts/check_hosts.py --smoke`: clean home, install, 17 regular files matching exact 4.4.0 payload `5163a3c6…`, uninstall verified; [ledger](evals/host-smoke.json)) |
+| Clean installation | `claude plugin marketplace add`, `claude plugin install --scope user`, `claude plugin uninstall --scope user`; `CLAUDE_CONFIG_DIR` points the host at a scratch home. | [Discover plugins](https://code.claude.com/docs/en/discover-plugins), [Skills](https://code.claude.com/docs/en/skills) | 2026-09-06 | 2.1.263 | `PASS` (`scripts/check_hosts.py --smoke`: clean home, install, 17 regular files matching exact 4.4.0 payload `5163a3c6…`, uninstall verified; [4.4.0 ledger](https://github.com/mzored/SkipHow/blob/dca3b674af9cca2e58e630d06fe3e0b0c7aebcfa/evals/host-smoke.json)) |
 
 ### Codex CLI
 

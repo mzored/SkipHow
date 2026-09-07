@@ -70,4 +70,4 @@ Track every unit you accepted through to a named end. A named end includes the w
 
 Leaving a unit for later needs a reason the owner would accept, and there are only three. It is blocked, it needs a decision only they can make, or its authority was never granted, and it needs a record carrying what the work already established. A unit quietly absorbed into another is not finished. That failure grows with the number of units.
 
-Where the request authorizes it and the project keeps tracked work, record the split there rather than only in the conversation, under [tracked work](tracked-work.md); a request only to plan or advise records nothing.
+Where the request authorizes it and the project keeps tracked work, record the split there rather than only in the conversation, under [tracked work](tracked-work.md). A read-only plan or advice request without a requested record writes nothing.

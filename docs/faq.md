@@ -4,7 +4,7 @@ Short answers about installing and using SkipHow. These describe what the shippe
 
 ## What is SkipHow?
 
-SkipHow is an adaptive virtual CTO for founders and product owners, delivered as one public Agent Skill for Claude Code and OpenAI Codex. Describe the product outcome in ordinary language. Product decisions and protected actions stay with you; SkipHow owns technical research, architecture, planning, task management, model and subagent selection, implementation, review, integration, and fresh verification.
+SkipHow is an adaptive virtual CTO for founders and product owners, delivered as a governing Agent Skill with optional workflow skills for Claude Code and OpenAI Codex. Describe the product outcome in ordinary language or choose a [recurring workflow](../README.md#recurring-workflows). Product decisions and protected actions stay with you; SkipHow owns technical research, architecture, planning, task management, model and subagent selection, implementation, review, integration, and fresh verification.
 
 The host runs the model, tools, permissions, sessions, and any subagents. SkipHow supplies the authority, method-selection, and completion policy, not a server or separate runtime.
 
@@ -48,7 +48,7 @@ Use the base agent alone if it already maintains the boundary and verifies compl
 
 OpenSpec and BMAD make specifications, artifacts, or staged work part of the product. Superpowers describes itself as a complete development methodology with mandatory workflows for brainstorming, design approval, planning, TDD, review, and branch completion.
 
-SkipHow makes a different choice. It keeps one owner-facing skill and lets the model compose internal methods around the requested result. Choose the other systems when you want their visible process. Choose SkipHow when you want the agent to decide how much process the work needs while you keep product decisions and protected actions. No controlled benchmark shows that SkipHow produces better engineering. [Prior art](prior-art.md) records what it borrowed from each project and what it left out.
+SkipHow keeps one accountable CTO across ordinary requests and optional workflows. The model composes internal methods around the requested result. You can select a recurring work pattern while the agent owns technical supervision. Choose the other systems when their visible process fits your work. No controlled benchmark shows that SkipHow produces better engineering. [Prior art](prior-art.md) records what it borrowed from each project and what it left out.
 
 ## Will it push, merge or deploy without asking?
 

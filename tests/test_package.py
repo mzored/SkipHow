@@ -39,7 +39,7 @@ def frontmatter(path: Path) -> dict:
     return value
 
 
-def test_both_hosts_package_one_owner_skill_with_internal_methods() -> None:
+def test_both_hosts_package_the_cto_and_optional_workflows() -> None:
     codex = json_object("plugins/skiphow/.codex-plugin/plugin.json")
     claude = json_object("plugins/skiphow/.claude-plugin/plugin.json")
     assert codex["name"] == claude["name"] == "skiphow"
@@ -47,7 +47,7 @@ def test_both_hosts_package_one_owner_skill_with_internal_methods() -> None:
     assert "hooks" not in codex and "agents" not in codex
     assert "hooks" not in claude and "agents" not in claude
     skill_dirs = sorted(path for path in (PLUGIN / "skills").iterdir() if path.is_dir())
-    assert skill_dirs == [PLUGIN / "skills/skiphow"]
+    assert PLUGIN / "skills/skiphow" in skill_dirs
     assert set(PLUGIN.rglob("SKILL.md")) == {path / "SKILL.md" for path in skill_dirs}
     assert not any(
         path.is_file() or path.is_symlink()
@@ -162,10 +162,12 @@ def test_progressive_skill_resources_are_dynamic_and_links_resolve() -> None:
         assert check.validate_skill_markdown_reachability(skill_file.parent) == []
 
 
-def test_package_validator_accepts_one_owner_skill_and_dynamic_resources() -> None:
+def test_package_validator_accepts_the_cto_workflows_and_dynamic_resources() -> None:
     assert check.validate_plugin_static() == []
     discovered = {path.parent.name for path in (PLUGIN / "skills").glob("*/SKILL.md")}
-    assert discovered == {"skiphow"}
+    assert "skiphow" in discovered
+    for name in discovered - {"skiphow"}:
+        assert check.validate_workflow_kernel_link(PLUGIN / "skills" / name / "SKILL.md", SKILL) == []
     references = {path.name for path in (SKILL.parent / "references").glob("*.md")}
     assert len(references) > 1
     assert check.validate_skill_markdown_reachability(SKILL.parent) == []
