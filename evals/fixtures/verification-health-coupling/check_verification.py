@@ -9,17 +9,14 @@ ROOT = Path(__file__).resolve().parent
 
 
 def main() -> int:
-    plan = json.loads((ROOT / "verification-plan.json").read_text(encoding="utf-8"))
+    coverage = json.loads((ROOT / "coverage-map.json").read_text(encoding="utf-8"))
     rendered = json.loads((ROOT / "rendered-navigation.json").read_text(encoding="utf-8"))
     items = rendered["items"]
+    assert coverage["presentation_coupled_checks"] == []
+    assert coverage["stable_destination_contract_check"] is True
+    assert coverage["rendered_keyboard_check"] is True
     assert [item["tab_index"] for item in items] == list(range(len(items)))
-    assert len({item["href"] for item in items}) == len(items)
-    assert plan["coupling_repaired"] is True
-    assert plan["mechanical_high_level_rewrites"] == 0
-    assert plan["coverage_placement"] == {
-        "destination reachability": "stable contract checks",
-        "keyboard focus order": "browser artifact check",
-    }
+    assert {item["href"] for item in items} == {"/", "/profile", "/settings"}
     print("PASS: stable contract coverage and unique rendered-browser evidence")
     return 0
 

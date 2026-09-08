@@ -786,15 +786,11 @@ def test_verification_health_fixtures_expose_independent_oracles(tmp_path: Path)
 
     repaired = {
         "verification-health-coupling": (
-            "verification-plan.json",
+            "coverage-map.json",
             {
-                **coupling,
-                "coverage_placement": {
-                    "destination reachability": "stable contract checks",
-                    "keyboard focus order": "browser artifact check",
-                },
-                "mechanical_high_level_rewrites": 0,
-                "coupling_repaired": True,
+                "presentation_coupled_checks": [],
+                "stable_destination_contract_check": True,
+                "rendered_keyboard_check": True,
             },
         ),
         "verification-health-setup-bottleneck": (
@@ -802,6 +798,7 @@ def test_verification_health_fixtures_expose_independent_oracles(tmp_path: Path)
             {
                 "reuse_prepared_environment": True,
                 "reuse_started_services": True,
+                "reuse_test_data": True,
                 "browser_check_count": setup["browser_check_count"],
                 "delivery_coverage": setup["delivery_contract"],
             },
