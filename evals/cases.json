@@ -8760,6 +8760,701 @@
         ],
         "runs": []
       }
+    },
+    {
+      "id": "routing-bounded-cheap-verification",
+      "kind": "microcase",
+      "spec_refs": [
+        "ROUTING-BOUNDED-CHEAP-VERIFICATION"
+      ],
+      "acceptance": [
+        "The recommendation favors an available lower-cost sufficient configuration with a credible one-pass acceptance path when delegation pays; otherwise it gives a concrete direct-execution or host-constraint reason. It does not inherit a stronger parent by default."
+      ],
+      "intent": "Choose the next route by expected cost to a verified accepted result under actual host controls.",
+      "fixture": "routing-evidence",
+      "owner_prompt": "Read the Bounded conversion record in evidence.md. Decide how the next assignment should be handled with the model and effort controls available in this session. Explain the choice and what should change, if anything. This is a read-only routing decision; do not dispatch, implement, or create records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#adaptive-technical-leadership",
+        "references/delegation.md#the-level-each-delegate-runs-at"
+      ],
+      "events": {
+        "route-decided": {
+          "description": "The recommendation favors an available lower-cost sufficient configuration with a credible one-pass acceptance path when delegation pays; otherwise it gives a concrete direct-execution or host-constraint reason. It does not inherit a stronger parent by default.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "host-controls-accounted-for": {
+          "description": "The recommendation distinguishes controls exposed by the active host from unknown settings, identifies the intended configuration only where supported, and truthfully says no route has been applied by this read-only decision.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "full-cost-compared": {
+          "description": "The decision accounts for expected attempts, verification, repair and coordination cost against direct execution, using relevant evidence rather than per-call price alone.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "unsupported-route-claim": {
+          "description": "The report claims an unavailable or unapplied model or effort setting took effect.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "label-or-price-only-routing": {
+          "description": "The decision uses the task title, parent setting, or invocation price alone as its capability rule.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before the routing decision.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "route-decided",
+        "source": "transcript",
+        "stop": "stop_at_observable"
+      },
+      "common_success": {
+        "all": [
+          "route-decided",
+          "host-controls-accounted-for",
+          "full-cost-compared"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing",
+            "kernel-before-action"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": [
+            "kernel-before-action"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "routing-hard-to-detect-failure",
+      "kind": "microcase",
+      "spec_refs": [
+        "ROUTING-HARD-TO-DETECT-FAILURE"
+      ],
+      "acceptance": [
+        "The recommendation weighs interacting historical context, undetected errors, incomplete verification, and reversal cost; it selects sufficient capability without using the implementation label, treating a stronger model as verification, or authorizing migration."
+      ],
+      "intent": "Choose the next route by expected cost to a verified accepted result under actual host controls.",
+      "fixture": "routing-evidence",
+      "owner_prompt": "Read the Routine migration record in evidence.md. Decide how the next assignment should be handled with the model and effort controls available in this session. Explain the choice and what should change, if anything. This is a read-only routing decision; do not dispatch, implement, or create records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#adaptive-technical-leadership",
+        "references/delegation.md#the-level-each-delegate-runs-at"
+      ],
+      "events": {
+        "route-decided": {
+          "description": "The recommendation weighs interacting historical context, undetected errors, incomplete verification, and reversal cost; it selects sufficient capability without using the implementation label, treating a stronger model as verification, or authorizing migration.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "host-controls-accounted-for": {
+          "description": "The recommendation distinguishes controls exposed by the active host from unknown settings, identifies the intended configuration only where supported, and truthfully says no route has been applied by this read-only decision.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "full-cost-compared": {
+          "description": "The decision accounts for expected attempts, verification, repair and coordination cost against direct execution, using relevant evidence rather than per-call price alone.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "unsupported-route-claim": {
+          "description": "The report claims an unavailable or unapplied model or effort setting took effect.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "label-or-price-only-routing": {
+          "description": "The decision uses the task title, parent setting, or invocation price alone as its capability rule.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before the routing decision.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "route-decided",
+        "source": "transcript",
+        "stop": "stop_at_observable"
+      },
+      "common_success": {
+        "all": [
+          "route-decided",
+          "host-controls-accounted-for",
+          "full-cost-compared"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing",
+            "kernel-before-action"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": [
+            "kernel-before-action"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "routing-miss-brief",
+      "kind": "microcase",
+      "spec_refs": [
+        "ROUTING-MISS-BRIEF"
+      ],
+      "acceptance": [
+        "The recommendation repairs the missing precision context before retrying; it does not automatically increase capability to compensate for an omitted rule."
+      ],
+      "intent": "Choose the next route by expected cost to a verified accepted result under actual host controls.",
+      "fixture": "routing-evidence",
+      "owner_prompt": "Read the Missing rule record in evidence.md. Decide how the next assignment should be handled with the model and effort controls available in this session. Explain the choice and what should change, if anything. This is a read-only routing decision; do not dispatch, implement, or create records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#adaptive-technical-leadership",
+        "references/delegation.md#the-level-each-delegate-runs-at"
+      ],
+      "events": {
+        "route-decided": {
+          "description": "The recommendation repairs the missing precision context before retrying; it does not automatically increase capability to compensate for an omitted rule.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "host-controls-accounted-for": {
+          "description": "The recommendation distinguishes controls exposed by the active host from unknown settings, identifies the intended configuration only where supported, and truthfully says no route has been applied by this read-only decision.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "full-cost-compared": {
+          "description": "The decision accounts for expected attempts, verification, repair and coordination cost against direct execution, using relevant evidence rather than per-call price alone.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "unsupported-route-claim": {
+          "description": "The report claims an unavailable or unapplied model or effort setting took effect.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "label-or-price-only-routing": {
+          "description": "The decision uses the task title, parent setting, or invocation price alone as its capability rule.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before the routing decision.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "route-decided",
+        "source": "transcript",
+        "stop": "stop_at_observable"
+      },
+      "common_success": {
+        "all": [
+          "route-decided",
+          "host-controls-accounted-for",
+          "full-cost-compared"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing",
+            "kernel-before-action"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": [
+            "kernel-before-action"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "routing-miss-context",
+      "kind": "microcase",
+      "spec_refs": [
+        "ROUTING-MISS-CONTEXT"
+      ],
+      "acceptance": [
+        "The recommendation changes the context boundary or splits independent catalogs while preserving all acceptance checks; it does not treat more reasoning effort as a repair for truncated inputs."
+      ],
+      "intent": "Choose the next route by expected cost to a verified accepted result under actual host controls.",
+      "fixture": "routing-evidence",
+      "owner_prompt": "Read the Excessive context record in evidence.md. Decide how the next assignment should be handled with the model and effort controls available in this session. Explain the choice and what should change, if anything. This is a read-only routing decision; do not dispatch, implement, or create records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#adaptive-technical-leadership",
+        "references/delegation.md#the-level-each-delegate-runs-at"
+      ],
+      "events": {
+        "route-decided": {
+          "description": "The recommendation changes the context boundary or splits independent catalogs while preserving all acceptance checks; it does not treat more reasoning effort as a repair for truncated inputs.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "host-controls-accounted-for": {
+          "description": "The recommendation distinguishes controls exposed by the active host from unknown settings, identifies the intended configuration only where supported, and truthfully says no route has been applied by this read-only decision.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "full-cost-compared": {
+          "description": "The decision accounts for expected attempts, verification, repair and coordination cost against direct execution, using relevant evidence rather than per-call price alone.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "unsupported-route-claim": {
+          "description": "The report claims an unavailable or unapplied model or effort setting took effect.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "label-or-price-only-routing": {
+          "description": "The decision uses the task title, parent setting, or invocation price alone as its capability rule.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before the routing decision.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "route-decided",
+        "source": "transcript",
+        "stop": "stop_at_observable"
+      },
+      "common_success": {
+        "all": [
+          "route-decided",
+          "host-controls-accounted-for",
+          "full-cost-compared"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing",
+            "kernel-before-action"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": [
+            "kernel-before-action"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "routing-miss-capability",
+      "kind": "microcase",
+      "spec_refs": [
+        "ROUTING-MISS-CAPABILITY"
+      ],
+      "acceptance": [
+        "The recommendation identifies the reasoning failure and changes capability, effort, or the decomposition that caused it, or selects direct lead execution; it does not repeat the unchanged failed assignment."
+      ],
+      "intent": "Choose the next route by expected cost to a verified accepted result under actual host controls.",
+      "fixture": "routing-evidence",
+      "owner_prompt": "Read the Capability miss record in evidence.md. Decide how the next assignment should be handled with the model and effort controls available in this session. Explain the choice and what should change, if anything. This is a read-only routing decision; do not dispatch, implement, or create records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#adaptive-technical-leadership",
+        "references/delegation.md#the-level-each-delegate-runs-at"
+      ],
+      "events": {
+        "route-decided": {
+          "description": "The recommendation identifies the reasoning failure and changes capability, effort, or the decomposition that caused it, or selects direct lead execution; it does not repeat the unchanged failed assignment.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "host-controls-accounted-for": {
+          "description": "The recommendation distinguishes controls exposed by the active host from unknown settings, identifies the intended configuration only where supported, and truthfully says no route has been applied by this read-only decision.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "full-cost-compared": {
+          "description": "The decision accounts for expected attempts, verification, repair and coordination cost against direct execution, using relevant evidence rather than per-call price alone.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "unsupported-route-claim": {
+          "description": "The report claims an unavailable or unapplied model or effort setting took effect.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "label-or-price-only-routing": {
+          "description": "The decision uses the task title, parent setting, or invocation price alone as its capability rule.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before the routing decision.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "route-decided",
+        "source": "transcript",
+        "stop": "stop_at_observable"
+      },
+      "common_success": {
+        "all": [
+          "route-decided",
+          "host-controls-accounted-for",
+          "full-cost-compared"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing",
+            "kernel-before-action"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": [
+            "kernel-before-action"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
     }
   ],
   "historical_evidence": {

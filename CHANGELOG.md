@@ -4,7 +4,13 @@ All notable changes to SkipHow 2.x and later appear in this file. Earlier releas
 
 ## 4.7.0 (2026-09-08)
 
-SkipHow now treats recurring verification cost or maintenance that is disproportionate to the changed behavior as an engineering-system problem to diagnose.
+SkipHow now chooses model and effort by the expected total cost of a verified acceptable outcome and diagnoses recurring disproportionate verification cost at its responsible layer.
+
+### Changed
+
+- Delegate routing accounts for reasoning, interacting context, ambiguity, error detection and reversal, retries, verification, correction, and integration. The parent's setting is neither a floor nor a ceiling; task labels and invocation prices do not determine capability.
+- A cheaper sufficient route fits bounded work with cheap independent checks. Greater capability is justified when it improves acceptance enough to repay its cost. A failed assignment triggers diagnosis of the brief, context, tools, decomposition, or capability before a changed attempt.
+- Routing uses actual host controls and reports hidden or unavailable settings honestly. Delegation itself must still repay coordination compared with direct work. No routing subsystem, fixed tier, role mapping, benchmark ceremony, or persistent routing state is introduced.
 
 ### Added
 
@@ -17,6 +23,7 @@ SkipHow now treats recurring verification cost or maintenance that is disproport
 
 - Four implementation-neutral arm-aware cases cover high-level test coupling, a measured setup bottleneck, expensive unique cross-boundary evidence, and several focused iterations followed by required delivery validation. Each has its own minimal fixture and remains `UNVERIFIED` until a qualifying host receipt exists.
 - Deterministic corpus tests check the four cases, their positive outcomes, their forbidden degradation paths, their package-arm expectations, and their independent fixture oracles. They do not run a model or establish runtime behavior.
+- Five provider-neutral routing decisions cover cheap verification, hard-to-detect errors, and misses caused by missing context, excessive context, or insufficient reasoning. Synthetic evidence supports transcript grading without prescribing model names or tiers. These cases do not dispatch delegates and cannot prove that a host applied a setting. Routing behavior and cost savings remain `UNVERIFIED`; no paid model sessions were run.
 
 ### Compatibility
 

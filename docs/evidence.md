@@ -91,7 +91,13 @@ The same Codex attempt on CLI 0.153.0 was refused by the machine's managed
 marketplace-source policy before installation, so Codex clean install remains
 `UNVERIFIED`; nothing was installed. Neither result is activation evidence.
 
-## 4.7.0 verification-health contract
+## 4.7.0 routing and verification-health contract
+
+The owner requested routing by expected total cost per verified acceptable outcome. The kernel carries that criterion and the diagnostic response to a miss; `delegation` holds the selection guidance. It accounts for reasoning, interacting context, ambiguity, error detection and reversal, independent verification, and repair cost. It preserves parent-independent selection and the prior decision of whether delegation pays. Unsupported or hidden host settings remain explicit limitations.
+
+[OpenAI's July 31, 2026 explanation](https://openai.com/index/building-abundant-intelligence/) measures successful-outcome cost including time, retries, oversight, and errors, and describes why either greater capability or a lower-cost adequate model can be economical. Checked on September 8. This supports the economic criterion, not a claim that SkipHow improves routing or saves money.
+
+Five arm-aware routing cases use invented project evidence to distinguish cheap independent verification, hard-to-detect migration errors, and misses caused by omitted context, context truncation, or reasoning failure. They grade read-only recommendations against actual host controls. They neither execute delegates nor establish effective settings, actual model adequacy, or comparative savings. No model session was run. Routing behavior and cost benefit remain `UNVERIFIED` on every host. Existing host receipts retain their original package scope.
 
 Version 4.7.0 adds an internal CTO responsibility for verification health. The kernel treats recurring verification cost or maintenance materially disproportionate to the changed behavior as a signal to diagnose the engineering system. `verification` places each property at the narrowest stable boundary that retains the required fidelity, preserves unique broader evidence, and keeps development selection proportional without weakening final delivery checks. `operations` measures the recurring cost and fixes its responsible layer without assuming a test category is the cause or silently widening a narrow request.
 
