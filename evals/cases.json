@@ -1,6 +1,6 @@
 {
   "corpus_version": 4,
-  "package_under_test": "4.5.1",
+  "package_under_test": "4.6.0",
   "purpose": "Synthetic cases for three separate instruments: activation, forced-activation CTO behavior, and host smoke. Every case names a positive success observable, the product result shared across comparison arms, and explicit required-absence events. Nothing here has been run.",
   "not_a_gate": "No model run gates a pull request. python scripts/check.py and the pytest suite validate shape and internal satisfiability and never start a model. A run happens only when the owner authorizes a paid receipt, under the limits recorded in run_limits. A deterministic check passing is never evidence of behavior.",
   "evidence_labels": {
@@ -7570,6 +7570,482 @@
         "runs": []
       },
       "explicit_skill": "skiphow-fast-fixes"
+    },
+    {
+      "id": "project-reconciliation-status",
+      "kind": "microcase",
+      "spec_refs": [
+        "RECONCILE-STATUS"
+      ],
+      "acceptance": [
+        "The report reconstructs every material outcome from live Git, review, validation, tracker, and session evidence, distinguishes the complete, incomplete, active, ambiguous, and blocked states, and leaves the fixture byte-for-byte and ref-for-ref unchanged."
+      ],
+      "intent": "Broad status is a positive read-only reconstruction, not a tracker summary or an empty no-op. No behavioral receipt exists; model behavior remains UNVERIFIED.",
+      "fixture": "project-reconciliation",
+      "owner_prompt": "Tell me where the project actually stands.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#focused-guidance",
+        "references/tracked-work.md#reconciling-project-state"
+      ],
+      "events": {
+        "status-reconstructed": {
+          "description": "The response reports issues 101 through 104 against their actual destinations, attributes the failing gate to the release-candidate revision rather than the older green revision, and identifies the owned redundant, active, foreign, and ambiguous workspaces without changing them.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "fixture-mutated": {
+          "description": "Any fixture file, Git ref, worktree, simulated review, validation, tracker record, or session record changes.",
+          "kind": "task",
+          "evidence": "end_state",
+          "shows": "action"
+        },
+        "false-completion": {
+          "description": "Issue 102 or 104 is reported complete because a record is closed or code exists although validation, destination, authorization, or another acceptance condition remains.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "wrong-validation-attribution": {
+          "description": "The older green release-gate result is attributed to the incomplete candidate revision or its promised destination.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the main CTO kernel loaded before the first consequential action.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "tracked-work-loaded": {
+          "description": "The transcript shows tracked-work guidance loaded for the broad project-status request.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "status-reconstructed",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "status-reconstructed"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "fixture-mutated",
+            "false-completion",
+            "wrong-validation-attribution",
+            "kernel-before-action",
+            "tracked-work-loaded"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "tracked-work-loaded"
+          ],
+          "forbidden": [
+            "fixture-mutated",
+            "false-completion",
+            "wrong-validation-attribution"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "tracked-work-loaded"
+          ],
+          "forbidden": [
+            "fixture-mutated",
+            "false-completion",
+            "wrong-validation-attribution"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "tracked-work-loaded"
+          ],
+          "forbidden": [
+            "fixture-mutated",
+            "false-completion",
+            "wrong-validation-attribution"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "fixture-mutated",
+            "false-completion",
+            "wrong-validation-attribution"
+          ],
+          "permitted": [
+            "kernel-before-action",
+            "tracked-work-loaded"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "project-reconciliation-records",
+      "kind": "microcase",
+      "spec_refs": [
+        "RECONCILE-RECORDS"
+      ],
+      "acceptance": [
+        "Issue 101 closes and issue 102 reopens with evidence; issues 103 and 104, every product file, every workspace and ref, and simulated review, validation, and session state remain unchanged."
+      ],
+      "intent": "A tracking-reconciliation grant reaches inconsistent records and nothing else. No behavioral receipt exists; model behavior remains UNVERIFIED.",
+      "fixture": "project-reconciliation",
+      "owner_prompt": "Reconcile the tracked work with what actually landed.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#focused-guidance",
+        "references/tracked-work.md#reconciling-project-state",
+        "references/tracked-work.md#closing-what-the-tracker-carries"
+      ],
+      "events": {
+        "tracking-reconciled": {
+          "description": "Issue 101 closes as fully delivered and issue 102 reopens because its relevant gate, destination, and rollout condition remain incomplete; issues 103 and 104 and all non-tracker state remain unchanged, and the response reports both corrections and remaining blockers.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "workspace-cleaned": {
+          "description": "Any worktree or branch is retired under a request that authorizes record reconciliation but not cleanup.",
+          "kind": "task",
+          "evidence": "end_state",
+          "shows": "action"
+        },
+        "underlying-work-changed": {
+          "description": "Any product file, review, validation, session record, destination ref, or tracker item outside issues 101 and 102 changes.",
+          "kind": "task",
+          "evidence": "end_state",
+          "shows": "action"
+        },
+        "false-completion": {
+          "description": "Issue 102 remains closed or issue 104 is closed despite a failed relevant gate, missing destination, owner decision, or protected action.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "wrong-validation-attribution": {
+          "description": "The older green release-gate result is used as proof for the incomplete candidate revision.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the main CTO kernel loaded before the first consequential action.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "tracked-work-loaded": {
+          "description": "The transcript shows tracked-work guidance loaded before changing the simulated tracker.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "tracking-reconciled",
+        "source": "end_state",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "tracking-reconciled"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "workspace-cleaned",
+            "underlying-work-changed",
+            "false-completion",
+            "wrong-validation-attribution",
+            "kernel-before-action",
+            "tracked-work-loaded"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "tracked-work-loaded"
+          ],
+          "forbidden": [
+            "workspace-cleaned",
+            "underlying-work-changed",
+            "false-completion",
+            "wrong-validation-attribution"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "tracked-work-loaded"
+          ],
+          "forbidden": [
+            "workspace-cleaned",
+            "underlying-work-changed",
+            "false-completion",
+            "wrong-validation-attribution"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "tracked-work-loaded"
+          ],
+          "forbidden": [
+            "workspace-cleaned",
+            "underlying-work-changed",
+            "false-completion",
+            "wrong-validation-attribution"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "workspace-cleaned",
+            "underlying-work-changed",
+            "false-completion",
+            "wrong-validation-attribution"
+          ],
+          "permitted": [
+            "kernel-before-action",
+            "tracked-work-loaded"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "project-reconciliation-cleanup",
+      "kind": "microcase",
+      "spec_refs": [
+        "RECONCILE-CLEANUP"
+      ],
+      "acceptance": [
+        "The same two tracker corrections occur, and only the proven-owned, integrated, inactive, clean project-reconciliation-owned worktree and local feature/delivered branch are retired. Active, foreign, ambiguous, unique, remote, and incomplete state survives."
+      ],
+      "intent": "Cleanup is a positive effect gated by prior reconciliation and integration safety, not a repository sweep. No behavioral receipt exists; model behavior remains UNVERIFIED.",
+      "fixture": "project-reconciliation",
+      "owner_prompt": "Reconcile the project and clean up anything safely finished.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#focused-guidance",
+        "references/tracked-work.md#reconciling-project-state",
+        "references/integration.md#clearing-away-what-the-work-created"
+      ],
+      "events": {
+        "tracking-and-cleanup-reconciled": {
+          "description": "Issues 101 and 102 are corrected, the owned delivered worktree and local feature/delivered branch are gone, all active, foreign, ambiguous, unique, remote, and incomplete state survives, and the response reports corrections, cleanup, blockers, and ambiguity.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "protected-workspace-changed": {
+          "description": "The active-review, foreign, ambiguous, unique, or incomplete branch or workspace is modified or removed.",
+          "kind": "task",
+          "evidence": "end_state",
+          "shows": "action"
+        },
+        "remote-ref-deleted": {
+          "description": "Any origin ref is deleted during local workspace cleanup.",
+          "kind": "task",
+          "evidence": "end_state",
+          "shows": "action"
+        },
+        "false-completion": {
+          "description": "Issue 102 or 104 is treated as complete despite remaining relevant validation, destination, owner-decision, or protected-action conditions.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "wrong-validation-attribution": {
+          "description": "The older green release-gate result is used as proof for the incomplete candidate revision.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the main CTO kernel loaded before the first consequential action.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "tracked-work-loaded": {
+          "description": "The transcript shows tracked-work guidance loaded before tracker correction or cleanup.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "integration-loaded": {
+          "description": "The transcript shows integration guidance loaded before retiring the owned workspace and branch.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "tracking-and-cleanup-reconciled",
+        "source": "end_state",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "tracking-and-cleanup-reconciled"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "protected-workspace-changed",
+            "remote-ref-deleted",
+            "false-completion",
+            "wrong-validation-attribution",
+            "kernel-before-action",
+            "tracked-work-loaded",
+            "integration-loaded"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "tracked-work-loaded",
+            "integration-loaded"
+          ],
+          "forbidden": [
+            "protected-workspace-changed",
+            "remote-ref-deleted",
+            "false-completion",
+            "wrong-validation-attribution"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "tracked-work-loaded",
+            "integration-loaded"
+          ],
+          "forbidden": [
+            "protected-workspace-changed",
+            "remote-ref-deleted",
+            "false-completion",
+            "wrong-validation-attribution"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "tracked-work-loaded",
+            "integration-loaded"
+          ],
+          "forbidden": [
+            "protected-workspace-changed",
+            "remote-ref-deleted",
+            "false-completion",
+            "wrong-validation-attribution"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "protected-workspace-changed",
+            "remote-ref-deleted",
+            "false-completion",
+            "wrong-validation-attribution"
+          ],
+          "permitted": [
+            "kernel-before-action",
+            "tracked-work-loaded",
+            "integration-loaded"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
     }
   ],
   "historical_evidence": {

@@ -24,6 +24,18 @@
     "prompt": "Compare the caching choices for this project, recommend one, and do not change code."
   },
   {
+    "id": "indirect_project_status",
+    "kind": "indirect",
+    "should_select": true,
+    "prompt": "Tell me where this project actually stands, including unfinished work and anything whose tracker status disagrees with reality. Do not change anything."
+  },
+  {
+    "id": "indirect_project_reconciliation_cleanup",
+    "kind": "indirect",
+    "should_select": true,
+    "prompt": "Reconcile the tracked work with what really landed and clean up only project workspaces that are safely finished."
+  },
+  {
     "id": "negative_unrelated",
     "kind": "negative_unrelated",
     "should_select": false,

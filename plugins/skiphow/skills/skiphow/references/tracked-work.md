@@ -1,12 +1,24 @@
 # Tracked work
 
-Open this when the owner asked for a record or for work already on record, when the repository's own delivery path writes to a tracker, or when a pause, resume, or session boundary could lose work.
+Open this when the owner asks for broad project status, unfinished work, tracking consistency, or cleanup; when they ask for a record or for work already on record; when the repository's own delivery path writes to a tracker; or when a pause, resume, or session boundary could lose work.
 
 ## When a tracker write is allowed
 
 The kernel sets when delivery includes tracker writes. Discover the authorized repository, available issue service, permissions, audience, existing records, and delivery conventions. For a GitHub project, enabled Issues are the default durable destination within the authorized workflow even on first use. A missing issue history is no reason to ask the owner to design tracking. Keep an existing authorized alternative when the project uses one. Installing the skill authorizes neither a new service nor a broader audience.
 
 A read-only answer, review, diagnosis, audit, research, or plan does not authorize a tracker write unless the requested result is the record itself. Tiny same-session work does not need an item. Durable state exists to prevent lost work and duplicate investigation, not to make the process look managed.
+
+## Reconciling project state
+
+For a broad status, unfinished-work, tracking-consistency, or cleanup request, start with the outcome and scope in the current owner request and applicable product evidence. Bound discovery to live or open work in that scope, the workspaces and reviews that may carry it, and records linked to them. Inspect closed records or deeper history only when a contradiction or missing association cannot otherwise be resolved.
+
+Reconstruct before changing anything. For each material outcome, verify delivery at the destination the outcome actually promises; inspect live Git, worktree, review, and host state for the workspaces that may carry it; and use validation or CI only when it applies to the relevant revision and destination. Tracker status, checkpoint text, branch names, assignments, and comments are claims to compare with that evidence, not facts that settle it.
+
+Completion means the whole observable outcome holds at its destination. A merge alone is insufficient when relevant validation is not green or not attributable to that revision and destination, or when an unresolved product decision, protected action, human-only step, or other acceptance condition remains. Keep such an outcome incomplete and name the blocker or next action.
+
+Let the request determine the effects after reconstruction. A status request reports without mutation. A request to reconcile tracking corrects only the in-scope records the current request authorizes; it does not repair the underlying work or retire a workspace merely because the discrepancy was discovered. A request that also asks for cleanup may retire state only after reconciliation, under [integration](integration.md), proves it owned, integrated, inactive, redundant, and safe to remove. Report material outcomes compactly as their verified state plus the useful destination, blocker, or next action, followed by corrections or cleanup actually performed and any ambiguity that remains.
+
+When an owned branch, worktree, preview, or other workspace must survive the session, preserve in an authorized durable record or continuation channel only the association a later session cannot reconstruct: the durable outcome or record and the workspace that carries it. Add a destination or authority reference only when recovery depends on it and it cannot be recovered safely elsewhere. Leave Git-reconstructible facts in Git; do not copy them into a parallel status file, registry, or task database. An authority reference preserves provenance and never creates, renews, or broadens the grant.
 
 ## Where a record goes
 
@@ -38,9 +50,9 @@ Reconcile apparent ownership with live sessions, changes, and delivery state bef
 
 ## Closing what the tracker carries
 
-Where work did land in a tracker, close it on integration rather than on verification of the branch that carries it, so the record says what the project actually has. Where the tracker performs that closure itself through the link the change carries, confirm it happened rather than assuming it did. Write into it what the work established before it gets there: the cause, the evidence that the outcome now holds, and any reading you had to assume. A one-line fix closes in a line, and a report that turns out not to reproduce closes as not reproducible, naming what you checked and against what state, rather than as fixed. Stripping an item back to its title on the way out discards the investigation the project just paid for and sends the next session through it again.
+Where work did land in a tracker, close the item only when its whole observable outcome holds at the destination it promises. When integration is that final destination and every other acceptance condition holds, close on integration rather than on verification of the branch that carries it. A merge that still waits on relevant validation, deployment, a protected or human-only action, or an owner decision does not close the outcome. Where the tracker performs closure itself through the link the change carries, confirm both the closure and the full outcome rather than assuming either; a closure that fired before the outcome finished is an inconsistency to correct when the current request authorizes that record change. Write into the item what the work established: the cause, the evidence that the outcome now holds, and any reading the project settled. A one-line fix closes in a line, and a report that turns out not to reproduce closes as not reproducible, naming what you checked and against what state, rather than as fixed. Stripping an item back to its title on the way out discards the investigation the project just paid for and sends the next session through it again.
 
-The run that opens an item often cannot close it, because integration usually lands after the run has ended. An item whose change was integrated but which the tracker never closed is a stale record rather than working state, and not yours to clear away on a later, unrelated request: say that it is there and what shows its work arrived, and close it only where the current request reaches it.
+The run that opens an item often cannot close it, because its full destination outcome may land after the run has ended. An item whose whole outcome is complete but which the tracker never closed is a stale record rather than working state, and not yours to clear away on a later, unrelated request: say that it is there and what proves the outcome, and close it only where the current request reaches it.
 
 ## Resuming across a boundary
 

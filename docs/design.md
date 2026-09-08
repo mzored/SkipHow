@@ -30,7 +30,7 @@ The files under `references/` hold shared guidance for product, technical design
 
 A module exists only if it meets four criteria: it covers one distinct failure domain, it gives a reason to consult it that is recognizable without opening it, it carries no critical invariant that is absent from the kernel, and it repeats no rule another module owns.
 
-Internal methods are not routes or stages. Workflow skills define optional work patterns and stopping conditions, linking directly to the shared methods that apply. The owner can choose a workflow while the CTO owns engineering within it. Ordinary requests need no workflow selection.
+Internal methods need no public routes or owner-operated stages. Correctness-critical ordering may be explicit where it prevents false completion, lost work, or unsafe recovery. Workflow skills define optional work patterns and stopping conditions, linking directly to the shared methods that apply. The owner can choose a workflow while the CTO owns engineering within it. Ordinary requests need no workflow selection.
 
 ## Host boundary
 

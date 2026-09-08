@@ -2,6 +2,28 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 4.6.0 (2026-09-08)
+
+SkipHow can now reconstruct broad project status across sessions, reconcile authorized tracking records with live delivery evidence, and clean up safely redundant owned workspaces when the owner asks for cleanup.
+
+### Added
+
+- Broad project-status, unfinished-work, tracking-consistency, and cleanup requests route through one internal reconciliation capability in `tracked-work`; no new public skill, command, phase model, or owner-operated process is introduced.
+- Reconciliation verifies the whole promised outcome at its actual destination, binds validation to the relevant revision and destination, and treats tracker or checkpoint state as a claim rather than completion evidence.
+- Surviving workspaces preserve only the non-reconstructible association between the durable outcome or record and the owned workspace. Git-reconstructible facts remain in Git instead of a parallel registry.
+
+### Changed
+
+- Correctness-critical ordering is explicit: reconstruct live state before changing records, and retire workspace state only after reconciliation proves it owned, integrated, inactive, redundant, and within the cleanup request.
+- Tracker closure now follows completion of the full promised outcome at its destination, rather than treating merge alone as sufficient when validation, a protected action, a human-only step, or an owner decision remains.
+- `skiphow-fast-fixes` points recovery at the shared ownership-association rule instead of implying a separate record format.
+
+### Compatibility and evidence
+
+This is a compatible minor release. It changes no public skill name, activation mechanism, authority boundary, default cleanup permission, or owner-facing workflow. The hidden-lifecycle alternative was evaluated and rejected for this change because every transition is reconstructible from live project evidence; only workspace ownership needs minimal durable association. This is a design conclusion, not a ban on internal state where future evidence justifies it.
+
+One shared synthetic fixture defines independent status, reconcile, and cleanup cases, including stale-open delivered work, falsely closed incomplete work, relevant and irrelevant validation, active and ambiguous work, safe cleanup, and an owner or protected-action blocker. Deterministic corpus checks establish contract consistency only. Model behavior remains `UNVERIFIED`; no paid behavioral sessions were authorized or run.
+
 ## 4.5.1 (2026-09-08)
 
 Runtime context now carries portable host rules without a dated mechanics snapshot, and the fast-fixes workflow no longer loads delivery guidance while it is only preparing a preview.

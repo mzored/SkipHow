@@ -71,7 +71,20 @@ def config_for(name, baseline):
 def test_registry_names_existing_fixtures_and_known_checks():
     registry = json.loads((ROOT / "evals/preflight.json").read_text())["fixtures"]
     assert set(registry) <= {path.name for path in (ROOT / "evals/fixtures").iterdir() if path.is_dir()}
-    allowed = {"why", "head", "local_branches", "origin", "untracked", "modified", "absent_beside", "probe"}
+    allowed = {
+        "why",
+        "head",
+        "local_branches",
+        "worktree_branches",
+        "clean_worktree_branches",
+        "dirty_worktree_branches",
+        "origin",
+        "untracked",
+        "modified",
+        "absent_beside",
+        "absent_text",
+        "probe",
+    }
     for name, spec in registry.items():
         assert set(spec) <= allowed, name
         assert spec["why"].strip()

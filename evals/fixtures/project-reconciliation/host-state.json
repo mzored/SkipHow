@@ -1,0 +1,60 @@
+{
+  "reviews": [
+    {
+      "number": 201,
+      "issue": 101,
+      "head": "feature/delivered",
+      "base": "main",
+      "state": "merged"
+    },
+    {
+      "number": 202,
+      "issue": 103,
+      "head": "feature/active",
+      "base": "main",
+      "state": "open"
+    }
+  ],
+  "validations": [
+    {
+      "name": "release-gate",
+      "revision": "__OLDER_GREEN_REVISION__",
+      "destination": "origin/main",
+      "status": "success"
+    },
+    {
+      "name": "release-gate",
+      "revision": "__INCOMPLETE_REVISION__",
+      "destination": "origin/main",
+      "status": "failure"
+    }
+  ],
+  "sessions": [
+    {
+      "id": "prior-delivery",
+      "status": "finished",
+      "issue": 101,
+      "workspace": "../project-reconciliation-owned",
+      "unique_changes": false
+    },
+    {
+      "id": "active-review",
+      "status": "active",
+      "issue": 103,
+      "workspace": "../project-reconciliation-active",
+      "unique_changes": true
+    },
+    {
+      "id": "peer-session",
+      "status": "active",
+      "issue": null,
+      "workspace": "../project-reconciliation-foreign",
+      "unique_changes": true
+    }
+  ],
+  "unassociated_workspace": {
+    "workspace": "../project-reconciliation-ambiguous",
+    "owner": null,
+    "unique_changes": true
+  }
+}

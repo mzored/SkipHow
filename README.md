@@ -37,7 +37,7 @@ This is a responsibility handoff, not a fixed development pipeline. A small requ
 | More autonomy risks losing product control | The owner still decides visible behavior, scope, cost, risk, privacy, rollout, and protected actions. |
 | Every request becomes a ceremony | Process scales with the work. Specs, tickets, TDD, worktrees, subagents, and review appear only when the request or project needs them. |
 | "Done" means the agent stopped | Completion needs fresh evidence. Anything blocked or unverified stays visible. |
-| You need a different command for every kind of work | One entry covers questions, decisions, research, bugs, changes, iterations you want to look at first, review, triage, delivery, pause, and resume. |
+| You need a different command for every kind of work | One entry covers questions, decisions, research, bugs, changes, iterations you want to look at first, project status, reconciliation, cleanup, delivery, pause, and resume. |
 | Long or delegated work becomes your coordination job | Continuity, reconciliation, integration, and any tracking your project calls for remain engineering work for the agent. |
 | Autonomy widens side effects | Production, releases, credentials, access, material deletion, and other protected actions require an explicit grant. |
 
@@ -109,6 +109,10 @@ The totals overlap on small screens. Find the cause and fix it.
 Compare our caching options and recommend one. Do not change code.
 
 Here are today's bugs and ideas. Triage and save them.
+
+Tell me where the project actually stands. Do not change anything.
+
+Reconcile the tracked work with what landed and clean up anything safely finished.
 ```
 
 SkipHow reads the project before asking anything. If a product choice is genuinely open, it asks in plain language, recommends an option, and waits before building behavior that depends on the answer. Then it decides the engineering, does the authorized work, verifies the result, and reports what the evidence shows and what remains uncertain.
