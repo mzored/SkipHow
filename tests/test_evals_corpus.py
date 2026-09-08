@@ -24,6 +24,9 @@ import importlib.util
 import json
 import re
 from pathlib import Path
+import shutil
+import subprocess
+import sys
 
 import pytest
 
@@ -724,7 +727,7 @@ def test_verification_health_cases_cover_distinct_cost_and_fidelity_failures() -
         )
 
 
-def test_verification_health_fixtures_expose_independent_oracles() -> None:
+def test_verification_health_fixtures_expose_independent_oracles(tmp_path: Path) -> None:
     coupling = json.loads(
         (FIXTURES / "verification-health-coupling/verification-plan.json").read_text()
     )
@@ -763,6 +766,81 @@ def test_verification_health_fixtures_expose_independent_oracles() -> None:
         "full deterministic suite",
         "persistence integration",
     ]
+
+    initial_oracles = {
+        "verification-health-coupling": "check_verification.py",
+        "verification-health-setup-bottleneck": "check_pipeline.py",
+        "verification-health-unique-high-fidelity": "check_evidence.py",
+        "verification-health-iterative-development": "delivery_gate.py",
+    }
+    for fixture_id, script in initial_oracles.items():
+        fixture_root = FIXTURES / fixture_id
+        result = subprocess.run(
+            [sys.executable, "-B", script],
+            cwd=fixture_root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert result.returncode != 0, f"{fixture_id} lacks its planted failing state"
+
+    repaired = {
+        "verification-health-coupling": (
+            "verification-plan.json",
+            {
+                **coupling,
+                "coverage_placement": {
+                    "destination reachability": "stable contract checks",
+                    "keyboard focus order": "browser artifact check",
+                },
+                "mechanical_high_level_rewrites": 0,
+                "coupling_repaired": True,
+            },
+        ),
+        "verification-health-setup-bottleneck": (
+            "pipeline-plan.json",
+            {
+                "reuse_prepared_environment": True,
+                "reuse_started_services": True,
+                "browser_check_count": setup["browser_check_count"],
+                "delivery_coverage": setup["delivery_contract"],
+            },
+        ),
+        "verification-health-unique-high-fidelity": (
+            "evidence.json",
+            {
+                **unique,
+                "verification_plan": {
+                    "cross_boundary_check_enabled": True,
+                    "setup_instances": 1,
+                    "required_boundaries": unique["cross_boundary_check"]["boundaries"],
+                },
+            },
+        ),
+        "verification-health-iterative-development": (
+            "product-state.json",
+            {
+                "account_label": "Profile",
+                "settings_label": "Preferences",
+                "persisted_preference_default": "comfortable",
+            },
+        ),
+    }
+    for fixture_id, (relative, payload) in repaired.items():
+        candidate = tmp_path / fixture_id
+        shutil.copytree(FIXTURES / fixture_id, candidate)
+        (candidate / relative).write_text(
+            json.dumps(payload, indent=2) + "\n", encoding="utf-8"
+        )
+        result = subprocess.run(
+            [sys.executable, "-B", initial_oracles[fixture_id]],
+            cwd=candidate,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stderr
+        assert result.stdout.startswith("PASS:")
 
 
 def validate_cto_instrument(

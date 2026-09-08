@@ -17,5 +17,9 @@
     "delivery_required": true
   },
   "duplicated_setup_seconds": 95,
-  "verification_plan": "unrepaired"
+  "verification_plan": {
+    "cross_boundary_check_enabled": false,
+    "setup_instances": 4,
+    "required_boundaries": []
+  }
 }

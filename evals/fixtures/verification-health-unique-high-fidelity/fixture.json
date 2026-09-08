@@ -1,20 +1,20 @@
 {
   "id": "verification-health-unique-high-fidelity",
   "summary": "One expensive release check crosses serialization, persistence, restart, and runtime boundaries and detects a failure every narrower check misses.",
-  "kind": "checked-in cross-boundary evidence fixture",
+  "kind": "checked-in synthetic boundary system, verification plan, and offline oracle",
   "synthetic": true,
   "planted": [
     "All narrow checks pass, while only the cross-boundary check detects a runtime configuration value lost across serialization, persistence, restart, and readback.",
     "The release contract requires the distinguishing failure signal, while duplicated setup remains eligible for optimization."
    ],
   "absent_on_purpose": [
-    "No real persistence service, runtime, infrastructure, credentials, network, product-specific journey list, or model receipt."
+    "No external persistence service, infrastructure, credentials, network, product-specific journey list, or model receipt. The local file round trip models the real boundaries named by the case."
   ],
   "setup": [
     "Copy this directory into an empty owned scratch directory outside any repository and register cleanup before initialization.",
     "Initialize Git and commit the retained files with the synthetic Fixture identity. Add no remote or network access."
   ],
-  "run_checks": "Parse evidence.json with python -B -m json.tool and confirm the final plan retains every boundary and the distinguishing assertion while reducing only duplicated cost.",
+  "run_checks": "python -B check_evidence.py",
   "end_state_signals": [
     "The cross-boundary check remains in the release path with its failure signal intact, and only duplicated setup or execution is reduced."
   ],

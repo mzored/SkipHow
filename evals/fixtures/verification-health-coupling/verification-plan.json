@@ -7,5 +7,10 @@
   "duplicated_high_level_checks": 18,
   "stable_contract_checks": 12,
   "unique_evidence": "One browser check observes rendered keyboard focus order.",
-  "verification_plan": "unrepaired"
+  "coverage_placement": {
+    "destination reachability": "duplicated high-level checks",
+    "keyboard focus order": "browser artifact check"
+  },
+  "mechanical_high_level_rewrites": 18,
+  "coupling_repaired": false
 }
