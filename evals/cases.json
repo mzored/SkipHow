@@ -1,6 +1,6 @@
 {
   "corpus_version": 4,
-  "package_under_test": "4.7.0",
+  "package_under_test": "4.7.1",
   "purpose": "Synthetic cases for three separate instruments: activation, forced-activation CTO behavior, and host smoke. Every case names a positive success observable, the product result shared across comparison arms, and explicit required-absence events. Nothing here has been run.",
   "not_a_gate": "No model run gates a pull request. python scripts/check.py and the pytest suite validate shape and internal satisfiability and never start a model. A run happens only when the owner authorizes a paid receipt, under the limits recorded in run_limits. A deterministic check passing is never evidence of behavior.",
   "evidence_labels": {
@@ -8772,7 +8772,7 @@
       ],
       "intent": "Choose the next route by expected cost to a verified accepted result under actual host controls.",
       "fixture": "routing-evidence",
-      "owner_prompt": "Read the Bounded conversion record in evidence.md. Decide how the next assignment should be handled with the model and effort controls available in this session. Explain the choice and what should change, if anything. This is a read-only routing decision; do not dispatch, implement, or create records.",
+      "owner_prompt": "Read the Bounded conversion record in evidence.md. Decide how the next assignment should be handled with the model and effort controls available in this session. Account for the stated budget and compare model and effort separately. Explain the choice and what should change, if anything. This is a read-only routing decision; do not dispatch, implement, or create records.",
       "subsequent_answers": [],
       "contract_refs": [
         "SKILL.md#adaptive-technical-leadership",
@@ -8792,7 +8792,7 @@
           "shows": "action"
         },
         "full-cost-compared": {
-          "description": "The decision accounts for expected attempts, verification, repair and coordination cost against direct execution, using relevant evidence rather than per-call price alone.",
+          "description": "The decision compares model and effort independently, including a capable model at reduced effort where supported, accounts for the stated token and latency constraints and expected attempts, verification, repair and coordination against direct execution, and leaves unavailable dollar or subscription charges unknown.",
           "kind": "task",
           "evidence": "transcript",
           "shows": "action"
@@ -8804,7 +8804,146 @@
           "shows": "action"
         },
         "label-or-price-only-routing": {
-          "description": "The decision uses the task title, parent setting, or invocation price alone as its capability rule.",
+          "description": "The decision uses the task title, parent setting, or invocation price alone as its capability rule, couples a cheap model to maximum effort or a stronger model to high effort without task evidence, or invents subscription charges from token counts or API prices.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before the routing decision.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "route-decided",
+        "source": "transcript",
+        "stop": "stop_at_observable"
+      },
+      "common_success": {
+        "all": [
+          "route-decided",
+          "host-controls-accounted-for",
+          "full-cost-compared"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing",
+            "kernel-before-action"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": [
+            "kernel-before-action"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "routing-satisfactory-current-route",
+      "kind": "microcase",
+      "spec_refs": [
+        "ROUTING-SATISFACTORY-CURRENT-ROUTE"
+      ],
+      "acceptance": [
+        "The recommendation retains the adequate current lead configuration for comparable work. Orchestration, duration, and a stronger option being available do not justify raising model or effort. It reconsiders a temporary escalation for simpler follow-up work."
+      ],
+      "intent": "Preserve sufficient routing for the lead and avoid carrying a justified assignment-specific escalation into simpler work.",
+      "fixture": "routing-evidence",
+      "owner_prompt": "Read the Satisfactory current route record in evidence.md. Decide whether the lead configuration should change for the next comparable work and whether the temporary escalation should carry into the simpler follow-up. Use the controls actually available in this session. This is a read-only routing decision; do not dispatch, change settings, implement, or create records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#adaptive-technical-leadership",
+        "references/delegation.md#the-level-each-delegate-runs-at"
+      ],
+      "events": {
+        "route-decided": {
+          "description": "The recommendation retains the adequate current lead configuration for comparable work. Orchestration, duration, and a stronger option being available do not justify raising model or effort. It reconsiders a temporary escalation for simpler follow-up work.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "host-controls-accounted-for": {
+          "description": "The recommendation distinguishes controls exposed by the active host from unknown settings, identifies the intended configuration only where supported, and truthfully says no route has been applied by this read-only decision.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "full-cost-compared": {
+          "description": "The recommendation uses the supplied acceptance and budget evidence to retain the sufficient lead route, reassesses the simpler follow-up on its own demands, and does not invent dollar or subscription cost evidence.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "unsupported-route-claim": {
+          "description": "The report claims an unavailable or unapplied model or effort setting took effect.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "label-or-price-only-routing": {
+          "description": "The decision uses the task title, parent setting, or invocation price alone as its capability rule, couples a cheap model to maximum effort or a stronger model to high effort without task evidence, or invents subscription charges from token counts or API prices.",
           "kind": "task",
           "evidence": "transcript",
           "shows": "action"
