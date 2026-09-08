@@ -24,6 +24,8 @@ This is a compatible minor release. It changes no public skill name, activation 
 
 One shared synthetic fixture defines independent status, reconcile, and cleanup cases, including stale-open delivered work, falsely closed incomplete work, relevant and irrelevant validation, active and ambiguous work, safe cleanup, and an owner or protected-action blocker. Deterministic corpus checks establish contract consistency only. Model behavior remains `UNVERIFIED`; no paid behavioral sessions were authorized or run.
 
+On exact package commit `1fadf014357ca2f743ceaa46affb10aa0b1f4844`, the full deterministic gate passed all 385 tests and both host schema validators passed. Claude Code 2.1.263 installed all 22 package files byte for byte and uninstalled them from an isolated configuration directory. Codex clean installation remains `UNVERIFIED` because managed source policy refused the local marketplace before installation. The retained receipts and current host ledger preserve those outcomes separately; activation, reconciliation, continuity, and model behavior remain `UNVERIFIED`.
+
 ## 4.5.1 (2026-09-08)
 
 Runtime context now carries portable host rules without a dated mechanics snapshot, and the fast-fixes workflow no longer loads delivery guidance while it is only preparing a preview.
