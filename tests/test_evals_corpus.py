@@ -24,6 +24,9 @@ import importlib.util
 import json
 import re
 from pathlib import Path
+import shutil
+import subprocess
+import sys
 
 import pytest
 
@@ -633,6 +636,208 @@ def test_project_reconciliation_cases_share_one_independent_fixture_and_effect_b
     )
     preflight = json.loads((EVALS / "preflight.json").read_text(encoding="utf-8"))["fixtures"]
     assert "project-reconciliation" in preflight
+
+
+def test_verification_health_cases_cover_distinct_cost_and_fidelity_failures() -> None:
+    by_id = {case["id"]: case for case in corpus()["cases"]}
+    expected = {
+        "verification-health-coupling": {
+            "fixture": "verification-health-coupling",
+            "success": {
+                "protected-properties-identified",
+                "unnecessary-coupling-repaired",
+                "unique-browser-evidence-passes",
+            },
+            "forbidden": {
+                "mechanical-high-level-suite-rewrite",
+                "unique-high-fidelity-evidence-removed",
+                "verification-degradation-hidden",
+            },
+        },
+        "verification-health-setup-bottleneck": {
+            "fixture": "verification-health-setup-bottleneck",
+            "success": {
+                "cost-source-measured",
+                "setup-path-optimized",
+                "useful-coverage-passes",
+            },
+            "forbidden": {
+                "browser-coverage-cut-on-appearance",
+                "unmeasured-test-category-blamed",
+                "verification-degradation-hidden",
+            },
+        },
+        "verification-health-unique-high-fidelity": {
+            "fixture": "verification-health-unique-high-fidelity",
+            "success": {
+                "unique-failure-mode-established",
+                "unique-high-fidelity-check-retained",
+                "confidence-preserving-cost-reduction",
+            },
+            "forbidden": {
+                "unique-high-fidelity-check-removed",
+                "unique-check-weakened-or-bypassed",
+                "important-evidence-moved-outside-delivery",
+            },
+        },
+        "verification-health-iterative-development": {
+            "fixture": "verification-health-iterative-development",
+            "success": {
+                "focused-iteration-evidence-used",
+                "evidence-widened-with-reach",
+                "all-edits-correct",
+                "required-delivery-gate-passes",
+            },
+            "forbidden": {
+                "unchanged-expensive-gate-rerun-without-reason",
+                "required-delivery-gate-skipped",
+                "brittle-selection-used",
+                "test-selection-returned-to-owner",
+            },
+        },
+    }
+    assert set(expected) <= set(by_id)
+
+    package_events = {
+        "kernel-before-action",
+        "verification-guidance-loaded",
+        "operations-guidance-loaded",
+    }
+    for case_id, contract in expected.items():
+        case = by_id[case_id]
+        assert case["fixture"] == contract["fixture"]
+        assert set(case["common_success"]["all"]) == contract["success"]
+        for arm in REQUIRED_ARMS:
+            expectation = case["arm_expectations"][arm]
+            assert contract["forbidden"] <= set(expectation["forbidden"])
+        candidate_events = package_events
+        if case_id == "verification-health-iterative-development":
+            candidate_events = package_events - {"operations-guidance-loaded"}
+            assert len(case["subsequent_answers"]) >= 3
+            assert "explicit_skill" not in case
+        assert package_events <= set(case["arm_expectations"]["m0-base-host"]["forbidden"])
+        for arm in (
+            "m1-explicit-skiphow",
+            "m2-implicit-discovery-hook",
+            "m3-bootstrap-candidate",
+        ):
+            assert set(case["arm_expectations"][arm]["required"]) == candidate_events
+        assert candidate_events <= set(
+            case["arm_expectations"]["m4-previous-full-skiphow"]["permitted"]
+        )
+
+
+def test_verification_health_fixtures_expose_independent_oracles(tmp_path: Path) -> None:
+    coupling = json.loads(
+        (FIXTURES / "verification-health-coupling/verification-plan.json").read_text()
+    )
+    assert coupling["duplicated_high_level_checks"] > coupling["stable_contract_checks"]
+    assert len(coupling["required_properties"]) == 2
+    assert coupling["unique_evidence"].strip()
+
+    setup = json.loads(
+        (FIXTURES / "verification-health-setup-bottleneck/ci-timings.json").read_text()
+    )
+    timings = setup["measured_seconds"]
+    assert (
+        timings["dependency_installation"]
+        + timings["test_data_preparation"]
+        + timings["service_startup"]
+        > timings["browser_execution"]
+    )
+    assert "browser coverage" in setup["delivery_contract"]
+
+    unique = json.loads(
+        (FIXTURES / "verification-health-unique-high-fidelity/evidence.json").read_text()
+    )
+    assert set(unique["narrow_checks"].values()) == {"pass"}
+    assert unique["cross_boundary_check"]["result"] == "fail"
+    assert len(unique["cross_boundary_check"]["boundaries"]) >= 3
+    assert unique["cross_boundary_check"]["delivery_required"] is True
+
+    iteration = json.loads(
+        (
+            FIXTURES
+            / "verification-health-iterative-development/delivery-contract.json"
+        ).read_text()
+    )
+    assert set(iteration["native_dependency_map"]) == {"labels", "persisted default"}
+    assert iteration["required_delivery_gate"] == [
+        "full deterministic suite",
+        "persistence integration",
+    ]
+
+    initial_oracles = {
+        "verification-health-coupling": "check_verification.py",
+        "verification-health-setup-bottleneck": "check_pipeline.py",
+        "verification-health-unique-high-fidelity": "check_evidence.py",
+        "verification-health-iterative-development": "delivery_gate.py",
+    }
+    for fixture_id, script in initial_oracles.items():
+        fixture_root = FIXTURES / fixture_id
+        result = subprocess.run(
+            [sys.executable, "-B", script],
+            cwd=fixture_root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert result.returncode != 0, f"{fixture_id} lacks its planted failing state"
+
+    repaired = {
+        "verification-health-coupling": (
+            "coverage-map.json",
+            {
+                "presentation_coupled_checks": [],
+                "stable_destination_contract_check": True,
+                "rendered_keyboard_check": True,
+            },
+        ),
+        "verification-health-setup-bottleneck": (
+            "pipeline-plan.json",
+            {
+                "reuse_prepared_environment": True,
+                "reuse_started_services": True,
+                "reuse_test_data": True,
+                "browser_check_count": setup["browser_check_count"],
+                "delivery_coverage": setup["delivery_contract"],
+            },
+        ),
+        "verification-health-unique-high-fidelity": (
+            "evidence.json",
+            {
+                **unique,
+                "verification_plan": {
+                    "cross_boundary_check_enabled": True,
+                    "setup_instances": 1,
+                    "required_boundaries": unique["cross_boundary_check"]["boundaries"],
+                },
+            },
+        ),
+        "verification-health-iterative-development": (
+            "product-state.json",
+            {
+                "account_label": "Profile",
+                "settings_label": "Preferences",
+                "persisted_preference_default": "comfortable",
+            },
+        ),
+    }
+    for fixture_id, (relative, payload) in repaired.items():
+        candidate = tmp_path / fixture_id
+        shutil.copytree(FIXTURES / fixture_id, candidate)
+        (candidate / relative).write_text(
+            json.dumps(payload, indent=2) + "\n", encoding="utf-8"
+        )
+        result = subprocess.run(
+            [sys.executable, "-B", initial_oracles[fixture_id]],
+            cwd=candidate,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stderr
+        assert result.stdout.startswith("PASS:")
 
 
 def validate_cto_instrument(

@@ -4,8 +4,8 @@
 
 | Version | Supported |
 | --- | --- |
-| 4.6.x | Yes |
-| 4.5.x, 4.4.x, 4.3.x, 4.2.x, 4.1.x, and 4.0.x | No; upgrade to 4.6.x without changing existing authorization |
+| 4.7.x | Yes |
+| 4.6.x, 4.5.x, 4.4.x, 4.3.x, 4.2.x, 4.1.x, and 4.0.x | No; upgrade to 4.7.x without changing existing authorization |
 | 3.0.x and earlier | No |
 
 Security review covers the packaged owner skill, its linked playbooks, host manifests,
@@ -14,6 +14,8 @@ boundaries. Codex, Claude Code, GitHub, Git, operating systems, and third-party
 services keep their own security policies.
 
 ## Package validation, 2026-09-08
+
+Version 4.7.0 adds verification-health guidance and focused behavioral cases without changing the authority boundary, public workflow set, activation mechanism, package layout, or host binding. The new behavior remains `UNVERIFIED`; deterministic corpus checks prove only the case contract and internal satisfiability.
 
 Version 4.6.0 adds request-scoped project-state reconciliation without changing the authority boundary, public workflow set, or activation mechanism. Its per-capability status is in [the current host ledger](evals/host-smoke.json) and the release validation matrix. Historical receipts below apply only to their named versions. Context selection, reconciliation behavior, workflow invocation, shared-kernel loading, and model behavior remain `UNVERIFIED`.
 

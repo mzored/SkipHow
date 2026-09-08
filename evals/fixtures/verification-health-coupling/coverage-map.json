@@ -1,0 +1,24 @@
+{
+  "presentation_coupled_checks": [
+    "desktop-home-selector",
+    "desktop-profile-selector",
+    "desktop-settings-selector",
+    "tablet-home-selector",
+    "tablet-profile-selector",
+    "tablet-settings-selector",
+    "mobile-home-selector",
+    "mobile-profile-selector",
+    "mobile-settings-selector",
+    "signed-in-home-position",
+    "signed-in-profile-position",
+    "signed-in-settings-position",
+    "signed-out-home-position",
+    "signed-out-profile-position",
+    "signed-out-settings-position",
+    "default-home-index",
+    "default-profile-index",
+    "default-settings-index"
+  ],
+  "stable_destination_contract_check": false,
+  "rendered_keyboard_check": true
+}

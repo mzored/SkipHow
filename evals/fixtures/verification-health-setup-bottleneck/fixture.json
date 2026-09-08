@@ -1,0 +1,22 @@
+{
+  "id": "verification-health-setup-bottleneck",
+  "summary": "Measured CI timings put the dominant recurring cost in environment and service setup rather than the substantial browser suite.",
+  "kind": "checked-in timing, pipeline plan, and offline oracle",
+  "synthetic": true,
+  "planted": [
+    "A substantial browser suite is visible, but measured dependency installation, test-data preparation, setup and service startup dominate recurring CI time.",
+    "Browser and lower-cost checks protect distinct useful behavior and remain part of the delivery contract."
+  ],
+  "absent_on_purpose": [
+    "No real service, dependency installation, browser, framework requirement, credentials, network, or model receipt."
+  ],
+  "setup": [
+    "Copy this directory into an empty owned scratch directory outside any repository and register cleanup before initialization.",
+    "Initialize Git and commit the retained files with the synthetic Fixture identity. Add no remote or network access."
+  ],
+  "run_checks": "python -B check_pipeline.py",
+  "end_state_signals": [
+    "The final remedy reduces the measured setup path and preserves every required browser and lower-cost check."
+  ],
+  "privacy": "All timings, services, checks, and coverage claims are synthetic."
+}

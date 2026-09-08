@@ -1,0 +1,21 @@
+{
+  "id": "routing-evidence",
+  "summary": "Synthetic lane evidence for read-only routing decisions, including three distinct failed assignments.",
+  "kind": "checked-in skeleton",
+  "synthetic": true,
+  "planted": [
+    "A bounded conversion has contained context and an independent exact-output checker.",
+    "An apparently routine migration has interacting invariants and an incomplete detection path.",
+    "Separate failed assignments expose a missing rule, excessive context, and reasoning failure despite complete inputs."
+  ],
+  "absent_on_purpose": [
+    "No provider models, tiers, prices, claimed real performance, credentials, or external destination.",
+    "No implementation task or requirement to dispatch merely to demonstrate routing."
+  ],
+  "setup": [
+    "Use the existing capture preparation path to copy this fixture into an isolated session.",
+    "Keep the same evidence and owner prompt across arms; use actual host capabilities, never simulated controls."
+  ],
+  "run_checks": "none; grade the routing decision from the transcript against evidence.md",
+  "privacy": "All task histories are invented; no personal or production data."
+}

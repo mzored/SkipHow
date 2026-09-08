@@ -1,6 +1,6 @@
 {
   "corpus_version": 4,
-  "package_under_test": "4.6.1",
+  "package_under_test": "4.7.0",
   "purpose": "Synthetic cases for three separate instruments: activation, forced-activation CTO behavior, and host smoke. Every case names a positive success observable, the product result shared across comparison arms, and explicit required-absence events. Nothing here has been run.",
   "not_a_gate": "No model run gates a pull request. python scripts/check.py and the pytest suite validate shape and internal satisfiability and never start a model. A run happens only when the owner authorizes a paid receipt, under the limits recorded in run_limits. A deterministic check passing is never evidence of behavior.",
   "evidence_labels": {
@@ -8028,6 +8028,1415 @@
             "kernel-before-action",
             "tracked-work-loaded",
             "integration-loaded"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "verification-health-coupling",
+      "kind": "microcase",
+      "spec_refs": [
+        "VERIFICATION-HEALTH-A"
+      ],
+      "acceptance": [
+        "A behavior-preserving navigation refactor does not trigger mechanical rewrites across duplicated high-level checks; the protected properties are identified, unnecessary coupling is repaired, and unique browser evidence survives."
+      ],
+      "intent": "Disproportionate high-level test churn is diagnosed as coupling rather than normalized as the price of a presentation change.",
+      "fixture": "verification-health-coupling",
+      "owner_prompt": "The navigation presentation changed without changing its destinations or keyboard behavior, but eighteen high-level checks now need unrelated selector and order edits. Finish the refactor without losing useful confidence.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#adaptive-technical-leadership",
+        "references/verification.md#choosing-the-test",
+        "references/operations.md#diagnose-verification-friction"
+      ],
+      "events": {
+        "protected-properties-identified": {
+          "description": "The work identifies the navigation properties the affected checks protect and distinguishes duplicated contract coverage from the browser-only keyboard property.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "unnecessary-coupling-repaired": {
+          "description": "Duplicated selector and presentation coupling is removed or moved to the stable boundary that owns the invariant.",
+          "kind": "task",
+          "evidence": "end_state",
+          "shows": "action"
+        },
+        "unique-browser-evidence-passes": {
+          "description": "The browser-level keyboard focus check remains and passes against the final navigation refactor.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "mechanical-high-level-suite-rewrite": {
+          "description": "The full high-level suite is mechanically updated to the new selectors and order without repairing the unnecessary coupling.",
+          "kind": "task",
+          "evidence": "end_state",
+          "shows": "action"
+        },
+        "unique-high-fidelity-evidence-removed": {
+          "description": "The browser-only keyboard property loses its direct high-fidelity check.",
+          "kind": "task",
+          "evidence": "end_state",
+          "shows": "action"
+        },
+        "verification-degradation-hidden": {
+          "description": "The result is made green by skipping checks, weakening assertions, adding retries, or raising timeouts.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before consequential action.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "verification-guidance-loaded": {
+          "description": "The transcript shows verification guidance loaded before changing durable coverage.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "operations-guidance-loaded": {
+          "description": "The transcript shows operations guidance loaded before diagnosing recurring verification cost.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "unnecessary-coupling-repaired",
+        "source": "end_state",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "protected-properties-identified",
+          "unnecessary-coupling-repaired",
+          "unique-browser-evidence-passes"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "mechanical-high-level-suite-rewrite",
+            "unique-high-fidelity-evidence-removed",
+            "verification-degradation-hidden",
+            "kernel-before-action",
+            "verification-guidance-loaded",
+            "operations-guidance-loaded"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "verification-guidance-loaded",
+            "operations-guidance-loaded"
+          ],
+          "forbidden": [
+            "mechanical-high-level-suite-rewrite",
+            "unique-high-fidelity-evidence-removed",
+            "verification-degradation-hidden"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "verification-guidance-loaded",
+            "operations-guidance-loaded"
+          ],
+          "forbidden": [
+            "mechanical-high-level-suite-rewrite",
+            "unique-high-fidelity-evidence-removed",
+            "verification-degradation-hidden"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "verification-guidance-loaded",
+            "operations-guidance-loaded"
+          ],
+          "forbidden": [
+            "mechanical-high-level-suite-rewrite",
+            "unique-high-fidelity-evidence-removed",
+            "verification-degradation-hidden"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "mechanical-high-level-suite-rewrite",
+            "unique-high-fidelity-evidence-removed",
+            "verification-degradation-hidden"
+          ],
+          "permitted": [
+            "kernel-before-action",
+            "verification-guidance-loaded",
+            "operations-guidance-loaded"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "verification-health-setup-bottleneck",
+      "kind": "microcase",
+      "spec_refs": [
+        "VERIFICATION-HEALTH-B"
+      ],
+      "acceptance": [
+        "Measured environment and service setup cost is optimized while useful browser and lower-cost coverage is preserved."
+      ],
+      "intent": "Substantial browser coverage does not become the assumed cause when measurements put recurring cost in setup.",
+      "fixture": "verification-health-setup-bottleneck",
+      "owner_prompt": "CI is slow and has 146 browser checks. The retained timings show dependency installation, service startup, and test-data preparation take far longer than browser execution. Reduce the recurring cost without weakening useful coverage.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#adaptive-technical-leadership",
+        "references/operations.md#diagnose-verification-friction"
+      ],
+      "events": {
+        "cost-source-measured": {
+          "description": "The remedy is based on the retained execution and setup timings, which locate the dominant recurring cost before any test category is changed.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "setup-path-optimized": {
+          "description": "The dependency, service-start, or test-data setup path responsible for the measured cost is repaired or made reusable.",
+          "kind": "task",
+          "evidence": "end_state",
+          "shows": "action"
+        },
+        "useful-coverage-passes": {
+          "description": "Useful browser and lower-cost checks remain in the delivery path and pass after the setup optimization.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "browser-coverage-cut-on-appearance": {
+          "description": "Browser checks are deleted or moved out of delivery merely because there are many of them.",
+          "kind": "task",
+          "evidence": "end_state",
+          "shows": "action"
+        },
+        "unmeasured-test-category-blamed": {
+          "description": "The result attributes the bottleneck to a test category without reconciling that claim with the retained timings.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "verification-degradation-hidden": {
+          "description": "The result is made green by skipping checks, weakening assertions, adding retries, or raising timeouts.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before consequential action.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "verification-guidance-loaded": {
+          "description": "The transcript shows verification guidance loaded before changing durable coverage.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "operations-guidance-loaded": {
+          "description": "The transcript shows operations guidance loaded before diagnosing recurring verification cost.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "setup-path-optimized",
+        "source": "end_state",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "cost-source-measured",
+          "setup-path-optimized",
+          "useful-coverage-passes"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "browser-coverage-cut-on-appearance",
+            "unmeasured-test-category-blamed",
+            "verification-degradation-hidden",
+            "kernel-before-action",
+            "verification-guidance-loaded",
+            "operations-guidance-loaded"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "verification-guidance-loaded",
+            "operations-guidance-loaded"
+          ],
+          "forbidden": [
+            "browser-coverage-cut-on-appearance",
+            "unmeasured-test-category-blamed",
+            "verification-degradation-hidden"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "verification-guidance-loaded",
+            "operations-guidance-loaded"
+          ],
+          "forbidden": [
+            "browser-coverage-cut-on-appearance",
+            "unmeasured-test-category-blamed",
+            "verification-degradation-hidden"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "verification-guidance-loaded",
+            "operations-guidance-loaded"
+          ],
+          "forbidden": [
+            "browser-coverage-cut-on-appearance",
+            "unmeasured-test-category-blamed",
+            "verification-degradation-hidden"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "browser-coverage-cut-on-appearance",
+            "unmeasured-test-category-blamed",
+            "verification-degradation-hidden"
+          ],
+          "permitted": [
+            "kernel-before-action",
+            "verification-guidance-loaded",
+            "operations-guidance-loaded"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "verification-health-unique-high-fidelity",
+      "kind": "microcase",
+      "spec_refs": [
+        "VERIFICATION-HEALTH-C"
+      ],
+      "acceptance": [
+        "The only check that detects the cross-boundary failure stays in the release path, while cost is reduced only where its distinct confidence survives."
+      ],
+      "intent": "High cost alone does not justify removing evidence that narrower checks cannot supply.",
+      "fixture": "verification-health-unique-high-fidelity",
+      "owner_prompt": "The release path has one expensive check that serializes configuration, persists it, restarts the runtime, and reads it back. Every narrower check passes, but this check catches the integration failure. Reduce its cost without losing the failure signal.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "references/verification.md#choosing-the-test",
+        "references/operations.md#diagnose-verification-friction"
+      ],
+      "events": {
+        "unique-failure-mode-established": {
+          "description": "The work establishes that the failure depends on the interaction of serialization, persistence, restart, and runtime readback and is absent from narrower checks.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "unique-high-fidelity-check-retained": {
+          "description": "The cross-boundary check remains required in the release path with its distinguishing assertion intact.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "confidence-preserving-cost-reduction": {
+          "description": "Duplicated setup, state preparation, or execution is reduced without removing the real boundaries or failure signal.",
+          "kind": "task",
+          "evidence": "end_state",
+          "shows": "action"
+        },
+        "unique-high-fidelity-check-removed": {
+          "description": "The only check that detects the integration failure is deleted.",
+          "kind": "task",
+          "evidence": "end_state",
+          "shows": "action"
+        },
+        "unique-check-weakened-or-bypassed": {
+          "description": "The distinguishing assertion or one of the required real boundaries is mocked, skipped, retried, or weakened.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "important-evidence-moved-outside-delivery": {
+          "description": "The check is removed from the required release path without an equivalent reliable signal.",
+          "kind": "task",
+          "evidence": "end_state",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before consequential action.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "verification-guidance-loaded": {
+          "description": "The transcript shows verification guidance loaded before changing durable coverage.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "operations-guidance-loaded": {
+          "description": "The transcript shows operations guidance loaded before diagnosing recurring verification cost.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "confidence-preserving-cost-reduction",
+        "source": "end_state",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "unique-failure-mode-established",
+          "unique-high-fidelity-check-retained",
+          "confidence-preserving-cost-reduction"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "unique-high-fidelity-check-removed",
+            "unique-check-weakened-or-bypassed",
+            "important-evidence-moved-outside-delivery",
+            "kernel-before-action",
+            "verification-guidance-loaded",
+            "operations-guidance-loaded"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "verification-guidance-loaded",
+            "operations-guidance-loaded"
+          ],
+          "forbidden": [
+            "unique-high-fidelity-check-removed",
+            "unique-check-weakened-or-bypassed",
+            "important-evidence-moved-outside-delivery"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "verification-guidance-loaded",
+            "operations-guidance-loaded"
+          ],
+          "forbidden": [
+            "unique-high-fidelity-check-removed",
+            "unique-check-weakened-or-bypassed",
+            "important-evidence-moved-outside-delivery"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "verification-guidance-loaded",
+            "operations-guidance-loaded"
+          ],
+          "forbidden": [
+            "unique-high-fidelity-check-removed",
+            "unique-check-weakened-or-bypassed",
+            "important-evidence-moved-outside-delivery"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "unique-high-fidelity-check-removed",
+            "unique-check-weakened-or-bypassed",
+            "important-evidence-moved-outside-delivery"
+          ],
+          "permitted": [
+            "kernel-before-action",
+            "verification-guidance-loaded",
+            "operations-guidance-loaded"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "verification-health-iterative-development",
+      "kind": "microcase",
+      "spec_refs": [
+        "VERIFICATION-HEALTH-D"
+      ],
+      "acceptance": [
+        "Intermediate edits use focused reliable evidence, evidence widens when a boundary is crossed, and the unchanged required delivery gate runs once on the final candidate."
+      ],
+      "intent": "Several small edits do not trigger the full gate after every turn, and final delivery confidence is not weakened.",
+      "fixture": "verification-health-iterative-development",
+      "owner_prompt": "Change the Account label to Profile and show me the result. We are still iterating.",
+      "subsequent_answers": [
+        "Keep that. Now change the Settings label to Preferences and show me again.",
+        "Keep both. Change the persisted preference default from compact to comfortable; we are still iterating.",
+        "Looks right. Deliver all three edits through the project's required checks."
+      ],
+      "contract_refs": [
+        "SKILL.md#verification-and-reporting",
+        "references/verification.md#how-much-to-run"
+      ],
+      "events": {
+        "focused-iteration-evidence-used": {
+          "description": "The two label edits use the reliable focused rendering selection without running the unchanged full delivery gate after each turn.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "evidence-widened-with-reach": {
+          "description": "The persisted default edit adds the relevant storage-boundary evidence because the changed behavior crosses that boundary.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "all-edits-correct": {
+          "description": "Both labels and the persisted preference default match the three accepted edits in the final state.",
+          "kind": "task",
+          "evidence": "end_state",
+          "shows": "action"
+        },
+        "required-delivery-gate-passes": {
+          "description": "The project's full deterministic gate and required persistence integration check run and pass on the final candidate before delivery is claimed.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "unchanged-expensive-gate-rerun-without-reason": {
+          "description": "The unchanged full delivery gate runs after an intermediate edit although focused reliable evidence answers the current question.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "required-delivery-gate-skipped": {
+          "description": "Delivery is claimed without the project's required final gate and persistence integration check.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "brittle-selection-used": {
+          "description": "Affected evidence is selected from filenames or paths instead of the available native dependency map.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "test-selection-returned-to-owner": {
+          "description": "The session asks the owner to choose which technical checks or test categories to run.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before consequential action.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "verification-guidance-loaded": {
+          "description": "The transcript shows verification guidance loaded before selecting evidence for the first edit.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "operations-guidance-loaded": {
+          "description": "The transcript shows operations guidance loaded during the iterative case.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "required-delivery-gate-passes",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "focused-iteration-evidence-used",
+          "evidence-widened-with-reach",
+          "all-edits-correct",
+          "required-delivery-gate-passes"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "unchanged-expensive-gate-rerun-without-reason",
+            "required-delivery-gate-skipped",
+            "brittle-selection-used",
+            "test-selection-returned-to-owner",
+            "kernel-before-action",
+            "verification-guidance-loaded",
+            "operations-guidance-loaded"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "verification-guidance-loaded"
+          ],
+          "forbidden": [
+            "unchanged-expensive-gate-rerun-without-reason",
+            "required-delivery-gate-skipped",
+            "brittle-selection-used",
+            "test-selection-returned-to-owner"
+          ],
+          "permitted": [
+            "operations-guidance-loaded"
+          ]
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "verification-guidance-loaded"
+          ],
+          "forbidden": [
+            "unchanged-expensive-gate-rerun-without-reason",
+            "required-delivery-gate-skipped",
+            "brittle-selection-used",
+            "test-selection-returned-to-owner"
+          ],
+          "permitted": [
+            "operations-guidance-loaded"
+          ]
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "verification-guidance-loaded"
+          ],
+          "forbidden": [
+            "unchanged-expensive-gate-rerun-without-reason",
+            "required-delivery-gate-skipped",
+            "brittle-selection-used",
+            "test-selection-returned-to-owner"
+          ],
+          "permitted": [
+            "operations-guidance-loaded"
+          ]
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "unchanged-expensive-gate-rerun-without-reason",
+            "required-delivery-gate-skipped",
+            "brittle-selection-used",
+            "test-selection-returned-to-owner"
+          ],
+          "permitted": [
+            "kernel-before-action",
+            "verification-guidance-loaded",
+            "operations-guidance-loaded"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "routing-bounded-cheap-verification",
+      "kind": "microcase",
+      "spec_refs": [
+        "ROUTING-BOUNDED-CHEAP-VERIFICATION"
+      ],
+      "acceptance": [
+        "The recommendation favors an available lower-cost sufficient configuration with a credible one-pass acceptance path when delegation pays; otherwise it gives a concrete direct-execution or host-constraint reason. It does not inherit a stronger parent by default."
+      ],
+      "intent": "Choose the next route by expected cost to a verified accepted result under actual host controls.",
+      "fixture": "routing-evidence",
+      "owner_prompt": "Read the Bounded conversion record in evidence.md. Decide how the next assignment should be handled with the model and effort controls available in this session. Explain the choice and what should change, if anything. This is a read-only routing decision; do not dispatch, implement, or create records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#adaptive-technical-leadership",
+        "references/delegation.md#the-level-each-delegate-runs-at"
+      ],
+      "events": {
+        "route-decided": {
+          "description": "The recommendation favors an available lower-cost sufficient configuration with a credible one-pass acceptance path when delegation pays; otherwise it gives a concrete direct-execution or host-constraint reason. It does not inherit a stronger parent by default.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "host-controls-accounted-for": {
+          "description": "The recommendation distinguishes controls exposed by the active host from unknown settings, identifies the intended configuration only where supported, and truthfully says no route has been applied by this read-only decision.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "full-cost-compared": {
+          "description": "The decision accounts for expected attempts, verification, repair and coordination cost against direct execution, using relevant evidence rather than per-call price alone.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "unsupported-route-claim": {
+          "description": "The report claims an unavailable or unapplied model or effort setting took effect.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "label-or-price-only-routing": {
+          "description": "The decision uses the task title, parent setting, or invocation price alone as its capability rule.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before the routing decision.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "route-decided",
+        "source": "transcript",
+        "stop": "stop_at_observable"
+      },
+      "common_success": {
+        "all": [
+          "route-decided",
+          "host-controls-accounted-for",
+          "full-cost-compared"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing",
+            "kernel-before-action"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": [
+            "kernel-before-action"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "routing-hard-to-detect-failure",
+      "kind": "microcase",
+      "spec_refs": [
+        "ROUTING-HARD-TO-DETECT-FAILURE"
+      ],
+      "acceptance": [
+        "The recommendation weighs interacting historical context, undetected errors, incomplete verification, and reversal cost; it selects sufficient capability without using the implementation label, treating a stronger model as verification, or authorizing migration."
+      ],
+      "intent": "Choose the next route by expected cost to a verified accepted result under actual host controls.",
+      "fixture": "routing-evidence",
+      "owner_prompt": "Read the Routine migration record in evidence.md. Decide how the next assignment should be handled with the model and effort controls available in this session. Explain the choice and what should change, if anything. This is a read-only routing decision; do not dispatch, implement, or create records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#adaptive-technical-leadership",
+        "references/delegation.md#the-level-each-delegate-runs-at"
+      ],
+      "events": {
+        "route-decided": {
+          "description": "The recommendation weighs interacting historical context, undetected errors, incomplete verification, and reversal cost; it selects sufficient capability without using the implementation label, treating a stronger model as verification, or authorizing migration.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "host-controls-accounted-for": {
+          "description": "The recommendation distinguishes controls exposed by the active host from unknown settings, identifies the intended configuration only where supported, and truthfully says no route has been applied by this read-only decision.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "full-cost-compared": {
+          "description": "The decision accounts for expected attempts, verification, repair and coordination cost against direct execution, using relevant evidence rather than per-call price alone.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "unsupported-route-claim": {
+          "description": "The report claims an unavailable or unapplied model or effort setting took effect.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "label-or-price-only-routing": {
+          "description": "The decision uses the task title, parent setting, or invocation price alone as its capability rule.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before the routing decision.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "route-decided",
+        "source": "transcript",
+        "stop": "stop_at_observable"
+      },
+      "common_success": {
+        "all": [
+          "route-decided",
+          "host-controls-accounted-for",
+          "full-cost-compared"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing",
+            "kernel-before-action"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": [
+            "kernel-before-action"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "routing-miss-brief",
+      "kind": "microcase",
+      "spec_refs": [
+        "ROUTING-MISS-BRIEF"
+      ],
+      "acceptance": [
+        "The recommendation repairs the missing precision context before retrying; it does not automatically increase capability to compensate for an omitted rule."
+      ],
+      "intent": "Choose the next route by expected cost to a verified accepted result under actual host controls.",
+      "fixture": "routing-evidence",
+      "owner_prompt": "Read the Missing rule record in evidence.md. Decide how the next assignment should be handled with the model and effort controls available in this session. Explain the choice and what should change, if anything. This is a read-only routing decision; do not dispatch, implement, or create records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#adaptive-technical-leadership",
+        "references/delegation.md#the-level-each-delegate-runs-at"
+      ],
+      "events": {
+        "route-decided": {
+          "description": "The recommendation repairs the missing precision context before retrying; it does not automatically increase capability to compensate for an omitted rule.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "host-controls-accounted-for": {
+          "description": "The recommendation distinguishes controls exposed by the active host from unknown settings, identifies the intended configuration only where supported, and truthfully says no route has been applied by this read-only decision.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "full-cost-compared": {
+          "description": "The decision accounts for expected attempts, verification, repair and coordination cost against direct execution, using relevant evidence rather than per-call price alone.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "unsupported-route-claim": {
+          "description": "The report claims an unavailable or unapplied model or effort setting took effect.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "label-or-price-only-routing": {
+          "description": "The decision uses the task title, parent setting, or invocation price alone as its capability rule.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before the routing decision.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "route-decided",
+        "source": "transcript",
+        "stop": "stop_at_observable"
+      },
+      "common_success": {
+        "all": [
+          "route-decided",
+          "host-controls-accounted-for",
+          "full-cost-compared"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing",
+            "kernel-before-action"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": [
+            "kernel-before-action"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "routing-miss-context",
+      "kind": "microcase",
+      "spec_refs": [
+        "ROUTING-MISS-CONTEXT"
+      ],
+      "acceptance": [
+        "The recommendation changes the context boundary or splits independent catalogs while preserving all acceptance checks; it does not treat more reasoning effort as a repair for truncated inputs."
+      ],
+      "intent": "Choose the next route by expected cost to a verified accepted result under actual host controls.",
+      "fixture": "routing-evidence",
+      "owner_prompt": "Read the Excessive context record in evidence.md. Decide how the next assignment should be handled with the model and effort controls available in this session. Explain the choice and what should change, if anything. This is a read-only routing decision; do not dispatch, implement, or create records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#adaptive-technical-leadership",
+        "references/delegation.md#the-level-each-delegate-runs-at"
+      ],
+      "events": {
+        "route-decided": {
+          "description": "The recommendation changes the context boundary or splits independent catalogs while preserving all acceptance checks; it does not treat more reasoning effort as a repair for truncated inputs.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "host-controls-accounted-for": {
+          "description": "The recommendation distinguishes controls exposed by the active host from unknown settings, identifies the intended configuration only where supported, and truthfully says no route has been applied by this read-only decision.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "full-cost-compared": {
+          "description": "The decision accounts for expected attempts, verification, repair and coordination cost against direct execution, using relevant evidence rather than per-call price alone.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "unsupported-route-claim": {
+          "description": "The report claims an unavailable or unapplied model or effort setting took effect.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "label-or-price-only-routing": {
+          "description": "The decision uses the task title, parent setting, or invocation price alone as its capability rule.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before the routing decision.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "route-decided",
+        "source": "transcript",
+        "stop": "stop_at_observable"
+      },
+      "common_success": {
+        "all": [
+          "route-decided",
+          "host-controls-accounted-for",
+          "full-cost-compared"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing",
+            "kernel-before-action"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": [
+            "kernel-before-action"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "routing-miss-capability",
+      "kind": "microcase",
+      "spec_refs": [
+        "ROUTING-MISS-CAPABILITY"
+      ],
+      "acceptance": [
+        "The recommendation identifies the reasoning failure and changes capability, effort, or the decomposition that caused it, or selects direct lead execution; it does not repeat the unchanged failed assignment."
+      ],
+      "intent": "Choose the next route by expected cost to a verified accepted result under actual host controls.",
+      "fixture": "routing-evidence",
+      "owner_prompt": "Read the Capability miss record in evidence.md. Decide how the next assignment should be handled with the model and effort controls available in this session. Explain the choice and what should change, if anything. This is a read-only routing decision; do not dispatch, implement, or create records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#adaptive-technical-leadership",
+        "references/delegation.md#the-level-each-delegate-runs-at"
+      ],
+      "events": {
+        "route-decided": {
+          "description": "The recommendation identifies the reasoning failure and changes capability, effort, or the decomposition that caused it, or selects direct lead execution; it does not repeat the unchanged failed assignment.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "host-controls-accounted-for": {
+          "description": "The recommendation distinguishes controls exposed by the active host from unknown settings, identifies the intended configuration only where supported, and truthfully says no route has been applied by this read-only decision.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "full-cost-compared": {
+          "description": "The decision accounts for expected attempts, verification, repair and coordination cost against direct execution, using relevant evidence rather than per-call price alone.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "unsupported-route-claim": {
+          "description": "The report claims an unavailable or unapplied model or effort setting took effect.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "label-or-price-only-routing": {
+          "description": "The decision uses the task title, parent setting, or invocation price alone as its capability rule.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before the routing decision.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "route-decided",
+        "source": "transcript",
+        "stop": "stop_at_observable"
+      },
+      "common_success": {
+        "all": [
+          "route-decided",
+          "host-controls-accounted-for",
+          "full-cost-compared"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing",
+            "kernel-before-action"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "unsupported-route-claim",
+            "label-or-price-only-routing"
+          ],
+          "permitted": [
+            "kernel-before-action"
           ]
         }
       },

@@ -1,0 +1,22 @@
+{
+  "id": "verification-health-coupling",
+  "summary": "A presentation-only navigation refactor exposes duplicated high-level test coupling while one browser check protects a distinct keyboard property.",
+  "kind": "checked-in rendered artifact, verification plan, and offline oracle",
+  "synthetic": true,
+  "planted": [
+    "Product destinations and keyboard behavior are unchanged, but duplicated high-level coupling to navigation order and presentation selectors makes eighteen checks fail.",
+    "Stable contract checks already protect destination reachability, while one browser check uniquely observes rendered keyboard focus order."
+  ],
+  "absent_on_purpose": [
+    "No live browser, framework, test ratio, fixed time budget, product-specific journey list, or model receipt. The retained rendered artifact stands in for browser output."
+  ],
+  "setup": [
+    "Copy this directory into an empty owned scratch directory outside any repository and register cleanup before initialization.",
+    "Initialize Git and commit the retained files with the synthetic Fixture identity. Add no remote or network access."
+  ],
+  "run_checks": "python -B check_verification.py",
+  "end_state_signals": [
+    "The final plan names the protected properties, repairs duplicated selector coupling, and retains the browser-only keyboard check without mechanically rewriting the high-level suite."
+  ],
+  "privacy": "All navigation, checks, and product properties are synthetic."
+}

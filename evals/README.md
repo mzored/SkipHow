@@ -416,6 +416,15 @@ bare `pytest` run in this repository never collects a fixture.
 
 ## Workflow skill regressions
 
+The `routing-*` microcases grade read-only routing decisions using the shared
+`routing-evidence` fixture. Its invented records isolate cheap verification,
+hard-to-detect failure, omitted context, context truncation, and reasoning
+failure. The grader reads the recommendation and the host's exposed controls;
+the fixture supplies no model names, tiers, or simulated controls. Direct work
+remains valid when delegation costs more overall. These cases do not prove
+delegate dispatch, effective settings, or actual cost savings. All remain
+`UNVERIFIED` until qualifying receipts exist.
+
 The `workflow-*` cases in `cases.json` exercise the five optional workflows.
 They reuse the rounding, catalog, private tracker simulator, and static preview
 fixtures, plus a static-preview overlay with a deferred pytest commit hook.
