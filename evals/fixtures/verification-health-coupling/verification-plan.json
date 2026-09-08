@@ -1,0 +1,11 @@
+{
+  "change": "Replace visual navigation layout without changing destinations or keyboard behavior.",
+  "required_properties": [
+    "Each destination remains reachable.",
+    "Keyboard focus follows rendered navigation order."
+  ],
+  "duplicated_high_level_checks": 18,
+  "stable_contract_checks": 12,
+  "unique_evidence": "One browser check observes rendered keyboard focus order.",
+  "verification_plan": "unrepaired"
+}

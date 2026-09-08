@@ -2,6 +2,26 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 4.7.0 (2026-09-08)
+
+SkipHow now treats recurring verification cost or maintenance that is disproportionate to the changed behavior as an engineering-system problem to diagnose.
+
+### Added
+
+- The CTO kernel recognizes recurring broad test churn, slow feedback, expensive setup, and poor failure localization as signals to find the responsible layer. It does not assume a test category is at fault or turn an ordinary request into a broad refactor.
+- Verification guidance names the property each durable check proves, places it at the narrowest stable boundary that retains the needed fidelity, and preserves broader checks when the environment contributes distinct confidence.
+- Development starts with focused reliable evidence and widens by reach, crossed boundaries, uncertainty, and consequence. Required integration and release gates remain intact.
+- Operations guidance measures execution and setup cost before selecting a remedy, preserves useful coverage, and routes material separable remediation through the existing tracked-work policy.
+
+### Behavioral coverage
+
+- Four implementation-neutral arm-aware cases cover high-level test coupling, a measured setup bottleneck, expensive unique cross-boundary evidence, and several focused iterations followed by required delivery validation. Each has its own minimal fixture and remains `UNVERIFIED` until a qualifying host receipt exists.
+- Deterministic corpus tests check the four cases, their positive outcomes, their forbidden degradation paths, their package-arm expectations, and their independent fixture oracles. They do not run a model or establish runtime behavior.
+
+### Compatibility
+
+This is a compatible minor release. It adds an internal CTO responsibility without changing the public skill name, workflow set, owner interface, authority boundary, default side effects, activation mechanism, package layout, or project-kept format. It introduces no test taxonomy, ratio, time budget, periodic audit, verification registry, owner-visible mode, or product-specific journey list.
+
 ## 4.6.1 (2026-09-08)
 
 SkipHow now reuses valid revision-bound evidence across integration and release instead of treating every stage name as a reason to repeat the same gate.

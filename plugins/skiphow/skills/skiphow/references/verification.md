@@ -4,9 +4,13 @@ Open this for tests, final review, security, privacy, reliability, migration, ro
 
 ## Choosing the test
 
-For a read-only design or coverage request, propose the tests without changing the project. Test observable behavior through the narrowest stable interface that gives confidence in the requested result, rather than internal shape. Follow the repository's existing test layout and vocabulary.
+For a read-only design or coverage request, propose the tests without changing the project. Test observable behavior rather than internal shape, and follow the repository's existing test layout and vocabulary.
 
-Use the narrowest stable test that would catch the real defect and remain useful. Prefer real integration across the behavior being proved; introduce mocks or internal seams only where they materially improve isolation, determinism, cost, or safety — external systems, time, and randomness are the usual cases, and a legacy or tightly coupled system may need more — without asserting call order, private state, or other implementation trivia.
+For every durable check, name the property it proves and place it at the narrowest stable boundary that provides the required fidelity. Use a broader or more expensive check when the broader environment contributes distinct evidence that a narrower boundary cannot establish reliably, such as real component integration, browser or runtime behavior, persistence, rendering, infrastructure wiring, an external protocol, or an important cross-boundary product outcome. Preserve that unique high-fidelity evidence. Do not repeat the same business invariant at increasingly expensive boundaries unless each boundary protects a distinct failure mode.
+
+Prefer stable product-facing contracts over incidental presentation or implementation details. Widespread unrelated test rewrites after a behavior-preserving change are evidence of coupling; investigate and repair the responsible boundary instead of mechanically updating every affected test. Introduce mocks or internal seams only where they materially improve isolation, determinism, cost, or safety. External systems, time, and randomness are common cases, and a legacy or tightly coupled system may need more. Do not assert call order, private state, or other implementation trivia.
+
+When setup or an earlier journey is not under test, establish the required state through an existing reliable lower-cost path instead of replaying unrelated behavior through an expensive path. Keep direct coverage of a setup journey when that journey is itself important.
 
 Derive the expected value independently of the implementation under test. A test that repeats the production algorithm can agree with the same bug.
 
@@ -26,7 +30,9 @@ Observe the test failing against the unfixed code before trusting it. Where repr
 
 Keep tests that protect behavior; remove only temporary harnesses and implementation-coupled checks owned by this work.
 
-Scale the run to what the change can reach rather than rerunning everything after every edit. Start with the smallest targeted check that covers the change. Widen to the affected module or contract, then to cross-boundary behavior where the change crosses one, then to whatever the repository requires before integration.
+The CTO owns test selection. During implementation and iteration, start with the smallest reliable evidence covering the changed behavior. Widen according to reachable behavior, crossed boundaries, uncertainty, and consequence. Do not rerun an unchanged expensive gate when narrower evidence answers the current engineering question.
+
+Before integration or release, satisfy the broader evidence required by the project's actual delivery contract and risk. Use reliable native affected-test, dependency, project, tagging, or equivalent selection when available. When repeated verification cost is material and the project lacks reliable selection, improving that capability is legitimate engineering work. Do not replace reliable selection with brittle filename or path heuristics, and do not skip a required integration or release gate to reduce latency.
 
 Bind each result to the code, dependencies, configuration, environment, and destination it exercised. Reuse it while those inputs remain equivalent. A commit, rebase, merge, tag, or named stage does not invalidate evidence by itself. Establish equivalence from revision-bound CI, the relevant tree and configuration, or an immutable artifact, and rerun only the checks whose inputs changed.
 

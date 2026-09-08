@@ -1,0 +1,17 @@
+{
+  "native_dependency_map": {
+    "labels": [
+      "focused rendering"
+    ],
+    "persisted default": [
+      "configuration contract",
+      "storage integration"
+    ]
+  },
+  "required_delivery_gate": [
+    "full deterministic suite",
+    "persistence integration"
+  ],
+  "accepted_edits": [],
+  "recorded_checks": []
+}

@@ -91,6 +91,12 @@ The same Codex attempt on CLI 0.153.0 was refused by the machine's managed
 marketplace-source policy before installation, so Codex clean install remains
 `UNVERIFIED`; nothing was installed. Neither result is activation evidence.
 
+## 4.7.0 verification-health contract
+
+Version 4.7.0 adds an internal CTO responsibility for verification health. The kernel treats recurring verification cost or maintenance materially disproportionate to the changed behavior as a signal to diagnose the engineering system. `verification` places each property at the narrowest stable boundary that retains the required fidelity, preserves unique broader evidence, and keeps development selection proportional without weakening final delivery checks. `operations` measures the recurring cost and fixes its responsible layer without assuming a test category is the cause or silently widening a narrow request.
+
+Four new arm-aware cases encode test coupling, measured setup cost, unique expensive evidence, and focused iteration followed by required delivery validation. Their independent synthetic fixtures and deterministic corpus checks establish only that the scenarios are well-formed and satisfiable against the shipped contract. No model session was run, so 4.7.0 verification-health behavior is `UNVERIFIED` on every host.
+
 ## 4.6.1 release-evidence correction
 
 The installed 4.6.0 release session ran from 23:43:55 to 00:26:40 UTC, 42 minutes 45 seconds. The first full local gate failed on a fixture-harness mismatch and the next passed after that repair. From that first pass, the full deterministic gate ran seven more times: during host-receipt preparation, after the receipt updates, in pull-request CI, on the integrated `main` revision, twice more locally after merge, and in tag CI. Some earlier reruns followed real changes. The two local post-merge runs and the tag run repeated equivalent final inputs after exact `main` CI had passed.
@@ -667,7 +673,7 @@ What the current package's text requires, settled by reading it. This section re
 - A read-only review reports confirmed defects and modifies nothing; urgency, including a security finding, does not widen the request, and a sensitive finding stays private without a disclosure grant. Repair happens only when it was authorized.
 - A step that could take real time gets an expectation of healthy progress, and a breach is information rather than a reason to wait longer; monitoring prefers the host's own wait mechanism to a loop that holds the turn.
 - Reuse is a presumption, not a law: a maintained capability is preferred to custom code where it fits, and a disposable experiment is cheap to run and cheap to discard, its shortcuts never becoming architecture by staying in place.
-- A test is the narrowest stable one that would catch the real defect; mocks and seams appear where they materially improve isolation, determinism, cost, or safety, without asserting call order or private state.
+- Every durable check names the property it proves and uses the narrowest stable boundary that retains the required fidelity. Broader checks remain when the environment contributes distinct evidence; recurring disproportionate churn or cost is measured at its responsible layer. Mocks and seams appear where they materially improve isolation, determinism, cost, or safety, without asserting call order or private state.
 - Completion is relative to the authorized destination: a local branch with no granted destination can be complete, a named destination is incomplete until verified there, and no historical convention grants a push or a review. Earlier-run artifacts are not cleaned under an unrelated change.
 - A failed merge is recovered by consequence: evidence and unrelated work are preserved first, a disposable failure may stay in place for diagnosis, a shared target that other work depends on is contained or restored to its last good state, and restoring production still needs its grant. The failed state is never reported as delivered.
 - Enabling, checking, or disabling SkipHow's own default governance is an owner request the skill handles itself: it resolves the file the host reads, previews the change, asks once before writing, and reports configured, available, and loaded as three separate facts without bypassing managed policy.

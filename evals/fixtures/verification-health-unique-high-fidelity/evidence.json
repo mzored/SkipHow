@@ -1,0 +1,21 @@
+{
+  "narrow_checks": {
+    "schema": "pass",
+    "serializer": "pass",
+    "persistence_adapter": "pass",
+    "runtime_reader": "pass"
+  },
+  "cross_boundary_check": {
+    "result": "fail",
+    "boundaries": [
+      "serialization",
+      "persistence",
+      "restart",
+      "runtime readback"
+    ],
+    "signal": "configured value is replaced by the default after restart",
+    "delivery_required": true
+  },
+  "duplicated_setup_seconds": 95,
+  "verification_plan": "unrepaired"
+}
