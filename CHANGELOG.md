@@ -2,6 +2,22 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 4.6.1 (2026-09-08)
+
+SkipHow now reuses valid revision-bound evidence across integration and release instead of treating every stage name as a reason to repeat the same gate.
+
+### Changed
+
+- Verification results are bound to the code, dependencies, configuration, environment, and destination they exercised. Commits, clean merges, tags, and release stages preserve those results when the relevant inputs remain equivalent.
+- Integration accepts exact revision-bound CI or established tree equivalence as evidence for the integrated result, while still checking that delivery reached its destination.
+- Release guidance keeps one immutable candidate, runs one final local gate, and reserves clean-install smoke or model sessions for changed mechanisms and claims they can actually establish.
+
+### Compatibility and evidence
+
+This patch corrects an unconditional statement in `integration` that every merge creates a state neither side tested. GitHub documents that ordinary `pull_request` workflows use the pull request merge branch, so the old statement was factually false for a common path. The replacement is host-neutral and reruns checks whenever code, dependencies, configuration, environment, or destination-specific behavior changed.
+
+The 4.6.0 release session lasted 42 minutes 45 seconds. After the first complete local pass, the full deterministic gate ran seven more times across local release preparation, pull-request and `main` CI, post-merge verification, and tag CI. Some followed real edits; the two local post-merge runs and tag run repeated equivalent final inputs after exact `main` CI had passed. A redundant local sequence delayed the tag by almost four minutes. The release workflow itself completed validation, release publication, and site deployment in 62 seconds. No model or behavioral session was run for this correction.
+
 ## 4.6.0 (2026-09-08)
 
 SkipHow can now reconstruct broad project status across sessions, reconcile authorized tracking records with live delivery evidence, and clean up safely redundant owned workspaces when the owner asks for cleanup.

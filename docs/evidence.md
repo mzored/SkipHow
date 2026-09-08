@@ -91,6 +91,14 @@ The same Codex attempt on CLI 0.153.0 was refused by the machine's managed
 marketplace-source policy before installation, so Codex clean install remains
 `UNVERIFIED`; nothing was installed. Neither result is activation evidence.
 
+## 4.6.1 release-evidence correction
+
+The installed 4.6.0 release session ran from 23:43:55 to 00:26:40 UTC, 42 minutes 45 seconds. The first full local gate failed on a fixture-harness mismatch and the next passed after that repair. From that first pass, the full deterministic gate ran seven more times: during host-receipt preparation, after the receipt updates, in pull-request CI, on the integrated `main` revision, twice more locally after merge, and in tag CI. Some earlier reruns followed real changes. The two local post-merge runs and the tag run repeated equivalent final inputs after exact `main` CI had passed.
+
+The remote timings separate publication from the surrounding process. Pull-request CI took 31 seconds. Exact integrated `main` CI took 38 seconds. The release workflow took 62 seconds for validation, GitHub Release publication, and Pages deployment. The root merged at 00:20:50, exact `main` CI passed at 00:21:31, and the tag was not pushed until 00:24:40 because the root repeated the local gate and host package gate. The delay was duplicated certification rather than a slow deployment.
+
+The shipped `integration` sentence said every merged result was a state neither side had tested. That sentence is false for GitHub's ordinary pull-request merge ref and contradicted the existing rule to rerun only evidence a later change invalidated. Version 4.6.1 binds checks to their relevant code, dependencies, configuration, environment, artifact, and destination, and reuses them while those inputs remain equivalent. Destination verification remains separate. No isolated, model, or behavioral run was performed because the owner declined new runs. Whether the corrected wording changes agent behavior remains `UNVERIFIED`.
+
 ## 4.6.0 project-state reconciliation
 
 Version 4.6.0 adds broad project-state reconciliation to the main CTO behavior. The kernel routes project status, unfinished work, tracking consistency, and cleanup to `tracked-work`. That reference reconstructs full outcomes from live destination, workspace, review, validation, and record evidence before any authorized correction, and enters the existing `integration` cleanup rules only when cleanup is requested. It retains only the non-reconstructible association between a durable outcome or record and a surviving owned workspace. The public skill set, activation path, owner authority, and workflow names are unchanged.

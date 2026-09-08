@@ -26,7 +26,9 @@ Observe the test failing against the unfixed code before trusting it. Where repr
 
 Keep tests that protect behavior; remove only temporary harnesses and implementation-coupled checks owned by this work.
 
-Scale the run to what the change can reach rather than rerunning everything after every edit. Start with the smallest targeted check that covers the change. Widen to the affected module or contract, then to cross-boundary behavior where the change crosses one, then to whatever the repository requires before integration. Rerun anything a rebase, merge, dependency change, or generated artifact has invalidated.
+Scale the run to what the change can reach rather than rerunning everything after every edit. Start with the smallest targeted check that covers the change. Widen to the affected module or contract, then to cross-boundary behavior where the change crosses one, then to whatever the repository requires before integration.
+
+Bind each result to the code, dependencies, configuration, environment, and destination it exercised. Reuse it while those inputs remain equivalent. A commit, rebase, merge, tag, or named stage does not invalidate evidence by itself. Establish equivalence from revision-bound CI, the relevant tree and configuration, or an immutable artifact, and rerun only the checks whose inputs changed.
 
 An intermittent test is a defect or an explicit blocker until it is classified; [diagnosis](diagnosis.md) covers that.
 
