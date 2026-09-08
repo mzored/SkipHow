@@ -1,12 +1,14 @@
 {
   "id": "routing-evidence",
-  "summary": "Synthetic lane evidence for read-only routing decisions, including three distinct failed assignments.",
+  "summary": "Synthetic evidence for budget-aware routing and retaining sufficient lead settings, including three distinct failed assignments.",
   "kind": "checked-in skeleton",
   "synthetic": true,
   "planted": [
     "A bounded conversion has contained context and an independent exact-output checker.",
     "An apparently routine migration has interacting invariants and an incomplete detection path.",
-    "Separate failed assignments expose a missing rule, excessive context, and reasoning failure despite complete inputs."
+    "Separate failed assignments expose a missing rule, excessive context, and reasoning failure despite complete inputs.",
+    "A constrained token allowance and latency target require independent model and effort choices without invented billing data.",
+    "Comparable accepted work supports retaining the current lead route; a separate temporary escalation precedes simpler follow-up work."
   ],
   "absent_on_purpose": [
     "No provider models, tiers, prices, claimed real performance, credentials, or external destination.",

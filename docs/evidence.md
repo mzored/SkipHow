@@ -91,6 +91,20 @@ The same Codex attempt on CLI 0.153.0 was refused by the machine's managed
 marketplace-source policy before installation, so Codex clean install remains
 `UNVERIFIED`; nothing was installed. Neither result is activation evidence.
 
+## 4.7.1 routing sources and limits
+
+The shared kernel and delegation reference apply to both Codex and Claude Code. Version 4.7.1 clarifies independent model and effort choices, owner budget constraints, retention of adequate current lead settings, and assignment-specific escalation. This is `Contract`; successful application, effective dispatch, and cost savings remain `UNVERIFIED` on both hosts. The synthetic routing corpus covers recommendations only. No comparative model experiment was run.
+
+Sources below were checked on 2026-09-08. They support the selection method, not a claim that any configuration is universally optimal for SkipHow.
+
+| Host | Current primary evidence | Consequence for this change |
+| --- | --- | --- |
+| Codex | [OpenAI's Astra migration guidance](https://developers.openai.com/api/docs/guides/latest-model) recommends preserving effective effort, mapping unsupported none/minimal settings to low. [Codex subagent documentation](https://developers.openai.com/codex/subagents) describes model and reasoning-effort configuration and inheritance. | A capable lead does not imply High effort. Preserve an adequate existing route and distinguish an exposed override from inherited or hidden settings. Host documentation is not evidence that a particular dispatch applied the requested setting. |
+| Claude Code | [Model configuration](https://code.claude.com/docs/en/model-config) describes cost-sensitive Medium effort and model-dependent support. [Subagent configuration](https://code.claude.com/docs/en/subagents) allows a model choice and separately configured effort, with effort inherited when omitted. | Choose model and effort separately. A model override is not proof of an effort override; use the controls available in the active host and report their limits. |
+| Claude model economics | [Anthropic's model selection guide](https://platform.claude.com/docs/en/about-claude/models/choosing-a-model) recommends Sonnet for everyday coding. Its [cost and intelligence guide](https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence) reports an internal coding subset where Opus 5 Low reached 84% at $0.25 per solved task, versus Sonnet 5 default at 77.4% and $0.84. | A stronger model at reduced effort is an economical candidate, not a universal default. The result concerns a particular API workload and does not measure subscription allowance consumption or SkipHow's success rate. |
+
+Secondary benchmark context also argues against a blanket effort setting. [Artificial Analysis's Astra comparison](https://artificialanalysis.ai/models/comparisons/gpt-6-astra-high-vs-gpt-6-astra-low) reported about 2.6 seconds to the first answer token at Low versus 45.6 at High, which is not total coding-task duration. Its [Claude Code coding-agent comparison](https://artificialanalysis.ai/agents/coding-agents/comparisons/claude-code-vs-gemini-cli) reported Opus 5 High at index 66 and $3.92 per task versus Max at 67 and $8.94. These API-cost measurements cannot establish subscription charges or the best setting for the owner's workload. The shipped package contains no model names, pricing table, or fixed provider ladder.
+
 ## 4.7.0 routing and verification-health contract
 
 The owner requested routing by expected total cost per verified acceptable outcome. The kernel carries that criterion and the diagnostic response to a miss; `delegation` holds the selection guidance. It accounts for reasoning, interacting context, ambiguity, error detection and reversal, independent verification, and repair cost. It preserves parent-independent selection and the prior decision of whether delegation pays. Unsupported or hidden host settings remain explicit limitations.

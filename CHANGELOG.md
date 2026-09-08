@@ -2,6 +2,21 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 4.7.1 (2026-09-08)
+
+Cost-aware routing now explicitly covers the lead and delegates on both Codex and Claude Code.
+
+### Changed
+
+- Choose model and effort separately within the owner's token, spending, and latency constraints. Compare capable models at reduced effort with cheaper models at greater effort.
+- Keep an adequate current configuration for comparable work. Orchestration, session duration, and stronger settings being available do not justify escalation. Reconsider a temporary escalation when the next assignment becomes simpler.
+- Account for separately configured and inherited host settings. A model override does not prove an effort override. Distinguish API prices, cached input, subscription allowances, and actual task consumption; leave unavailable costs unknown.
+- Extend the synthetic routing corpus with satisfactory-current-route coverage and budget-aware model/effort comparison. Preserve hidden-error and failure-diagnosis coverage. Record current Codex and Claude Code sources in the existing evidence ledger.
+
+### Compatibility and evidence
+
+This patch clarifies the existing total-cost criterion without changing the owner interface, public skills, authority, default side effects, installation, or package layout. Personal Codex and Claude settings remain unchanged. Independent Codex review found no qualifying defects; no review finding required a change or rejection. Deterministic checks validate the package and corpus; routing behavior, effective dispatch, and savings remain `UNVERIFIED` on both hosts. No paid comparative experiment was run.
+
 ## 4.7.0 (2026-09-08)
 
 SkipHow now chooses model and effort by the expected total cost of a verified acceptable outcome and diagnoses recurring disproportionate verification cost at its responsible layer.
