@@ -71,6 +71,49 @@ def test_source_hash_and_manifest_match_existing_corpus(fixture):
     }, "orders-service")
 
 
+def test_reconciliation_preflight_checks_worktrees_and_revision_placeholders(tmp_path, monkeypatch):
+    fixture = tmp_path / "fixture"
+    fixture.mkdir()
+    (fixture / ".git").mkdir()
+    (fixture / "host-state.json").write_text('{"revision": "resolved"}\n')
+    registry = tmp_path / "preflight.json"
+    registry.write_text(json.dumps({
+        "fixtures": {
+            "project-reconciliation": {
+                "head": "main",
+                "local_branches": ["main", "feature/delivered"],
+                "worktree_branches": ["main", "feature/delivered"],
+                "clean_worktree_branches": ["main"],
+                "dirty_worktree_branches": ["feature/delivered"],
+                "absent_text": {"host-state.json": ["__REVISION__"]},
+            }
+        }
+    }))
+    monkeypatch.setattr(capture, "PREFLIGHT", registry)
+
+    def fake_git(args, _fixture):
+        if args[0] == "rev-parse":
+            return "main\n"
+        if args[0] == "for-each-ref":
+            return "main\nfeature/delivered\n"
+        if args[:2] == ["worktree", "list"]:
+            return "worktree /fixture\nHEAD abc\nbranch refs/heads/main\n\n"
+        if args[0] == "status":
+            return ""
+        raise AssertionError(args)
+
+    monkeypatch.setattr(capture, "_git", fake_git)
+    assert capture.preflight(fixture, "project-reconciliation") == [
+        "worktree for branch feature/delivered is missing"
+    ]
+
+    (fixture / "host-state.json").write_text('{"revision": "__REVISION__"}\n')
+    assert capture.preflight(fixture, "project-reconciliation") == [
+        "worktree for branch feature/delivered is missing",
+        "placeholder __REVISION__ remains in host-state.json",
+    ]
+
+
 def test_retained_capture_content_matches_its_hashes():
     for path in (ROOT / "evals/receipts").rglob("*.json"):
         receipt = json.loads(path.read_text())

@@ -4,8 +4,8 @@
 
 | Version | Supported |
 | --- | --- |
-| 4.5.x | Yes |
-| 4.4.x, 4.3.x, 4.2.x, 4.1.x, and 4.0.x | No; upgrade to 4.5.x without changing existing authorization |
+| 4.6.x | Yes |
+| 4.5.x, 4.4.x, 4.3.x, 4.2.x, 4.1.x, and 4.0.x | No; upgrade to 4.6.x without changing existing authorization |
 | 3.0.x and earlier | No |
 
 Security review covers the packaged owner skill, its linked playbooks, host manifests,
@@ -15,9 +15,11 @@ services keep their own security policies.
 
 ## Package validation, 2026-09-08
 
-Version 4.5.1 keeps portable delegation safety in the runtime and moves dated host mechanics to this maintainer record. It also corrects fast-fixes context routing without changing its preview-isolation or delivery boundary. Its per-capability status is in [the current host ledger](evals/host-smoke.json) and the release validation matrix. Historical receipts below apply only to their named versions. Context selection, workflow invocation, shared-kernel loading, and model behavior remain `UNVERIFIED`.
+Version 4.6.0 adds request-scoped project-state reconciliation without changing the authority boundary, public workflow set, or activation mechanism. Its per-capability status is in [the current host ledger](evals/host-smoke.json) and the release validation matrix. Historical receipts below apply only to their named versions. Context selection, reconciliation behavior, workflow invocation, shared-kernel loading, and model behavior remain `UNVERIFIED`.
 
-On exact candidate commit `4250c7abc55673230946af4ba662fa2d28ef0ab5`, both host schema validators passed. Claude Code 2.1.263 installed all 22 regular package files byte for byte and uninstalled them from an isolated configuration directory. Codex CLI 0.153.0 refused the local marketplace under managed source policy before installation, so its clean-install cell stays `UNVERIFIED`. The [4.5.1 receipts](evals/receipts/host-validation-451-20260908/) and candidate ledger retain the exact scope; neither schema validation nor installation proves runtime behavior.
+On exact package commit `1fadf014357ca2f743ceaa46affb10aa0b1f4844`, both host schema validators passed. Claude Code 2.1.263 installed all 22 regular package files byte for byte and uninstalled them from an isolated configuration directory. Codex CLI 0.153.0 refused the local marketplace under managed source policy before installation, so its clean-install cell stays `UNVERIFIED`. The [4.6.0 receipts](evals/receipts/host-validation-460-20260908/) and candidate ledger retain the exact package tree `7e70f8645cf782c0681308001696033d9ac69b36` and payload `f5a89b5137afc70e88cbd7be26fcd2463b7daba0ff18d3cc0e20d456bf1a9e15`; neither schema validation nor installation proves runtime behavior.
+
+Version 4.5.1 keeps portable delegation safety in the runtime and corrects fast-fixes context routing. On exact candidate commit `4250c7abc55673230946af4ba662fa2d28ef0ab5`, both host schema validators passed. Claude Code 2.1.263 installed all 22 regular package files byte for byte and uninstalled them from an isolated configuration directory. Codex CLI 0.153.0 refused the local marketplace under managed source policy before installation, so its clean-install cell remained `UNVERIFIED`. The [4.5.1 receipts](evals/receipts/host-validation-451-20260908/) retain the exact scope; neither schema validation nor installation proves runtime behavior.
 
 Version 4.5.0 added optional workflow skills under the existing authority boundaries. Its retained clean-install evidence remains at the [immutable 4.5.0 ledger](https://github.com/mzored/SkipHow/blob/02eb504aa59b372a688bf4ed85b4157f317c70dd/evals/host-smoke.json).
 
