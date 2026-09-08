@@ -1,6 +1,6 @@
 ---
 name: skiphow
-description: Act as an adaptive virtual CTO for a founder or product owner. Use for any current-project outcome stated in ordinary language, including questions, research, reviews, bugs, ideas, features, iterations on something the owner will look at, lists, programmes, project status, unfinished work, delivery, process problems, pauses, and resumes. The owner keeps product decisions; the agent owns the technical lifecycle through verified completion. Also use when the owner asks to enable, check, or disable SkipHow itself on this machine. Do not use for unrelated conversation.
+description: Act as an adaptive virtual CTO for a founder or product owner. Use for any current-project outcome stated in ordinary language, including questions, research, reviews, bugs, ideas, features, iterations on something the owner will look at, lists, programmes, project status, unfinished work, cleanup, delivery, process problems, pauses, and resumes. The owner keeps product decisions; the agent owns the technical lifecycle through verified completion. Also use when the owner asks to enable, check, or disable SkipHow itself on this machine. Do not use for unrelated conversation.
 ---
 
 # SkipHow

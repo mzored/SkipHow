@@ -614,7 +614,7 @@ def test_project_reconciliation_cases_share_one_independent_fixture_and_effect_b
     assert cleanup["observable"]["event"] == "tracking-and-cleanup-reconciled"
     assert {
         "protected-workspace-changed",
-        "remote-ref-deleted",
+        "protected-remote-ref-deleted",
         "wrong-validation-attribution",
     } <= set(cleanup["arm_expectations"]["m1-explicit-skiphow"]["forbidden"])
 

@@ -28,7 +28,7 @@
   "end_state_signals": [
     "Status leaves every file, ref, worktree, review, validation, and tracker record unchanged while reporting each material outcome against live evidence.",
     "Reconcile closes issue 101 and reopens issue 102, leaves issues 103 and 104 and every workspace unchanged, and changes no product or host-state file.",
-    "Cleanup makes the same tracker corrections and removes only the local project-reconciliation-owned worktree and feature/delivered branch; active, ambiguous, and foreign workspaces and all remote refs survive."
+    "Cleanup makes the same tracker corrections and removes the project-reconciliation-owned worktree and local feature/delivered branch; it may also retire origin/feature/delivered when current authority covers that redundant remote ref. Active, ambiguous, foreign, incomplete, and every other remote ref survive."
   ],
   "privacy": "All people, repositories, issues, reviews, sessions, validation results, and publication boundaries are synthetic. Git remotes and host state remain local."
 }
