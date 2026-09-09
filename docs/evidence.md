@@ -91,6 +91,14 @@ The same Codex attempt on CLI 0.153.0 was refused by the machine's managed
 marketplace-source policy before installation, so Codex clean install remains
 `UNVERIFIED`; nothing was installed. Neither result is activation evidence.
 
+## 4.7.3 iteration series contract
+
+Version 4.7.3 raises one rule into the kernel: while the owner keeps sending changes, or has said they will look and send them, feedback and acceptance keep the work in iteration rather than triggering push, shared integration, or delivery tests, and delivery starts when they ask for it, name a destination, or accept with nothing further to send. An invoked iteration workflow keeps its own agreement until delivery is requested. Before this, the kernel reached that rule only through an explicitly bounded session, which nothing outside an invoked workflow could enter. This is `Contract`.
+
+The defect is `Observed` from two installed 4.7.1 sessions in the maintainer's own projects on 2026-09-09, read from the host's own transcripts. In the session where the owner announced the review in ordinary language, a 105-minute stretch of screen edits produced twelve guarded-integration invocations, five merges into the shared development branch, and five whole-backend-suite runs of between two and a half and four minutes. In the session where the owner invoked the workflow, the deferral held and the one wide run followed an explicit request to integrate. Session content stays out of this repository; only these counts are retained.
+
+Two limits belong with that. The failing session had also been told the same thing by its own repository's instruction file, and broke that too, so the wording is not the whole cause. Both rules had left its context after four compactions, and no package text survives a compaction, so this change removes a readable defect in the text and removes nothing about context loss. The corrected behavior is `UNVERIFIED` on both hosts. The `iteration-series-announced-once` case in [the corpus](../evals/cases.json) is the unrun scenario that would show it. No paid behavioral session was run. Cross-host review is `UNVERIFIED` for this change: the Codex account reached its usage limit before the round started, and an independent same-host review stood in for it.
+
 ## 4.7.1 routing sources and limits
 
 The shared kernel and delegation reference apply to both Codex and Claude Code. Version 4.7.1 clarifies independent model and effort choices, owner budget constraints, retention of adequate current lead settings, and assignment-specific escalation. This is `Contract`; successful application, effective dispatch, and cost savings remain `UNVERIFIED` on both hosts. The synthetic routing corpus covers recommendations only. No comparative model experiment was run.
@@ -702,7 +710,7 @@ What the current package's text requires, settled by reading it. This section re
 - `delegation` is in context before a delegate is dispatched; model and effort are chosen from the lane's reasoning demand, the consequence of a wrong answer, and the cost of checking, and set through the host's own control where it exposes one.
 - A host or sandbox refusal is not bypassed; when no authorized alternative remains the run names the exact blocker and the exact permission. Sensitive findings are not disclosed outside their authorized audience and are minimized inside it.
 - A reviewer derives expected behavior from the request and the product rules before reading the change, and checks the exact candidate before integration; the lead verifies the authorized destination after it.
-- An iteration, a change to something the owner will look at before deciding what comes next, is complete when it is reviewed, checked, and shown. Outside an explicitly bounded iteration session, acceptance starts delivery with wider tests, tracking, commits, push, and integration. A bounded session keeps its agreed checkpoints and deferred checks until delivery is requested. A request naming a delivery destination or asking to ship is delivery.
+- An iteration, a change to something the owner will look at before deciding what comes next, is complete when it is reviewed, checked, and shown. While the owner keeps sending changes, or has said they will look and send them, feedback and acceptance keep the work in iteration rather than triggering shared integration or delivery tests. Delivery starts when the owner asks for it, names a destination, or accepts with nothing further to send, and wider tests, tracking, commits, push, and integration follow then. A request naming a delivery destination or asking to ship is delivery.
 
 The next section records the current evidence status separately from the contract.
 
