@@ -54,7 +54,7 @@ Use the controls the active host actually exposes. Treat a delegate as a writer 
 
 ## Where isolation lands
 
-Prefer the host's own worktree mechanism, which owns placement and cleanup. Otherwise put it where this repository already ignores, confirmed rather than assumed. The kernel's placement rule closes the list there. Isolation is not total: separate worktrees share one stash stack, so a stash pushed in one is poppable from the others.
+Prefer the host's own worktree mechanism, which owns placement and cleanup. Otherwise put it where this repository already ignores, confirmed rather than assumed. Where it ignores no such location, create one inside the checkout and add it to the repository's ignore rules rather than placing the worktree beside the checkout or outside the project. The kernel's placement rule closes the list there. Isolation is not total: separate worktrees share one stash stack, so a stash pushed in one is poppable from the others.
 
 ## What comes back
 

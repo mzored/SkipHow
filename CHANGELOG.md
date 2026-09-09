@@ -2,6 +2,18 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 4.7.2 (2026-09-09)
+
+Worktree placement guidance no longer dead-ends in a repository that ignores no such location.
+
+### Changed
+
+- Where a repository ignores no location for an isolated checkout, create one inside the checkout and add it to the repository's ignore rules instead of placing the worktree beside the checkout or outside the project. Observed defect: the earlier wording stopped at "put it where this repository already ignores", which left placement undetermined whenever no ignored location existed, and worktrees landed in sibling directories and host defaults.
+
+### Compatibility and evidence
+
+This patch closes an incomplete instruction without changing the owner interface, public skills, authority, default side effects, installation, or package layout. The kernel's placement boundary is unchanged. Deterministic checks validate the package; the resulting placement behavior is `UNVERIFIED` on both hosts, and no paid experiment was run.
+
 ## 4.7.1 (2026-09-08)
 
 Cost-aware routing now explicitly covers the lead and delegates on both Codex and Claude Code.
