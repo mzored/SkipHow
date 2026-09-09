@@ -2,6 +2,19 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 4.7.3 (2026-09-10)
+
+A series of owner-reviewed changes stays in iteration until the owner asks for delivery, without them naming a workflow.
+
+### Changed
+
+- While the owner keeps sending changes, or has said they will look and send them, feedback and acceptance keep the work in iteration and do not trigger push, shared integration, or delivery tests. Delivery starts when the owner asks for it, names a destination, or accepts with nothing further to send. An invoked iteration workflow keeps its own agreement until the owner requests delivery, so acceptance alone does not end that session. Observed defect: the kernel reached that rule only through "an explicitly bounded iteration session", a state nothing outside an invoked workflow could enter, so in a series each edit read as accepted by the arrival of the next one and went to full delivery.
+- Extend the synthetic corpus with a case where the owner announces the review once and then sends bare edits, forbidding delivery of an intermediate edit and forbidding a demand that the owner restate the series each turn.
+
+### Compatibility and evidence
+
+This patch raises a rule that holds for every iteration series from the fast-fixes workflow into the always-loaded kernel, where the 4.4.0 decision placed the iteration shape. `skiphow-fast-fixes` keeps its own contract unchanged, and the owner interface, public skills, authority, default side effects, installation, and package layout are unchanged. Two installed 4.7.1 sessions in the maintainer's own projects are the receipt for the defect, one of which also broke its own repository's equivalent rule after four compactions, so context loss is a separate limit this text cannot remove. Deterministic checks validate the package and corpus. The Codex review round could not run: that account reached its usage limit, so cross-host review of this change is blocked rather than passed. An independent review on the same host raised four qualifying findings, all confirmed against the files and fixed here: the kernel had dropped its deference to an invoked workflow's agreement and so contradicted `skiphow-fast-fixes` on an accepting turn; the canonical contract and the kernel disagreed on when a series ends; the decision record claimed an isolated variable that two sessions in two projects cannot establish; and the raised rule held back less than the rule it came from, leaving push unheld outside the workflow. The corrected behavior is `UNVERIFIED` on both hosts, and no paid experiment was run.
+
 ## 4.7.2 (2026-09-09)
 
 Worktree placement guidance no longer dead-ends in a repository that ignores no such location.

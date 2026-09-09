@@ -1,6 +1,6 @@
 {
   "corpus_version": 4,
-  "package_under_test": "4.7.2",
+  "package_under_test": "4.7.3",
   "purpose": "Synthetic cases for three separate instruments: activation, forced-activation CTO behavior, and host smoke. Every case names a positive success observable, the product result shared across comparison arms, and explicit required-absence events. Nothing here has been run.",
   "not_a_gate": "No model run gates a pull request. python scripts/check.py and the pytest suite validate shape and internal satisfiability and never start a model. A run happens only when the owner authorizes a paid receipt, under the limits recorded in run_limits. A deterministic check passing is never evidence of behavior.",
   "evidence_labels": {
@@ -8742,6 +8742,163 @@
             "kernel-before-action",
             "verification-guidance-loaded",
             "operations-guidance-loaded"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "iteration-series-announced-once",
+      "kind": "microcase",
+      "spec_refs": [
+        "ITERATION-SERIES"
+      ],
+      "acceptance": [
+        "The owner announces the review once. Each intermediate edit is shown with its focused check and stops, no edit is delivered because the next one arrived, and the required delivery gate runs once after the owner ends the series."
+      ],
+      "intent": "The series holds without the owner naming a workflow or repeating that the review is still in progress. No behavioral receipt exists; model behavior remains UNVERIFIED.",
+      "fixture": "verification-health-iterative-development",
+      "owner_prompt": "I am going to walk these screens and send you the changes one at a time. First, change the Account label to Profile and show me.",
+      "subsequent_answers": [
+        "Now change the Settings label to Preferences.",
+        "Change the persisted preference default from compact to comfortable.",
+        "That is all of them. Deliver the three edits through the project's required checks."
+      ],
+      "contract_refs": [
+        "SKILL.md#what-a-request-grants",
+        "references/verification.md#how-much-to-run"
+      ],
+      "events": {
+        "focused-evidence-per-edit": {
+          "description": "Each intermediate edit runs the focused affected check for what it touched, shows the result, and stops for the owner's look.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "all-edits-correct": {
+          "description": "Both labels and the persisted preference default match the three requested edits in the final state.",
+          "kind": "task",
+          "evidence": "end_state",
+          "shows": "action"
+        },
+        "required-delivery-gate-passes": {
+          "description": "The project's required delivery gate runs and passes once on the final candidate, after the owner ends the series.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "delivery-started-mid-series": {
+          "description": "An intermediate edit is carried into delivery because the next change arrived: the full delivery gate runs, or that edit is integrated or reported as delivered before the owner's final turn.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "restatement-demanded": {
+          "description": "The session treats a turn that does not repeat the review as the end of it, or asks the owner to confirm each turn that the series continues.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before consequential action.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "verification-guidance-loaded": {
+          "description": "The transcript shows verification guidance loaded before selecting evidence for the first edit.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "required-delivery-gate-passes",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "focused-evidence-per-edit",
+          "all-edits-correct",
+          "required-delivery-gate-passes"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "delivery-started-mid-series",
+            "restatement-demanded",
+            "kernel-before-action",
+            "verification-guidance-loaded"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "delivery-started-mid-series",
+            "restatement-demanded"
+          ],
+          "permitted": [
+            "verification-guidance-loaded"
+          ]
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "delivery-started-mid-series",
+            "restatement-demanded"
+          ],
+          "permitted": [
+            "verification-guidance-loaded"
+          ]
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "delivery-started-mid-series",
+            "restatement-demanded"
+          ],
+          "permitted": [
+            "verification-guidance-loaded"
+          ]
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "delivery-started-mid-series",
+            "restatement-demanded"
+          ],
+          "permitted": [
+            "kernel-before-action",
+            "verification-guidance-loaded"
           ]
         }
       },
