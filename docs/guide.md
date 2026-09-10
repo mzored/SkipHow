@@ -109,7 +109,7 @@ Where work did go into your tracker, it closes as the change is integrated rathe
 
 A finished report starts with what changed and the evidence that still applies. It names blockers and `UNVERIFIED` claims instead of turning them into success.
 
-The instructions require SkipHow to preserve unrelated work: a checkout, branch or running service it did not create is shared, and the uncommitted changes in it are somebody's. One run on record broke that and destroyed a peer session's uncommitted work, so if you keep two sessions on one checkout, read [current evidence](evidence.md) before you rely on it. A dirty checkout is a reason not to commit when the owned change cannot be separated safely, and it weakens verification only when it makes the evidence unreliable.
+The instructions require SkipHow to preserve unrelated work: a checkout, branch or running service it did not create is shared, and the uncommitted changes in it are somebody's. Preserving it is not the same as ignoring it. From 4.8.0 the report also names the shared state it found that nothing else is looking after, says what it appears to be, and gives the one action that would settle it, so a branch an earlier session finished and never merged stops being invisible. It still does not touch any of it without your word. One run on record broke that and destroyed a peer session's uncommitted work, so if you keep two sessions on one checkout, read [current evidence](evidence.md) before you rely on it. A dirty checkout is a reason not to commit when the owned change cannot be separated safely, and it weakens verification only when it makes the evidence unreliable.
 
 ## Remember the host boundary
 

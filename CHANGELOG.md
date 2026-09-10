@@ -2,6 +2,26 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 4.8.0 (2026-09-10)
+
+Shared state the agent may not write to is now named with the action that would settle it, and technical choices stop reaching the owner.
+
+### Changed
+
+- A checkout, branch, running service, or uncommitted change the run did not create is still never overwritten, reset, published, deleted, or absorbed, and it is no longer left unaccounted either. Material shared state that no open record, review, or live session claims is named with what it appears to be and the one action that would settle it: settled where the current request already reaches it, recommended otherwise, and the work carries on. Observed defect: the kernel carried five prohibitions on unowned state and no counterpart duty, so "that is not my work, and I do not touch uncommitted files either" was a compliant answer. `references/integration.md` required reporting only for branches, checkouts and checkpoints, and only once that playbook had opened, and uncommitted work left by a session that is gone had no disposition at all.
+- No technical choice reaches the owner, as a question, as a menu of options, or as permission to proceed on engineering grounds. Where a technical uncertainty is reversible, the agent takes the option it would defend and says which it took. What reaches the owner instead is a recommendation: the decision already made, or the next action the agent would take on their word, in the consequence it carries for them. Observed defect: the prohibition lived only in `references/product.md` and `references/operations.md`, behind their own triggers, while the kernel stated only which decisions belong to the owner and left the negative unsaid.
+- A running result shown to the owner names the branch or revision it serves and the address serving it. Observed defect: several checkouts of one project answer on the same default address, an owner reading a stale stand concluded that an agent had removed screens it had never touched, and nothing in the package asked for the branch to be named beside the preview.
+
+### Behavioral coverage
+
+- Naming the branch an earlier run left behind moves from permitted to required in the candidate arms of the existing stale-branch case, and its acceptance now covers the settling action.
+- The foreign uncommitted-work case gains a settling-action event, required in the candidate arms. Asking the owner what to do with that work instead of finishing stays forbidden, which is what separates a recommendation from a question.
+- The preview iteration case gains an event for the branch or revision and the address a shown result serves.
+
+### Compatibility and evidence
+
+This minor release adds obligations to the always-loaded kernel without changing the owner interface, public skills, authority, default side effects, installation, or package layout. Nothing here licenses a write the previous version withheld: shared state is still never overwritten, reset, published, deleted, or absorbed; delegates keep the isolation rule; removing a branch an earlier run left still needs the grant `references/integration.md` requires; and work another session is actively producing is accounted for by that session, so a programme's lead reports nothing about its own live lanes. REVIEW_OUTCOME_PLACEHOLDER Deterministic checks validate the package and corpus. The Codex review round could not run: that account is at its usage limit until September 15, so cross-host review of this change is blocked rather than passed. The evidence for the change is the owner's report of the behavior and the shipped text that made abstention compliant, not a receipt from a run, so `AGENTS.md`'s bar for a new obligation is unmet and `docs/decisions.md` records the change as the owner's decision. The resulting behavior is `UNVERIFIED` on both hosts, and no paid experiment was run.
+
 ## 4.7.3 (2026-09-10)
 
 A series of owner-reviewed changes stays in iteration until the owner asks for delivery, without them naming a workflow.
