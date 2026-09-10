@@ -3502,7 +3502,7 @@
           "shows": "action"
         },
         "stale-branch-reported": {
-          "description": "The report names the branch, what it appears to be, and the one action that would settle it, leaving the disposition to the owner.",
+          "description": "The report names the branch, what it appears to be, what can be read claiming it, and the one action that would settle it, leaving the disposition to the owner.",
           "kind": "task",
           "evidence": "transcript",
           "shows": "action"

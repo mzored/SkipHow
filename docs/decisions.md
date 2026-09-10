@@ -52,7 +52,8 @@ first draft settled state "where the current request already reaches it", a topi
 boundary and `integration`; on a reconcile request it would have retired a workspace the corpus already forbids retiring, and on
 a read-only diagnosis it would have taken a shared port from another checkout, which is the one class of shared state no other
 sentence in the package governs. The first draft also keyed the duty to state that "no open record, review, or live session
-claims", which is the undecidable trigger 2.4.2 and 2.16.0 both found unusable: `tracked-work` says in two places that a
+claims", which fails the present-state test 2.16.0 settled after 2.4.2 spent three wordings failing to fix a trigger of the same
+shape: `tracked-work` says in two places that a
 timestamp, an assignee, a label, or a read-back cannot settle liveness. The claim question moved out of the trigger and into the
 content, so the run reports what it can read rather than grading what it inferred. And the duty had no bound on how often or how
 widely it fired; it is now tied to state the work actually brings the run up against, named once.
@@ -69,10 +70,11 @@ proceed on engineering grounds; where the uncertainty is reversible the agent ta
 its place the owner gets a recommendation they can decline. No shipped sentence forbade the technical question itself:
 [`operations`](../plugins/skiphow/skills/skiphow/references/operations.md) forbade transferring ordinary technical review back to
 the owner, [`product`](../plugins/skiphow/skills/skiphow/references/product.md) governed how a question that does reach them is
-put, and the kernel stated only which decisions belong to the owner. What the package did carry is the expectation: the corpus
+put, and the kernel allocated those decisions to the agent without ever saying they may not be handed back. What the package
+did carry is the expectation: the corpus
 forbids technical approval in `audit-small-visible-two-file`, tracker interviews in `audit-tracking-first-use` and
 `audit-tracking-same-account`, renewed technical approval in `audit-delivery-active`, and test selection returned to the owner in
-`verification-health-iterative-development`, with nothing in the always-loaded text behind them. And a running result shown to the owner names the branch or revision it serves and the address serving it,
+`verification-health-iterative-development`, each resting on that allocation rather than on a prohibition. And a running result shown to the owner names the branch or revision it serves and the address serving it,
 because several checkouts of one project answer on the same default address. The owner reports concluding from a stale stand that an
 agent had removed screens it never touched.
 

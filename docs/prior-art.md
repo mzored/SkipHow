@@ -91,9 +91,10 @@ A command surface — `/bug`, `/idea`, `/continue`, `/prior`, in the shape Addy 
 
 A summary of each tracked-work rule in the kernel beside the method holding its detail was rejected for 2.8.0, and so was moving the whole lifecycle into the kernel. The reasoning is in [decision history](decisions.md) under "An item exists before the branch, and closes on integration".
 
-The 2026 session-handoff convention was read for 4.8.0 and rejected. Its answer to work parked by a finished session is a
-dated handoff file per branch, committed beside the work, carrying a done/next/do-not-touch list that the next agent validates
-before spending tokens. SkipHow already refuses a parallel status file, and the state the convention writes down is state Git and
+The handoff-file pattern that 2026 agent-tooling writing converges on was surveyed for 4.8.0 and rejected. No single
+implementation was inspected, so this records the pattern rather than a project: work parked by a finished session gets a dated
+handoff file per branch, committed beside the work, carrying a done/next/do-not-touch list that the next agent validates before
+spending tokens. SkipHow already refuses a parallel status file, and the state the convention writes down is state Git and
 the project's tracker already hold, so the association would drift from the first edit to either copy. What survives the
 rejection is the observation that the reader of such a file is always the *next* run, which is the same conclusion 2.7.0 reached
 about branches nobody retires. So 4.8.0 puts the duty on the next run's own inspection instead of on a file: what it turns up
