@@ -91,6 +91,38 @@ The same Codex attempt on CLI 0.153.0 was refused by the machine's managed
 marketplace-source policy before installation, so Codex clean install remains
 `UNVERIFIED`; nothing was installed. Neither result is activation evidence.
 
+## 4.8.0 custody of shared state
+
+Version 4.8.0 adds the counterpart to a prohibition the kernel already carried. A checkout, branch, running service, or
+uncommitted change the run did not create is still never overwritten, reset, published, deleted, or quietly absorbed, and it is now
+never left unaccounted either: where the work brings a run up against material shared state, the report says once what it appears to
+be, what can be read claiming it, and the one action that would settle it. Naming it is not authority to act on it; the action is
+taken only where the current request and the rules governing that act already allow it, and recommended otherwise.
+Two smaller rules travel with it. No technical choice reaches the owner, as a question, as a menu of options, or as permission to
+proceed on engineering grounds, and what reaches them instead is a recommendation they can decline. A running result shown to the
+owner names the branch or revision it serves and the address serving it. All three are `Contract`.
+
+The defect is readable in the shipped text and is not `Observed` from a retained run. The kernel's preservation paragraph gave
+five prohibitions and no duty; [`integration`](../plugins/skiphow/skills/skiphow/references/integration.md) required inspecting
+and reporting only branches, checkouts and checkpoints, and only once that playbook had opened on work that is done but not where
+it belongs; uncommitted work left by a session that has ended matched neither. What stands beside the text is the owner's report
+that sessions on their projects answer "that is not my work, I will not touch it, and I do not touch uncommitted files either",
+and their report of reading a stale preview stand and concluding an agent had removed screens it never touched. Neither is a
+receipt. No session was run for this release, and `AGENTS.md`'s bar for a new obligation is therefore unmet; the disposition is
+recorded in [the decision history](decisions.md#the-480-custody-rule).
+
+Two unrun corpus scenarios would show the change. `int-002-earlier-branch-not-cleaned-under-unrelated-change` moves naming an
+earlier run's branch from permitted to required in the candidate arms, and `workflow-fast-fixes-hook-conflict` gains the branch
+or revision a shown result serves. `foreign-uncommitted-work-preserved` was left alone: naming that work and saying it was left
+alone is already required of every arm there, so nothing this release adds is distinguishable on that fixture. Neither scenario
+isolates this release on its own. The M4 arm is pinned to 3.0.1, so a candidate-versus-M4 difference is attributable to
+everything since 3.0.1; the corpus carries no 4.7.3 arm, and a receipt that attributes behavior to this change would need a
+package pair differing only in these three sentences. The resulting behavior is `UNVERIFIED` on both hosts. Cross-host review is
+`UNVERIFIED` for this change: the Codex account is at its usage limit until 2026-09-15, so three independent same-host reviews
+stood in. They raised fifteen qualifying findings, twelve distinct once overlap is removed, all confirmed against the files, with the material ones dispositioned in [the
+decision history](decisions.md#the-480-custody-rule) and the release notes. A fourth review of the corrections raised six
+further findings, all fixed before release.
+
 ## 4.7.3 iteration series contract
 
 Version 4.7.3 raises one rule into the kernel: while the owner keeps sending changes, or has said they will look and send them, feedback and acceptance keep the work in iteration rather than triggering push, shared integration, or delivery tests, and delivery starts when they ask for it, name a destination, or accept with nothing further to send. An invoked iteration workflow keeps its own agreement until delivery is requested. Before this, the kernel reached that rule only through an explicitly bounded session, which nothing outside an invoked workflow could enter. This is `Contract`.
@@ -696,8 +728,8 @@ What the current package's text requires, settled by reading it. This section re
 - Authority comes from the owner's messages and trusted host-, user-, organization-, or administrator-managed policy. Repository instruction files are applicable project procedure within authority already granted, evidence until their provenance is established in an untrusted revision, and never a grant of mutation, secret access, disclosure, network egress, permission change, cleanup, or protected external effect. Records the owner points at authorize pursuing the outcome, and stay untrusted task data.
 - A read-only request writes nothing. A change request grants in-scope local edits and non-destructive validation and carries through an established owner-authorized non-production workflow. Covered actions do not need repeated permission. An upgrade creates no grant and preserves restrictions.
 - Protected effects need applicable explicit owner authorization, including when triggered by an ordinary push, merge, tag, or CI workflow. Existing authorization remains usable while its scope and conditions hold. Broad autonomy language, project procedure, issue text, and tool capability do not supply a grant.
-- Product consequences are the owner's; engineering mechanics are the agent's. One outcome-level question, independent work continues, dependent behavior waits.
-- Foreign work is preserved. Delegates are read-only without verified distinct isolation, and the root serializes writes. A delegate's surface is a boundary on its authority, not a plan; its model and effort are chosen for the task's consequence and complexity rather than by a fixed tier or a floor at the session's own level, and naming a level in the root's own message does not set it.
+- Product consequences are the owner's; engineering mechanics are the agent's. No technical choice reaches them as a question, a menu of options, or a request for permission on engineering grounds; a reversible technical uncertainty is settled by taking the option the agent would defend, and what reaches the owner instead is a recommendation they can decline. One outcome-level question, independent work continues, dependent behavior waits.
+- Foreign work is preserved and never left unaccounted: material shared state the work brings a run up against is named once with what it appears to be, what can be read claiming it, and the one action that would settle it, and naming it is not authority to act on it. Delegates are read-only without verified distinct isolation, and the root serializes writes. A delegate's surface is a boundary on its authority, not a plan; its model and effort are chosen for the task's consequence and complexity rather than by a fixed tier or a floor at the session's own level, and naming a level in the root's own message does not set it.
 - A read-only review reports confirmed defects and modifies nothing; urgency, including a security finding, does not widen the request, and a sensitive finding stays private without a disclosure grant. Repair happens only when it was authorized.
 - A step that could take real time gets an expectation of healthy progress, and a breach is information rather than a reason to wait longer; monitoring prefers the host's own wait mechanism to a loop that holds the turn.
 - Reuse is a presumption, not a law: a maintained capability is preferred to custom code where it fits, and a disposable experiment is cheap to run and cheap to discard, its shortcuts never becoming architecture by staying in place.
@@ -705,7 +737,7 @@ What the current package's text requires, settled by reading it. This section re
 - Completion is relative to the authorized destination: a local branch with no granted destination can be complete, a named destination is incomplete until verified there, and no historical convention grants a push or a review. Earlier-run artifacts are not cleaned under an unrelated change.
 - A failed merge is recovered by consequence: evidence and unrelated work are preserved first, a disposable failure may stay in place for diagnosis, a shared target that other work depends on is contained or restored to its last good state, and restoring production still needs its grant. The failed state is never reported as delivered.
 - Enabling, checking, or disabling SkipHow's own default governance is an owner request the skill handles itself: it resolves the file the host reads, previews the change, asks once before writing, and reports configured, available, and loaded as three separate facts without bypassing managed policy.
-- Every requested part is reconciled before success is reported, including clones and scratch checkouts the run created; a material intended effect that did not happen is reported even when the main result is complete; a simulation is never described as an external effect; a check that did not run is not a check that passed.
+- Every requested part is reconciled before success is reported, including clones and scratch checkouts the run created; a material intended effect that did not happen is reported even when the main result is complete; a simulation is never described as an external effect; a check that did not run is not a check that passed; a running result shown to the owner names the branch or revision and the address it serves.
 - When part of the result waits on the owner, a grant, or an external party, only independent authorized work that demonstrably advances the remaining acceptance conditions continues; no new prerequisite is created to fill free capacity; when none remains the owner gets one batch of blockers.
 - `delegation` is in context before a delegate is dispatched; model and effort are chosen from the lane's reasoning demand, the consequence of a wrong answer, and the cost of checking, and set through the host's own control where it exposes one.
 - A host or sandbox refusal is not bypassed; when no authorized alternative remains the run names the exact blocker and the exact permission. Sensitive findings are not disclosed outside their authorized audience and are minimized inside it.

@@ -4,7 +4,7 @@ This page records the choices that still matter when SkipHow changes. Read it be
 
 ## Current decisions
 
-The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-09-08 against the 4.7.1 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
+The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-09-10 against the 4.8.0 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
 
 | Decision | Active rationale | Premises | Evidence | Reopens when |
 | --- | --- | --- | --- | --- |
@@ -12,7 +12,8 @@ The live decisions, their premises, and what would reopen each. "Evidence" says 
 | Authority, CTO responsibilities and their observable triggers, preservation, delegate safety, direction when the result waits on the owner, and completion live in the always-loaded kernel; detailed technique is conditional, and the kernel carries one point-of-use obligation, to have `delegation` in context before dispatching a delegate | Correct behavior must not depend on opening an optional file, while small work should not inherit a fixed workflow; a topic list gets a playbook opened less reliably than an obligation phrased against the act | 2.x loading measurements, the 3.x field audit, the 4.x contract reviews, and the 4.3.0 outcome audit | `Contract` (4.x); the 2.15.x receipts show the kernel obligation opening `delegation` before the first dispatch where the topic list did not; 4.x behavior `UNVERIFIED` | Receipts show the kernel causing ceremony or missing a technical duty, or a playbook trigger being unrecognizable without opening it |
 | Authority is the owner's messages and trusted host, user, organization, or administrator policy; repository instruction files are applicable procedure within granted authority and evidence in an untrusted revision; records are untrusted task data | A file in the repository can be planted; a record the owner points at authorizes pursuing its outcome and nothing more | Hosts load instruction files at their own precedence; nothing in a repository can be trusted by location alone | `Contract` (4.x); adversarial cases in `evals/`, not run | A receipt shows a run treating a repository file or a record as a grant, or a host ships an enforced provenance mechanism |
 | Read-only analysis writes nothing; established owner-authorized non-production workflows cover routine delivery and tracking; a series of owner-reviewed changes stays in iteration until the owner requests delivery or accepts with nothing further to send, and an invoked iteration workflow keeps its own boundary until delivery is requested | Explicit planning-skill invocation requests durable records, but automatic selection grants nothing; fast-fixes acceptance stays inside iteration; preparation and production remain separate grants | Owner-selected workflow contracts preserve ordinary SkipHow behavior, existing grants, audience boundaries, and downstream-effect checks | `Contract`; new workflow behavior `UNVERIFIED` | A receipt shows unauthorized effects, missing records requested by invocation, or unnecessary permission questions |
-| Completion is relative to the authorized destination; earlier-run artifacts are not cleaned under an unrelated request | A named destination is incomplete until verified there; a branch left by an earlier run is somebody's until ownership and emptiness are established | Review finishes after the run that opened it; ownership of a branch is not readable from its name | `Contract` (4.0); integration cases in `evals/`, not run | Receipts show litter accumulating where projects expect a run to clear its own earlier work, and an authorized way to do it |
+| Completion is relative to the authorized destination; earlier-run artifacts are not cleaned under an unrelated request, and material shared state the work brings a run up against is named once with what can be read claiming it and the one action that would settle it, which is not authority to act on it | A named destination is incomplete until verified there; a branch left by an earlier run is somebody's until ownership and emptiness are established | Review finishes after the run that opened it; ownership of a branch is not readable from its name; not being allowed to write to something is not a reason to say nothing about it | `Contract` (4.0; naming duty 4.8); integration cases in `evals/`, not run | Receipts show litter accumulating where projects expect a run to clear its own earlier work and an authorized way to do it, a run treating the naming duty as licence to tidy a repository nobody asked it to touch, or a lead reporting a peer session's live lane as unclaimed |
+| No technical choice reaches the owner, and a running result shown to them names the branch or revision and the address it serves | The owner never handling engineering is the boundary this product exists to hold; a recommendation the owner can decline is not a question that stops the work | Reversible technical uncertainty is settled by taking the option the agent would defend; several checkouts of one project answer on the same default address | `Contract` (4.8); the corpus forbids technical approval, tracker interviews, and test-selection questions in five cases, none run | Receipts show the recommendation channel being used to hand product choices back, or an owner asking for the technical options they no longer see |
 | Verification proves each property at the narrowest stable boundary that retains the needed fidelity; distinct high-fidelity evidence survives; recurring disproportionate cost is measured at its responsible layer; equivalent inputs reuse valid evidence | The 4.6.0 release repeated equivalent gates, while the new verification-health cases distinguish coupling, setup cost, unique cross-boundary confidence, and proportional iteration | The relevant code, dependencies, configuration, environment, artifact, and destination determine whether evidence applies; test category, suite size, and speed alone establish neither cause nor adequacy | One installed 4.6.0 release session supports evidence reuse; the 4.7.0 placement and diagnosis rules are `Contract` with deterministic corpus coverage; behavior is `UNVERIFIED` | A run drops unique evidence, normalizes disproportionate churn, optimizes an unmeasured cause, or makes ordinary work heavier without preserving delivery confidence |
 | Broad project-state reconciliation reconstructs before it mutates; status, record correction, and cleanup have request-scoped effects; only a non-reconstructible outcome-to-workspace association becomes durable | Tracker state, branch names, merge status, and CI can each be stale or refer to the wrong outcome, revision, or destination; a parallel lifecycle registry would create another claim to reconcile | Live Git, reviews, destinations, and revision-specific validation establish every transition in the current cases; workspace ownership cannot always be reconstructed after a session ends | `Contract` and deterministic corpus validation (4.6.0); behavior `UNVERIFIED` | A receipt finds live evidence insufficient to recover a material transition, the ownership association insufficient for safe recovery, or the ordering adding ceremony without preventing a failure |
 | Delegates are read-only without verified distinct isolation; the root serializes writes; lead and delegate model and effort are independent choices minimizing expected total cost within owner constraints; adequate current routes survive comparable work, and settings use actual host controls | One shared checkout has one index and one branch; a delegate's own account of its isolation is not proof; host controls change independently of this package; a review's independence and framing matter more than its level | The active host supplies the controls a run can use; no portable writer-isolation or absolute-level interface exists across supported hosts, so unverifiable isolation takes the safe fallback | Failures `Observed` on 2.x (five lanes in one checkout; a worktree that reported success into the shared tree); the portable fallback is `Contract`, not run; writer lanes remain host-specific and must be verified | A portable capability interface appears, a host makes isolation verifiable and default, or paired runs settle the routing cost question |
@@ -27,6 +28,70 @@ The live decisions, their premises, and what would reopen each. "Evidence" says 
 | CTO evidence belongs to a scenario; suite status reports declared coverage and carries no behavioral label; an eligible terminal outcome also needs a verified fixture manifest and retained end-state artifact for suite coverage; outside the suite, eligibility is judged per claim (loaded, delivered at destination, foreign work preserved, completion honesty, comparative benefit), each with its own required evidence, a confirmed failure recorded as `FAIL` rather than as missing evidence, and a loading observation labelling nothing else | One successful run cannot support eleven unrun scenarios or imply another host, activation arm, or trial; prose summaries cannot replace inspectable state; a per-run standard left every 3.x and 4.x observation unlabelled while the ledger quoted them | Coverage, terminal outcome, and receipt sufficiency are independent; a complete run set may contain failures; the rules for each claim were fixed before any new run and validated against the retained captures | `Deterministic` corpus validation in 4.0.1 and per-claim validation in 4.3.0 (`scripts/claim_eligibility.py`); suite behavior `UNVERIFIED` | A claim needs evidence no rule expresses, or a rule is found to weaken the public meaning of `Observed` |
 
 The sections below are the history behind those rows: what each release tried, measured, and rejected. They are non-normative. Where a section and the index disagree, the index is current and the section records how it got there.
+
+## The 4.8.0 custody rule
+
+The owner reported a recurring answer from sessions on their projects: that is not my work, I will not touch it, and I do not
+touch uncommitted files either. Reading the shipped text showed the answer was compliant. The kernel gave five prohibitions on a
+checkout, branch, running service, or uncommitted change the run did not create, and no counterpart duty.
+[`integration`](../plugins/skiphow/skills/skiphow/references/integration.md) carried "inspect and report them when found", but
+only for branches, checkouts and checkpoints, and only once that playbook had opened on work that is done but not where it
+belongs. Uncommitted work left behind by a session that has ended matched neither, while the kernel separately legitimizes
+producing exactly that state. So the package protected other people's work by making the agent silent about it.
+
+The change is one idea. Isolation protects the keyboard, not the responsibility. The prohibition stands unchanged and gains its
+counterpart: where the work brings a run up against material shared state, the report says once what it appears to be, what can
+be read claiming it, and the one action that would settle it. Naming it is not authority to act on it, and that is stated in the
+same breath: the action is taken only where the current request and the rules governing that act already allow it, which leaves
+`integration`'s stricter removal test and the protected-action boundary in charge of every act. So the duty adds a sentence to
+the report and no new permission, which is what keeps a programme's parallel lanes safe. Where a running process, an open review,
+or a live record visibly claims the state, that is what the report says about it.
+
+Three drafting mistakes were caught in review and are worth recording, because each is a shape this project has hit before. The
+first draft settled state "where the current request already reaches it", a topical test looser than both the protected-action
+boundary and `integration`; on a reconcile request it would have retired a workspace the corpus already forbids retiring, and on
+a read-only diagnosis it would have taken a shared port from another checkout, which is the one class of shared state no other
+sentence in the package governs. The first draft also keyed the duty to state that "no open record, review, or live session
+claims", which fails the present-state test 2.16.0 settled after 2.4.2 spent three wordings failing to fix a trigger of the same
+shape: `tracked-work` says in two places that a
+timestamp, an assignee, a label, or a read-back cannot settle liveness. The claim question moved out of the trigger and into the
+content, so the run reports what it can read rather than grading what it inferred. And the duty had no bound on how often or how
+widely it fired; it is now tied to state the work actually brings the run up against, named once.
+
+It needs no new scan, but it is not gated on one either. The kernel already inspects live branches, worktrees, and open and
+closed records before consequential work, so the state is usually already encountered; naming it writes nothing, so a read-only
+answer that runs `git status` can carry the duty without becoming a durable change. This is also the shape 2.7.0 recorded and
+could not close then:
+where the litter appears after a run ends, the collector has to be the next run. An iteration parked at its shown result is
+correctly complete for its own session, and until now no later session had a reason to mention it again.
+
+Two smaller rules travel with it. No technical choice reaches the owner, as a question, as a menu of options, or as permission to
+proceed on engineering grounds; where the uncertainty is reversible the agent takes the option it would defend and says which. In
+its place the owner gets a recommendation they can decline. No shipped sentence forbade the technical question itself:
+[`operations`](../plugins/skiphow/skills/skiphow/references/operations.md) forbade transferring ordinary technical review back to
+the owner, [`product`](../plugins/skiphow/skills/skiphow/references/product.md) governed how a question that does reach them is
+put, and the kernel allocated those decisions to the agent without ever saying they may not be handed back. What the package
+did carry is the expectation: the corpus
+forbids technical approval in `audit-small-visible-two-file`, tracker interviews in `audit-tracking-first-use` and
+`audit-tracking-same-account`, renewed technical approval in `audit-delivery-active`, and test selection returned to the owner in
+`verification-health-iterative-development`, each resting on that allocation rather than on a prohibition. And a running result shown to the owner names the branch or revision it serves and the address serving it,
+because several checkouts of one project answer on the same default address. The owner reports concluding from a stale stand that an
+agent had removed screens it never touched.
+
+One proposal was rejected. A review of a real session argued that the integration and tracked-work playbooks open only when the
+owner asks, and that the fix was to move their entry to the pause or the end of an iteration. Neither trigger reads that way:
+`integration` opens on a state, and `tracked-work` already ends its trigger with a pause, resume, or session boundary that could
+lose work. Rewriting a trigger that already fires is the mistake 2.10.1 recorded. The same review's other suggestion, naming the
+branch a preview serves, was a real gap and is adopted here, generalized past the iteration workflow because `longrun` and
+`deploy-ready` show results too.
+
+`AGENTS.md` asks for evidence that capable agents cannot reliably infer a behavior before a mandatory obligation is added, and
+that bar is unmet: no receipt shows a run refusing to name state it found. What stands behind the change is the owner's report of
+the behavior and the shipped text that made it compliant. The owner decided it on the ground that a technical director who
+answers "not my problem" about the state of the project is not the product SkipHow claims to be. That is the same disposition
+2.5.0, 2.8.0 and 4.3.0 recorded for themselves. Revisit it if receipts show a run treating the naming duty as licence to tidy a
+repository nobody asked it to touch, a programme lead reporting on its own live lanes, or the recommendation channel used to hand
+a product choice back without asking.
 
 ## The 4.7.1 routing clarification for Codex and Claude Code
 
