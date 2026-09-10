@@ -91,6 +91,19 @@ A command surface — `/bug`, `/idea`, `/continue`, `/prior`, in the shape Addy 
 
 A summary of each tracked-work rule in the kernel beside the method holding its detail was rejected for 2.8.0, and so was moving the whole lifecycle into the kernel. The reasoning is in [decision history](decisions.md) under "An item exists before the branch, and closes on integration".
 
+The 2026 session-handoff convention was read for 4.8.0 and rejected. Its answer to work parked by a finished session is a
+dated handoff file per branch, committed beside the work, carrying a done/next/do-not-touch list that the next agent validates
+before spending tokens. SkipHow already refuses a parallel status file, and the state the convention writes down is state Git and
+the project's tracker already hold, so the association would drift from the first edit to either copy. What survives the
+rejection is the observation that the reader of such a file is always the *next* run, which is the same conclusion 2.7.0 reached
+about branches nobody retires. So 4.8.0 puts the duty on the next run's own inspection instead of on a file: what it turns up
+that nothing accounts for gets named, and nothing new is written down.
+
+A review of one of the maintainer's own sessions proposed moving the `integration` and `tracked-work` entry triggers off the
+owner's request and onto the pause or the end of an iteration. It was refused on the text: `integration` opens on a state, and
+`tracked-work` already ends its trigger with a pause, resume, or session boundary that could lose work. Its second suggestion,
+naming the branch a preview serves, was adopted and generalized past the iteration workflow.
+
 ## The adoption rule
 
 An idea from another project becomes a focused method or a kernel invariant only when it answers an observed task need or protects a high-risk boundary. Good practice somewhere else is not enough. The default stays the least process that reaches a fresh, verified result while preserving the owner's authority and unrelated work.
