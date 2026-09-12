@@ -2,6 +2,46 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 4.8.1 (2026-09-13)
+
+Ordinary work now explicitly assesses material technical risks and accumulating costs, including those a change
+would introduce or perpetuate, even when its requested behavior and checks pass. Concerns need evidence and
+foreseeable consequences for the product and its continued development and operation. The lead handles them
+proportionately within the authorized outcome or gives separable problems an explicit disposition without an
+owner reminder.
+
+This clarifies CTO supervision across engineering concerns. It adds no mandatory audit, size threshold, review
+seat, tracker, permission, or default external effect. New unrun corpus cases cover data-integrity risk during a
+small export change and recurring operational cost during a read-only explanation, including scope boundaries.
+The design assumes capable frontier models and leaves investigative technique to their judgment.
+
+The motivating private 4.7.3 observation and alternatives are summarized in [evidence](docs/evidence.md) and
+[decisions](docs/decisions.md#the-481-technical-stewardship-clarification). Cause and behavioral improvement remain
+`UNVERIFIED`; no paid comparison was run.
+
+Independent final reviews found no qualifying defects: a subagent checked the new cases against their fixtures,
+and an isolated Codex reviewer checked the instruction contract and public claims. The earlier structural draft's
+review found a stale decision-index review date, which was confirmed and corrected before the final candidate.
+No findings were refused. The isolated review used separate operating-system and host homes, referenced the
+existing authentication file without copying credentials, showed no personal instruction contamination markers,
+and removed its scratch directory.
+
+Local validation covered the final runtime text, corpus, pinned dependencies, and unchanged package structure.
+The full deterministic gate and `git diff --check` passed; final review-note edits received focused document checks.
+Clean installation and model sessions were not repeated for this prose-only package change.
+
+| Capability | Local candidate evidence |
+| --- | --- |
+| Deterministic package gate | PASS |
+| Codex schema validation | PASS |
+| Claude schema validation | PASS |
+| Clean Codex install | UNVERIFIED |
+| Clean Claude install | UNVERIFIED |
+| Explicit invocation | UNVERIFIED |
+| Implicit activation | UNVERIFIED |
+| Continuity | UNVERIFIED |
+| Behavioral suite | UNVERIFIED, [evidence](docs/evidence.md) |
+
 ## 4.8.0 (2026-09-10)
 
 Shared state the agent may not write to is now named with the action that would settle it, and technical choices stop reaching the owner.

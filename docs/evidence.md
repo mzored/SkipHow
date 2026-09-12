@@ -4,6 +4,21 @@ This page separates package checks from observed model behavior. The full 2.0 ev
 
 ## Three labels
 
+The 4.8.1 technical-stewardship clarification is `Contract`; its behavioral benefit and causal attribution are
+`UNVERIFIED`. One private installed Claude session on 4.7.3 used fast-fixes, loaded the kernel and verification
+text, and edited a global stylesheet before the owner questioned its size. The transcript contains the owner's
+question both as a queued input and as a later removal of that input; these are one observation, not two sessions.
+Afterward the lead measured 2458 lines, inspected mixed responsibilities and direct readers, searched existing
+records, and dispatched a separate refactor task. That dispatch proves neither completed refactoring nor that the
+file's size justified it. No structural assessment was found in the inspected pre-question segment. Silence
+cannot prove what the model noticed, and no paired reproduction was run. The kernel already required next-change
+judgment and disposition of discovered material findings. The owner explicitly asked to generalize beyond this
+example to proactive CTO judgment about important engineering concerns and identified frontier models as the
+intended execution setting. The clarification closes an ambiguous recognition trigger during ordinary work;
+it does not establish that those models generally fail without another procedure. Two additional unrun corpus
+cases cover data-integrity risk during a small export change and recurring operational cost during a read-only
+explanation. See [the decision](decisions.md#the-481-technical-stewardship-clarification).
+
 Every claim about this project carries one of three labels, and they do not substitute for one another.
 
 - **Contract.** Behavior the shipped instructions require. Reading the package settles it. It says what a run is told to do, never what a model does.
