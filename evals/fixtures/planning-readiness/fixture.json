@@ -1,0 +1,17 @@
+{
+  "id": "planning-readiness",
+  "summary": "Synthetic source inventories distinguish broad tracker groups, bounded assignments, mechanical batches, and a small cohesive change.",
+  "kind": "checked-in planning decision evidence",
+  "synthetic": true,
+  "planted": [
+    "Localization has heterogeneous source sizes, shared writes, independent translation preparation, and downstream uncertainty.",
+    "A mechanical field migration has a compatible transition and separate consumer checks rather than user-facing slices.",
+    "A single-message repair has no useful parallel boundary."
+  ],
+  "setup": [
+    "Use the existing capture preparation path to copy the fixture into an owned isolated session.",
+    "Keep the evidence and selected owner prompt identical across arms. Do not create an application to turn this planning instrument into an implementation test."
+  ],
+  "run_checks": "none; grade the returned plan against the selected section of evidence.md",
+  "privacy": "All inventories, counts, and application details are invented."
+}
