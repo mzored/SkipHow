@@ -1,0 +1,6 @@
+{
+  "source": "/",
+  "destination": "/default/",
+  "status": 302,
+  "fallback": "generated redirect document"
+}

@@ -4,6 +4,26 @@ This page separates package checks from observed model behavior. The full 2.0 ev
 
 ## Three labels
 
+The 4.8.2 planning-readiness clarification is `Contract`. A private installed Codex session on 4.8.0 loaded the
+planning and delegation text, returned broad work packages, then refined assignment boundaries and distributed
+review after an owner question. Parallel translation was already present in the first plan. The same follow-up
+changed product scope, which is not a planner failure. No context overflow was observed, and the later numeric
+batch sizes were not measured safety limits. This is one uncontrolled observation; its cause and the clarification's
+behavioral improvement remain `UNVERIFIED`.
+
+A private Claude session on 4.7.3 removed a page, noticed its stale deployment comment, and left correction
+conditional on another owner instruction. The inspected transcript contains no saved follow-up. Project procedure
+at the session revision required resolving findings, and the shipped kernel already owned technical choices and
+material-finding disposition. The actual tool result omitted 12113 characters from the kernel read, including those
+rules; no later read of the missing sections was found. That does not establish why the finding was left unresolved.
+The kernel and loader are unchanged. See [the decision and alternatives](decisions.md#related-findings-and-incomplete-instruction-reads).
+
+The new unrun corpus scenarios cover localization assignments, mechanical migration batches, a small cohesive
+change, local versus deferred finding resolution, missing production authority, and read-only advice. A complete
+versus truncated synthetic policy-read pair checks actual retrieval before a continuation decision. It neither
+injects live host truncation nor proves SkipHow kernel loading. No paid behavioral comparison was authorized or run.
+Deterministic corpus checks establish only validity of these instruments. No host capability gains an `Observed` label.
+
 The 4.8.1 technical-stewardship clarification is `Contract`; its behavioral benefit and causal attribution are
 `UNVERIFIED`. One private installed Claude session on 4.7.3 used fast-fixes, loaded the kernel and verification
 text, and edited a global stylesheet before the owner questioned its size. The transcript contains the owner's

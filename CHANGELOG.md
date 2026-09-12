@@ -2,6 +2,51 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 4.8.2 (2026-09-13)
+
+Planning now distinguishes broad tracker groups, verifiable product slices, and executable delegate assignments.
+The next ready assignments have boundaries grounded in their source workload, context, output, verification, and
+integration. The plan identifies useful parallel preparation and shared-write constraints, keeps later boundaries
+provisional where earlier results determine them, and keeps small cohesive work direct. Its existing independent
+review also assesses assignment feasibility and the review and integration workload.
+
+This clarifies the existing bounded-planning contract without adding a stage, sizing threshold, worker count,
+module, authority, or external effect. The kernel and loading mechanism are unchanged. New synthetic cases cover
+planning readiness, responsibility for related findings in protected directories, explicit deferral, production
+authority, read-only advice, and complete versus truncated policy reads.
+
+The motivating observations and alternatives are recorded in [evidence](docs/evidence.md) and
+[decisions](docs/decisions.md#the-482-planning-readiness-clarification). No paid behavioral comparison was run.
+Causation, actual host recovery from truncated kernel reads, and behavioral improvement remain `UNVERIFIED`.
+The synthetic read pair checks a fixture policy, not live host behavior.
+
+Independent corpus review found one qualifying contradiction: the complete-read case could forbid a truthful
+claim about its complete fixture policy. The corrected event distinguishes that claim from unsupported live-host
+or kernel-loading claims. The reviewer confirmed the correction. No findings were refused. Final isolated Codex
+review found no qualifying defects in the staged candidate, including the site version update. Its transcript
+confirmed read-only execution with separate operating-system and host homes and no personal instruction or
+installed-plugin contamination markers. Authentication used a reference to the existing credential file without
+copying it, and the owned review workspace was removed.
+
+The full local deterministic run passed 381 tests and exposed six site checks failing on the old displayed version.
+Updating the two evidence-page version values resolved that single cause; all six affected tests and the site
+contract validator then passed. Together these results cover all 387 tests for the candidate under the pinned
+dependencies. The final release-note update received focused validation, and `git diff --check` passed. Codex and
+Claude schema validation passed. No clean installation or behavioral sessions were repeated for this prose-only
+package change.
+
+| Capability | Local candidate evidence |
+| --- | --- |
+| Deterministic package gate | PASS, full run plus affected-site rerun |
+| Codex schema validation | PASS |
+| Claude schema validation | PASS |
+| Clean Codex install | UNVERIFIED |
+| Clean Claude install | UNVERIFIED |
+| Explicit invocation | UNVERIFIED |
+| Implicit activation | UNVERIFIED |
+| Continuity | UNVERIFIED |
+| Behavioral suite | UNVERIFIED, [evidence](docs/evidence.md) |
+
 ## 4.8.1 (2026-09-13)
 
 Ordinary work now explicitly assesses material technical risks and accumulating costs, including those a change

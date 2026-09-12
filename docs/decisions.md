@@ -4,10 +4,11 @@ This page records the choices that still matter when SkipHow changes. Read it be
 
 ## Current decisions
 
-The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-09-13 against the 4.8.1 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
+The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-09-13 against the 4.8.2 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
 
 | Decision | Active rationale | Premises | Evidence | Reopens when |
 | --- | --- | --- | --- | --- |
+| A prepared plan distinguishes broad records from executable assignments and bounds review as well as implementation | A tracker group can name an outcome without establishing a feasible next assignment; source size and shared writes affect execution | Existing bounded-slice contract and an explicit owner request for dispatch-ready planning; later boundaries may depend on earlier results | Clarified `Contract` in 4.8.2; causal attribution and behavioral improvement `UNVERIFIED` | Receipts show infeasible assignments surviving review or the clarification causing speculative decomposition or unnecessary small-task ceremony |
 | Assess material technical risks and accumulating costs encountered in ordinary work | Passing requested behavior and checks can leave a narrow acceptance-only reading of CTO supervision | Concerns need evidence and foreseeable product, development, or operational consequences; recognition does not grant broader repair | Owner-requested clarification in 4.8.1; cause and behavioral benefit `UNVERIFIED` | A controlled receipt shows missed material concerns, speculative audit expansion, or routine work made heavier without benefit |
 | One accountable CTO kernel with optional workflow skills and shared references | The owner explicitly wants recurring work patterns while retaining CTO supervision; workflows declare a relative link to the existing kernel instead of copying it | Owner request for bug, plan, longrun, deploy-ready, and fast-fixes; ordinary requests remain supported; linking is not host-enforced loading | `Deterministic` for package shape and declared kernel links; workflow loading and behavior `UNVERIFIED` | Receipts show missing kernel loading, misselection, contradictory contracts, or a host provides a stronger dependency mechanism |
 | Authority, CTO responsibilities and their observable triggers, preservation, delegate safety, direction when the result waits on the owner, and completion live in the always-loaded kernel; detailed technique is conditional, and the kernel carries one point-of-use obligation, to have `delegation` in context before dispatching a delegate | Correct behavior must not depend on opening an optional file, while small work should not inherit a fixed workflow; a topic list gets a playbook opened less reliably than an obligation phrased against the act | 2.x loading measurements, the 3.x field audit, the 4.x contract reviews, and the 4.3.0 outcome audit | `Contract` (4.x); the 2.15.x receipts show the kernel obligation opening `delegation` before the first dispatch where the topic list did not; 4.x behavior `UNVERIFIED` | Receipts show the kernel causing ceremony or missing a technical duty, or a playbook trigger being unrecognizable without opening it |
@@ -29,6 +30,51 @@ The live decisions, their premises, and what would reopen each. "Evidence" says 
 | CTO evidence belongs to a scenario; suite status reports declared coverage and carries no behavioral label; an eligible terminal outcome also needs a verified fixture manifest and retained end-state artifact for suite coverage; outside the suite, eligibility is judged per claim (loaded, delivered at destination, foreign work preserved, completion honesty, comparative benefit), each with its own required evidence, a confirmed failure recorded as `FAIL` rather than as missing evidence, and a loading observation labelling nothing else | One successful run cannot support eleven unrun scenarios or imply another host, activation arm, or trial; prose summaries cannot replace inspectable state; a per-run standard left every 3.x and 4.x observation unlabelled while the ledger quoted them | Coverage, terminal outcome, and receipt sufficiency are independent; a complete run set may contain failures; the rules for each claim were fixed before any new run and validated against the retained captures | `Deterministic` corpus validation in 4.0.1 and per-claim validation in 4.3.0 (`scripts/claim_eligibility.py`); suite behavior `UNVERIFIED` | A claim needs evidence no rule expresses, or a rule is found to weaken the public meaning of `Observed` |
 
 The sections below are the history behind those rows: what each release tried, measured, and rejected. They are non-normative. Where a section and the index disagree, the index is current and the section records how it got there.
+
+## The 4.8.2 planning-readiness clarification
+
+The owner requested plans that settle assignment size, useful parallelism, vertical outcomes, and review workload
+without a reminder. A private installed Codex session on 4.8.0 loaded both the planning skill and delegation
+reference. Its initial plan already allowed translation preparation in parallel, but retained broad packages.
+After the owner's question it distinguished product scenarios from translation and review assignments. The same
+message removed a product area from scope; that is a new owner decision, not evidence that the planner should
+have predicted it. The later numeric batching limits were proposals, not measured context safety.
+
+The existing text required bounded assignments, end-to-end outcomes, real dependencies, and independent review.
+This observation does not prove which wording caused the deficient result. The change implements the owner's
+requested clarification of an existing contract: a tracker grouping alone does not establish an executable
+assignment, and the next ready work needs boundaries supported by its actual inputs, outputs, and verification.
+Later work stays provisional where earlier findings determine its shape. Review and integration capacity are part
+of feasibility. The change is a patch because authority, default effects, interfaces, and promised capabilities stay
+the same. The workflow already owns independent review; no additional stage is introduced.
+
+The chosen location is the existing plan slicing and review paragraphs, consulted when the planning workflow is
+selected. This adds a bounded cost to planning and none to the always-loaded kernel. Duplicating it in the kernel
+would impose that cost on unrelated work and divide ownership. A sizing module or fixed numerical procedure
+would add discovery, maintenance, and ceremony without evidence that those costs repay themselves. The current
+[Superpowers planning skill](https://github.com/obra/superpowers/blob/main/skills/writing-plans/SKILL.md), read on
+2026-09-13, reinforces independently testable task boundaries. Its mandatory step-level instructions and owner
+execution-choice interview remain rejected. No source text was copied. Reopen the chosen clarification if receipts
+show it missing the same boundary or forcing small work into needless assignments.
+
+## Related findings and incomplete instruction reads
+
+A separate private Claude session on 4.7.3 removed a page, found a stale deployment comment about that page, and
+left its correction contingent on the owner asking. The project instructions at that revision required findings
+to be resolved and did not make a protected directory an approval gate for every local comment edit. The inspected
+transcript contains no retained disposition of this finding. Its kernel read visibly omitted 12113 characters,
+including technical authority and material-finding disposition; no subsequent read of those sections was found.
+The rule existed in that release. Missing context and the unresolved finding are separate observations, not proof
+that one caused the other.
+
+Keep the existing kernel rules. A duplicate autonomy sentence would not repair a demonstrated missing policy and
+might itself be omitted. A loader or mandatory reread protocol would change every run without a controlled host
+receipt. Instead the corpus covers local correction, explicit deferral into an authorized tracker, a genuine missing
+production grant, and read-only advice. A separate synthetic policy-read instrument requires obtaining omitted
+authority and completion text before a continuation decision, with a complete-read control. It does not intercept
+host tools or test actual kernel loading. A future host comparison needs verified full versus truncated input on
+the unchanged package and separate authorization. The owner declined paid behavioral runs for this change, so
+causation, actual host recovery, and behavioral improvement remain `UNVERIFIED`.
 
 ## The 4.8.1 technical stewardship clarification
 

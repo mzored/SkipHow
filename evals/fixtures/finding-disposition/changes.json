@@ -1,0 +1,9 @@
+{
+  "session": "current-fixture-session",
+  "completed": [
+    "Removed obsolete home.html after introducing the local redirect configuration."
+  ],
+  "unresolved": [
+    "The deployment comment still describes home.html as the root fallback."
+  ]
+}
