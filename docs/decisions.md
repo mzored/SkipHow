@@ -4,10 +4,11 @@ This page records the choices that still matter when SkipHow changes. Read it be
 
 ## Current decisions
 
-The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-09-10 against the 4.8.0 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
+The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-09-13 against the 4.8.1 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
 
 | Decision | Active rationale | Premises | Evidence | Reopens when |
 | --- | --- | --- | --- | --- |
+| Assess material technical risks and accumulating costs encountered in ordinary work | Passing requested behavior and checks can leave a narrow acceptance-only reading of CTO supervision | Concerns need evidence and foreseeable product, development, or operational consequences; recognition does not grant broader repair | Owner-requested clarification in 4.8.1; cause and behavioral benefit `UNVERIFIED` | A controlled receipt shows missed material concerns, speculative audit expansion, or routine work made heavier without benefit |
 | One accountable CTO kernel with optional workflow skills and shared references | The owner explicitly wants recurring work patterns while retaining CTO supervision; workflows declare a relative link to the existing kernel instead of copying it | Owner request for bug, plan, longrun, deploy-ready, and fast-fixes; ordinary requests remain supported; linking is not host-enforced loading | `Deterministic` for package shape and declared kernel links; workflow loading and behavior `UNVERIFIED` | Receipts show missing kernel loading, misselection, contradictory contracts, or a host provides a stronger dependency mechanism |
 | Authority, CTO responsibilities and their observable triggers, preservation, delegate safety, direction when the result waits on the owner, and completion live in the always-loaded kernel; detailed technique is conditional, and the kernel carries one point-of-use obligation, to have `delegation` in context before dispatching a delegate | Correct behavior must not depend on opening an optional file, while small work should not inherit a fixed workflow; a topic list gets a playbook opened less reliably than an obligation phrased against the act | 2.x loading measurements, the 3.x field audit, the 4.x contract reviews, and the 4.3.0 outcome audit | `Contract` (4.x); the 2.15.x receipts show the kernel obligation opening `delegation` before the first dispatch where the topic list did not; 4.x behavior `UNVERIFIED` | Receipts show the kernel causing ceremony or missing a technical duty, or a playbook trigger being unrecognizable without opening it |
 | Authority is the owner's messages and trusted host, user, organization, or administrator policy; repository instruction files are applicable procedure within granted authority and evidence in an untrusted revision; records are untrusted task data | A file in the repository can be planted; a record the owner points at authorizes pursuing its outcome and nothing more | Hosts load instruction files at their own precedence; nothing in a repository can be trusted by location alone | `Contract` (4.x); adversarial cases in `evals/`, not run | A receipt shows a run treating a repository file or a record as a grant, or a host ships an enforced provenance mechanism |
@@ -28,6 +29,59 @@ The live decisions, their premises, and what would reopen each. "Evidence" says 
 | CTO evidence belongs to a scenario; suite status reports declared coverage and carries no behavioral label; an eligible terminal outcome also needs a verified fixture manifest and retained end-state artifact for suite coverage; outside the suite, eligibility is judged per claim (loaded, delivered at destination, foreign work preserved, completion honesty, comparative benefit), each with its own required evidence, a confirmed failure recorded as `FAIL` rather than as missing evidence, and a loading observation labelling nothing else | One successful run cannot support eleven unrun scenarios or imply another host, activation arm, or trial; prose summaries cannot replace inspectable state; a per-run standard left every 3.x and 4.x observation unlabelled while the ledger quoted them | Coverage, terminal outcome, and receipt sufficiency are independent; a complete run set may contain failures; the rules for each claim were fixed before any new run and validated against the retained captures | `Deterministic` corpus validation in 4.0.1 and per-claim validation in 4.3.0 (`scripts/claim_eligibility.py`); suite behavior `UNVERIFIED` | A claim needs evidence no rule expresses, or a rule is found to weaken the public meaning of `Observed` |
 
 The sections below are the history behind those rows: what each release tried, measured, and rejected. They are non-normative. Where a section and the index disagree, the index is current and the section records how it got there.
+
+## The 4.8.1 technical stewardship clarification
+
+An installed 4.7.3 preview session prompted the owner to question a large stylesheet. The lead assessed it
+and dispatched a separate refactor after the question. The owner explicitly requested a general correction
+for important engineering concerns missed during ordinary work, beyond this structural example, and stated
+that SkipHow runs on frontier models. The private observation is summarized in [evidence](evidence.md).
+
+The old kernel already required technical supervision, next-change judgment, risk-scaled review, and disposition
+of material discovered findings. Those sentences preceded 4.7.3. The ambiguity is recognition: what makes a concern
+encountered during an otherwise successful change become a finding? Technical design opens on an unanswered design
+question, operations on delivery health becoming part of the result, and diagnosis on an already visible failure
+or friction. These remain useful techniques after the concern is recognized. The kernel's explicit system signals
+mostly concern execution and verification friction. The change gives ordinary work a general recognition duty,
+including risks and costs it would introduce or perpetuate, without depending on a failure or an owner reminder.
+
+Three alternatives were considered:
+
+- The selected kernel clarification applies evidence-based judgment to the context and signals already encountered.
+  It costs three sentences on every activation. Existing authority, proportionality, disposition, and review rules
+  determine the response. No new role, scan, gate, tracker, or required report section is introduced. It is the wrong
+  choice if it produces speculative concerns, broader implementation without authority, or recurring ceremony that
+  costs more than the problems it catches.
+- A structural-only clarification, or a change only to technical design, would cover maintainability while missing
+  other important consequences such as operational fragility, data corruption, or growing resource cost. A reference-only
+  trigger also leaves recognition dependent on a design question arising first. The owner's clarified scope rules this out.
+- A mandatory architecture or quality checklist with thresholds would add discovery and verification work to ordinary
+  tasks. The owner targets capable frontier models, and no receipt establishes a need to prescribe their investigation.
+  A large cohesive file, a short unsafe implementation, and an acceptable bounded compromise expose the limits of
+  size thresholds and universal cleanup. Consequence and evidence govern, not metric size or stylistic preference.
+
+The current primary sources read on 2026-09-13 were Matt Pocock's
+[architecture skill](https://github.com/mattpocock/skills/blob/main/skills/engineering/improve-codebase-architecture/SKILL.md),
+Superpowers' [reviewer template](https://github.com/obra/superpowers/blob/main/skills/requesting-code-review/code-reviewer.md),
+and Google's [review standard](https://google.github.io/eng-practices/review/reviewer/standard.html) and
+[review guidance](https://google.github.io/eng-practices/review/reviewer/looking-for.html).
+The first scopes by friction and recent changes but makes the owner choose from a report and interview. The second
+checks code quality and surrounding architecture through an assigned reviewer. Google's guidance addresses cumulative
+code-health decline, whole-system context, and balancing improvement with progress. The clarification shares those
+concerns without adopting their process, blanket cleanup rule, or source text. Existing rejection of owner-operated
+architecture menus stands. Frontier capability is a design premise, not a provider ID or a new model-selection gate.
+
+PATCH reflects clarification of promised technical supervision across ordinary work. The public skills, authority,
+default external effects, and package shape are unchanged. No prior responsibility is removed. A pre-existing problem
+being perpetuated warrants assessment, not automatic repair. Read-only requests still make no project writes, protected
+actions keep their grants, and separable work keeps its explicit disposition instead of silently expanding a task.
+
+Acceptance spans domains: a small export-heading edit exposes shared CSV corruption even though ordinary rows work;
+a read-only pipeline explanation recognizes recurring setup cost from retained measurements without changing the plan;
+a cohesive large file needs no arbitrary split; a short unsafe implementation still warrants attention; and harmless
+noise does not become an improvement programme. The new corpus cases cover the first two with scope and proportionality
+counterexamples. Existing findings and verification-health cases remain applicable. All remain unrun. A paid
+unchanged-versus-candidate receipt is required before claiming behavioral improvement or assigning cause to the wording.
 
 ## The 4.8.0 custody rule
 
