@@ -58,3 +58,8 @@ from these retained files and replaced host UUIDs with consistent pseudonyms.
 Retained content hashes and replay references now identify those sanitized bytes.
 This is a privacy redaction of the original runs, not a new run or observation;
 the recorded outcomes and fixture artifacts are unchanged.
+
+A later publication privacy correction also pseudonymizes home-derived project directory names encoded by
+the host. Related records keep consistent path identities. Trace hashes identify the sanitized bytes;
+original preparation and fixture identities, task events, usage and claim outcomes are unchanged. Earlier
+published commits and releases are not rewritten by this correction.
