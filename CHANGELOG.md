@@ -2,6 +2,52 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 4.8.3 (2026-09-13)
+
+Delegate briefs now account for context the host actually supplies instead of asserting that delegates
+receive only their brief. Assignment-specific rules, observable completion, source references, model and
+effort routing, and retention of implementers and reviewers through corrections remain in place. No model
+defaults, routing gates, retry limits, host adapters or installation changes were added.
+
+The receipt privacy filter now recognizes encoded home-derived project directories and replaces their
+complete identifying segments with stable pseudonyms. Five retained receipt files are sanitized, and two
+ancillary host search outputs are minimized with explicit omission markers. The loading evidence, task
+events, usage and all existing claim outcomes are preserved. Changed trace hashes identify the sanitized
+bytes. Public documentation removes account-specific availability details and machine-specific assumptions;
+public authorship, licenses and source attribution remain. Existing commits, released tags and external
+copies were not rewritten, so this release does not remove earlier public exposure.
+
+The motivating observations, primary sources and alternatives are recorded in [evidence](docs/evidence.md#483-delegation-context-and-publication-privacy)
+and [decisions](docs/decisions.md#the-483-delegation-context-and-privacy-correction). No private session content
+is published and no paid behavioral comparison was run. Routing improvement and cost savings remain
+`UNVERIFIED`. This is a compatible wording and publication-privacy patch.
+
+The full local package gate passed all 389 tests under the pinned dependencies. Initial runs reached the
+unchanged 120-second limit while path checks repeatedly enumerated a crowded shared temporary directory;
+an isolated temporary directory resolved the delay. Stale version metadata in three corpus instruments
+was corrected. Both host schema validators and `git diff --check` passed. Clean installation and model
+behavior were not retested for this unchanged package structure.
+
+An isolated, read-only Codex review found one qualifying documentation defect: the privacy decision cited
+only the original tests, omitting the encoded-path coverage added in 4.8.3. That evidence reference is corrected.
+The reviewer confirmed stable distinct pseudonyms, matching trace hashes, unchanged loading evidence and
+claim outcomes, and no further qualifying defects. No findings were refused. An earlier broader review
+timed out without a verdict and supplies no passing evidence. The completed review's transcript confirmed
+separate operating-system and host homes with no personal instruction or installed-plugin contamination
+markers. Authentication referenced the existing credential file; the owned review workspace was removed.
+
+| Capability | Local candidate evidence |
+| --- | --- |
+| Deterministic package gate | PASS, full local command and 389 tests |
+| Codex schema validation | PASS |
+| Claude schema validation | PASS |
+| Clean Codex install | UNVERIFIED |
+| Clean Claude install | UNVERIFIED |
+| Explicit invocation | UNVERIFIED |
+| Implicit activation | UNVERIFIED |
+| Continuity | UNVERIFIED |
+| Behavioral suite | UNVERIFIED, [evidence](docs/evidence.md) |
+
 ## 4.8.2 (2026-09-13)
 
 Planning now distinguishes broad tracker groups, verifiable product slices, and executable delegate assignments.
@@ -105,7 +151,7 @@ Shared state the agent may not write to is now named with the action that would 
 
 ### Compatibility and evidence
 
-This minor release adds obligations to the always-loaded kernel without changing the owner interface, public skills, authority, default side effects, installation, or package layout. Nothing here licenses a write the previous version withheld: shared state is still never overwritten, reset, published, deleted, or quietly absorbed; naming state is stated not to be authority to act on it; delegates keep the isolation rule; and removing a branch an earlier run left still needs what `references/integration.md` requires. Three independent same-host reviews ran against the candidate and raised fifteen qualifying findings, twelve of them distinct once overlap is removed, every one confirmed against the files. The sharpest was that the first draft settled shared state "where the current request already reaches it", a topical test looser than both the protected-action boundary and `references/integration.md`, which would have authorized retiring a workspace on a reconcile request that the corpus already forbids, and taking a shared port from another checkout on a read-only diagnosis. Among the others: a trigger conjunct that required proving no live session claimed the state, which two shipped sentences say the readable signals cannot settle; no bound on how often or how widely the duty fires; a required corpus event whose example was already required of every arm; a required address on a fixture that serves none; a decision record that credited two playbooks with a prohibition neither carries; and an index row left stamped at the wrong version. Two proposed corrections were refused with the reason: broadening the shipped prohibition from "quietly absorb" to "absorb", which would change behavior on no evidence, and leaving state unnamed whenever liveness cannot be established, which restores the silence this release exists to remove. A fourth review of the corrections confirmed the three repairs hold against the situations that produced them and raised six further findings, all fixed here: two documents that restated the corrected sentence loosely, an overstated account of what the previous kernel already allocated, a precedent cited for the wrong release, a scored corpus event covering less than its own acceptance line, and this paragraph reading its own enumeration as a remainder. Deterministic checks validate the package and corpus. The Codex review round could not run: that account is at its usage limit until September 15, so cross-host review of this change is blocked rather than passed. The evidence for the change is the owner's report of the behavior and the shipped text that made abstention compliant, not a receipt from a run, so `AGENTS.md`'s bar for a new obligation is unmet and `docs/decisions.md` records the change as the owner's decision. The resulting behavior is `UNVERIFIED` on both hosts, and no paid experiment was run.
+This minor release adds obligations to the always-loaded kernel without changing the owner interface, public skills, authority, default side effects, installation, or package layout. Nothing here licenses a write the previous version withheld: shared state is still never overwritten, reset, published, deleted, or quietly absorbed; naming state is stated not to be authority to act on it; delegates keep the isolation rule; and removing a branch an earlier run left still needs what `references/integration.md` requires. Three independent same-host reviews ran against the candidate and raised fifteen qualifying findings, twelve of them distinct once overlap is removed, every one confirmed against the files. The sharpest was that the first draft settled shared state "where the current request already reaches it", a topical test looser than both the protected-action boundary and `references/integration.md`, which would have authorized retiring a workspace on a reconcile request that the corpus already forbids, and taking a shared port from another checkout on a read-only diagnosis. Among the others: a trigger conjunct that required proving no live session claimed the state, which two shipped sentences say the readable signals cannot settle; no bound on how often or how widely the duty fires; a required corpus event whose example was already required of every arm; a required address on a fixture that serves none; a decision record that credited two playbooks with a prohibition neither carries; and an index row left stamped at the wrong version. Two proposed corrections were refused with the reason: broadening the shipped prohibition from "quietly absorb" to "absorb", which would change behavior on no evidence, and leaving state unnamed whenever liveness cannot be established, which restores the silence this release exists to remove. A fourth review of the corrections confirmed the three repairs hold against the situations that produced them and raised six further findings, all fixed here: two documents that restated the corrected sentence loosely, an overstated account of what the previous kernel already allocated, a precedent cited for the wrong release, a scored corpus event covering less than its own acceptance line, and this paragraph reading its own enumeration as a remainder. Deterministic checks validate the package and corpus. The Codex review round could not run: the review service was unavailable, so cross-host review of this change is blocked rather than passed. The evidence for the change is the owner's report of the behavior and the shipped text that made abstention compliant, not a receipt from a run, so `AGENTS.md`'s bar for a new obligation is unmet and `docs/decisions.md` records the change as the owner's decision. The resulting behavior is `UNVERIFIED` on both hosts, and no paid experiment was run.
 
 ## 4.7.3 (2026-09-10)
 
@@ -118,7 +164,7 @@ A series of owner-reviewed changes stays in iteration until the owner asks for d
 
 ### Compatibility and evidence
 
-This patch raises a rule that holds for every iteration series from the fast-fixes workflow into the always-loaded kernel, where the 4.4.0 decision placed the iteration shape. `skiphow-fast-fixes` keeps its own contract unchanged, and the owner interface, public skills, authority, default side effects, installation, and package layout are unchanged. Two installed 4.7.1 sessions in the maintainer's own projects are the receipt for the defect, one of which also broke its own repository's equivalent rule after four compactions, so context loss is a separate limit this text cannot remove. Deterministic checks validate the package and corpus. The Codex review round could not run: that account reached its usage limit, so cross-host review of this change is blocked rather than passed. An independent review on the same host raised four qualifying findings, all confirmed against the files and fixed here: the kernel had dropped its deference to an invoked workflow's agreement and so contradicted `skiphow-fast-fixes` on an accepting turn; the canonical contract and the kernel disagreed on when a series ends; the decision record claimed an isolated variable that two sessions in two projects cannot establish; and the raised rule held back less than the rule it came from, leaving push unheld outside the workflow. The corrected behavior is `UNVERIFIED` on both hosts, and no paid experiment was run.
+This patch raises a rule that holds for every iteration series from the fast-fixes workflow into the always-loaded kernel, where the 4.4.0 decision placed the iteration shape. `skiphow-fast-fixes` keeps its own contract unchanged, and the owner interface, public skills, authority, default side effects, installation, and package layout are unchanged. Two installed 4.7.1 sessions in the maintainer's own projects are the receipt for the defect, one of which also broke its own repository's equivalent rule after four compactions, so context loss is a separate limit this text cannot remove. Deterministic checks validate the package and corpus. The Codex review round could not run: the review service was unavailable, so cross-host review of this change is blocked rather than passed. An independent review on the same host raised four qualifying findings, all confirmed against the files and fixed here: the kernel had dropped its deference to an invoked workflow's agreement and so contradicted `skiphow-fast-fixes` on an accepting turn; the canonical contract and the kernel disagreed on when a series ends; the decision record claimed an isolated variable that two sessions in two projects cannot establish; and the raised rule held back less than the rule it came from, leaving push unheld outside the workflow. The corrected behavior is `UNVERIFIED` on both hosts, and no paid experiment was run.
 
 ## 4.7.2 (2026-09-09)
 
@@ -310,7 +356,7 @@ SkipHow can now enable, check, and disable its own default governance when an in
 
 ### Changed
 
-- A `setup` playbook handles requests to enable, check, or disable SkipHow on this machine, or to explain why it did not load: one preview, one confirmation before writing, three separate facts, and managed policy reported rather than bypassed.
+- A `setup` playbook handles requests to enable, check, or disable SkipHow on the current host, or to explain why it did not load: one preview, one confirmation before writing, three separate facts, and managed policy reported rather than bypassed.
 - The activation helper moved from the repository into the skill package as `scripts/activation.py`. It follows host discovery: Codex reads `AGENTS.override.md` in its home when that file exists and is not empty, and `AGENTS.md` otherwise, with `CODEX_HOME` relocating the home; Claude Code reads `CLAUDE.md` and unconditional `rules/*.md` files under `CLAUDE_CONFIG_DIR` or its default directory. It moves a block found in a file the host does not read, consolidates duplicates, never writes through a symbolic link, removes every copy it may edit on disable, and reads each host's plugin inventory to report availability or says that enablement is unknown. `--target` still names any trusted file explicitly.
 - The integration playbook chooses failed-merge recovery by consequence. Evidence and unrelated work are preserved first; a disposable failure may stay in place for diagnosis; a shared target that other work, CI, or a deployment depends on is contained or restored to its last good state; restoring production keeps its grant.
 
@@ -356,7 +402,7 @@ SkipHow now carries authorized work through an established non-production delive
 
 This is a minor release because the new shared-delivery capability requires an established owner-authorized workflow, and setup tooling is optional. Existing grants, restrictions, and protected-action boundaries survive the upgrade. The public skill name and record formats are unchanged.
 
-Deterministic and host results, audit disposition, and bounded experiment receipts are recorded in [docs/evidence.md](docs/evidence.md). Both schema validators and Claude clean install/uninstall passed. Codex clean installation was blocked by managed source policy. Clean isolated model authentication remains unavailable on this machine, so installed ordinary-language loading and genuine resume remain `UNVERIFIED`.
+Deterministic and host results, audit disposition, and bounded experiment receipts are recorded in [docs/evidence.md](docs/evidence.md). Both schema validators and Claude clean install/uninstall passed. Codex clean installation was blocked by managed source policy. Clean isolated model authentication remains unavailable in the recorded environment, so installed ordinary-language loading and genuine resume remain `UNVERIFIED`.
 
 A narrow Claude pilot delivered four correct repairs to a synthetic Git remote. A separate explicit coordination diagnostic demonstrated configured delegates and a distinct writer checkout, but failed remote delivery and changed shipping to an incorrect calculation. It does not establish dependable orchestration. A capture failure lost one earlier attempt's trace; its exact cost remains unknown, and the loss prompted tested capture-before-cleanup repairs. Known reported model spend was $0.8127273, plus that attempt with a configured $1 limit. No further campaign or reliability claim followed. The release-runner matrix below reports only checks performed by that runner.
 
@@ -381,7 +427,7 @@ This patch repairs the evidence system around the 4.x virtual-CTO contract and c
 
 ### Evidence
 
-- The exact 4.0.1 payload installed byte for byte and uninstalled cleanly on Claude Code 2.1.260. Codex CLI 0.153.0 clean installation remains `UNVERIFIED` because this machine's managed marketplace-source policy refused the scratch source before installation. Neither result proves activation.
+- The exact 4.0.1 payload installed byte for byte and uninstalled cleanly on Claude Code 2.1.260. Codex CLI 0.153.0 clean installation remains `UNVERIFIED` because the recorded environment's managed marketplace-source policy refused the scratch source before installation. Neither result proves activation.
 - Eight retained explicit Claude Code run records cover seven neutral minimum CTO scenarios, including one confirmation, but none retained the verified fixture manifest and concrete end-state artifact required for behavioral evidence. Five setup attempts were voided; one of them exposed and led to repair of a contradictory process fixture. Every current behavior claim remains `UNVERIFIED`. Separately, explicit Claude invocation loaded exact 4.0.1; one bare-prompt implicit pilot did not select it, the unrelated installed/uninvoked control did not false-activate, and clean-home persistent setup could not authenticate.
 - `python scripts/check.py`, `git diff --check`, and host validation are reported from the final candidate. Independent review receipts name the exact commit and scope they inspected; host and model receipts name the exact package bytes they exercised. A release-runner `UNVERIFIED` row means that runner did not perform the capability; it does not erase a separately retained external receipt.
 
@@ -518,7 +564,7 @@ Documentation and receipts. The shipped instructions are byte-identical to 2.16.
 - The duplication was found mechanically and every disposition was made by hand. Every sentence of seven words or more in the kernel and the twenty-three methods was compared with every other, 865 sentences and 373,680 pairs. Forty-nine pairs passed the similarity threshold and four of them were second homes. Of the rest, nineteen are the intended pairing between a method-list trigger and the scope line repeating it, thirteen are a kernel invariant with the technique under it, and thirteen are two methods stating adjacent rules in their own terms. The fifth fix, the regression duplication inside `testing`, scored below the threshold because its two statements share almost no vocabulary; it was found by reading, which is where the scan ends.
 - Two kernel rules that `tracked-work` restates as the premise of its own sections were left alone: an item exists before the branch, and an item closes on integration. Version 2.8.0 argued that placement as three options and chose it, the two copies do not disagree, and no receipt shows them drifting. Reopening it on symmetry alone is what this project's own record tells a release not to do.
 - No receipt covers the new outside-read trigger. The failure it answers is measured, ten runs to zero on both hosts, and the replacement is reasoning from the text. Whether naming a fact rather than a self-estimate gets the read taken is `UNVERIFIED`.
-- Package checks: `scripts/check.py` passed and `git diff --check` is clean. Claude package validation passed. Codex package validation is `UNVERIFIED`; this machine has no Codex plugin validator.
+- Package checks: `scripts/check.py` passed and `git diff --check` is clean. Claude package validation passed. Codex package validation is `UNVERIFIED`; the recorded environment had no Codex plugin validator.
 
 ## 2.15.1 (2026-09-02)
 
@@ -660,7 +706,7 @@ Three sessions on the released tree, differing from the candidate arm in one fil
 - The paired isolated runs do not reproduce that failure, and the release does not claim the change repairs it. On a throwaway fixture with the host's own built-ins and nothing else, 2.10.1 opened the matching method in three of three sessions, before acting in each, and opened nothing for the request that matches no trigger. The release candidate did the same: `diagnosing-bugs` on the defect, `tracked-work` and `project-setup` on the request to record findings, `prioritization` on the request to order competing work, and nothing on the plain question. So the non-loading is real in long installed sessions and absent in a clean one, which points at what those sessions carry rather than at the sentence changed here. The cause stays `UNVERIFIED`.
 - What the change rests on is the contradiction itself, which is readable in the shipped text and needs no receipt. Whether removing it changes what a long session does is unmeasured, and the release candidate opened somewhat more methods per session than 2.10.1 on the same prompts, which one run per cell cannot separate from noise.
 - The plan-destination correction has one observation behind it. An installed 2.10.0 session asked to record a batch of findings and extend the plan for the next agent opened twenty-two items in the project's tracker and wrote the plan and the launch brief into two ignored local files, beside two more the same project had already accumulated, none of them visible to the tracker holding the items. The owner's launch prompt for the next run then had to name that file by hand.
-- Package checks: `scripts/check.py` passed, `git diff --check` clean, Claude package validation and isolated install passed. Codex package validation and isolated install are `UNVERIFIED`: this machine has no Codex plugin validator installed.
+- Package checks: `scripts/check.py` passed, `git diff --check` clean, Claude package validation and isolated install passed. Codex package validation and isolated install are `UNVERIFIED`: the recorded environment had no Codex plugin validator installed.
 
 ## 2.10.1 (2026-08-29)
 
@@ -824,7 +870,7 @@ Three sessions on the released tree, differing from the candidate arm in one fil
 
 - Documentation and package metadata only. The shipped instructions are unchanged, so no model behavior is claimed and no receipt is added. Every factual claim in the new pages traces to [`docs/evidence.md`](docs/evidence.md), [`docs/decisions.md`](docs/decisions.md), or a source link checked on 2026-08-29.
 - The kernel and method word counts quoted in the README were measured on this package: 1,610 words in `SKILL.md` and 6,759 across 18 method files.
-- `python scripts/check.py` and `git diff --check` pass. `python scripts/check_hosts.py` passes Claude package validation and Claude's isolated install; Codex package validation and Codex's isolated install are `UNVERIFIED` locally, because the validator is not installed on this machine and local policy restricts marketplace sources to the published repository. CI runs the Codex validator.
+- `python scripts/check.py` and `git diff --check` pass. `python scripts/check_hosts.py` passes Claude package validation and Claude's isolated install; Codex package validation and Codex's isolated install are `UNVERIFIED` locally, because the validator is not installed in the recorded environment and local policy restricts marketplace sources to the published repository. CI runs the Codex validator.
 
 ## 2.4.2 (2026-08-29)
 

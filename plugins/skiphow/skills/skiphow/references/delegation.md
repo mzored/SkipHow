@@ -36,7 +36,7 @@ Having a delegate available is not a reason to use one. Keep simple work, anythi
 
 The kernel states the minimum contract every brief carries. A delegate handed several outcomes, or an open-ended body of work, runs until it exhausts its room.
 
-A delegate knows only what its brief says, so a rule you did not write into the brief does not reach it. A delegate that cannot state its own completion condition will invent one. Rules and the completion condition belong in the brief. The material they apply to is pointed at, not copied: name the record, the prior change, or the file to read.
+Give each delegate the assignment-specific rules and observable completion condition it needs, accounting for context the host actually supplies. Point to the material those instructions apply to rather than copying it into the brief: name the record, the prior change, or the file to read.
 
 ## The level each delegate runs at
 

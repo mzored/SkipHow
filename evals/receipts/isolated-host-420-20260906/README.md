@@ -78,3 +78,9 @@ and the committer identity written by the host in the synthetic clone is
 replaced. Per-run usage and synthetic fixture artifacts remain. The
 conservative `UNVERIFIED` evidence labels inside the captures are separate from
 the individual observations above.
+
+A later publication privacy correction minimizes two ancillary command-output events in
+`codex-setup-enable.json`. Omission markers replace host catalog, session and shell snapshot search
+matches; commands, status and exit codes remain. Configuration and package matches, the returned loading
+event, fixture identities and declared claim outcomes are preserved. The trace hash identifies the
+minimized content. This is a redaction of retained evidence, not a new run.

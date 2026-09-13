@@ -126,10 +126,10 @@ settled; do not re-derive them each time.
 
     codex exec --sandbox read-only -c model_reasoning_effort=high "$(cat prompt.md)" </dev/null > out.log 2>&1
 
-The `</dev/null` is required or it waits on stdin forever. Do not pass `-m`: a named model is refused on a
-ChatGPT account, and the default is the working one. `timeout` does not exist on this machine. Read the
-verdict from the `codex` marker in the log to the end; everything above it is the session banner and the
-tool calls.
+Use closed stdin for noninteractive execution. The command uses the host's configured model; choose a
+supported override only when the review warrants it. Use the active environment's supervision tools to
+bound the run, and read the final verdict separately from startup metadata and tool output. Apply the
+review isolation described above before trusting the result.
 
 Give it the branch and let it read the files itself rather than pasting a diff. Put the qualifying and
 disqualifying bars from `AGENTS.md` in the prompt, because without them it returns rephrasings. Ask for

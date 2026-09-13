@@ -28,6 +28,9 @@ SIGNATURE_OMITTED = "[host signature omitted]"
 _UUID = re.compile(r"\b[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\b", re.I)
 _EMAIL = re.compile(r"(?<![\w.+-])[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
 _HOME = re.compile(r"(?:/(?:Users|home)/[^/\s\"'<>\\]+|[A-Za-z]:[\\/]Users[\\/][^/\\\s\"'<>]+)")
+_ENCODED_HOME = re.compile(
+    r"(?<![\w-])(?:-(?:Users|home)-|[A-Za-z]--Users-)[^/\\\s\"'<>]+", re.I
+)
 _KEY = re.compile(r"\b(?:sk-(?:ant-|proj-)?[A-Za-z0-9_-]{16,}|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|AKIA[A-Z0-9]{16})\b")
 _JWT = re.compile(r"\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b")
 _BEARER = re.compile(r"\bBearer\s+[A-Za-z0-9._~+/-]+=*", re.I)
@@ -48,6 +51,10 @@ def _plain(text: str, redactions: dict[str, str]) -> str:
         text = pattern.sub("<credential-omitted>", text)
     text = _EMAIL.sub(lambda match: match[0] if match[0].lower().endswith("@example.invalid")
                      else "<email-omitted>", text)
+    # Host project-directory names can encode the entire home and project path.
+    # Keep correlations without retaining the operator or identifying suffix.
+    text = _ENCODED_HOME.sub(lambda match: "<project-path-id-" + hashlib.sha256(
+        match[0].encode()).hexdigest()[:20] + ">", text)
     text = _HOME.sub("<operator-home>", text)
     return _UUID.sub(lambda match: "<trace-id-" + hashlib.sha256(
         match[0].lower().encode()).hexdigest()[:20] + ">", text)

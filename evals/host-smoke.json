@@ -1,6 +1,6 @@
 {
   "instrument": "host_smoke",
-  "package_under_test": "4.8.2",
+  "package_under_test": "4.8.3",
   "scope": "external_candidate_receipts",
   "checks": {
     "clean_install": {

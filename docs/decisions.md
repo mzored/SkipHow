@@ -4,7 +4,7 @@ This page records the choices that still matter when SkipHow changes. Read it be
 
 ## Current decisions
 
-The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-09-13 against the 4.8.2 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
+The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-09-13 against the 4.8.3 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
 
 | Decision | Active rationale | Premises | Evidence | Reopens when |
 | --- | --- | --- | --- | --- |
@@ -25,11 +25,31 @@ The live decisions, their premises, and what would reopen each. "Evidence" says 
 | Evaluation oracles name outcomes, not implementations; a fixture is preflighted against a registered expected state before any model spend | The continuity oracle banned a thin host binding the contract permits, and the canonical large-programme prompt named a branch its fixture never created | A grader that encodes the expected behavior independently of the code under test can grade any retained end state | `Deterministic` preflight and grader tests, 4.2.0 | A scenario needs an outcome the registry or grader cannot express |
 | Deterministic checks protect package, security, release, and corpus semantics only; presentation and wording are lint or unchecked | A check that pins a sentence or a topology froze editorial choices without protecting anything a host depends on | Spec 11 classification, applied 2026-09-04 | `Deterministic` | A host starts depending on a detail now treated as editorial |
 | Provider-independent runtime policy: no model IDs, cost tables, host tiers, dated host snapshots, or version-qualified host products in the package | Host metadata changes faster than a release cycle; a versioned mechanics snapshot becomes stale independently of the portable safety fallback | Both hosts change model names and controls independently; current mechanics can be checked at use time and retained with dates in maintainer evidence | `Deterministic` scan on every run; historical host versions remain permitted in evidence and security records | A portable capability interface appears or a host version becomes part of the public runtime contract |
-| Public receipts exclude account quota and authentication metadata, known credential formats, private paths, and raw host identifiers | Literal path replacement left account metadata in a real retained trace | Preserve per-run usage, synthetic artifacts and correlation through pseudonyms; filtering cannot certify arbitrary prose | `Deterministic` receipt privacy gate and nested-event tests in 4.1.1 | A host adds a private field or a receipt needs stronger privacy review |
+| Public receipts exclude account quota and authentication metadata, known credential formats, private paths, and raw host identifiers and encoded home-derived directory names | Literal path replacement left account metadata in a real retained trace | Preserve per-run usage, synthetic artifacts and correlation through pseudonyms; filtering cannot certify arbitrary prose | `Deterministic` receipt privacy gate and nested-event tests in 4.1.1, extended for encoded paths in 4.8.3 | A host adds a private field or a receipt needs stronger privacy review |
 | Receipts prove model behavior; deterministic checks and CI never start a model | A green check is not evidence of behavior; a paid run is the owner's decision | Receipt cost is not proportional to what it settles (2.16.1) | Policy | A host offers repository-preserving runs against an exact installed package with trustworthy receipts |
 | CTO evidence belongs to a scenario; suite status reports declared coverage and carries no behavioral label; an eligible terminal outcome also needs a verified fixture manifest and retained end-state artifact for suite coverage; outside the suite, eligibility is judged per claim (loaded, delivered at destination, foreign work preserved, completion honesty, comparative benefit), each with its own required evidence, a confirmed failure recorded as `FAIL` rather than as missing evidence, and a loading observation labelling nothing else | One successful run cannot support eleven unrun scenarios or imply another host, activation arm, or trial; prose summaries cannot replace inspectable state; a per-run standard left every 3.x and 4.x observation unlabelled while the ledger quoted them | Coverage, terminal outcome, and receipt sufficiency are independent; a complete run set may contain failures; the rules for each claim were fixed before any new run and validated against the retained captures | `Deterministic` corpus validation in 4.0.1 and per-claim validation in 4.3.0 (`scripts/claim_eligibility.py`); suite behavior `UNVERIFIED` | A claim needs evidence no rule expresses, or a rule is found to weaken the public meaning of `Observed` |
 
 The sections below are the history behind those rows: what each release tried, measured, and rejected. They are non-normative. Where a section and the index disagree, the index is current and the section records how it got there.
+
+## The 4.8.3 delegation context and privacy correction
+
+Keep the economic routing contract and the existing continuation rule. The inspected sessions explicitly
+selected models; their cost does not demonstrate that a cheaper model would meet the same acceptance bar.
+Adding role tiers, a dispatch adapter or another gate is not justified. Clarifying continuation economics
+would repeat an existing obligation without identifying a missing responsibility. The selected runtime
+change instead removes the factual claim that a delegate receives only its brief, preserving sufficient
+assignment instructions and pointing to source material rather than copying it.
+
+The privacy boundary applies to encoded directory names as well as literal home paths. Replace the entire
+identifying encoded segment with a stable pseudonym so related events still correlate and different paths
+stay distinct. Minimize ancillary host dumps while preserving every event needed to assess retained claims,
+and bind changed content to fresh hashes without altering original fixture or package identities. The
+owner requested current-version cleanup and preservation of released history; a clean candidate cannot
+establish removal from earlier public copies. Retain public authorship, licenses and source citations.
+
+The alternatives and primary sources are in [evidence](evidence.md#483-delegation-context-and-publication-privacy).
+This is a patch to wording and the publication privacy invariant, with no new routing defaults, authority,
+public interface or installation mechanism. No paid comparison was run and cost benefit remains `UNVERIFIED`.
 
 ## The 4.8.2 planning-readiness clarification
 
