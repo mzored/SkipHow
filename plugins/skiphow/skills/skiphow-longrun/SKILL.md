@@ -7,7 +7,7 @@ description: Deliver an accepted epic, milestone, or issue set through delegated
 
 Deliver every authorized outcome in the requested work set to its agreed destination. Before consequential work, have the [SkipHow CTO kernel](../skiphow/SKILL.md) in context. Read it if absent. The lead remains the accountable CTO throughout execution.
 
-Use [tracked work](../skiphow/references/tracked-work.md) to reconcile current records, accepted decisions, live branches, ownership, and prior delivery before starting or resuming. Retire superseded instructions only in owned execution records. Preserve foreign work and continue independent authorized work around unresolved ownership or owner decisions.
+Use [tracked work](../skiphow/references/tracked-work.md) to reconcile current records, accepted decisions, live branches, ownership, and prior delivery before starting or resuming. Retire superseded instructions in execution records no live session is writing. Leave a live session's lane to it and continue independent authorized work around it and around owner decisions.
 
 Use [delegation](../skiphow/references/delegation.md) to size and sequence verifiable slices. Delegate implementation and independent review to fresh agents for each slice, retaining its implementer and reviewer through corrections where the host supports continuation. If a replacement is necessary, carry forward the slice's findings and evidence. Keep scope, product decisions, synthesis, integration, and the completion claim with the CTO.
 

@@ -2,6 +2,46 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 5.0.0 (2026-09-16)
+
+Every branch, worktree, checkout, checkpoint, running service, and uncommitted change in a governed project is
+now the agent's own engineering state, made by this session, an earlier one, or a delegate, and the agent
+settles it instead of describing it as the owner's or somebody else's and handing the decision back.
+
+### Changed
+
+- The kernel's "Work you do not own and delegates" section is now "Custody of engineering state and delegates". What this run did not create is either the lane of a session still running or a leftover of one that finished. A live lane shows itself in changes still moving, an open review, a live record, or a process the host lists as a session's, and a name, a timestamp, or a running process alone proves nothing; it is coordinated with and never overwritten, reset, published, deleted, or quietly absorbed. A leftover is finished, integrated, recorded, or retired, and the report says which. On a request that changes the project, every integrated leftover nothing holds is retired as routine hygiene without a cleanup request; a superseded or abandoned attempt that still holds unique commits is retired on the agent's own judgment with the commit it held named so it can be restored; uncommitted changes the run did not make stay in place and out of its commits; a read-only request reports each decision and retires nothing. Observed defect: the owner reports that sessions on their projects, where no human writes code, still say "your work is still there" and "I do not touch other people's branches, worktrees, or changes". Eight private installed Codex sessions between 2026-08-29 and 2026-09-15 applied "foreign" or "yours" to state an earlier session of the same owner had produced, and one quoted the kernel's rule as its reason. The shipped `SKILL.md` called a checkout, branch, running service, or uncommitted change the run did not create "shared work", and the 4.8.0 naming duty told the agent to name it once and not act on it.
+- `references/integration.md` no longer says that an earlier run's branch is not this run's to retire on an unrelated request. Clearing away now covers what earlier sessions left integrated, a worktree with uncommitted changes stays, a refusal that reflects unique work is a decision the agent takes by the current product state, and a recoverable commit dropped during a conflicted operation is reported with its hash. Observed defect: the 3.0.1 INT-002 rule was written for a repository with several authors and made abstention the compliant answer in a repository with one.
+- `references/tracked-work.md` reads liveness from changes still moving, an open review, or a live record, leaves a live session's lane to it, and treats a finished session's lane, checkpoint, or stale record as the agent's own to carry or settle. A request to reconcile tracking still changes records rather than the project and retires nothing; any request that changes the project retires what reconciliation proves integrated, unheld, and recoverable. Observed defect: "preserve foreign work and unresolved ownership" and "not yours to clear away" assumed an owner of the leftover who could be asked.
+- `skiphow-longrun` retires superseded instructions in any execution record no live session is writing, and `skiphow-deploy-ready` recovers this session's state and what other sessions left. Observed defect: both said "foreign".
+- The protected-action rule for material deletion now names what it protects: data, history others share, and anything unrecoverable. Retiring the agent's own recoverable engineering state is engineering, not material deletion. Observed defect: with "material deletion" undefined, deleting a merged branch read as a protected act needing a grant, which the same sessions used as their reason to leave it.
+
+### Behavioral coverage
+
+- The stale-branch case is renamed `int-002-earlier-branch-dispositioned-under-unrelated-change`. The candidate arms no longer require the branch to survive; they require a stated disposition, forbid attributing the branch to a person or asking the owner what to do with it, and require the retired commit to be named where the branch is gone. Every arm forbids the branch being moved off its recorded commit. The base host and the 3.0.1 arm keep the branch required intact. Retirement itself is not required, because the fixture keeps the defect on the default branch, so the attempt is not obviously superseded and the case grades the shape of the decision.
+- A new `custody-001-integrated-leftover-retired-under-unrelated-change` case on a new `orders-service-integrated-leftover` fixture requires that a branch merged into the default branch and its clean registered worktree are gone after an unrelated documentation change, with the retirement reported and the merged change intact. The fixture preflight registry gains a `merged_into_head` check so a session graded on retiring a merged branch is retiring one that was merged.
+- `foreign-uncommitted-work-preserved` keeps every expectation and adds a forbidden event for attributing the uncommitted work to the owner or a third party. The three project-reconciliation cases keep their expectations; the status report now also states which leftovers a change request would retire.
+
+### Compatibility and evidence
+
+This major release widens the default side effect of an ordinary change request, which now retires earlier sessions' integrated leftovers, and moves an authority boundary, since retiring the agent's own recoverable state leaves the material-deletion grant. Nothing here licenses touching a live session's lane, an uncommitted file the run did not make, history others share, or anything unrecoverable; delegates keep the isolation rule; a read-only request still writes nothing; and trusted project procedure that keeps integrated branches is honored. The 2.9.0 live-peer protection, which exists because a failed worktree isolation once ended in a hard reset that destroyed a concurrent session's uncommitted work, is unchanged. The owner interface, public skills, installation, and package layout are unchanged. The owner's decision and its lineage from 2.7.0 through 3.0.1 and 4.8.0 are recorded in [decisions](docs/decisions.md#the-500-full-custody-of-engineering-state); the refused alternatives, a per-project switch, lock and lease schemes, a status file, and a separate custody method, are in [prior art](docs/prior-art.md). No private session content is published.
+
+An isolated, read-only Codex review (Codex CLI 0.153.0, scratch operating-system and host homes, authentication by reference to the existing credential file, and a transcript free of personal-instruction and installed-plugin contamination) raised three qualifying findings, all confirmed against the files and fixed here: the uncommitted-work case had put the new no-attribution rule into an event description that every arm's task success shares, so the base host and the 3.0.1 arm would have been scored on 5.0.0 text; the stale-branch case forbade a rewrite in its acceptance and had no event that detects a surviving branch moved off its recorded commit; and the new fixture's setup ran `git init` without naming its initial branch while the preflight registry requires `main`. The reviewer confirmed that the kernel, the outcome contract, `references/integration.md`, and `references/tracked-work.md` agree on live-lane protection, read-only restraint, preservation of uncommitted state, routine retirement of integrated leftovers, and protected shared or unrecoverable history; that the three workflow skills keep those boundaries; that no shipped sentence still attributes project state to a human or third party; that the custody case requires retirement only of the candidate arms; that the merged-branch preflight check runs in the right direction; and that the version carriers agree. No findings were refused. The owned review workspace was removed.
+
+The full local package gate passed all 390 tests under the pinned dependencies, and `git diff --check` passed. Both host schema validators passed on the candidate tree. Clean installation and model behavior were not retested for this unchanged package structure. Behavior under the new text is `UNVERIFIED` on both hosts, and no paid behavioral run was made.
+
+| Capability | Local candidate evidence |
+| --- | --- |
+| Deterministic package gate | PASS, full local command and 390 tests |
+| Codex schema validation | PASS |
+| Claude schema validation | PASS |
+| Clean Codex install | UNVERIFIED |
+| Clean Claude install | UNVERIFIED |
+| Explicit invocation | UNVERIFIED |
+| Implicit activation | UNVERIFIED |
+| Continuity | UNVERIFIED |
+| Behavioral suite | UNVERIFIED, [evidence](docs/evidence.md) |
+
 ## 4.8.4 (2026-09-16)
 
 A repeat of the same kind of failure is now evidence about a class. The always-loaded kernel says that an owner
