@@ -2,6 +2,53 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 4.8.4 (2026-09-16)
+
+A repeat of the same kind of failure is now evidence about a class. The always-loaded kernel says that an owner
+reporting a symptom again, or a slow gate failing on one more stale expectation, calls for finding the other
+members of that class with the cheapest check that covers all of them and fixing them together before returning
+to the loop that found them. The bug workflow's sibling inspection now also covers the other places the owner
+would see the same symptom, since a repeated symptom can have a second cause. No candidate-count limit,
+mandatory local suite, sweep procedure, or polling rule was added.
+
+The skill description carries one conditional sentence: a session this skill was governing reopens the skill
+after the host compacts its context. It is not a hook and executes nothing. It answers the reopen condition
+recorded in the 3.0.0 reminder decision, which fired: in a private installed Codex session on 4.8.2 no text from any
+package file survived any of fifteen compactions, only the skill descriptions the host keeps in its own skill list
+did, and the kernel was never re-read across a delivery loop of almost four hours. Whether the sentence causes a reload
+is `UNVERIFIED`.
+
+The motivating observations, prior-art reading and refused alternatives are recorded in
+[evidence](docs/evidence.md#484-repeat-failures-and-continuity-after-compaction) and
+[decisions](docs/decisions.md#the-484-class-evidence-and-continuity-correction). No private session content is
+published and no paid behavioral comparison was run. This is a compatible wording patch.
+
+The full local package gate passed all 389 tests under the pinned dependencies in an isolated worktree, and
+`git diff --check` passed. Both host schema validators passed on the candidate tree. Clean installation and model behavior were not retested for this
+unchanged package structure.
+
+An isolated, read-only Codex review found one qualifying documentation defect: the release rationale said none
+of the package's text survives Codex compaction while also calling the surviving description package-owned text.
+The three sentences now distinguish the discarded file bodies from the descriptions the host keeps in its own
+skill list. The reviewer confirmed that the kernel sentence contradicts neither the verification nor the diagnosis
+reference, that the description sentence selects nothing for an ungoverned session and grants no authority, that
+the bug workflow clause is consistent with the kernel, that all referenced anchors resolve, and that no active
+version pin was missed. No findings were refused. The review transcript confirmed separate operating-system and
+host homes with no personal instruction or installed-plugin contamination markers. Authentication referenced
+the existing credential file; the owned review workspace was removed.
+
+| Capability | Local candidate evidence |
+| --- | --- |
+| Deterministic package gate | PASS, full local command and 389 tests |
+| Codex schema validation | PASS |
+| Claude schema validation | PASS |
+| Clean Codex install | UNVERIFIED |
+| Clean Claude install | UNVERIFIED |
+| Explicit invocation | UNVERIFIED |
+| Implicit activation | UNVERIFIED |
+| Continuity | UNVERIFIED |
+| Behavioral suite | UNVERIFIED, [evidence](docs/evidence.md) |
+
 ## 4.8.3 (2026-09-13)
 
 Delegate briefs now account for context the host actually supplies instead of asserting that delegates

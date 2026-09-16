@@ -2,6 +2,50 @@
 
 This page separates package checks from observed model behavior. The full 2.0 evidence remains in the immutable [`v2.0.1` research snapshot](https://github.com/mzored/SkipHow/tree/1c811262e6acdbdc58a2ee862b54e0b8d3478eaa/docs/research/2026-08-27).
 
+## 4.8.4 repeat failures and continuity after compaction
+
+One private installed Codex session on 4.8.2 (Codex Desktop 0.154.0-alpha.6.2, about fourteen hours, ninety
+turns, fifteen compactions) was inspected after the owner reported fixes that did not hold across screens and a
+final review-and-deploy request that took almost four hours. No private session content, identifiers or project
+details are retained here.
+
+Loading. After every compaction the retained history held only the host's developer message, which lists each
+installed skill with its description and path, the owner's instruction files, the most recent owner messages and
+one encrypted summary. Searching that retained history for distinctive sentences of nine package files found none
+after any compaction. Of twenty-four owner requests asking for a systemic fix, package text was in context for
+four. The kernel was read at the start of the final delivery request, dropped at the next compaction thirteen
+minutes later, and never re-read. This is the reopen condition written into the 3.0.0 reminder decision. On Claude
+Code the same claim was retracted in the 2026-09-06 audit because that host re-attaches invoked skills after
+compaction; the two hosts differ and both facts stand.
+
+Class of fixes. Six reports of one visual symptom arrived over two hours; each fix repaired a different shared
+component with a regression test and no sweep of the other screens. In the one turn where the bug workflow was in
+context the run followed its text: it repaired the layer owning the failed rule and inspected the sibling that rule
+governed. The recurrences had different causes. That is a readable gap between the workflow's cause-scoped class
+and the outcome the owner asked for, supported by one observation.
+
+Delivery loop. The final request spent 590 tool calls and about 102 million input tokens, 99 percent of them
+cached. Review was proportionate: three parallel forked reviewers found four qualifying defects in under half an
+hour, and a one-minute re-review covered the changed parts. The remaining three and a half hours went to seven
+sequential release candidates of eleven to thirty minutes each, five of which failed on one more member of the
+same drift class, expectations left stale by agreed product changes. Local checks covering that whole class
+existed and were not run before a candidate. The project's own contract runs end-to-end tests only on a
+candidate, so the expectation is partly the project's; package text was absent, so the cause of the choice is
+`UNVERIFIED`. Three delegates re-tasked as concurrent writers in one worktree contradicted kernel text that was
+out of context; the host forbids spawning unless asked, and no wording changed. 383 host wait polls at the host's
+thirty-second limit are host mechanics the diagnosis reference already addresses.
+
+Prior art was read as it stands on 2026-09-16: Superpowers' [`systematic-debugging`](https://github.com/obra/superpowers/blob/main/skills/systematic-debugging/SKILL.md)
+and [`verification-before-completion`](https://github.com/obra/superpowers/blob/main/skills/verification-before-completion/SKILL.md)
+say nothing about other instances of a defect class, a second report of the same symptom, or sweeping before
+re-running an expensive gate. Nothing was taken.
+
+Not adopted: a candidate-count limit or a mandatory local suite before release, which belong to a project's
+delivery contract; a delegate-writer change, since that text was plain and merely absent; a polling rule; a new
+evaluation case or synthetic receipt. Behavior under both changes is `UNVERIFIED`. What would confirm them: a
+later governed Codex session reading a package file after a compaction, and a repeated symptom report followed by
+a fix set larger than the reported instance.
+
 ## 4.8.3 delegation context and publication privacy
 
 Two private installed sessions on 4.8.2 were inspected for routing cost. Their recorded dispatches selected
