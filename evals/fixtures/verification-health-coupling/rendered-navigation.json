@@ -1,0 +1,7 @@
+{
+  "items": [
+    {"label": "Home", "href": "/", "tab_index": 0},
+    {"label": "Profile", "href": "/profile", "tab_index": 1},
+    {"label": "Settings", "href": "/settings", "tab_index": 2}
+  ]
+}

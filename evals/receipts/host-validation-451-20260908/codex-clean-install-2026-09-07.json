@@ -1,0 +1,61 @@
+{
+  "date": "2026-09-07",
+  "detail": "Error: marketplace source `/private<redacted-0>/marketplace` is not allowed by requirements from /etc/codex/requirements.toml",
+  "host": "codex",
+  "host_version": "codex-cli 0.153.0",
+  "installed_files": {},
+  "result": "FAIL",
+  "results": {
+    "clean_install": {
+      "receipt": {
+        "check": "clean_install",
+        "cleanup_result": "scratch host home removed; uninstall was not verified",
+        "command_or_session": "host marketplace add, install, list, inspect, uninstall, list",
+        "configuration": "empty CODEX_HOME; exact local marketplace snapshot",
+        "date": "2026-09-07",
+        "host": "codex",
+        "host_version": "codex-cli 0.153.0",
+        "observable_evidence": "Error: marketplace source `/private<redacted-0>/marketplace` is not allowed by requirements from /etc/codex/requirements.toml",
+        "outcome": "FAIL",
+        "package_commit": "4250c7abc55673230946af4ba662fa2d28ef0ab5",
+        "package_payload_sha256": "e00c311c57a57637f71ecdec44086489461416823803f870f509633c68701563",
+        "package_tree": "e2305efa1870688b31030b5a19867bba786f6761",
+        "package_version": "4.5.1",
+        "source": "scripts/check_hosts.py --smoke"
+      },
+      "status": "FAIL"
+    },
+    "uninstall": {
+      "receipt": null,
+      "status": "UNVERIFIED"
+    }
+  },
+  "schema": "skiphow-host-smoke-bundle/1",
+  "steps": [
+    {
+      "detail": "",
+      "status": "PASS",
+      "step": "plain marketplace"
+    },
+    {
+      "detail": "",
+      "status": "PASS",
+      "step": "clean host home"
+    },
+    {
+      "detail": "Error: marketplace source `/private<redacted-0>/marketplace` is not allowed by requirements from /etc/codex/requirements.toml",
+      "status": "FAIL",
+      "step": "marketplace"
+    },
+    {
+      "detail": "9.5 step 5: starts a model; not run by this script",
+      "status": "UNVERIFIED",
+      "step": "start a clean session"
+    },
+    {
+      "detail": "9.5 step 6: starts a model; not run by this script",
+      "status": "UNVERIFIED",
+      "step": "verify explicit invocation"
+    }
+  ]
+}

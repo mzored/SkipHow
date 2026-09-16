@@ -4,7 +4,7 @@
 
 Describe the product outcome in ordinary language. You keep product decisions. SkipHow owns technical research, architecture, planning, task management, model and subagent selection, implementation, review, integration, and verification. It uses the host's native capabilities and remains an instruction layer, not a standalone runtime or security boundary.
 
-One public skill covers questions, bugs, ideas, features, reviews, lists, programmes, delivery, and recovery. Its compact CTO kernel keeps product ownership, engineering authority, adaptive routing, isolation, review, persistence, and honest completion in context. Eight focused playbooks carry the detailed methods. You do not choose a command, workflow, architecture, model, or review process. The [owner-outcome contract](docs/outcome-contract.md) defines the responsibilities that future implementation changes must preserve.
+The `skiphow` skill covers ordinary project requests. Optional workflow skills make recurring bug repair, planning, long-running delivery, release preparation, and preview iteration available by name or by request. They share the CTO kernel and its internal references. You can choose a work pattern while SkipHow keeps technical supervision. The [owner-outcome contract](docs/outcome-contract.md) defines the responsibilities that future implementation changes must preserve.
 
 [![CI status](https://github.com/mzored/SkipHow/actions/workflows/ci.yml/badge.svg)](https://github.com/mzored/SkipHow/actions/workflows/ci.yml)
 [![Latest release](https://img.shields.io/github/v/release/mzored/SkipHow?label=release)](https://github.com/mzored/SkipHow/releases)
@@ -37,7 +37,8 @@ This is a responsibility handoff, not a fixed development pipeline. A small requ
 | More autonomy risks losing product control | The owner still decides visible behavior, scope, cost, risk, privacy, rollout, and protected actions. |
 | Every request becomes a ceremony | Process scales with the work. Specs, tickets, TDD, worktrees, subagents, and review appear only when the request or project needs them. |
 | "Done" means the agent stopped | Completion needs fresh evidence. Anything blocked or unverified stays visible. |
-| You need a different command for every kind of work | One entry covers questions, decisions, research, bugs, changes, iterations you want to look at first, review, triage, delivery, pause, and resume. |
+| Important engineering problems wait for you to notice them | During ordinary work, the lead assesses material risks and accumulating costs even when the requested behavior and checks pass, then handles them within scope or gives them an explicit disposition. |
+| You need a different command for every kind of work | One entry covers questions, decisions, research, bugs, changes, iterations you want to look at first, project status, reconciliation, cleanup, delivery, pause, and resume. |
 | Long or delegated work becomes your coordination job | Continuity, reconciliation, integration, and any tracking your project calls for remain engineering work for the agent. |
 | Autonomy widens side effects | Production, releases, credentials, access, material deletion, and other protected actions require an explicit grant. |
 
@@ -49,7 +50,7 @@ The promise is less manual supervision, not infallibility. SkipHow does not make
 | --- | --- |
 | You own a product outcome and want a coding agent to own the engineering method through a verified result | **Use SkipHow** |
 | Claude Code or Codex already keeps this boundary and verifies completion reliably for you | **Use the base agent**; another instruction layer adds little |
-| You want to discover and invoke separate methods yourself | **Use a skill library** |
+| You know the recurring work pattern you want and still want the agent to own engineering | **Use SkipHow's optional workflows** |
 | You want to inspect and approve specifications, phases, tickets, or the development method | **Use a spec or workflow framework** |
 | You need persistent agent teams, queues, budgets, leases, scheduling, or a control plane | **Use a runtime orchestrator** |
 
@@ -109,9 +110,31 @@ The totals overlap on small screens. Find the cause and fix it.
 Compare our caching options and recommend one. Do not change code.
 
 Here are today's bugs and ideas. Triage and save them.
+
+Tell me where the project actually stands. Do not change anything.
+
+Reconcile the tracked work with what landed and clean up anything safely finished.
 ```
 
 SkipHow reads the project before asking anything. If a product choice is genuinely open, it asks in plain language, recommends an option, and waits before building behavior that depends on the answer. Then it decides the engineering, does the authorized work, verifies the result, and reports what the evidence shows and what remains uncertain.
+
+### Recurring workflows
+
+Use these when you know the work pattern you want. Ordinary requests still need no mode name. In Codex, invoke `$skiphow-plan`; in Claude Code, invoke `/skiphow:skiphow-plan`, with the same naming pattern for the other workflows.
+
+| Workflow | Example request | Completion |
+| --- | --- | --- |
+| `skiphow-bug` | `$skiphow-bug Discounts sometimes change when an order is retried. Find and repair the general cause.` | Verified repair at the authorized destination, with original and general-case evidence. |
+| `skiphow-plan` | `$skiphow-plan Prepare team invitations for implementation in this project's GitHub issues.` | Researched specification, independently reviewed vertical slices, issue links, and a short execution prompt. No implementation. |
+| `skiphow-longrun` | `$skiphow-longrun Deliver the accepted implementation children of this epic to our development branch.` | Verified integrated slices or recorded blockers, with delegated implementation and independent fix/review loops. |
+| `skiphow-deploy-ready` | `$skiphow-deploy-ready Prepare our agreed changes for delivery.` | Deferred checks, review, coherent commits, and any authorized non-production integration. |
+| `skiphow-fast-fixes` | `$skiphow-fast-fixes Start the local preview so we can iterate on this screen.` | A reviewed, inspected preview, followed by a stop for feedback. |
+
+Explicit `skiphow-plan` invocation requests durable planning records within the authorized audience. A read-only constraint overrides that default. Automatic selection for an ordinary planning question does not grant tracker writes. Unavailable tracking leaves complete issue drafts and a blocker.
+
+In fast-fixes, feedback or the next task first saves the previous shown iteration as a local commit, even when you want it revised. Acceptance keeps the session in iteration mode. Playwright/e2e test runs, full backend gates, and pytest wait for delivery; browser inspection and permitted focused checks remain available. Say `deploy-ready` or `clean` in this session to begin preparation. Say `deploy prod` to authorize the specified production release. Preparation and contextual clean alone do not authorize production or arbitrary deletion.
+
+Workflow selection and loading the shared kernel remain model behavior, currently `UNVERIFIED`. See the [workflow evidence](docs/evidence.md#optional-workflow-contract).
 
 ## Who decides what?
 
@@ -138,11 +161,11 @@ I kept running into the same mismatch. To use them well, I often had to operate 
 
 SkipHow is the layer I built for that relationship. The [prior-art record](docs/prior-art.md) explains what it adopted, changed, and deliberately left out. It is a design history, not a benchmark.
 
-## Why one public skill
+## One CTO, optional workflows
 
-Separate public methods can be useful, but they make selection part of the user's job and allow a leaf skill to load without the authority and completion rules. Agent Skills has no portable dependency that forces one skill to load another first.
+The same CTO owns every workflow. Shared authority and completion rules live in `skiphow`, and each workflow requires that kernel in context before consequential work. Detailed methods stay in one reference library and load when needed.
 
-SkipHow keeps one owner-facing entry. Critical rules stay in its kernel, while focused methods remain internal and are consulted where the work makes them worth their cost. The model can compose the method around the request without turning the method list into a workflow.
+This dependency is an instruction, not a host-enforced guarantee. Package checks verify the links; retained runs must establish actual loading and behavior. Choosing a workflow is optional and never makes you responsible for technical sequencing, model routing, or review supervision.
 
 ## What the evidence shows
 

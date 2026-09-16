@@ -1,0 +1,10 @@
+{
+  "reuse_prepared_environment": false,
+  "reuse_started_services": false,
+  "reuse_test_data": false,
+  "browser_check_count": 146,
+  "delivery_coverage": [
+    "browser coverage",
+    "contract checks"
+  ]
+}

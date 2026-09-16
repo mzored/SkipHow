@@ -126,6 +126,28 @@ def preflight(fixture: Path, name: str) -> list[str]:
         problems.append(f"HEAD is {head}, expected {spec['head']}")
     local = set(_git(["for-each-ref", "--format=%(refname:short)", "refs/heads"], fixture).split())
     problems.extend(f"local branch {branch} is missing" for branch in spec.get("local_branches", []) if branch not in local)
+    worktree_paths = {}
+    if any(key in spec for key in ("worktree_branches", "clean_worktree_branches", "dirty_worktree_branches")):
+        for record in _git(["worktree", "list", "--porcelain"], fixture).strip().split("\n\n"):
+            fields = record.splitlines()
+            path = next((line.removeprefix("worktree ") for line in fields if line.startswith("worktree ")), None)
+            branch = next((line.removeprefix("branch refs/heads/") for line in fields if line.startswith("branch refs/heads/")), None)
+            if path and branch:
+                worktree_paths[branch] = Path(path)
+    if expected_worktrees := spec.get("worktree_branches"):
+        problems.extend(
+            f"worktree for branch {branch} is missing"
+            for branch in expected_worktrees
+            if branch not in worktree_paths
+        )
+    for branch in spec.get("clean_worktree_branches", []):
+        path = worktree_paths.get(branch)
+        if path and _git(["status", "--porcelain=v1", "--untracked-files=all"], path).strip():
+            problems.append(f"worktree for branch {branch} is not clean")
+    for branch in spec.get("dirty_worktree_branches", []):
+        path = worktree_paths.get(branch)
+        if path and not _git(["status", "--porcelain=v1", "--untracked-files=all"], path).strip():
+            problems.append(f"worktree for branch {branch} has no unique working state")
     origin = spec.get("origin")
     if origin:
         try:
@@ -151,6 +173,17 @@ def preflight(fixture: Path, name: str) -> list[str]:
     problems.extend(f"foreign untracked file {path} is missing" for path in spec.get("untracked", []) if path not in untracked)
     problems.extend(f"foreign unstaged edit {path} is missing" for path in spec.get("modified", []) if path not in modified)
     problems.extend(f"external marker {marker} already exists beside the fixture" for marker in spec.get("absent_beside", []) if (fixture.parent / marker).exists())
+    for relative, tokens in spec.get("absent_text", {}).items():
+        path = fixture / relative
+        if not path.is_file():
+            problems.append(f"required fixture file {relative} is missing")
+            continue
+        content = path.read_text(encoding="utf-8")
+        problems.extend(
+            f"placeholder {token} remains in {relative}"
+            for token in tokens
+            if token in content
+        )
     probe = spec.get("probe")
     if probe:
         try:

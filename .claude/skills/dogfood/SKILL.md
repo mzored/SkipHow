@@ -95,9 +95,19 @@ Only when the evidence names a defect in the package's own wording. A verdict of
 deviated from text that was plain and in context, and a question that was only ever about cost or time all end
 at the report. Do not manufacture a change for them.
 
-Locate the problem as narrowly as the evidence allows. Start with this project's own record. The decision
-history and the prior art page say what was already argued and turned down, so a settled argument is not
-reopened without new evidence — and when this session is that evidence, say so.
+Identify the shared failure mechanism behind the example, separating it from incidental symptoms. Choose
+the smallest solution that reliably addresses the supported class of problems at the lowest total cost under
+the owner-outcome contract. Its acceptance should cover materially different manifestations and preserve
+legitimate behavior that only resembles the symptom. Generalize only as far as the evidence and the owner's
+requested outcome justify.
+
+SkipHow runs on frontier models. Write prompts and instructions around outcomes, authority, constraints, and
+observable success, leaving methods to their judgment. Prescribe steps or gates only where evidence shows
+that they are needed to preserve a material outcome or boundary.
+
+Start with this project's own record. The decision history and the prior art page say what was already
+argued and turned down, so a settled argument is not reopened without new evidence. When this session is
+that evidence, say so.
 
 Those same pages name which outside projects are comparable on the shape in front of you. Read the ones that
 are, as their text stands now rather than as this project summarised it or as you remember it; both go stale,
@@ -126,10 +136,10 @@ settled; do not re-derive them each time.
 
     codex exec --sandbox read-only -c model_reasoning_effort=high "$(cat prompt.md)" </dev/null > out.log 2>&1
 
-The `</dev/null` is required or it waits on stdin forever. Do not pass `-m`: a named model is refused on a
-ChatGPT account, and the default is the working one. `timeout` does not exist on this machine. Read the
-verdict from the `codex` marker in the log to the end; everything above it is the session banner and the
-tool calls.
+Use closed stdin for noninteractive execution. The command uses the host's configured model; choose a
+supported override only when the review warrants it. Use the active environment's supervision tools to
+bound the run, and read the final verdict separately from startup metadata and tool output. Apply the
+review isolation described above before trusting the result.
 
 Give it the branch and let it read the files itself rather than pasting a diff. Put the qualifying and
 disqualifying bars from `AGENTS.md` in the prompt, because without them it returns rephrasings. Ask for

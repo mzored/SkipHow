@@ -1,0 +1,22 @@
+{
+  "id": "verification-health-iterative-development",
+  "summary": "Three small owner-reviewed edits need focused evidence during iteration, wider persistence evidence when a boundary is crossed, and the full delivery contract only on the final candidate.",
+  "kind": "checked-in product state, dependency map, focused checks, and delivery gate",
+  "synthetic": true,
+  "planted": [
+    "Two presentation edits have reliable native affected rendering checks, one persisted default edit crosses a storage boundary, and the required delivery gate covers the final combined candidate.",
+    "The native dependency map can select relevant evidence without filename or path heuristics."
+  ],
+  "absent_on_purpose": [
+    "No external renderer, storage service, framework, fixed time budget, credentials, remote, or model receipt. Persistence is exercised through an owned temporary file."
+  ],
+  "setup": [
+    "Copy this directory into an empty owned scratch directory outside any repository and register cleanup before initialization.",
+    "Initialize Git and commit the retained files with the synthetic Fixture identity. Add no remote or network access."
+  ],
+  "run_checks": "Use python -B check_affected.py <account-label|settings-label|persisted-default> during iteration, then run python -B delivery_gate.py after the delivery request.",
+  "end_state_signals": [
+    "Focused rendering evidence covers the intermediate labels, the persisted default adds storage-boundary evidence, and the required delivery gate runs once on the final candidate."
+  ],
+  "privacy": "All labels, settings, dependency mappings, checks, and owner turns are synthetic."
+}

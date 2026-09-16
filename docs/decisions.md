@@ -4,27 +4,305 @@ This page records the choices that still matter when SkipHow changes. Read it be
 
 ## Current decisions
 
-The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-09-06 against the 4.4.0 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
+The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-09-16 against the 4.8.4 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
 
 | Decision | Active rationale | Premises | Evidence | Reopens when |
 | --- | --- | --- | --- | --- |
-| One owner-facing skill; nine playbooks are internal references | A separately selectable playbook can load without the authority kernel; the owner should not operate a method menu | Agent Skills has no portable skill dependency; Codex plugins expose no shared command surface | `Deterministic` for package shape; selection reliability `UNVERIFIED` | A portable skill standard adds required dependencies, or receipts show playbooks unread where they materially help |
+| A repeat of the same kind of failure is evidence about a class, found with the cheapest check that covers the whole class and fixed together before the loop that found it runs again; a session the skill was governing reopens the kernel after the host compacts its context | Fixing each recurrence as a new instance sent the owner hunting the next one and re-ran a half-hour gate once per stale expectation; Codex keeps no text from any package file across compaction and only the skill description in the host's own skill list survives | The second appearance is readable in the owner's words or the gate's output; the description is the one package-owned surface that survives on both hosts; the sentence conditions on the skill already governing | `Contract` (4.8.4); one private Codex session on 4.8.2 motivates both; effect `UNVERIFIED` | A run sweeps unrelated surfaces on a first report, a governed Codex session still never reopens the kernel after compaction, or the description sentence selects the skill for an ungoverned session |
+| A prepared plan distinguishes broad records from executable assignments and bounds review as well as implementation | A tracker group can name an outcome without establishing a feasible next assignment; source size and shared writes affect execution | Existing bounded-slice contract and an explicit owner request for dispatch-ready planning; later boundaries may depend on earlier results | Clarified `Contract` in 4.8.2; causal attribution and behavioral improvement `UNVERIFIED` | Receipts show infeasible assignments surviving review or the clarification causing speculative decomposition or unnecessary small-task ceremony |
+| Assess material technical risks and accumulating costs encountered in ordinary work | Passing requested behavior and checks can leave a narrow acceptance-only reading of CTO supervision | Concerns need evidence and foreseeable product, development, or operational consequences; recognition does not grant broader repair | Owner-requested clarification in 4.8.1; cause and behavioral benefit `UNVERIFIED` | A controlled receipt shows missed material concerns, speculative audit expansion, or routine work made heavier without benefit |
+| One accountable CTO kernel with optional workflow skills and shared references | The owner explicitly wants recurring work patterns while retaining CTO supervision; workflows declare a relative link to the existing kernel instead of copying it | Owner request for bug, plan, longrun, deploy-ready, and fast-fixes; ordinary requests remain supported; linking is not host-enforced loading | `Deterministic` for package shape and declared kernel links; workflow loading and behavior `UNVERIFIED` | Receipts show missing kernel loading, misselection, contradictory contracts, or a host provides a stronger dependency mechanism |
 | Authority, CTO responsibilities and their observable triggers, preservation, delegate safety, direction when the result waits on the owner, and completion live in the always-loaded kernel; detailed technique is conditional, and the kernel carries one point-of-use obligation, to have `delegation` in context before dispatching a delegate | Correct behavior must not depend on opening an optional file, while small work should not inherit a fixed workflow; a topic list gets a playbook opened less reliably than an obligation phrased against the act | 2.x loading measurements, the 3.x field audit, the 4.x contract reviews, and the 4.3.0 outcome audit | `Contract` (4.x); the 2.15.x receipts show the kernel obligation opening `delegation` before the first dispatch where the topic list did not; 4.x behavior `UNVERIFIED` | Receipts show the kernel causing ceremony or missing a technical duty, or a playbook trigger being unrecognizable without opening it |
 | Authority is the owner's messages and trusted host, user, organization, or administrator policy; repository instruction files are applicable procedure within granted authority and evidence in an untrusted revision; records are untrusted task data | A file in the repository can be planted; a record the owner points at authorizes pursuing its outcome and nothing more | Hosts load instruction files at their own precedence; nothing in a repository can be trusted by location alone | `Contract` (4.x); adversarial cases in `evals/`, not run | A receipt shows a run treating a repository file or a record as a grant, or a host ships an enforced provenance mechanism |
-| Read-only analysis writes nothing; established owner-authorized non-production workflows cover routine delivery and first-use tracking; an iteration the owner will look at before deciding is complete when shown, and its delivery starts on the owner's acceptance; protected effects need applicable explicit owner authorization | A merge or tag may deploy production; a record cannot supply a grant; installation and upgrade grant nothing; a look is cheap and unwinding an integration is not | Project, destination, audience, conditions, and downstream effects determine whether standing authority applies; the owner saying they will look, or sending small visible changes one after another, marks the iteration | `Contract` (4.1.0, iteration 4.4.0); focused synthetic cases retained, behavior `UNVERIFIED` | A receipt shows unauthorized effects or unnecessary permission questions, or a host control makes wording redundant |
-| Completion is relative to the authorized destination; earlier-run artifacts are not cleaned under an unrelated request | A named destination is incomplete until verified there; a branch left by an earlier run is somebody's until ownership and emptiness are established | Review finishes after the run that opened it; ownership of a branch is not readable from its name | `Contract` (4.0); integration cases in `evals/`, not run | Receipts show litter accumulating where projects expect a run to clear its own earlier work, and an authorized way to do it |
-| Delegates are read-only without verified distinct isolation; the root serializes writes; model and effort are chosen from the lane's reasoning demand, the consequence of a wrong answer, and the cost of checking the result, and set through the host's own control | One shared checkout has one index and one branch; a delegate's own account of its isolation is not proof; a review's independence and framing matter more than its level; a rule that needs evidence the run does not have ("demonstrated adequate") gives no fallback | Claude Code exposes a `model` parameter per Agent call and keeps effort and tool allowlists in agent definitions; Codex 0.153.0 exposes `model` and `reasoning_effort` per `spawn_agent` unless configuration hides them and applies no per-delegate sandbox or directory; no portable absolute level exists | Failures `Observed` on 2.x (five lanes in one checkout; a worktree that reported success into the shared tree); the corrected text is `Contract`, not run; a Codex writer lane in a separate checkout is untried | A host makes isolation verifiable and default, a Codex writer path is shown, or paired runs settle the routing cost question |
-| Prefer host-native execution; admit thin bindings when a demonstrated gap justifies them | Duplicated runtime state increases cost; current package remains one skill without a service or custom workers | Required outcomes survive implementation changes; new components need host schema, safety, and compatibility checks | Current package shape `Deterministic`; adapter benefits require receipts | A controlled check shows a host binding is needed to preserve an outcome |
-| Default ordinary-language governance references the installed skill from an owned reversible block in the trusted user instruction file the host actually reads; the skill enables, checks, and disables itself through a packaged host-aware helper and a setup playbook; explicit invocation is the fallback; no hook ships | Host documentation establishes instruction loading, not correct selection; a block in a shadowed or unread file configures nothing, so the agent resolves the target and reports configured, available, and loaded separately | Codex reads a non-empty `AGENTS.override.md` over `AGENTS.md` in `CODEX_HOME`; Claude reads `CLAUDE.md` and unconditional `rules/` under `CLAUDE_CONFIG_DIR`; isolated Codex login works while isolated Claude login remains unavailable | Helper lifecycle and host resolution `Deterministic`; Codex loading from the block shown once each on 4.1.0 (`AGENTS.md`) and 4.2.0 (`AGENTS.override.md`); Claude persistent loading `UNVERIFIED`; a staged comparison of the pointer block, a kernel-printing `SessionStart` hook, and an `@import` is specified in the 4.3.0 audit record and not run | A host changes its discovery order, a clean receipt shows missed or false activation, or the specified comparison shows another mechanism passing the whole enable, disable, upgrade, and uninstall lifecycle |
+| Read-only analysis writes nothing; established owner-authorized non-production workflows cover routine delivery and tracking; a series of owner-reviewed changes stays in iteration until the owner requests delivery or accepts with nothing further to send, and an invoked iteration workflow keeps its own boundary until delivery is requested | Explicit planning-skill invocation requests durable records, but automatic selection grants nothing; fast-fixes acceptance stays inside iteration; preparation and production remain separate grants | Owner-selected workflow contracts preserve ordinary SkipHow behavior, existing grants, audience boundaries, and downstream-effect checks | `Contract`; new workflow behavior `UNVERIFIED` | A receipt shows unauthorized effects, missing records requested by invocation, or unnecessary permission questions |
+| Completion is relative to the authorized destination; earlier-run artifacts are not cleaned under an unrelated request, and material shared state the work brings a run up against is named once with what can be read claiming it and the one action that would settle it, which is not authority to act on it | A named destination is incomplete until verified there; a branch left by an earlier run is somebody's until ownership and emptiness are established | Review finishes after the run that opened it; ownership of a branch is not readable from its name; not being allowed to write to something is not a reason to say nothing about it | `Contract` (4.0; naming duty 4.8); integration cases in `evals/`, not run | Receipts show litter accumulating where projects expect a run to clear its own earlier work and an authorized way to do it, a run treating the naming duty as licence to tidy a repository nobody asked it to touch, or a lead reporting a peer session's live lane as unclaimed |
+| No technical choice reaches the owner, and a running result shown to them names the branch or revision and the address it serves | The owner never handling engineering is the boundary this product exists to hold; a recommendation the owner can decline is not a question that stops the work | Reversible technical uncertainty is settled by taking the option the agent would defend; several checkouts of one project answer on the same default address | `Contract` (4.8); the corpus forbids technical approval, tracker interviews, and test-selection questions in five cases, none run | Receipts show the recommendation channel being used to hand product choices back, or an owner asking for the technical options they no longer see |
+| Verification proves each property at the narrowest stable boundary that retains the needed fidelity; distinct high-fidelity evidence survives; recurring disproportionate cost is measured at its responsible layer; equivalent inputs reuse valid evidence | The 4.6.0 release repeated equivalent gates, while the new verification-health cases distinguish coupling, setup cost, unique cross-boundary confidence, and proportional iteration | The relevant code, dependencies, configuration, environment, artifact, and destination determine whether evidence applies; test category, suite size, and speed alone establish neither cause nor adequacy | One installed 4.6.0 release session supports evidence reuse; the 4.7.0 placement and diagnosis rules are `Contract` with deterministic corpus coverage; behavior is `UNVERIFIED` | A run drops unique evidence, normalizes disproportionate churn, optimizes an unmeasured cause, or makes ordinary work heavier without preserving delivery confidence |
+| Broad project-state reconciliation reconstructs before it mutates; status, record correction, and cleanup have request-scoped effects; only a non-reconstructible outcome-to-workspace association becomes durable | Tracker state, branch names, merge status, and CI can each be stale or refer to the wrong outcome, revision, or destination; a parallel lifecycle registry would create another claim to reconcile | Live Git, reviews, destinations, and revision-specific validation establish every transition in the current cases; workspace ownership cannot always be reconstructed after a session ends | `Contract` and deterministic corpus validation (4.6.0); behavior `UNVERIFIED` | A receipt finds live evidence insufficient to recover a material transition, the ownership association insufficient for safe recovery, or the ordering adding ceremony without preventing a failure |
+| Delegates are read-only without verified distinct isolation; the root serializes writes; lead and delegate model and effort are independent choices minimizing expected total cost within owner constraints; adequate current routes survive comparable work, and settings use actual host controls | One shared checkout has one index and one branch; a delegate's own account of its isolation is not proof; host controls change independently of this package; a review's independence and framing matter more than its level | The active host supplies the controls a run can use; no portable writer-isolation or absolute-level interface exists across supported hosts, so unverifiable isolation takes the safe fallback | Failures `Observed` on 2.x (five lanes in one checkout; a worktree that reported success into the shared tree); the portable fallback is `Contract`, not run; writer lanes remain host-specific and must be verified | A portable capability interface appears, a host makes isolation verifiable and default, or paired runs settle the routing cost question |
+| Prefer host-native execution; admit thin bindings when a demonstrated gap justifies them | Duplicated runtime state increases cost; optional skills reuse one kernel without a service or custom workers | Required outcomes survive implementation changes; new components need host schema, safety, and compatibility checks | Current package shape `Deterministic`; adapter benefits require receipts | A controlled check shows a host binding is needed to preserve an outcome |
+| Default ordinary-language governance references the installed skill from an owned reversible block in the trusted user instruction file the host actually reads; the skill enables, checks, and disables itself through a packaged host-aware helper and a setup playbook; explicit invocation is the fallback; no hook ships | Host documentation establishes instruction loading, not correct selection; a block in a shadowed or unread file configures nothing, so the agent resolves the target and reports configured, available, and loaded separately | Codex reads a non-empty `AGENTS.override.md` over `AGENTS.md` in `CODEX_HOME`; Claude reads `CLAUDE.md` and unconditional `rules/` under `CLAUDE_CONFIG_DIR`; isolated Codex login works while isolated Claude login remains unavailable | Helper lifecycle and host resolution `Deterministic`; Codex loading from the block shown once each on 4.1.0 (`AGENTS.md`) and 4.2.0 (`AGENTS.override.md`); Claude persistent loading `UNVERIFIED`; a staged comparison of the pointer block, a kernel-printing `SessionStart` hook, and an `@import` is specified in the 4.3.0 audit record and not run; the skill description carries a conditional continuity sentence since 4.8.4, effect `UNVERIFIED` | A host changes its discovery order, a clean receipt shows missed or false activation, or the specified comparison shows another mechanism passing the whole enable, disable, upgrade, and uninstall lifecycle |
 | A failed merge is recovered by consequence: disposable failures may stay for diagnosis, a shared target others depend on is contained or restored, production restoration keeps its grant | Leaving every failed merge in place made a broken shared branch the default while diagnosis ran | Containment of a covered non-production destination is within the established workflow; production is an effect that keeps its own grant | Source review, 4.2.0; behavior `UNVERIFIED` | A run restores a target it should have left for diagnosis, or leaves a shared target broken |
 | Evaluation oracles name outcomes, not implementations; a fixture is preflighted against a registered expected state before any model spend | The continuity oracle banned a thin host binding the contract permits, and the canonical large-programme prompt named a branch its fixture never created | A grader that encodes the expected behavior independently of the code under test can grade any retained end state | `Deterministic` preflight and grader tests, 4.2.0 | A scenario needs an outcome the registry or grader cannot express |
 | Deterministic checks protect package, security, release, and corpus semantics only; presentation and wording are lint or unchecked | A check that pins a sentence or a topology froze editorial choices without protecting anything a host depends on | Spec 11 classification, applied 2026-09-04 | `Deterministic` | A host starts depending on a detail now treated as editorial |
-| Provider-independent policy: no model IDs, cost tables, or host tiers in the package | Host metadata changes faster than a release cycle; no portable cost signal exists | Both hosts change model names and controls independently | `Deterministic` scan on every run | A portable capability interface appears |
-| Public receipts exclude account quota and authentication metadata, known credential formats, private paths, and raw host identifiers | Literal path replacement left account metadata in a real retained trace | Preserve per-run usage, synthetic artifacts and correlation through pseudonyms; filtering cannot certify arbitrary prose | `Deterministic` receipt privacy gate and nested-event tests in 4.1.1 | A host adds a private field or a receipt needs stronger privacy review |
+| Provider-independent runtime policy: no model IDs, cost tables, host tiers, dated host snapshots, or version-qualified host products in the package | Host metadata changes faster than a release cycle; a versioned mechanics snapshot becomes stale independently of the portable safety fallback | Both hosts change model names and controls independently; current mechanics can be checked at use time and retained with dates in maintainer evidence | `Deterministic` scan on every run; historical host versions remain permitted in evidence and security records | A portable capability interface appears or a host version becomes part of the public runtime contract |
+| Public receipts exclude account quota and authentication metadata, known credential formats, private paths, and raw host identifiers and encoded home-derived directory names | Literal path replacement left account metadata in a real retained trace | Preserve per-run usage, synthetic artifacts and correlation through pseudonyms; filtering cannot certify arbitrary prose | `Deterministic` receipt privacy gate and nested-event tests in 4.1.1, extended for encoded paths in 4.8.3 | A host adds a private field or a receipt needs stronger privacy review |
 | Receipts prove model behavior; deterministic checks and CI never start a model | A green check is not evidence of behavior; a paid run is the owner's decision | Receipt cost is not proportional to what it settles (2.16.1) | Policy | A host offers repository-preserving runs against an exact installed package with trustworthy receipts |
 | CTO evidence belongs to a scenario; suite status reports declared coverage and carries no behavioral label; an eligible terminal outcome also needs a verified fixture manifest and retained end-state artifact for suite coverage; outside the suite, eligibility is judged per claim (loaded, delivered at destination, foreign work preserved, completion honesty, comparative benefit), each with its own required evidence, a confirmed failure recorded as `FAIL` rather than as missing evidence, and a loading observation labelling nothing else | One successful run cannot support eleven unrun scenarios or imply another host, activation arm, or trial; prose summaries cannot replace inspectable state; a per-run standard left every 3.x and 4.x observation unlabelled while the ledger quoted them | Coverage, terminal outcome, and receipt sufficiency are independent; a complete run set may contain failures; the rules for each claim were fixed before any new run and validated against the retained captures | `Deterministic` corpus validation in 4.0.1 and per-claim validation in 4.3.0 (`scripts/claim_eligibility.py`); suite behavior `UNVERIFIED` | A claim needs evidence no rule expresses, or a rule is found to weaken the public meaning of `Observed` |
 
 The sections below are the history behind those rows: what each release tried, measured, and rejected. They are non-normative. Where a section and the index disagree, the index is current and the section records how it got there.
+
+## The 4.8.4 class-evidence and continuity correction
+
+Reopened by one private installed Codex session on 4.8.2, described in
+[`docs/evidence.md`](evidence.md#484-repeat-failures-and-continuity-after-compaction).
+
+Two defects were readable in the shipped text. The kernel treated recurring workarounds, timeouts and churn as
+engineering-system signals but said nothing about a repeat of the same failure: an owner reporting a symptom a
+second time, or a slow gate failing once more on the same kind of stale expectation. The bug workflow scoped the
+class of a defect to the rule that failed and the sibling paths that rule governs, which is the right scope for a
+cause and the wrong one for a symptom with a second cause. Adopted: one kernel sentence in the engineering-system
+paragraph that makes the second appearance evidence about a class, asks for the cheapest check that covers the
+whole class, and puts the class fix before the next pass of the loop that found it; and one clause in the bug
+workflow adding the places the owner would see the same symptom. Both state outcomes; how the class is found stays
+with the agent.
+
+The larger mechanism was loading, and it is the reopen clause of the 3.0.0 reminder decision below: a session
+SkipHow was governing lost its continuity, because Codex retains no text from any package file across compaction and
+nothing that survives tells the session to reload. The 4.0.0 removal of the hook stands: it executed and did not
+load. Adopted instead: one conditional sentence in the kernel description, the only package-owned text measured to
+survive Codex compaction because the host keeps it in its own skill list, telling a session this skill was governing to reopen it after compaction. The condition
+is the one 3.0.0 chose, already governing, so the sentence selects nothing for a session that never used the
+skill. It executes nothing and adds under two hundred characters to every session's skill list on both hosts.
+Claude re-attaches invoked skills on its own, where the sentence is redundant and harmless.
+
+Not adopted: rewording the documented activation line in the user instruction file, since installed files carry
+their own wording and the package does not control that surface; a hook, per 4.0.0; a mandatory local end-to-end
+run or a cap on release candidates, which belong to a project's delivery contract; a delegate-writer change,
+because that kernel text was plain and only absent; a polling cadence, which the diagnosis reference already
+states. Prior art read as it stands offered nothing on either shape.
+
+Evidence for the wording defects is one session; the causal effect of both changes is `UNVERIFIED`. This reopens
+if a governed Codex session still never re-reads after compaction, if selection receipts show the description
+sentence pulling the skill into an ungoverned session, or if a run sweeps unrelated surfaces on a first report.
+
+## The 4.8.3 delegation context and privacy correction
+
+Keep the economic routing contract and the existing continuation rule. The inspected sessions explicitly
+selected models; their cost does not demonstrate that a cheaper model would meet the same acceptance bar.
+Adding role tiers, a dispatch adapter or another gate is not justified. Clarifying continuation economics
+would repeat an existing obligation without identifying a missing responsibility. The selected runtime
+change instead removes the factual claim that a delegate receives only its brief, preserving sufficient
+assignment instructions and pointing to source material rather than copying it.
+
+The privacy boundary applies to encoded directory names as well as literal home paths. Replace the entire
+identifying encoded segment with a stable pseudonym so related events still correlate and different paths
+stay distinct. Minimize ancillary host dumps while preserving every event needed to assess retained claims,
+and bind changed content to fresh hashes without altering original fixture or package identities. The
+owner requested current-version cleanup and preservation of released history; a clean candidate cannot
+establish removal from earlier public copies. Retain public authorship, licenses and source citations.
+
+The alternatives and primary sources are in [evidence](evidence.md#483-delegation-context-and-publication-privacy).
+This is a patch to wording and the publication privacy invariant, with no new routing defaults, authority,
+public interface or installation mechanism. No paid comparison was run and cost benefit remains `UNVERIFIED`.
+
+## The 4.8.2 planning-readiness clarification
+
+The owner requested plans that settle assignment size, useful parallelism, vertical outcomes, and review workload
+without a reminder. A private installed Codex session on 4.8.0 loaded both the planning skill and delegation
+reference. Its initial plan already allowed translation preparation in parallel, but retained broad packages.
+After the owner's question it distinguished product scenarios from translation and review assignments. The same
+message removed a product area from scope; that is a new owner decision, not evidence that the planner should
+have predicted it. The later numeric batching limits were proposals, not measured context safety.
+
+The existing text required bounded assignments, end-to-end outcomes, real dependencies, and independent review.
+This observation does not prove which wording caused the deficient result. The change implements the owner's
+requested clarification of an existing contract: a tracker grouping alone does not establish an executable
+assignment, and the next ready work needs boundaries supported by its actual inputs, outputs, and verification.
+Later work stays provisional where earlier findings determine its shape. Review and integration capacity are part
+of feasibility. The change is a patch because authority, default effects, interfaces, and promised capabilities stay
+the same. The workflow already owns independent review; no additional stage is introduced.
+
+The chosen location is the existing plan slicing and review paragraphs, consulted when the planning workflow is
+selected. This adds a bounded cost to planning and none to the always-loaded kernel. Duplicating it in the kernel
+would impose that cost on unrelated work and divide ownership. A sizing module or fixed numerical procedure
+would add discovery, maintenance, and ceremony without evidence that those costs repay themselves. The current
+[Superpowers planning skill](https://github.com/obra/superpowers/blob/main/skills/writing-plans/SKILL.md), read on
+2026-09-13, reinforces independently testable task boundaries. Its mandatory step-level instructions and owner
+execution-choice interview remain rejected. No source text was copied. Reopen the chosen clarification if receipts
+show it missing the same boundary or forcing small work into needless assignments.
+
+## Related findings and incomplete instruction reads
+
+A separate private Claude session on 4.7.3 removed a page, found a stale deployment comment about that page, and
+left its correction contingent on the owner asking. The project instructions at that revision required findings
+to be resolved and did not make a protected directory an approval gate for every local comment edit. The inspected
+transcript contains no retained disposition of this finding. Its kernel read visibly omitted 12113 characters,
+including technical authority and material-finding disposition; no subsequent read of those sections was found.
+The rule existed in that release. Missing context and the unresolved finding are separate observations, not proof
+that one caused the other.
+
+Keep the existing kernel rules. A duplicate autonomy sentence would not repair a demonstrated missing policy and
+might itself be omitted. A loader or mandatory reread protocol would change every run without a controlled host
+receipt. Instead the corpus covers local correction, explicit deferral into an authorized tracker, a genuine missing
+production grant, and read-only advice. A separate synthetic policy-read instrument requires obtaining omitted
+authority and completion text before a continuation decision, with a complete-read control. It does not intercept
+host tools or test actual kernel loading. A future host comparison needs verified full versus truncated input on
+the unchanged package and separate authorization. The owner declined paid behavioral runs for this change, so
+causation, actual host recovery, and behavioral improvement remain `UNVERIFIED`.
+
+## The 4.8.1 technical stewardship clarification
+
+An installed 4.7.3 preview session prompted the owner to question a large stylesheet. The lead assessed it
+and dispatched a separate refactor after the question. The owner explicitly requested a general correction
+for important engineering concerns missed during ordinary work, beyond this structural example, and stated
+that SkipHow runs on frontier models. The private observation is summarized in [evidence](evidence.md).
+
+The old kernel already required technical supervision, next-change judgment, risk-scaled review, and disposition
+of material discovered findings. Those sentences preceded 4.7.3. The ambiguity is recognition: what makes a concern
+encountered during an otherwise successful change become a finding? Technical design opens on an unanswered design
+question, operations on delivery health becoming part of the result, and diagnosis on an already visible failure
+or friction. These remain useful techniques after the concern is recognized. The kernel's explicit system signals
+mostly concern execution and verification friction. The change gives ordinary work a general recognition duty,
+including risks and costs it would introduce or perpetuate, without depending on a failure or an owner reminder.
+
+Three alternatives were considered:
+
+- The selected kernel clarification applies evidence-based judgment to the context and signals already encountered.
+  It costs three sentences on every activation. Existing authority, proportionality, disposition, and review rules
+  determine the response. No new role, scan, gate, tracker, or required report section is introduced. It is the wrong
+  choice if it produces speculative concerns, broader implementation without authority, or recurring ceremony that
+  costs more than the problems it catches.
+- A structural-only clarification, or a change only to technical design, would cover maintainability while missing
+  other important consequences such as operational fragility, data corruption, or growing resource cost. A reference-only
+  trigger also leaves recognition dependent on a design question arising first. The owner's clarified scope rules this out.
+- A mandatory architecture or quality checklist with thresholds would add discovery and verification work to ordinary
+  tasks. The owner targets capable frontier models, and no receipt establishes a need to prescribe their investigation.
+  A large cohesive file, a short unsafe implementation, and an acceptable bounded compromise expose the limits of
+  size thresholds and universal cleanup. Consequence and evidence govern, not metric size or stylistic preference.
+
+The current primary sources read on 2026-09-13 were Matt Pocock's
+[architecture skill](https://github.com/mattpocock/skills/blob/main/skills/engineering/improve-codebase-architecture/SKILL.md),
+Superpowers' [reviewer template](https://github.com/obra/superpowers/blob/main/skills/requesting-code-review/code-reviewer.md),
+and Google's [review standard](https://google.github.io/eng-practices/review/reviewer/standard.html) and
+[review guidance](https://google.github.io/eng-practices/review/reviewer/looking-for.html).
+The first scopes by friction and recent changes but makes the owner choose from a report and interview. The second
+checks code quality and surrounding architecture through an assigned reviewer. Google's guidance addresses cumulative
+code-health decline, whole-system context, and balancing improvement with progress. The clarification shares those
+concerns without adopting their process, blanket cleanup rule, or source text. Existing rejection of owner-operated
+architecture menus stands. Frontier capability is a design premise, not a provider ID or a new model-selection gate.
+
+PATCH reflects clarification of promised technical supervision across ordinary work. The public skills, authority,
+default external effects, and package shape are unchanged. No prior responsibility is removed. A pre-existing problem
+being perpetuated warrants assessment, not automatic repair. Read-only requests still make no project writes, protected
+actions keep their grants, and separable work keeps its explicit disposition instead of silently expanding a task.
+
+Acceptance spans domains: a small export-heading edit exposes shared CSV corruption even though ordinary rows work;
+a read-only pipeline explanation recognizes recurring setup cost from retained measurements without changing the plan;
+a cohesive large file needs no arbitrary split; a short unsafe implementation still warrants attention; and harmless
+noise does not become an improvement programme. The new corpus cases cover the first two with scope and proportionality
+counterexamples. Existing findings and verification-health cases remain applicable. All remain unrun. A paid
+unchanged-versus-candidate receipt is required before claiming behavioral improvement or assigning cause to the wording.
+
+## The 4.8.0 custody rule
+
+The owner reported a recurring answer from sessions on their projects: that is not my work, I will not touch it, and I do not
+touch uncommitted files either. Reading the shipped text showed the answer was compliant. The kernel gave five prohibitions on a
+checkout, branch, running service, or uncommitted change the run did not create, and no counterpart duty.
+[`integration`](../plugins/skiphow/skills/skiphow/references/integration.md) carried "inspect and report them when found", but
+only for branches, checkouts and checkpoints, and only once that playbook had opened on work that is done but not where it
+belongs. Uncommitted work left behind by a session that has ended matched neither, while the kernel separately legitimizes
+producing exactly that state. So the package protected other people's work by making the agent silent about it.
+
+The change is one idea. Isolation protects the keyboard, not the responsibility. The prohibition stands unchanged and gains its
+counterpart: where the work brings a run up against material shared state, the report says once what it appears to be, what can
+be read claiming it, and the one action that would settle it. Naming it is not authority to act on it, and that is stated in the
+same breath: the action is taken only where the current request and the rules governing that act already allow it, which leaves
+`integration`'s stricter removal test and the protected-action boundary in charge of every act. So the duty adds a sentence to
+the report and no new permission, which is what keeps a programme's parallel lanes safe. Where a running process, an open review,
+or a live record visibly claims the state, that is what the report says about it.
+
+Three drafting mistakes were caught in review and are worth recording, because each is a shape this project has hit before. The
+first draft settled state "where the current request already reaches it", a topical test looser than both the protected-action
+boundary and `integration`; on a reconcile request it would have retired a workspace the corpus already forbids retiring, and on
+a read-only diagnosis it would have taken a shared port from another checkout, which is the one class of shared state no other
+sentence in the package governs. The first draft also keyed the duty to state that "no open record, review, or live session
+claims", which fails the present-state test 2.16.0 settled after 2.4.2 spent three wordings failing to fix a trigger of the same
+shape: `tracked-work` says in two places that a
+timestamp, an assignee, a label, or a read-back cannot settle liveness. The claim question moved out of the trigger and into the
+content, so the run reports what it can read rather than grading what it inferred. And the duty had no bound on how often or how
+widely it fired; it is now tied to state the work actually brings the run up against, named once.
+
+It needs no new scan, but it is not gated on one either. The kernel already inspects live branches, worktrees, and open and
+closed records before consequential work, so the state is usually already encountered; naming it writes nothing, so a read-only
+answer that runs `git status` can carry the duty without becoming a durable change. This is also the shape 2.7.0 recorded and
+could not close then:
+where the litter appears after a run ends, the collector has to be the next run. An iteration parked at its shown result is
+correctly complete for its own session, and until now no later session had a reason to mention it again.
+
+Two smaller rules travel with it. No technical choice reaches the owner, as a question, as a menu of options, or as permission to
+proceed on engineering grounds; where the uncertainty is reversible the agent takes the option it would defend and says which. In
+its place the owner gets a recommendation they can decline. No shipped sentence forbade the technical question itself:
+[`operations`](../plugins/skiphow/skills/skiphow/references/operations.md) forbade transferring ordinary technical review back to
+the owner, [`product`](../plugins/skiphow/skills/skiphow/references/product.md) governed how a question that does reach them is
+put, and the kernel allocated those decisions to the agent without ever saying they may not be handed back. What the package
+did carry is the expectation: the corpus
+forbids technical approval in `audit-small-visible-two-file`, tracker interviews in `audit-tracking-first-use` and
+`audit-tracking-same-account`, renewed technical approval in `audit-delivery-active`, and test selection returned to the owner in
+`verification-health-iterative-development`, each resting on that allocation rather than on a prohibition. And a running result shown to the owner names the branch or revision it serves and the address serving it,
+because several checkouts of one project answer on the same default address. The owner reports concluding from a stale stand that an
+agent had removed screens it never touched.
+
+One proposal was rejected. A review of a real session argued that the integration and tracked-work playbooks open only when the
+owner asks, and that the fix was to move their entry to the pause or the end of an iteration. Neither trigger reads that way:
+`integration` opens on a state, and `tracked-work` already ends its trigger with a pause, resume, or session boundary that could
+lose work. Rewriting a trigger that already fires is the mistake 2.10.1 recorded. The same review's other suggestion, naming the
+branch a preview serves, was a real gap and is adopted here, generalized past the iteration workflow because `longrun` and
+`deploy-ready` show results too.
+
+`AGENTS.md` asks for evidence that capable agents cannot reliably infer a behavior before a mandatory obligation is added, and
+that bar is unmet: no receipt shows a run refusing to name state it found. What stands behind the change is the owner's report of
+the behavior and the shipped text that made it compliant. The owner decided it on the ground that a technical director who
+answers "not my problem" about the state of the project is not the product SkipHow claims to be. That is the same disposition
+2.5.0, 2.8.0 and 4.3.0 recorded for themselves. Revisit it if receipts show a run treating the naming duty as licence to tidy a
+repository nobody asked it to touch, a programme lead reporting on its own live lanes, or the recommendation channel used to hand
+a product choice back without asking.
+
+## The 4.7.1 routing clarification for Codex and Claude Code
+
+The owner requested the same cost-aware routing contract on both hosts, including adequate existing lead configurations and limited token allowances. The 4.7.0 text focused on delegates and left model versus effort implicit. The kernel now applies the criterion to the lead as well, separates model from effort, preserves sufficient current settings for comparable work, and keeps justified escalation local to the demanding assignment. The existing delegation reference carries the corresponding selection and host-control detail.
+
+Current primary guidance supports comparing a capable model at reduced effort with a cheaper model at greater effort. It does not establish a universal orchestrator tier or a fixed escalation ladder. Codex and Claude Code expose different configuration and inheritance paths, so the package asks for actual controls and effective-setting evidence instead of promising a portable per-call override. Dated mechanics and sources stay in [the evidence ledger](evidence.md#471-routing-sources-and-limits).
+
+The smallest coherent change is a compatible patch to the existing economic criterion. A fixed provider-specific routing table would stale independently and mistake workload-specific measurements for universal adequacy. A new routing module or benchmark procedure would add discovery or operating cost without evidence that it repays that cost. No module, mandatory benchmark, persistent state, personal configuration change, authority, or default side effect is added. Failure diagnosis, independent checking, escalation for genuine reasoning limits, and parent-independent delegate selection remain intact. The routing corpus adds a satisfactory-current-route decision and budget-aware model/effort comparison; the prior hidden-error and three failure-diagnosis cases remain. Behavioral benefit and savings on both hosts remain `UNVERIFIED`.
+
+## The 4.7.0 routing refinement
+
+The owner requested explicit optimization for expected cost to a verified acceptable outcome. The kernel and existing delegation guidance now account for attempts, verification, correction, integration, contextual reasoning, and error detection and reversal. This refines the compatible routing contract within the unreleased 4.7.0 candidate. No new workflow, state, host binding, or authority is added.
+
+The previous instruction to raise effort or split when a brief lacks a completion condition was unsound: more effort cannot supply an omitted requirement. The replacement diagnoses the limiting factor and repairs the brief, context, tools, boundary, or capability accordingly. The useful escalation path survives when capability plausibly limits acceptance. The missing-rule, excessive-context, and capability-miss cases distinguish those paths. Bounded cheap-verification and hard-to-detect-failure cases preserve sufficient capability in both directions. They are read-only decision instruments, so effective dispatch and savings remain unverified.
+
+## The 4.7.0 verification-health capability
+
+The owner asked SkipHow to keep verification fast, trustworthy, and maintainable as projects evolve. The new kernel sentence treats recurring verification cost or maintenance materially disproportionate to the changed behavior as an engineering-system signal. It names representative symptoms, keeps ordinary validation light in their absence, and supplies neither authority for an automatic broad refactor nor a presumed test-type cause.
+
+The detailed method stays in the existing references. `verification` now asks which property each durable check proves, uses the narrowest stable boundary that retains the required fidelity, and keeps broader checks when they add evidence a narrower boundary cannot supply. It separates setup from the journey under test, treats widespread unrelated rewrites after a behavior-preserving change as coupling, uses reliable native affected selection where available, and still requires the project's integration and release evidence. `operations` measures execution and setup cost before choosing a remedy, fixes the responsible layer, preserves useful evidence, and sends material separable remediation through existing tracked work.
+
+Four arm-aware cases cover the distinct failure modes from the owner's brief. They protect repairing presentation coupling without losing unique browser evidence, optimizing measured setup rather than browser coverage by appearance, retaining the only cross-boundary check that catches an important failure, and using focused evidence through several iterations before the required delivery gate. Each uses a small independent fixture because these cases do not share one starting state. The deterministic validator establishes the corpus contract and internal satisfiability only. No paid model run was authorized, so behavior remains `UNVERIFIED`.
+
+No new workflow, reference module, state system, testing taxonomy, ratio, fixed time budget, periodic audit, owner-visible mode, framework rule, or product-specific journey list was added. This is a compatible minor capability under the existing authority and completion boundaries.
+
+## The 4.6.1 release-evidence correction
+
+The 4.6.0 release session exposed a literal defect in `integration`: it said every merged result was a state neither side had tested. That is not generally true. GitHub documents that ordinary `pull_request` workflows run on the pull request merge branch, and this repository also ran CI against the exact integrated `main` revision. The unconditional sentence overrode the kernel's proportionality rule and the contributor rule to revalidate only evidence a later change invalidated.
+
+The run took 42 minutes 45 seconds. The first complete local gate passed before the release candidate was reviewed. The full gate then ran seven more times through host preparation, final receipt changes, pull-request and `main` CI, post-merge verification, and tag CI. Some followed real edits; the two local post-merge runs and tag run repeated equivalent final inputs after exact `main` CI had passed. The root delayed the tag by almost four minutes after merge while repeating local verification. Publication itself took 62 seconds. Those numbers locate the cost in duplicated certification, not GitHub deployment.
+
+The correction removes the claim that merge always invalidates branch evidence. `verification`, `integration`, and `operations` now bind a result to the code, dependencies, configuration, environment, artifact, and destination it exercised. A later stage reuses it when those inputs remain equivalent and reruns only the affected checks. Destination inspection remains mandatory because an identical artifact is not proof it arrived.
+
+Three larger alternatives lose on total cost. A custom release supervisor would automate a path whose remote portion already completes in about a minute. Cross-workflow artifact promotion is supported by GitHub and is useful when a project builds a costly artifact, but SkipHow ships repository files and would gain another workflow dependency to save seconds. Automatic release on every successful `main` run would also turn an ordinary merge into a public effect, weakening the explicit publication boundary. Dependency caching is available through `setup-python`, but dependency installation took four seconds in the observed PR run and was not the bottleneck. The repository therefore keeps its current workflows and fixes the invalidation rule and contributor release path instead.
+
+The current GitHub behavior is documented in the [variables reference](https://docs.github.com/en/actions/reference/workflows-and-actions/variables), which identifies `refs/pull/<number>/merge` for ordinary pull-request workflows; the [workflow-runs API](https://docs.github.com/en/rest/actions/workflow-runs) can bind a run to `head_sha`; and the [artifact guidance](https://docs.github.com/en/actions/tutorials/store-and-share-data) supports promotion across runs when a future build artifact makes that worthwhile. The comparison projects remain useful mostly as a warning: Superpowers still starts branch completion by rerunning the full suite, while its current release notes now say reviewers should reread legible evidence instead of rerunning it. SkipHow takes the evidence-reuse principle without its mandatory finish workflow.
+
+No isolated reproduction was run because the owner explicitly declined new runs. The defect is established by the shipped contradiction and the retained field timeline. Whether 4.6.1 changes agent behavior remains `UNVERIFIED`.
+
+## The 4.6.0 project-state reconciliation
+
+The owner requested reliable broad status, tracking reconciliation, and safe cleanup across sessions while preserving ordinary-language operation and the CTO's technical authority. The original brief ruled out a state machine; the owner then corrected that premise. Internal or durable state is eligible when it materially improves correctness and live project evidence cannot reconstruct it, and correctness-critical ordering is eligible when it prevents false completion or unsafe recovery. Public phases and owner-operated transitions remain outside the product.
+
+The resulting design makes one ordering explicit in `tracked-work`: derive the relevant outcomes and reconstruct live destination, workspace, review, validation, and record evidence before changing anything; correct only records the current request authorizes; then, only when cleanup was requested, enter the existing `integration` safety rules. The ordered facts are already present in Git, reviews, CI, and the tracker, so a lifecycle enum would duplicate them and become another stale claim. The one missing fact is which durable outcome or record owns a workspace that survives the session. That minimal association is retained in an already-authorized record or continuation channel. This is a decision against a state machine for the evidence in front of 4.6.0, not a permanent architectural ban.
+
+Inspection also reopened the historical closure rule. "Close on integration" distinguished the destination from a feature branch, but it incorrectly treated merge as sufficient when the recorded outcome still required relevant validation, deployment, an owner decision, or a protected or human-only action. The corrected rule closes only when the whole observable outcome holds at its promised destination; integration still triggers closure when integration is the final destination and all other conditions hold. This is a logical contradiction with destination-relative completion settled by source review, not a claim about model behavior.
+
+The capability remains inside the main `skiphow` skill. One kernel trigger reaches one detailed rule in `tracked-work`; `fast-fixes` points its surviving workspace at the same association rule; `integration` already protects active, foreign, ambiguous, and unique work and needs no duplicate cleanup policy. A shared synthetic fixture and three independent arm-aware cases cover read-only status, record-only reconciliation, and reconciliation plus safe cleanup. They also plant a green check for the wrong revision beside the relevant failure. The corpus and fixture preflight are deterministic; no paid model session was authorized, so runtime behavior remains `UNVERIFIED`.
+
+## The 4.5.1 context routing correction
+
+The 4.3.0 audit correctly restored a safe delegation fallback, but placed a dated inventory of host controls in the shipped runtime. By 4.5.1, current Codex and Claude documentation described controls that evolve independently of the plugin, while the portable rule did not depend on any one inventory: use the active host's actual controls, permit a writing delegate only after its distinct checkout and starting revision are verified, and otherwise keep delegates read-only with the lead as the only writer. The dated mechanics move to evidence and security documentation. The 4.3.0 record below remains unchanged as history of what that release shipped and why.
+
+The fast-fixes workflow also linked `integration` at preview preparation even though that reference says to open it when completed work needs to land. The workflow keeps its direct requirement for an isolated, reusable preview workspace. Delivery still enters `skiphow-deploy-ready`, which loads `integration` at the point its trigger matches. No responsibility or reference is removed from the package.
+
+The package gate now protects this boundary narrowly: runtime Markdown may name a host generically, but it may not contain a dated host-mechanics snapshot or a version-qualified Claude Code or Codex CLI product name. Maintainer evidence, security documentation, and immutable receipts may retain versioned facts. The measured reduction is release evidence rather than a prose budget, and model behavior remains `UNVERIFIED` because no paid session was authorized.
 
 ## The 4.4.0 iteration shape
 
@@ -33,6 +311,18 @@ An installed session in one of the owner's own projects was asked for a visible 
 Adopted: one request shape in the kernel, "iteration", placed in the grant section beside the sentence that supplies the merge, with its verified completion defined as the shown result, the owner's acceptance as the start of delivery, a recognition rule the agent can evaluate from the request, and an explicit statement that the stop is a completed turn, because host reminders push an agent away from ending a turn on what looks like unfinished work. Where a visible reversible change could be read either way the agent shows it and says what delivery would add; a request that plainly asks for a fix keeps delivering.
 
 Not adopted: a separate skill, because its trigger would be indistinguishable from a feature request and it would duplicate the authority ladder, so two sources of "when to stop" would drift; a rule in the owner's own global instructions, because the sentence that causes the drift ships in this package and a fix beside its cause keeps one source; an edit to the stop sentence, which reads correctly once the iteration's completion is defined; a second copy of the rule in the verification playbook, because a rule that holds on every request belongs in the always-loaded kernel and one rule with two homes has already drifted once; a hook. The behavior stays `UNVERIFIED`; the fixture that would show it is listed in the [evidence ledger](evidence.md#unverified-comparisons-and-capabilities).
+
+### Amended at 4.7.3: the series, not the single change
+
+Two installed 4.7.1 sessions in the maintainer's own projects, both on 2026-09-09, showed the same defect one scale up. The owner announced a screen review in ordinary language inside a running longrun programme, then sent edits one after another. The run carried each edit through the project's guarded integration script: twelve invocations, five merges into the shared development branch, and five whole-backend-suite runs of between two and a half and four minutes in a single 105-minute stretch, plus test repairs the next edit invalidated. Asked why the gate was slow, it widened the gate's worker pool rather than seeing that the edit should not have entered it. The second session, where the owner typed the fast-fixes command, held. These are two projects and two tasks, not a controlled pair, so the difference between them is an observation rather than an isolated variable.
+
+The cause in the shipped wording: 4.5.0 gave the series semantics only to "an explicitly bounded iteration session", a state nothing outside an invoked workflow could enter, while the correct rule, that feedback and acceptance keep the session in iteration, lived only in `skiphow-fast-fixes`. In a series each edit is accepted by the arrival of the next, so the kernel's own "otherwise" branch sent every edit but the last to delivery.
+
+Adopted: the rule rises into the kernel beside the same grant sentence, phrased from what the owner says rather than from a session state, holding back push, shared integration, and delivery tests exactly as its source rule does, with delivery starting when they ask for it, name a destination, or accept with nothing further to send. The kernel keeps one clause of deference so that an invoked workflow's own agreement still outlasts a bare acceptance, and the workflow keeps its own copy for the contract it adds on top. One corpus case covers a series announced once and then continued with bare edits.
+
+Not adopted: a clause in `skiphow-longrun`, which would fix one entry and give the rule a second home; a broader `skiphow-fast-fixes` description, because the description was present in the failing session's system prompt all along and never fired, and widening it would pull ordinary frontend work into a contract that defers backend gates; a required worktree in fast-fixes, the owner's own hypothesis, which the transcripts contradict, since both sessions worked on their own branch and one in its own worktree; and any owner-operated phase or mode, per the standing refusal. Prior art was read as it stands: Superpowers has no such loop and no proportionality escape, GSD and BMAD gate every transition behind a typed command with an explicit exit token, and only `mattpocock/skills` enters such a state from ordinary language, which it can afford because its loop is confined to throwaway code and which leaves it with no owner-says-done exit. Nothing was copied.
+
+The evidence supports the defect, not the whole causal chain. The failing session also broke its own repository's equivalent rule, and both rules had left its context after four compactions. No package text survives compaction, so this change removes a readable defect and does not remove that limit. The corrected behavior is `UNVERIFIED`.
 
 ## The 4.3.0 outcome audit
 
@@ -135,7 +425,7 @@ Version 2.11.2 leaves the resume and compaction reminder unconditional but stops
 
 Version 3.0.0 rejects the premise that kept the resume and compaction reminder unconditional. That premise was stated here twice: the reminders apply after the skill is already active, so they cannot broaden discovery the way the startup reminder did. It is not true. A session is compacted because it grew long and resumed because somebody came back to it, and neither event says anything about what the session was doing. A reminder that tells any resumed session to load the owner kernel selects the skill for requests the description was narrowed in 2.11.1 to exclude, which is the same failure that release fixed at startup, arriving instead at the point where a long session has just lost the context that would contradict it. The reminder is now conditional on SkipHow already governing the request. Where it was, continuity is restored exactly as before; where it was not, nothing asks the session to load a kernel it never used. The 2.11.2 correction stands unchanged: the reminder still selects no continuation store.
 
-Revisit this if evidence shows that technical fluency itself changes which side of the decision boundary a person should occupy, or that the selection description rejects fitting outcome-first project work or selects adoption questions for mandatory development workflows and runtime orchestrators, or if a resumed session that SkipHow was governing loses its continuity because the reminder no longer fires. A preference to approve the method is already a different product fit, regardless of fluency.
+Revisit this if evidence shows that technical fluency itself changes which side of the decision boundary a person should occupy, or that the selection description rejects fitting outcome-first project work or selects adoption questions for mandatory development workflows and runtime orchestrators, or if a resumed session that SkipHow was governing loses its continuity because the reminder no longer fires. A preference to approve the method is already a different product fit, regardless of fluency. The last condition was met by a private installed Codex session on 4.8.2; the 4.8.4 section above records the answer, a conditional sentence in the skill description rather than a hook.
 
 ## Host-native execution
 

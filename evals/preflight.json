@@ -36,6 +36,50 @@
           "two_lines_in_one_parcel": false
         }
       }
+    },
+    "project-reconciliation": {
+      "why": "All three reconciliation cases depend on the same contradictory live project state: real local branches and worktrees, a local origin, and validation records bound to concrete revisions rather than retained placeholders.",
+      "head": "main",
+      "local_branches": [
+        "feature/active",
+        "feature/ambiguous",
+        "feature/delivered",
+        "feature/foreign",
+        "main",
+        "release/incomplete"
+      ],
+      "worktree_branches": [
+        "feature/active",
+        "feature/ambiguous",
+        "feature/delivered",
+        "feature/foreign",
+        "main"
+      ],
+      "clean_worktree_branches": [
+        "feature/active",
+        "feature/delivered",
+        "main"
+      ],
+      "dirty_worktree_branches": [
+        "feature/ambiguous",
+        "feature/foreign"
+      ],
+      "origin": {
+        "local_bare": true,
+        "branches": [
+          "feature/active",
+          "feature/delivered",
+          "feature/foreign",
+          "main",
+          "release/incomplete"
+        ]
+      },
+      "absent_text": {
+        "host-state.json": [
+          "__INCOMPLETE_REVISION__",
+          "__OLDER_GREEN_REVISION__"
+        ]
+      }
     }
   }
 }

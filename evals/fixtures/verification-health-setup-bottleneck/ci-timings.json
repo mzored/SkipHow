@@ -1,0 +1,15 @@
+{
+  "browser_check_count": 146,
+  "measured_seconds": {
+    "dependency_installation": 310,
+    "test_data_preparation": 265,
+    "service_startup": 420,
+    "browser_execution": 155,
+    "other_checks": 70
+  },
+  "delivery_contract": [
+    "browser coverage",
+    "contract checks"
+  ],
+  "remedy": "unselected"
+}

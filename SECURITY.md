@@ -4,8 +4,8 @@
 
 | Version | Supported |
 | --- | --- |
-| 4.4.x | Yes |
-| 4.3.x, 4.2.x, 4.1.x, and 4.0.x | No; upgrade to 4.4.x without changing existing authorization |
+| 4.8.x | Yes |
+| 4.7.x, 4.6.x, 4.5.x, 4.4.x, 4.3.x, 4.2.x, 4.1.x, and 4.0.x | No; upgrade to 4.8.x without changing existing authorization |
 | 3.0.x and earlier | No |
 
 Security review covers the packaged owner skill, its linked playbooks, host manifests,
@@ -13,9 +13,19 @@ marketplace metadata, release checks, and documented authority
 boundaries. Codex, Claude Code, GitHub, Git, operating systems, and third-party
 services keep their own security policies.
 
-## Package validation, 2026-09-06
+## Package validation, 2026-09-08
 
-Version 4.4.0 is validated per capability in [`evals/host-smoke.json`](evals/host-smoke.json); Claude Code 2.1.263 clean install and uninstall carry one receipt on the exact 4.4.0 package in [`evals/receipts/host-validation-440-20260906/`](evals/receipts/host-validation-440-20260906/), and every other row is `UNVERIFIED` until a receipt made on 4.4.0 is recorded. The 4.3.0 receipts, Claude Code 2.1.263 clean install and uninstall and Codex CLI 0.153.0 clean install from the approved Git source and uninstall, remain in [`evals/receipts/host-validation-430-20260906/`](evals/receipts/host-validation-430-20260906/) and at the [immutable 4.3.0 ledger](https://github.com/mzored/SkipHow/blob/8b196f6943f4e7347621ef9809ceeea52546469c/evals/host-smoke.json), and the 4.2.0 receipts, including persistent setup, explicit fallback, and playbook load, remain at their [immutable source](https://github.com/mzored/SkipHow/blob/f684eb2f3d2e7baf8b8488e8efb5ac4703d67cff/evals/host-smoke.json). The [dated support summary](docs/evidence.md#support-summary-as-of-2026-09-06) states what each host has shown for each package it names. The previous 4.1.1 receipts remain in `evals/receipts/host-validation-411-20260905/`; the September 5 isolated Codex diagnostics remain 4.1.0 observations, and the [September 6 diagnostics](evals/receipts/isolated-host-420-20260906/README.md) are separate 4.2.0 observations.
+Version 4.7.0 adds verification-health guidance and focused behavioral cases without changing the authority boundary, public workflow set, activation mechanism, package layout, or host binding. The new behavior remains `UNVERIFIED`; deterministic corpus checks prove only the case contract and internal satisfiability.
+
+Version 4.6.0 adds request-scoped project-state reconciliation without changing the authority boundary, public workflow set, or activation mechanism. Its per-capability status is in [the current host ledger](evals/host-smoke.json) and the release validation matrix. Historical receipts below apply only to their named versions. Context selection, reconciliation behavior, workflow invocation, shared-kernel loading, and model behavior remain `UNVERIFIED`.
+
+On exact package commit `1fadf014357ca2f743ceaa46affb10aa0b1f4844`, both host schema validators passed. Claude Code 2.1.263 installed all 22 regular package files byte for byte and uninstalled them from an isolated configuration directory. Codex CLI 0.153.0 refused the local marketplace under managed source policy before installation, so its clean-install cell stays `UNVERIFIED`. The [4.6.0 receipts](evals/receipts/host-validation-460-20260908/) and candidate ledger retain the exact package tree `7e70f8645cf782c0681308001696033d9ac69b36` and payload `f5a89b5137afc70e88cbd7be26fcd2463b7daba0ff18d3cc0e20d456bf1a9e15`; neither schema validation nor installation proves runtime behavior.
+
+Version 4.5.1 keeps portable delegation safety in the runtime and corrects fast-fixes context routing. On exact candidate commit `4250c7abc55673230946af4ba662fa2d28ef0ab5`, both host schema validators passed. Claude Code 2.1.263 installed all 22 regular package files byte for byte and uninstalled them from an isolated configuration directory. Codex CLI 0.153.0 refused the local marketplace under managed source policy before installation, so its clean-install cell remained `UNVERIFIED`. The [4.5.1 receipts](evals/receipts/host-validation-451-20260908/) retain the exact scope; neither schema validation nor installation proves runtime behavior.
+
+Version 4.5.0 added optional workflow skills under the existing authority boundaries. Its retained clean-install evidence remains at the [immutable 4.5.0 ledger](https://github.com/mzored/SkipHow/blob/02eb504aa59b372a688bf4ed85b4157f317c70dd/evals/host-smoke.json).
+
+Version 4.4.0 was validated per capability in the [immutable 4.4.0 ledger](https://github.com/mzored/SkipHow/blob/dca3b674af9cca2e58e630d06fe3e0b0c7aebcfa/evals/host-smoke.json); Claude Code 2.1.263 clean install and uninstall carry one receipt on the exact 4.4.0 package in [`evals/receipts/host-validation-440-20260906/`](evals/receipts/host-validation-440-20260906/), and every other row is `UNVERIFIED` until a receipt made on 4.4.0 is recorded. The 4.3.0 receipts, Claude Code 2.1.263 clean install and uninstall and Codex CLI 0.153.0 clean install from the approved Git source and uninstall, remain in [`evals/receipts/host-validation-430-20260906/`](evals/receipts/host-validation-430-20260906/) and at the [immutable 4.3.0 ledger](https://github.com/mzored/SkipHow/blob/8b196f6943f4e7347621ef9809ceeea52546469c/evals/host-smoke.json), and the 4.2.0 receipts, including persistent setup, explicit fallback, and playbook load, remain at their [immutable source](https://github.com/mzored/SkipHow/blob/f684eb2f3d2e7baf8b8488e8efb5ac4703d67cff/evals/host-smoke.json). The [dated support summary](docs/evidence.md#support-summary-as-of-2026-09-06) states what each host has shown for each package it names. The previous 4.1.1 receipts remain in `evals/receipts/host-validation-411-20260905/`; the September 5 isolated Codex diagnostics remain 4.1.0 observations, and the [September 6 diagnostics](evals/receipts/isolated-host-420-20260906/README.md) are separate 4.2.0 observations.
 
 The historical 4.1.0 candidate passed both host schema validators. Claude Code 2.1.261
 installed all fifteen regular files byte for byte and uninstalled them in a
@@ -58,9 +68,9 @@ runner performed. Model activation and behavior belong in [`docs/evidence.md`](d
 with their session receipts. A skipped release-runner row does not erase an external
 candidate receipt, and a successful install does not imply activation.
 
-Tested host versions, where a run exists, are Claude Code 2.1.259 for schema validation,
-Claude Code 2.1.260 for clean installation, and Codex CLI 0.153.0. These are the versions
-the host commands reported on 2026-09-04, not a tested range.
+Current documentation and historical host runs are different evidence. The source column records what the linked official documentation said on the verification date. The tested-version and status columns record only the named command or receipt. In particular, findings from Codex CLI 0.153.0 source and runs are historical observations, not a general guarantee about current Codex behavior.
+
+Earlier tested host versions include Claude Code 2.1.259 for schema validation, Claude Code 2.1.260 for clean installation, and Codex CLI 0.153.0. Those values are host-reported receipt metadata, not a tested range and not substitutes for the current documentation.
 
 Where a row cites `developers.openai.com`, that address redirected on 2026-09-04 to a
 page under `learn.chatgpt.com`; the redirect target is the page actually read.
@@ -74,7 +84,7 @@ page under `learn.chatgpt.com`; the redirect target is the page actually read.
 | Per-agent read-only controls | Subagent frontmatter takes a `tools` allowlist, `disallowedTools`, and `permissionMode`, whose values include `plan` for read-only exploration. `permissionMode` is ignored for plugin subagents and overridden by a parent in bypass, accept-edits, or auto mode, so only a `tools` allowlist checked to have applied is a read-only boundary. | [Subagents](https://code.claude.com/docs/en/sub-agents) | 2026-09-06 | none | `UNVERIFIED` (documented) |
 | Worktree isolation | `isolation: worktree` runs a subagent in a temporary git worktree. | [Subagents](https://code.claude.com/docs/en/sub-agents) | 2026-09-04 | none | `UNVERIFIED` (documented) |
 | Plugin validation | Manifest `.claude-plugin/plugin.json`; `claude plugin validate <path>` validates it and `--strict` treats warnings as errors. | [Plugins](https://code.claude.com/docs/en/plugins) | 2026-09-04 | 2.1.259 | `PASS` (`scripts/check_hosts.py`, 2026-09-04) |
-| Clean installation | `claude plugin marketplace add`, `claude plugin install --scope user`, `claude plugin uninstall --scope user`; `CLAUDE_CONFIG_DIR` points the host at a scratch home. | [Discover plugins](https://code.claude.com/docs/en/discover-plugins), [Skills](https://code.claude.com/docs/en/skills) | 2026-09-06 | 2.1.263 | `PASS` (`scripts/check_hosts.py --smoke`: clean home, install, 17 regular files matching exact 4.4.0 payload `5163a3c6…`, uninstall verified; [ledger](evals/host-smoke.json)) |
+| Clean installation | `claude plugin marketplace add`, `claude plugin install --scope user`, `claude plugin uninstall --scope user`; `CLAUDE_CONFIG_DIR` points the host at a scratch home. | [Discover plugins](https://code.claude.com/docs/en/discover-plugins), [Skills](https://code.claude.com/docs/en/skills) | 2026-09-06 | 2.1.263 | `PASS` (`scripts/check_hosts.py --smoke`: clean home, install, 17 regular files matching exact 4.4.0 payload `5163a3c6…`, uninstall verified; [4.4.0 ledger](https://github.com/mzored/SkipHow/blob/dca3b674af9cca2e58e630d06fe3e0b0c7aebcfa/evals/host-smoke.json)) |
 
 ### Codex CLI
 
@@ -134,8 +144,10 @@ project hooks, build scripts, tests, or project-supplied skills until their effe
 the request's authority and the repository's provenance is established.
 
 On Codex, start the root session under a read-only sandbox and approval policy;
-subagents inherit it. The custom-agent `sandbox_mode` field documented for 0.153.0 is
-not applied by that version, so it cannot narrow one delegate, and the `AGENTS.md`
+subagents inherit it. Current documentation describes a custom-agent `sandbox_mode`
+field, while the historical CLI 0.153.0 source did not apply that field. Do not treat
+that historical finding as a guarantee about another version, and verify the active
+host's effective controls before relying on them. The `AGENTS.md`
 chain remains behavioral context rather than an enforcement boundary. On Claude Code,
 use plan or equivalent read-only permissions plus the OS-enforced filesystem and
 network sandbox; set sandbox unavailability to fail closed when the review depends on

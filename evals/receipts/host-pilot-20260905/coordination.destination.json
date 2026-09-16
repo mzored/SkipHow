@@ -481,7 +481,7 @@
       "product_feedback_disabled": false,
       "uuid": "<trace-id-a9ad330384cfec0cb27c>",
       "memory_paths": {
-        "auto": "<operator-home>/.claude/projects/-Users-mzored-Code-SkipHow-host-pilot-8mxc2vh--egg-info-fixture/memory/"
+        "auto": "<operator-home>/.claude/projects/<project-path-id-551b8092915a065c208a>/memory/"
       },
       "messaging_socket_path": "/tmp/cc-socks/89691.sock",
       "fast_mode_state": "off",
@@ -633,7 +633,7 @@
       "product_feedback_disabled": false,
       "uuid": "<trace-id-6678162fc79a05767397>",
       "memory_paths": {
-        "auto": "<operator-home>/.claude/projects/-Users-mzored-Code-SkipHow-host-pilot-8mxc2vh--egg-info-fixture/memory/"
+        "auto": "<operator-home>/.claude/projects/<project-path-id-551b8092915a065c208a>/memory/"
       },
       "messaging_socket_path": "/tmp/cc-socks/89691.sock",
       "fast_mode_state": "off",
@@ -785,7 +785,7 @@
       "product_feedback_disabled": false,
       "uuid": "<trace-id-e2f2ddc3a03bf0526bd2>",
       "memory_paths": {
-        "auto": "<operator-home>/.claude/projects/-Users-mzored-Code-SkipHow-host-pilot-8mxc2vh--egg-info-fixture/memory/"
+        "auto": "<operator-home>/.claude/projects/<project-path-id-551b8092915a065c208a>/memory/"
       },
       "messaging_socket_path": "/tmp/cc-socks/89691.sock",
       "fast_mode_state": "off",

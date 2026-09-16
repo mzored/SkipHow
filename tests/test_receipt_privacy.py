@@ -57,6 +57,43 @@ def test_embedded_json_and_jsonl_are_filtered_without_losing_events():
     assert privacy_errors(clean) == []
 
 
+def test_encoded_project_paths_are_distinct_stable_and_fully_masked():
+    paths = ["-Users-synthetic-Code-project-one", "-Users-synthetic-Code-project-two",
+             "-home-synthetic-project-three", "C--Users-synthetic-project-four"]
+    event = {"memory_paths": [f"<operator-home>/.claude/projects/{path}/memory/MEMORY.md"
+                              for path in paths],
+             "usage": {"input_tokens": 123, "output_tokens": 45}}
+    clean = sanitize(event)
+    assert len(set(clean["memory_paths"])) == len(paths)
+    for source, retained in zip(paths, clean["memory_paths"], strict=True):
+        assert source not in retained
+        assert "synthetic" not in retained
+        assert "/projects/<project-path-id-" in retained
+        assert retained.endswith(">/memory/MEMORY.md")
+        assert sanitize(source) in retained
+    assert clean["usage"] == event["usage"]
+    assert sanitize(clean) == clean
+    assert privacy_errors(clean) == []
+    assert privacy_errors(event)
+
+
+def test_encoded_paths_are_filtered_in_keys_nested_json_and_jsonl():
+    path = "-Users-synthetic-Code-private-project"
+    event = {path: json.dumps({"result": path})}
+    text = json.dumps(event) + "\n" + json.dumps({"result": path}) + "\n"
+    clean = sanitize_text(text)
+    first, second = map(json.loads, clean.splitlines())
+    pseudonym = next(iter(first))
+    assert json.loads(first[pseudonym])["result"] == pseudonym == second["result"]
+    assert path not in clean
+    assert sanitize_text(clean) == clean
+    assert privacy_errors(clean) == []
+    errors = privacy_errors(event)
+    assert errors and path not in "\n".join(errors)
+    assert sanitize("Ordinary hyphenated project-name and /srv/shared/project") == (
+        "Ordinary hyphenated project-name and /srv/shared/project")
+
+
 def test_secrets_in_free_text_and_nested_values_are_omitted():
     secret = "sk-ant-" + "a" * 30
     event = {"content": ["email owner@example.test", secret, "Bearer synthetic-token",

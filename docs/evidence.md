@@ -2,7 +2,117 @@
 
 This page separates package checks from observed model behavior. The full 2.0 evidence remains in the immutable [`v2.0.1` research snapshot](https://github.com/mzored/SkipHow/tree/1c811262e6acdbdc58a2ee862b54e0b8d3478eaa/docs/research/2026-08-27).
 
+## 4.8.4 repeat failures and continuity after compaction
+
+One private installed Codex session on 4.8.2 (Codex Desktop 0.154.0-alpha.6.2, about fourteen hours, ninety
+turns, fifteen compactions) was inspected after the owner reported fixes that did not hold across screens and a
+final review-and-deploy request that took almost four hours. No private session content, identifiers or project
+details are retained here.
+
+Loading. After every compaction the retained history held only the host's developer message, which lists each
+installed skill with its description and path, the owner's instruction files, the most recent owner messages and
+one encrypted summary. Searching that retained history for distinctive sentences of nine package files found none
+after any compaction. Of twenty-four owner requests asking for a systemic fix, package text was in context for
+four. The kernel was read at the start of the final delivery request, dropped at the next compaction thirteen
+minutes later, and never re-read. This is the reopen condition written into the 3.0.0 reminder decision. On Claude
+Code the same claim was retracted in the 2026-09-06 audit because that host re-attaches invoked skills after
+compaction; the two hosts differ and both facts stand.
+
+Class of fixes. Six reports of one visual symptom arrived over two hours; each fix repaired a different shared
+component with a regression test and no sweep of the other screens. In the one turn where the bug workflow was in
+context the run followed its text: it repaired the layer owning the failed rule and inspected the sibling that rule
+governed. The recurrences had different causes. That is a readable gap between the workflow's cause-scoped class
+and the outcome the owner asked for, supported by one observation.
+
+Delivery loop. The final request spent 590 tool calls and about 102 million input tokens, 99 percent of them
+cached. Review was proportionate: three parallel forked reviewers found four qualifying defects in under half an
+hour, and a one-minute re-review covered the changed parts. The remaining three and a half hours went to seven
+sequential release candidates of eleven to thirty minutes each, five of which failed on one more member of the
+same drift class, expectations left stale by agreed product changes. Local checks covering that whole class
+existed and were not run before a candidate. The project's own contract runs end-to-end tests only on a
+candidate, so the expectation is partly the project's; package text was absent, so the cause of the choice is
+`UNVERIFIED`. Three delegates re-tasked as concurrent writers in one worktree contradicted kernel text that was
+out of context; the host forbids spawning unless asked, and no wording changed. 383 host wait polls at the host's
+thirty-second limit are host mechanics the diagnosis reference already addresses.
+
+Prior art was read as it stands on 2026-09-16: Superpowers' [`systematic-debugging`](https://github.com/obra/superpowers/blob/main/skills/systematic-debugging/SKILL.md)
+and [`verification-before-completion`](https://github.com/obra/superpowers/blob/main/skills/verification-before-completion/SKILL.md)
+say nothing about other instances of a defect class, a second report of the same symptom, or sweeping before
+re-running an expensive gate. Nothing was taken.
+
+Not adopted: a candidate-count limit or a mandatory local suite before release, which belong to a project's
+delivery contract; a delegate-writer change, since that text was plain and merely absent; a polling rule; a new
+evaluation case or synthetic receipt. Behavior under both changes is `UNVERIFIED`. What would confirm them: a
+later governed Codex session reading a package file after a compaction, and a repeated symptom report followed by
+a fix set larger than the reported instance.
+
+## 4.8.3 delegation context and publication privacy
+
+Two private installed sessions on 4.8.2 were inspected for routing cost. Their recorded dispatches selected
+models explicitly, and recorded effort was low. Repeated fresh correction-review contexts were a cost
+candidate, but the observations do not establish an optimal alternative, a wording cause, subscription
+charges, or savings. No private session content, identifiers or project details are retained here. No paid
+behavioral comparison was authorized; routing improvement and savings remain `UNVERIFIED`.
+
+The factual correction is narrower. [Claude's subagent documentation](https://code.claude.com/docs/en/sub-agents),
+checked on September 13, describes inherited project instructions and preloaded skills, and supports
+continuation with retained history and settings. That contradicts the reference's assertion that a delegate
+knows only its brief. The corrected wording still requires assignment-specific rules and observable
+completion, while accounting for context the host actually supplies. The routing policy and longrun's
+existing retention of implementers and reviewers through corrections are unchanged.
+
+The comparison read [Superpowers' delegation workflow](https://github.com/obra/superpowers/blob/b36e0829c6d0140e93cfef2ca599b1b07d4a7797/skills/subagent-driven-development/SKILL.md)
+and [GSD's model profiles](https://github.com/open-gsd/gsd-core/blob/0763326cedd2c7310dfb16094fcace3d4fe6f317/gsd-core/references/model-profiles.md).
+Scoped correction review and separate model/effort configuration are relevant, and already belong to
+SkipHow's contract. Fixed role tiers, retry counts, persistent profiles and host adapters would add ongoing
+cost without evidence that this task needs them. No source text was copied.
+
+The publication audit found encoded home-derived directory names in five retained receipt files that the
+privacy filter did not recognize. A synthetic regression reproduces that bypass. The filter now replaces
+the whole identifying segment with a consistent pseudonym, including inside nested JSON and object keys.
+Two ancillary host search outputs are minimized with explicit omissions. The loading evidence, task
+events, usage and all existing per-claim outcomes survive; changed trace hashes identify the sanitized
+content. Contributor documentation also removes account-specific availability details and machine-specific
+assumptions. This corrects the current tree, not previously published commits, tags, releases or copies.
+Recognized credential-shaped literals found in the audit were synthetic test data; this is not a guarantee
+that arbitrary prose or inaccessible external copies contain no private information.
+
 ## Three labels
+
+The 4.8.2 planning-readiness clarification is `Contract`. A private installed Codex session on 4.8.0 loaded the
+planning and delegation text, returned broad work packages, then refined assignment boundaries and distributed
+review after an owner question. Parallel translation was already present in the first plan. The same follow-up
+changed product scope, which is not a planner failure. No context overflow was observed, and the later numeric
+batch sizes were not measured safety limits. This is one uncontrolled observation; its cause and the clarification's
+behavioral improvement remain `UNVERIFIED`.
+
+A private Claude session on 4.7.3 removed a page, noticed its stale deployment comment, and left correction
+conditional on another owner instruction. The inspected transcript contains no saved follow-up. Project procedure
+at the session revision required resolving findings, and the shipped kernel already owned technical choices and
+material-finding disposition. The actual tool result omitted 12113 characters from the kernel read, including those
+rules; no later read of the missing sections was found. That does not establish why the finding was left unresolved.
+The kernel and loader are unchanged. See [the decision and alternatives](decisions.md#related-findings-and-incomplete-instruction-reads).
+
+The new unrun corpus scenarios cover localization assignments, mechanical migration batches, a small cohesive
+change, local versus deferred finding resolution, missing production authority, and read-only advice. A complete
+versus truncated synthetic policy-read pair checks actual retrieval before a continuation decision. It neither
+injects live host truncation nor proves SkipHow kernel loading. No paid behavioral comparison was authorized or run.
+Deterministic corpus checks establish only validity of these instruments. No host capability gains an `Observed` label.
+
+The 4.8.1 technical-stewardship clarification is `Contract`; its behavioral benefit and causal attribution are
+`UNVERIFIED`. One private installed Claude session on 4.7.3 used fast-fixes, loaded the kernel and verification
+text, and edited a global stylesheet before the owner questioned its size. The transcript contains the owner's
+question both as a queued input and as a later removal of that input; these are one observation, not two sessions.
+Afterward the lead measured 2458 lines, inspected mixed responsibilities and direct readers, searched existing
+records, and dispatched a separate refactor task. That dispatch proves neither completed refactoring nor that the
+file's size justified it. No structural assessment was found in the inspected pre-question segment. Silence
+cannot prove what the model noticed, and no paired reproduction was run. The kernel already required next-change
+judgment and disposition of discovered material findings. The owner explicitly asked to generalize beyond this
+example to proactive CTO judgment about important engineering concerns and identified frontier models as the
+intended execution setting. The clarification closes an ambiguous recognition trigger during ordinary work;
+it does not establish that those models generally fail without another procedure. Two additional unrun corpus
+cases cover data-integrity risk during a small export change and recurring operational cost during a read-only
+explanation. See [the decision](decisions.md#the-481-technical-stewardship-clarification).
 
 Every claim about this project carries one of three labels, and they do not substitute for one another.
 
@@ -67,13 +177,14 @@ A small run set is never converted into a percentage reliability claim. Two sess
 
 `python scripts/check.py` verifies:
 
-- one public owner skill;
+- the required CTO skill and relative links from optional workflows to its kernel;
 - reachable internal Markdown references;
 - valid JSON, YAML, Markdown links, manifests, and marketplace catalogs;
 - aligned package versions and required release metadata;
 - the absence of an executable package hook and the integrity of the declared activation surfaces;
 - third-party source attribution;
-- package portability boundaries for personal paths and versioned model IDs.
+- package portability boundaries for personal paths and versioned model IDs;
+- runtime portability boundaries for dated host snapshots and version-qualified host products.
 
 From 3.0.0 it prepares no environment and reaches no network. It runs against the interpreter it is given, and where a pinned dependency is missing it says so and stops rather than installing one.
 
@@ -90,16 +201,121 @@ The same Codex attempt on CLI 0.153.0 was refused by the machine's managed
 marketplace-source policy before installation, so Codex clean install remains
 `UNVERIFIED`; nothing was installed. Neither result is activation evidence.
 
+## 4.8.0 custody of shared state
+
+Version 4.8.0 adds the counterpart to a prohibition the kernel already carried. A checkout, branch, running service, or
+uncommitted change the run did not create is still never overwritten, reset, published, deleted, or quietly absorbed, and it is now
+never left unaccounted either: where the work brings a run up against material shared state, the report says once what it appears to
+be, what can be read claiming it, and the one action that would settle it. Naming it is not authority to act on it; the action is
+taken only where the current request and the rules governing that act already allow it, and recommended otherwise.
+Two smaller rules travel with it. No technical choice reaches the owner, as a question, as a menu of options, or as permission to
+proceed on engineering grounds, and what reaches them instead is a recommendation they can decline. A running result shown to the
+owner names the branch or revision it serves and the address serving it. All three are `Contract`.
+
+The defect is readable in the shipped text and is not `Observed` from a retained run. The kernel's preservation paragraph gave
+five prohibitions and no duty; [`integration`](../plugins/skiphow/skills/skiphow/references/integration.md) required inspecting
+and reporting only branches, checkouts and checkpoints, and only once that playbook had opened on work that is done but not where
+it belongs; uncommitted work left by a session that has ended matched neither. What stands beside the text is the owner's report
+that sessions on their projects answer "that is not my work, I will not touch it, and I do not touch uncommitted files either",
+and their report of reading a stale preview stand and concluding an agent had removed screens it never touched. Neither is a
+receipt. No session was run for this release, and `AGENTS.md`'s bar for a new obligation is therefore unmet; the disposition is
+recorded in [the decision history](decisions.md#the-480-custody-rule).
+
+Two unrun corpus scenarios would show the change. `int-002-earlier-branch-not-cleaned-under-unrelated-change` moves naming an
+earlier run's branch from permitted to required in the candidate arms, and `workflow-fast-fixes-hook-conflict` gains the branch
+or revision a shown result serves. `foreign-uncommitted-work-preserved` was left alone: naming that work and saying it was left
+alone is already required of every arm there, so nothing this release adds is distinguishable on that fixture. Neither scenario
+isolates this release on its own. The M4 arm is pinned to 3.0.1, so a candidate-versus-M4 difference is attributable to
+everything since 3.0.1; the corpus carries no 4.7.3 arm, and a receipt that attributes behavior to this change would need a
+package pair differing only in these three sentences. The resulting behavior is `UNVERIFIED` on both hosts. Cross-host review is
+`UNVERIFIED` for this change: the Codex review service was unavailable, so three independent same-host reviews
+stood in. They raised fifteen qualifying findings, twelve distinct once overlap is removed, all confirmed against the files, with the material ones dispositioned in [the
+decision history](decisions.md#the-480-custody-rule) and the release notes. A fourth review of the corrections raised six
+further findings, all fixed before release.
+
+## 4.7.3 iteration series contract
+
+Version 4.7.3 raises one rule into the kernel: while the owner keeps sending changes, or has said they will look and send them, feedback and acceptance keep the work in iteration rather than triggering push, shared integration, or delivery tests, and delivery starts when they ask for it, name a destination, or accept with nothing further to send. An invoked iteration workflow keeps its own agreement until delivery is requested. Before this, the kernel reached that rule only through an explicitly bounded session, which nothing outside an invoked workflow could enter. This is `Contract`.
+
+The defect is `Observed` from two installed 4.7.1 sessions in the maintainer's own projects on 2026-09-09, read from the host's own transcripts. In the session where the owner announced the review in ordinary language, a 105-minute stretch of screen edits produced twelve guarded-integration invocations, five merges into the shared development branch, and five whole-backend-suite runs of between two and a half and four minutes. In the session where the owner invoked the workflow, the deferral held and the one wide run followed an explicit request to integrate. Session content stays out of this repository; only these counts are retained.
+
+Two limits belong with that. The failing session had also been told the same thing by its own repository's instruction file, and broke that too, so the wording is not the whole cause. Both rules had left its context after four compactions, and no package text survives a compaction, so this change removes a readable defect in the text and removes nothing about context loss. The corrected behavior is `UNVERIFIED` on both hosts. The `iteration-series-announced-once` case in [the corpus](../evals/cases.json) is the unrun scenario that would show it. No paid behavioral session was run. Cross-host review is `UNVERIFIED` for this change: the Codex review service was unavailable when the round started, and an independent same-host review stood in for it.
+
+## 4.7.1 routing sources and limits
+
+The shared kernel and delegation reference apply to both Codex and Claude Code. Version 4.7.1 clarifies independent model and effort choices, owner budget constraints, retention of adequate current lead settings, and assignment-specific escalation. This is `Contract`; successful application, effective dispatch, and cost savings remain `UNVERIFIED` on both hosts. The synthetic routing corpus covers recommendations only. No comparative model experiment was run.
+
+Sources below were checked on 2026-09-08. They support the selection method, not a claim that any configuration is universally optimal for SkipHow.
+
+| Host | Current primary evidence | Consequence for this change |
+| --- | --- | --- |
+| Codex | [OpenAI's Astra migration guidance](https://developers.openai.com/api/docs/guides/latest-model) recommends preserving effective effort, mapping unsupported none/minimal settings to low. [Codex subagent documentation](https://developers.openai.com/codex/subagents) describes model and reasoning-effort configuration and inheritance. | A capable lead does not imply High effort. Preserve an adequate existing route and distinguish an exposed override from inherited or hidden settings. Host documentation is not evidence that a particular dispatch applied the requested setting. |
+| Claude Code | [Model configuration](https://code.claude.com/docs/en/model-config) describes cost-sensitive Medium effort and model-dependent support. [Subagent configuration](https://code.claude.com/docs/en/subagents) allows a model choice and separately configured effort, with effort inherited when omitted. | Choose model and effort separately. A model override is not proof of an effort override; use the controls available in the active host and report their limits. |
+| Claude model economics | [Anthropic's model selection guide](https://platform.claude.com/docs/en/about-claude/models/choosing-a-model) recommends Sonnet for everyday coding. Its [cost and intelligence guide](https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence) reports an internal coding subset where Opus 5 Low reached 84% at $0.25 per solved task, versus Sonnet 5 default at 77.4% and $0.84. | A stronger model at reduced effort is an economical candidate, not a universal default. The result concerns a particular API workload and does not measure subscription allowance consumption or SkipHow's success rate. |
+
+Secondary benchmark context also argues against a blanket effort setting. [Artificial Analysis's Astra comparison](https://artificialanalysis.ai/models/comparisons/gpt-6-astra-high-vs-gpt-6-astra-low) reported about 2.6 seconds to the first answer token at Low versus 45.6 at High, which is not total coding-task duration. Its [Claude Code coding-agent comparison](https://artificialanalysis.ai/agents/coding-agents/comparisons/claude-code-vs-gemini-cli) reported Opus 5 High at index 66 and $3.92 per task versus Max at 67 and $8.94. These API-cost measurements cannot establish subscription charges or the best setting for the owner's workload. The shipped package contains no model names, pricing table, or fixed provider ladder.
+
+## 4.7.0 routing and verification-health contract
+
+The owner requested routing by expected total cost per verified acceptable outcome. The kernel carries that criterion and the diagnostic response to a miss; `delegation` holds the selection guidance. It accounts for reasoning, interacting context, ambiguity, error detection and reversal, independent verification, and repair cost. It preserves parent-independent selection and the prior decision of whether delegation pays. Unsupported or hidden host settings remain explicit limitations.
+
+[OpenAI's July 31, 2026 explanation](https://openai.com/index/building-abundant-intelligence/) measures successful-outcome cost including time, retries, oversight, and errors, and describes why either greater capability or a lower-cost adequate model can be economical. Checked on September 8. This supports the economic criterion, not a claim that SkipHow improves routing or saves money.
+
+Five arm-aware routing cases use invented project evidence to distinguish cheap independent verification, hard-to-detect migration errors, and misses caused by omitted context, context truncation, or reasoning failure. They grade read-only recommendations against actual host controls. They neither execute delegates nor establish effective settings, actual model adequacy, or comparative savings. No model session was run. Routing behavior and cost benefit remain `UNVERIFIED` on every host. Existing host receipts retain their original package scope.
+
+Version 4.7.0 adds an internal CTO responsibility for verification health. The kernel treats recurring verification cost or maintenance materially disproportionate to the changed behavior as a signal to diagnose the engineering system. `verification` places each property at the narrowest stable boundary that retains the required fidelity, preserves unique broader evidence, and keeps development selection proportional without weakening final delivery checks. `operations` measures the recurring cost and fixes its responsible layer without assuming a test category is the cause or silently widening a narrow request.
+
+Four new arm-aware cases encode test coupling, measured setup cost, unique expensive evidence, and focused iteration followed by required delivery validation. Their independent synthetic fixtures and deterministic corpus checks establish only that the scenarios are well-formed and satisfiable against the shipped contract. No model session was run, so 4.7.0 verification-health behavior is `UNVERIFIED` on every host.
+
+## 4.6.1 release-evidence correction
+
+The installed 4.6.0 release session ran from 23:43:55 to 00:26:40 UTC, 42 minutes 45 seconds. The first full local gate failed on a fixture-harness mismatch and the next passed after that repair. From that first pass, the full deterministic gate ran seven more times: during host-receipt preparation, after the receipt updates, in pull-request CI, on the integrated `main` revision, twice more locally after merge, and in tag CI. Some earlier reruns followed real changes. The two local post-merge runs and the tag run repeated equivalent final inputs after exact `main` CI had passed.
+
+The remote timings separate publication from the surrounding process. Pull-request CI took 31 seconds. Exact integrated `main` CI took 38 seconds. The release workflow took 62 seconds for validation, GitHub Release publication, and Pages deployment. The root merged at 00:20:50, exact `main` CI passed at 00:21:31, and the tag was not pushed until 00:24:40 because the root repeated the local gate and host package gate. The delay was duplicated certification rather than a slow deployment.
+
+The shipped `integration` sentence said every merged result was a state neither side had tested. That sentence is false for GitHub's ordinary pull-request merge ref and contradicted the existing rule to rerun only evidence a later change invalidated. Version 4.6.1 binds checks to their relevant code, dependencies, configuration, environment, artifact, and destination, and reuses them while those inputs remain equivalent. Destination verification remains separate. No isolated, model, or behavioral run was performed because the owner declined new runs. Whether the corrected wording changes agent behavior remains `UNVERIFIED`.
+
+## 4.6.0 project-state reconciliation
+
+Version 4.6.0 adds broad project-state reconciliation to the main CTO behavior. The kernel routes project status, unfinished work, tracking consistency, and cleanup to `tracked-work`. That reference reconstructs full outcomes from live destination, workspace, review, validation, and record evidence before any authorized correction, and enters the existing `integration` cleanup rules only when cleanup is requested. It retains only the non-reconstructible association between a durable outcome or record and a surviving owned workspace. The public skill set, activation path, owner authority, and workflow names are unchanged.
+
+Three independent cases in the arm-aware corpus use the same `project-reconciliation` fixture: read-only status, record-only reconciliation, and reconciliation plus safe cleanup. The fixture contains stale-open delivered work, falsely closed incomplete work, an open review, safe owned state, active and foreign state, ambiguous unique state, a green check for an older revision beside a failing relevant check, and outcomes blocked on an owner or protected action. The fixture preflight checks its local origin, branches, registered worktrees, and replacement of revision placeholders. Deterministic checks establish only that the cases and contract are internally consistent. No paid session was authorized or run, so selection, playbook loading, reconciliation behavior, and comparative benefit remain `UNVERIFIED`.
+
+On exact package commit `1fadf014357ca2f743ceaa46affb10aa0b1f4844`, the full deterministic gate passed all 385 tests and both local host schema validators passed. Claude Code 2.1.263 installed all 22 regular package files byte for byte, with tree `7e70f8645cf782c0681308001696033d9ac69b36` and payload `f5a89b5137afc70e88cbd7be26fcd2463b7daba0ff18d3cc0e20d456bf1a9e15`, and uninstalled them from an isolated configuration directory. Codex CLI 0.153.0 refused the local marketplace under managed source policy before installing anything, so Codex clean installation remains `UNVERIFIED`; the failed attempt is retained without treating it as a package failure. The [receipts](../evals/receipts/host-validation-460-20260908/) and [current host ledger](../evals/host-smoke.json) preserve the actual cells. Scratch host homes were removed. These checks started no model.
+
+## 4.5.1 context routing correction
+
+Version 4.5.1 removes the dated host-mechanics inventory from `delegation` while retaining the portable safety outcome. It also stops `skiphow-fast-fixes` from loading `integration` to prepare a preview; the workflow still requires the isolated workspace directly, and delivery still reaches `integration` through `skiphow-deploy-ready`.
+
+| Removed context | Responsibility that remains | Acceptance evidence |
+| --- | --- | --- |
+| Versioned host mechanics in `delegation` | The kernel requires verified distinct isolation before a delegate writes. `delegation` uses the active host's actual controls and falls back to read-only delegates with the lead as the only writer. | Static package review plus `workflow-longrun-no-writer-isolation` in the unrun behavioral corpus. |
+| Early `integration` link in `skiphow-fast-fixes` | Fast-fixes directly requires an isolated, reusable preview branch and worktree. Delivery enters `skiphow-deploy-ready`, whose contract still loads `integration`. | Static link and contract review plus the `workflow-fast-fixes-feedback` and `workflow-fast-fixes-hook-conflict` cases in the unrun behavioral corpus. |
+
+Against 4.5.0, shipped runtime Markdown changes from 13,702 words and 90,205 bytes to 13,404 words and 88,324 bytes, a reduction of 298 words and 1,881 bytes. The unchanged `integration` reference is 1,021 words and 6,301 bytes that the fast-fixes preparation route no longer requires before delivery. These counts are measurements, not a permanent gate or a behavioral claim. Context selection, efficiency, and model behavior remain `UNVERIFIED`; no paid behavioral sessions were run.
+
+On exact candidate commit `4250c7abc55673230946af4ba662fa2d28ef0ab5`, both local host schema validators passed. Claude Code 2.1.263 installed all 22 regular package files byte for byte, with payload `e00c311c57a57637f71ecdec44086489461416823803f870f509633c68701563`, and uninstalled them from an isolated configuration directory. The [retained receipts](../evals/receipts/host-validation-451-20260908/) and [current host ledger](../evals/host-smoke.json) record those two `PASS` cells. Codex CLI 0.153.0 refused the local marketplace under managed source policy before installing anything, so Codex clean installation remains `UNVERIFIED`; its failed attempt is retained without treating it as a package failure. Scratch host homes were removed. These checks started no model.
+
+## Optional workflow contract
+
+Version 4.5.0 adds the owner-requested bug, plan, longrun, deploy-ready, and fast-fixes workflows. Each requires the shared CTO kernel before consequential work and links to existing references. The kernel retains universal authority and completion rules. An explicitly bounded iteration session keeps its feedback, checkpoint, and deferred-check agreement until delivery is requested; ordinary iteration acceptance still starts delivery.
+
+On candidate commit `d3a4ebea9750b437b7edf01ed58d166d74b1492b`, both local host schema validators passed. Claude Code 2.1.263 installed all 22 regular package files byte for byte and uninstalled them in a scratch configuration directory. The [retained receipts](../evals/receipts/host-validation-450-20260908/) carry the host-reported UTC date of September 7; the release date is September 8 in the maintainer's timezone. Clean installation and uninstall are `PASS` in [the current host ledger](../evals/host-smoke.json). The Codex CLI 0.153.0 attempt failed at the managed local-marketplace source policy before installing anything, so Codex clean installation remains `UNVERIFIED`. The receipt retains that failed attempt without treating it as a package failure. Scratch host directories were removed by the validation runner. These checks started no model.
+
+The validator checks that the CTO entry exists and each sibling workflow declares a relative Markdown link to it. The arm-aware `workflow-*` cases in [the corpus](../evals/cases.json) cover invocation, general-case repair, planning authority and unavailable tracking, delegated review loops and unavailable writer isolation, preview checkpoints and deferred hooks, production grants and downstream effects, and resume preservation. These are acceptance scenarios, not receipts. Workflow selection, kernel loading, and execution remain `UNVERIFIED`. No paid behavioral sessions were run for this change.
+
+The owner requested these optional contracts, reopening the single-skill decision. Shared references keep conditional guidance outside each workflow. This follows the context selection principle in [Anthropic's context engineering guidance](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) and the metadata, instructions, and resource layers in [OpenAI's skill guidance](https://learn.chatgpt.com/docs/build-skills). Those sources inform the design; they do not demonstrate this package's behavior.
+
 ## Support summary as of 2026-09-06
 
-This is the one dated statement of what each host has shown. Every other page that describes activation or support links here rather than restating history. It is a set of observations bound to exact packages, hosts, and configurations; nothing in it is a reliability rate, and no entry applies to a package it does not name. The current package is 4.4.0; its only receipts are the Claude Code clean install and uninstall checks in the package-validation column, the 4.3.0 clean install and uninstall receipts remain at the [immutable 4.3.0 ledger](https://github.com/mzored/SkipHow/blob/8b196f6943f4e7347621ef9809ceeea52546469c/evals/host-smoke.json), and every behavioral row below is on 4.2.0 or older, retained at the [immutable 4.2.0 ledger](https://github.com/mzored/SkipHow/blob/f684eb2f3d2e7baf8b8488e8efb5ac4703d67cff/evals/host-smoke.json).
+This is the one dated statement of what each host has shown. Every other page that describes activation or support links here rather than restating history. It is a set of observations bound to exact packages, hosts, and configurations; nothing in it is a reliability rate, and no entry applies to a package it does not name. At the September 6 snapshot, the package was 4.4.0; its only receipts are the Claude Code clean install and uninstall checks in the package-validation column, the 4.3.0 clean install and uninstall receipts remain at the [immutable 4.3.0 ledger](https://github.com/mzored/SkipHow/blob/8b196f6943f4e7347621ef9809ceeea52546469c/evals/host-smoke.json), and every behavioral row below is on 4.2.0 or older, retained at the [immutable 4.2.0 ledger](https://github.com/mzored/SkipHow/blob/f684eb2f3d2e7baf8b8488e8efb5ac4703d67cff/evals/host-smoke.json).
 
 | Host | Package validation | Configured bootstrap | Observed loading | Individual outcomes on record | Reliability |
 | --- | --- | --- | --- | --- | --- |
 | Codex CLI 0.153.0 | Exact 4.4.0 has no Codex install receipt; the machine's managed source policy refuses a local marketplace. Exact 4.3.0 was installed from the approved Git source into an isolated home, all seventeen files byte-identical to the committed package, and removed afterwards; recorded in the [4.3.0 ledger](https://github.com/mzored/SkipHow/blob/8b196f6943f4e7347621ef9809ceeea52546469c/evals/host-smoke.json), as 4.2.0 was in the [4.2.0 ledger](https://github.com/mzored/SkipHow/blob/f684eb2f3d2e7baf8b8488e8efb5ac4703d67cff/evals/host-smoke.json). Schema validation runs in CI. | Deterministic, and observed once: asked by name to enable itself, the agent ran the packaged helper, which resolved a non-empty `AGENTS.override.md` over `AGENTS.md`, previewed, asked once, and wrote one owned block there. Asked to disable, it removed exactly that block. | From the persistent block, twice: once on 4.1.0 from an `AGENTS.md` block in a home whose fixture lived beside operator artifacts, and once on 4.2.0 from an `AGENTS.override.md` block on a clean fixture, the kernel loading before any edit. Explicit `$skiphow` invocation loaded it in the 4.2.0 enable and disable sessions, and on 4.1.0 the kernel was in context again after a native resume and after a native compaction; the [per-claim table](#3x-and-4x-observed-behavior) lists each loading row and the two unrelated requests where it correctly did not load. | 4.1.0: four correct repairs delivered to a synthetic remote, read-only analysis, unrelated requests unloaded, native resume and compaction. 4.2.0: four correct repairs delivered to `fix/catalog` on a synthetic remote and verified from a fresh clone, foreign work preserved, no publication; the [4.2.0 receipts](../evals/receipts/isolated-host-420-20260906/README.md) list the deviations. | Unknown. |
-| Claude Code 2.1.263 | Schema validation passed and the exact 4.4.0 package installed all seventeen files byte for byte and uninstalled cleanly in an empty configuration directory; recorded in the [ledger](../evals/host-smoke.json), as 4.3.0 was in the [4.3.0 ledger](https://github.com/mzored/SkipHow/blob/8b196f6943f4e7347621ef9809ceeea52546469c/evals/host-smoke.json) and 4.2.0 on 2.1.261 in the [4.2.0 ledger](https://github.com/mzored/SkipHow/blob/f684eb2f3d2e7baf8b8488e8efb5ac4703d67cff/evals/host-smoke.json). | Deterministic: the helper resolves `CLAUDE.md` under `CLAUDE_CONFIG_DIR` or the default configuration directory, treats unconditional `rules/*.md` files as read, and consolidates duplicate copies it can edit. | Never with persistent configuration. Explicit invocation was the activation mechanism in every retained Claude run; the retained 4.1.0 streams establish availability and requested invocation, not that the policy loaded. One bare-prompt pilot did not select it. Isolated authentication is unavailable, so this stays `UNVERIFIED`. | 4.1.0: a narrow explicit pilot delivered four correct repairs to a synthetic remote; a coordination diagnostic left its remote unchanged and shipped an incorrect shipping calculation. | Unknown. |
+| Claude Code 2.1.263 | Schema validation passed and the exact 4.4.0 package installed all seventeen files byte for byte and uninstalled cleanly in an empty configuration directory; recorded in the [4.4.0 ledger](https://github.com/mzored/SkipHow/blob/dca3b674af9cca2e58e630d06fe3e0b0c7aebcfa/evals/host-smoke.json), as 4.3.0 was in the [4.3.0 ledger](https://github.com/mzored/SkipHow/blob/8b196f6943f4e7347621ef9809ceeea52546469c/evals/host-smoke.json) and 4.2.0 on 2.1.261 in the [4.2.0 ledger](https://github.com/mzored/SkipHow/blob/f684eb2f3d2e7baf8b8488e8efb5ac4703d67cff/evals/host-smoke.json). | Deterministic: the helper resolves `CLAUDE.md` under `CLAUDE_CONFIG_DIR` or the default configuration directory, treats unconditional `rules/*.md` files as read, and consolidates duplicate copies it can edit. | Never with persistent configuration. Explicit invocation was the activation mechanism in every retained Claude run; the retained 4.1.0 streams establish availability and requested invocation, not that the policy loaded. One bare-prompt pilot did not select it. Isolated authentication is unavailable, so this stays `UNVERIFIED`. | 4.1.0: a narrow explicit pilot delivered four correct repairs to a synthetic remote; a coordination diagnostic left its remote unchanged and shipped an incorrect shipping calculation. | Unknown. |
 
-Both rows report configured, available, and loaded as separate facts because a block in a file the host does not read configures nothing, and a configured block proves nothing about a session that has not started. Managed policy files on this machine restrict Codex marketplace sources; the helper reports such files and does not evaluate or bypass them.
+Both rows report configured, available, and loaded as separate facts because a block in a file the host does not read configures nothing, and a configured block proves nothing about a session that has not started. Managed policy files in the recorded environment restrict Codex marketplace sources; the helper reports such files and does not evaluate or bypass them.
 
 ## The September 6 CTO outcome audit
 
@@ -107,7 +323,7 @@ A second independent audit on September 6 read the 4.2.0 package at `f684eb2f3d2
 
 | Finding | Delivered in 4.3.0 | Evidence and remaining acceptance work |
 | --- | --- | --- |
-| F1, no deterministic first-turn activation on Claude Code | Nothing executable. The comparison the audit specifies (shipped pointer block, a plugin `SessionStart` hook printing the kernel from the plugin root, an `@import` of the installed kernel from the owned block; same fixture and prompt; stopped at the first consequential project action; whole lifecycle including disable, upgrade, and uninstall) is recorded as the acceptance design. | Needs isolated Claude authentication, which this machine does not have, and the owner's grant. Codex stays on the instruction-file block, loaded from it once on 4.1.0 and once on 4.2.0. |
+| F1, no deterministic first-turn activation on Claude Code | Nothing executable. The comparison the audit specifies (shipped pointer block, a plugin `SessionStart` hook printing the kernel from the plugin root, an `@import` of the installed kernel from the owned block; same fixture and prompt; stopped at the first consequential project action; whole lifecycle including disable, upgrade, and uninstall) is recorded as the acceptance design. | Needs isolated Claude authentication, which was unavailable in the recorded environment, and the owner's grant. Codex stays on the instruction-file block, loaded from it once on 4.1.0 and once on 4.2.0. |
 | F2, direction rule lost from the kernel | Restored in the kernel's verification section in shorter form: when part of the result waits on the owner, a grant, or an external party, continue only independent authorized work that demonstrably advances the remaining acceptance conditions, create no new prerequisites to fill free capacity, and hand the owner one batch of blockers when none remains. The expanded judgment stays in `diagnosis.md`. | Static. The audit's short fixture at the drift point (one genuine owner gate, one independent useful task, one planted false prerequisite) is designed and not run; the owner's next long installed run is the other check. |
 | F3, Codex per-delegate sandbox promised, parallel work unstated | `SECURITY.md` rows and the untrusted profile now say the documented `sandbox_mode` is not applied in the 0.153.0 source and that `spawn_agent` has no directory, worktree, or sandbox parameter; `delegation.md` gained a dated host-mechanics section with the read-and-verify fallback stated as the current limitation. The kernel rule is unchanged. | Static. A Codex writer lane in a pre-created checkout inside the writable roots, or a `codex exec -C` lane per unit, is untried; acceptance when tried is distinct checkout paths and starting revisions recorded before the first write, no change to the main checkout, and the integrated result verified by the lead. |
 | F4, "demonstrated adequate" routing | Replaced in the kernel and `delegation.md` by a rule the model can apply without evidence it does not have: reasoning demand, consequence of a wrong answer, cost of checking; cheaper only for a bounded verified task when nothing is known; a high-consequence review gets enough independent capability; inheriting is a choice, silence is not; the control is named at the point of use. | Static. Field acceptance is each spawn's effective model and effort matching a stated reason, read from host configuration events where the host reveals them. |
@@ -460,7 +676,7 @@ The final 2.11.1 selection description was run in nine fresh Claude Code session
 
 The mandatory-workflow case first exposed a contradiction. With the new description already present but the old startup reminder still saying to load the kernel for every project request, Claude reasoned that the request was for a workflow yet loaded SkipHow because the reminder treated every project request as in scope. After the reminder was changed to defer to the description, the identical prompt did not select the skill. A finishing review then found that excluding those subjects outright would also reject valid requests to build those capabilities in the current product; the final pair of edge cases shows the revised distinction. This is evidence for the corrected Claude selection on one run per cell, not a general precision rate.
 
-Codex discovery on the exact candidate is `UNVERIFIED`. A fresh isolated Codex home has no authentication on this machine, and copying credentials into it is outside this run's authority. Deterministic metadata checks confirm that Codex receives the same description, but they do not prove selection behavior.
+Codex discovery on the exact candidate is `UNVERIFIED`. A fresh isolated Codex home has no authentication in the recorded environment, and copying credentials into it is outside this run's authority. Deterministic metadata checks confirm that Codex receives the same description, but they do not prove selection behavior.
 
 ### What delegation looked like in installed sessions
 
@@ -608,11 +824,11 @@ Counted in whole sessions: one shows drift from the stated result under the ship
 
 Version 2.14.0 bounds the frontier by the result, adds defer as a direction outcome, deletes the recovery exemption, extends the provenance rule to sequencing claims and to the run's own records, and names prerequisite-spawning as a signal.
 
-One matched Claude Code pair was then run on a throwaway shop repository whose tracker held two takeable items on the payment path, one human-gated item on it, and two audit-derived infrastructure items off it, with the same Get5Stars-shaped prompt, settings sources and MCP disabled, the package passed as a session plugin, and the init event naming Claude Code 2.1.258, Opus 5, and the exact package path each time. Exact 2.13.1 and the candidate both did the same thing in about five minutes: closed the two path items, continued past the human gate rather than stopping at it, found that the payment adapter never charged anything and recorded that as the real blocker, marked both audit items proposed, put the backups-before-money question to the owner as a risk choice with a recommendation, and stopped with one batch. Both opened the frontier method. The pair shows that the new wording keeps a run moving through a human gate and does not add a question or a gate; it does not show the improvement, because the released text already behaved correctly on a five-minute fixture, as the 2.13.0 pairs also found. What the installed campaigns show and the fixture cannot is a run twenty hours in, holding records it wrote itself, with free delegate capacity and nothing left on the path.
+One matched Claude Code pair was then run on a throwaway shop repository whose tracker held two takeable items on the payment path, one human-gated item on it, and two audit-derived infrastructure items off it, with the same product-delivery prompt, settings sources and MCP disabled, the package passed as a session plugin, and the init event naming Claude Code 2.1.258, Opus 5, and the exact package path each time. Exact 2.13.1 and the candidate both did the same thing in about five minutes: closed the two path items, continued past the human gate rather than stopping at it, found that the payment adapter never charged anything and recorded that as the real blocker, marked both audit items proposed, put the backups-before-money question to the owner as a risk choice with a recommendation, and stopped with one batch. Both opened the frontier method. The pair shows that the new wording keeps a run moving through a human gate and does not add a question or a gate; it does not show the improvement, because the released text already behaved correctly on a five-minute fixture, as the 2.13.0 pairs also found. What the installed campaigns show and the fixture cannot is a run twenty hours in, holding records it wrote itself, with free delegate capacity and nothing left on the path.
 
 ## 4.x encoded Contract
 
-What the current package's text requires, settled by reading it. This section records the contract rather than model behavior; the incomplete campaign records above do not upgrade any sentence to observed behavior. The sentences live in [`SKILL.md`](../plugins/skiphow/skills/skiphow/SKILL.md) and its nine conditional playbooks.
+What the current package's text requires, settled by reading it. This section records the contract rather than model behavior; the incomplete campaign records above do not upgrade any sentence to observed behavior. The sentences live in [`SKILL.md`](../plugins/skiphow/skills/skiphow/SKILL.md), its shared references, and the [optional workflows](#optional-workflow-contract).
 
 - One accountable virtual CTO owns the technical lifecycle through current-state inspection, research, architecture, planning, implementation, review, integration, verification, and operational learning. Technique stays proportional; no fixed stages, role counts, or private runtime are required.
 - Before consequential work it reconciles the request with live product, code, tests, Git, branches, worktrees, records, CI, and host state. It compares repository and platform capabilities, official integrations, maintained open source, managed services, bounded experiments, and custom code where relevant.
@@ -622,21 +838,21 @@ What the current package's text requires, settled by reading it. This section re
 - Authority comes from the owner's messages and trusted host-, user-, organization-, or administrator-managed policy. Repository instruction files are applicable project procedure within authority already granted, evidence until their provenance is established in an untrusted revision, and never a grant of mutation, secret access, disclosure, network egress, permission change, cleanup, or protected external effect. Records the owner points at authorize pursuing the outcome, and stay untrusted task data.
 - A read-only request writes nothing. A change request grants in-scope local edits and non-destructive validation and carries through an established owner-authorized non-production workflow. Covered actions do not need repeated permission. An upgrade creates no grant and preserves restrictions.
 - Protected effects need applicable explicit owner authorization, including when triggered by an ordinary push, merge, tag, or CI workflow. Existing authorization remains usable while its scope and conditions hold. Broad autonomy language, project procedure, issue text, and tool capability do not supply a grant.
-- Product consequences are the owner's; engineering mechanics are the agent's. One outcome-level question, independent work continues, dependent behavior waits.
-- Foreign work is preserved. Delegates are read-only without verified distinct isolation, and the root serializes writes. A delegate's surface is a boundary on its authority, not a plan; its model and effort are chosen for the task's consequence and complexity rather than by a fixed tier or a floor at the session's own level, and naming a level in the root's own message does not set it.
+- Product consequences are the owner's; engineering mechanics are the agent's. No technical choice reaches them as a question, a menu of options, or a request for permission on engineering grounds; a reversible technical uncertainty is settled by taking the option the agent would defend, and what reaches the owner instead is a recommendation they can decline. One outcome-level question, independent work continues, dependent behavior waits.
+- Foreign work is preserved and never left unaccounted: material shared state the work brings a run up against is named once with what it appears to be, what can be read claiming it, and the one action that would settle it, and naming it is not authority to act on it. Delegates are read-only without verified distinct isolation, and the root serializes writes. A delegate's surface is a boundary on its authority, not a plan; its model and effort are chosen for the task's consequence and complexity rather than by a fixed tier or a floor at the session's own level, and naming a level in the root's own message does not set it.
 - A read-only review reports confirmed defects and modifies nothing; urgency, including a security finding, does not widen the request, and a sensitive finding stays private without a disclosure grant. Repair happens only when it was authorized.
 - A step that could take real time gets an expectation of healthy progress, and a breach is information rather than a reason to wait longer; monitoring prefers the host's own wait mechanism to a loop that holds the turn.
 - Reuse is a presumption, not a law: a maintained capability is preferred to custom code where it fits, and a disposable experiment is cheap to run and cheap to discard, its shortcuts never becoming architecture by staying in place.
-- A test is the narrowest stable one that would catch the real defect; mocks and seams appear where they materially improve isolation, determinism, cost, or safety, without asserting call order or private state.
+- Every durable check names the property it proves and uses the narrowest stable boundary that retains the required fidelity. Broader checks remain when the environment contributes distinct evidence; recurring disproportionate churn or cost is measured at its responsible layer. Mocks and seams appear where they materially improve isolation, determinism, cost, or safety, without asserting call order or private state.
 - Completion is relative to the authorized destination: a local branch with no granted destination can be complete, a named destination is incomplete until verified there, and no historical convention grants a push or a review. Earlier-run artifacts are not cleaned under an unrelated change.
 - A failed merge is recovered by consequence: evidence and unrelated work are preserved first, a disposable failure may stay in place for diagnosis, a shared target that other work depends on is contained or restored to its last good state, and restoring production still needs its grant. The failed state is never reported as delivered.
 - Enabling, checking, or disabling SkipHow's own default governance is an owner request the skill handles itself: it resolves the file the host reads, previews the change, asks once before writing, and reports configured, available, and loaded as three separate facts without bypassing managed policy.
-- Every requested part is reconciled before success is reported, including clones and scratch checkouts the run created; a material intended effect that did not happen is reported even when the main result is complete; a simulation is never described as an external effect; a check that did not run is not a check that passed.
+- Every requested part is reconciled before success is reported, including clones and scratch checkouts the run created; a material intended effect that did not happen is reported even when the main result is complete; a simulation is never described as an external effect; a check that did not run is not a check that passed; a running result shown to the owner names the branch or revision and the address it serves.
 - When part of the result waits on the owner, a grant, or an external party, only independent authorized work that demonstrably advances the remaining acceptance conditions continues; no new prerequisite is created to fill free capacity; when none remains the owner gets one batch of blockers.
 - `delegation` is in context before a delegate is dispatched; model and effort are chosen from the lane's reasoning demand, the consequence of a wrong answer, and the cost of checking, and set through the host's own control where it exposes one.
 - A host or sandbox refusal is not bypassed; when no authorized alternative remains the run names the exact blocker and the exact permission. Sensitive findings are not disclosed outside their authorized audience and are minimized inside it.
 - A reviewer derives expected behavior from the request and the product rules before reading the change, and checks the exact candidate before integration; the lead verifies the authorized destination after it.
-- An iteration, a change to something the owner will look at before deciding what comes next, is complete when it is shown and the check covering what it touched has run; that stop is a completed turn, and tests, review, tracking, commits, push, and integration follow the owner's acceptance. Where a visible reversible change could be read either way, it is shown rather than integrated.
+- An iteration, a change to something the owner will look at before deciding what comes next, is complete when it is reviewed, checked, and shown. While the owner keeps sending changes, or has said they will look and send them, feedback and acceptance keep the work in iteration rather than triggering shared integration or delivery tests. Delivery starts when the owner asks for it, names a destination, or accepts with nothing further to send, and wider tests, tracking, commits, push, and integration follow then. A request naming a delivery destination or asking to ship is delivery.
 
 The next section records the current evidence status separately from the contract.
 
@@ -675,6 +891,7 @@ Two claims are confirmed failures rather than gaps, and they stay that way: the 
 
 ## UNVERIFIED comparisons and capabilities
 
+- Whether 4.6.0 reconstructs broad project status without mutation, corrects only authorized tracker inconsistencies, binds validation to the relevant revision and destination, and retires only proven-owned redundant workspace state. The three independent cases and their shared preflighted fixture define the test; no model session has run it.
 - Whether the 2.14.0 frontier bound and defer outcome stop a long run when its result waits on the owner and only enabling work remains. One installed 2.13.0 campaign shows the drift with the 2.13.1 text in context, and a matched five-minute pair shows both packages already behaving correctly at that scale, so the fixture is not where the defect lives. The line closes only on the owner's next long installed campaign.
 - The outside read of a consequential design decision, as a rule, is gone. Ten runs made the decision well and none took an outside read; Codex had the method open in all five of its runs, no Claude session in the pass opened it at all, and three kernel wordings changed nothing on either host. Version 3.0.0 removed the mandatory read rather than reword it a fourth time, and removed the broad mandatory outside review with it; review is now scaled to the risk in front of the run. What is still open is narrower than the old line: whether a run scales review up and gets a read taken from a context that did not produce the decision, at a boundary that genuinely warrants one. Nothing measures that.
 - Delegation under the shipped wording. The detailed position lives here; public summaries preserve its version and limits. Controlled isolated runs do spawn delegates, and have since 2.15.0. Thirty spawns across the six dispatching runs of the 2.15.0 pair, fifteen on the released 2.15.0 tree, fifteen on 2.15.1, and eighty-nine across the eleven sessions of the plan-mode pass on exact `v2.16.0`. What no controlled run has demonstrated is the rest of it: no lane ran concurrently in a verified isolated checkout, no worktree was created, no unit was integrated separately as it landed, and one run placed all five of its lanes in a single checkout with the isolation rule in context. Delegation as an act is observed; delegation as this project describes it is not. The installed sessions above show delegation happening at scale but with the governing methods absent from context, so they say what delegation costs and not whether the wording works. The 2.15.0 kernel obligation is now measured to get `delegation` opened before the first dispatch, and one of those runs read it and routed nothing anyway. Whether the method's own rules hold once it is open is unmeasured. The lane-health guidance first reached a fixture run in the 2.16.1 plan-mode pass, as `execution-health`; it now sits inside `diagnosis`, and whether it changes a run is still unmeasured.

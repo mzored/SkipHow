@@ -8,7 +8,15 @@ Treat local setup, test data, CI, release paths, observability, documentation, d
 
 Prefer the shortest feedback loop that still represents the behavior. A slow comprehensive gate belongs near integration, while focused checks should answer local questions quickly. Classify a flaky check before trusting a pass. Repeated manual setup, copy steps, timeout increases, and one-off recovery commands are signals to remove the cause or record it as technical work.
 
+Promote one immutable candidate through later release stages. Reuse checks attached to its revision or artifact while their inputs remain equivalent; do not recertify the same state merely because its stage name changed. Add an environment-specific check only for a property earlier evidence could not establish.
+
 Keep the integrated state releasable even when production deployment is outside authority. Know which checks protect the release, which action changes production, what rollback means for this product, and what evidence the destination returns. Never use a release rehearsal, package validator, or preview as proof that users received the change.
+
+## Diagnose verification friction
+
+When verification friction recurs or becomes materially expensive, measure the actual cost before choosing a remedy. Inspect execution and setup timing, retries and flakes, service startup, dependency installation, test-data preparation, serialization, duplicated coverage, and CI topology where relevant. Fix the layer responsible for the cost. A slow suite does not prove tests should be deleted, substantial browser coverage does not prove the browser tests are the bottleneck, and a fast suite does not prove important integrated behavior is covered.
+
+Preserve useful evidence while repairing the system. Do not hide degradation by weakening assertions, skipping useful coverage, increasing timeouts, adding retries, or moving important evidence outside the delivery path without an equivalent reliable signal. Repair a small verification-system defect when it naturally belongs to the authorized outcome. When the remedy is material and separable, preserve the finding with evidence through [tracked work](tracked-work.md) instead of silently widening the request.
 
 ## Manage technical risk by product impact
 

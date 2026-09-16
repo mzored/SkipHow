@@ -1,6 +1,6 @@
 # Design
 
-SkipHow is an adaptive virtual CTO for founders and product owners, currently shipped as one Agent Skill for strong coding agents. The [owner-outcome contract](outcome-contract.md) governs this design. The owner states a product outcome and keeps product decisions. The CTO kernel makes the lead agent accountable for translating the outcome, selecting the engineering method, managing durable work when warranted, choosing and supervising delegates, reviewing the result, integrating it, and showing fresh evidence. It is not a scheduler, database, model runner, control plane, or replacement for host permissions, and it proves nothing itself. A native host binding or thin adapter may replace a mechanism when controlled evidence shows it preserves these outcomes at lower total cost.
+SkipHow is an adaptive virtual CTO for founders and product owners, shipped as a governing Agent Skill with optional workflow skills. The [owner-outcome contract](outcome-contract.md) governs this design. The owner states a product outcome and keeps product decisions. The CTO kernel makes the lead agent accountable for translating the outcome, selecting the engineering method, managing durable work when warranted, choosing and supervising delegates, reviewing the result, integrating it, and showing fresh evidence. It is not a scheduler, database, model runner, control plane, or replacement for host permissions, and it proves nothing itself. A native host binding or thin adapter may replace a mechanism when controlled evidence shows it preserves these outcomes at lower total cost.
 
 ## Package shape
 
@@ -13,23 +13,30 @@ plugins/skiphow/
   skills/skiphow/
     SKILL.md
     references/
+  skills/skiphow-bug/SKILL.md
+  skills/skiphow-plan/SKILL.md
+  skills/skiphow-longrun/SKILL.md
+  skills/skiphow-deploy-ready/SKILL.md
+  skills/skiphow-fast-fixes/SKILL.md
 ```
 
-Both host manifests point to the same skill directory. The package contains one public skill named `skiphow`.
+Both host manifests point to the same skills directory. `skiphow` remains the CTO entry. Each sibling workflow declares a relative link to that kernel and requires it in context before consequential work.
 
 ## Kernel and playbooks
 
 `SKILL.md` is the CTO kernel. It keeps the mission, decision rights, adaptive routing triggers, authority, trust, preservation of unrelated work, delegate safety, risk-scaled review, persistence, and honest completion in context.
 
-The files under `references/` hold eight focused playbooks: product, technical design, diagnosis, tracked work, delegation, integration, verification, and operations. Their observable triggers live in the kernel. A playbook carries technique, not a product-defining duty whose absence would erase CTO behavior.
+The files under `references/` hold shared guidance for product, technical design, diagnosis, tracked work, delegation, integration, verification, operations, and setup. Their observable triggers live in the kernel. A playbook carries technique, not a product-defining duty whose absence would erase CTO behavior.
 
 A module exists only if it meets four criteria: it covers one distinct failure domain, it gives a reason to consult it that is recognizable without opening it, it carries no critical invariant that is absent from the kernel, and it repeats no rule another module owns.
 
-Methods are not routes or stages. The owner does not choose them. The agent can work directly, plan, delegate, review, or use a worktree when the project or task calls for it.
+Internal methods need no public routes or owner-operated stages. Correctness-critical ordering may be explicit where it prevents false completion, lost work, or unsafe recovery. Workflow skills define optional work patterns and stopping conditions, linking directly to the shared methods that apply. The owner can choose a workflow while the CTO owns engineering within it. Ordinary requests need no workflow selection.
 
 ## Host boundary
 
 Codex and Claude Code supply execution, permissions, tools, credentials, sessions, subagents, and continuation. SkipHow uses those capabilities without pretending to provide them.
+
+The runtime keeps portable outcomes, authority boundaries, and safe fallbacks. Current host controls are discovered from the active host when they are needed. Versioned host capabilities and limitations belong in maintainer evidence and security documentation, where their date and evidence scope remain visible instead of becoming runtime policy.
 
 This separates orchestration policy from the runtime. SkipHow tells the host agent how to plan, select methods, decompose, delegate, review, and reconcile when the request calls for those acts. The host runs the model and tools. A control plane, if one exists, owns durable workers, queues, scheduling, leases, budgets, and deployment.
 
@@ -51,11 +58,11 @@ The reusable visual rules are warm paper, dark ink, one vermilion accent, serif 
 
 Every page has one clear heading, a constrained reading measure, keyboard-visible focus, semantic landmarks, and responsive layouts that collapse without changing reading order. The homepage keeps GitHub as a visible secondary action beside installation and evidence, without mutable popularity counts. The site ships plain HTML and CSS with no client runtime, cookies, tracking, or external font dependency. Structured data matches visible text and exists for classification, not as a ranking claim.
 
-## Why one public skill
+## Shared governance across workflows
 
-Separate public methods look tidy, but a host can select one without loading the owner kernel. That can drop the authority and completion rules. Agent Skills has no portable dependency that forces a leaf skill to load another skill first.
+Each workflow requires the CTO kernel in context before consequential work. A relative link records that dependency without copying policy or moving the reference library. Package validation checks the dependency declaration and link destination. It does not prove that a model loaded or followed the kernel.
 
-Keeping focused methods inside one owner skill avoids that gap. It also gives the owner one plain-language entry instead of a menu of engineering commands.
+The owner's recurring workflow request reopens the earlier single-skill design. Workflow selection is optional, the shared kernel still owns authority, and no portable host mechanism enforces loading. Actual cross-skill loading remains `UNVERIFIED` pending receipts. No scheduler, workflow database, or host adapter is added to claim otherwise.
 
 ## Prior art
 

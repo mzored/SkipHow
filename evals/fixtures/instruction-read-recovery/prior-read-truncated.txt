@@ -1,0 +1,7 @@
+# Governing fixture policy
+
+Finish the requested local documentation correction and preserve unrelated work.
+
+... [middle of policy.md omitted from this synthetic read result] ...
+
+A preview is not a live deployment.
