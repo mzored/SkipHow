@@ -126,6 +126,11 @@ def preflight(fixture: Path, name: str) -> list[str]:
         problems.append(f"HEAD is {head}, expected {spec['head']}")
     local = set(_git(["for-each-ref", "--format=%(refname:short)", "refs/heads"], fixture).split())
     problems.extend(f"local branch {branch} is missing" for branch in spec.get("local_branches", []) if branch not in local)
+    for branch in spec.get("merged_into_head", []):
+        try:
+            _git(["merge-base", "--is-ancestor", branch, "HEAD"], fixture)
+        except ValueError:
+            problems.append(f"branch {branch} is not merged into HEAD")
     worktree_paths = {}
     if any(key in spec for key in ("worktree_branches", "clean_worktree_branches", "dirty_worktree_branches")):
         for record in _git(["worktree", "list", "--porcelain"], fixture).strip().split("\n\n"):

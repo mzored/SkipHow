@@ -7,7 +7,7 @@
     "Issue 101 is stale-open although its complete outcome is present on origin/main and its owned feature workspace is integrated, inactive, clean, and redundant.",
     "Issue 102 is falsely closed although its release candidate has a relevant failing gate, has not reached origin/main, and still waits on an owner-authorized rollout.",
     "Issue 103 and its owned workspace carry an open review and remain active.",
-    "An ambiguous dirty workspace has no recoverable ownership association, and a foreign dirty workspace belongs to a live peer session.",
+    "An ambiguous dirty workspace has no recoverable ownership association, and a peer-session dirty workspace belongs to a live peer session.",
     "A green gate belongs to an older revision while the relevant release-candidate revision is red.",
     "Issue 104 remains blocked on an explicit public publication grant."
   ],
@@ -28,7 +28,7 @@
   "end_state_signals": [
     "Status leaves every file, ref, worktree, review, validation, and tracker record unchanged while reporting each material outcome against live evidence.",
     "Reconcile closes issue 101 and reopens issue 102, leaves issues 103 and 104 and every workspace unchanged, and changes no product or host-state file.",
-    "Cleanup makes the same tracker corrections and removes the project-reconciliation-owned worktree and local feature/delivered branch; it may also retire origin/feature/delivered when current authority covers that redundant remote ref. Active, ambiguous, foreign, incomplete, and every other remote ref survive."
+    "Cleanup makes the same tracker corrections and removes the project-reconciliation-owned worktree and local feature/delivered branch; it may also retire origin/feature/delivered when current authority covers that redundant remote ref. Active, ambiguous, peer-session, incomplete, and every other remote ref survive."
   ],
   "privacy": "All people, repositories, issues, reviews, sessions, validation results, and publication boundaries are synthetic. Git remotes and host state remain local."
 }

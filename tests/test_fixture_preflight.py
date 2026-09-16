@@ -25,9 +25,11 @@ class FakeGit:
     """Answer the exact Git questions preflight asks, without a repository."""
 
     def __init__(self, *, head="fix/catalog", local=("main", "fix/catalog"), origin_url="../origin.git",
-                 bare=True, remote=("main", "fix/catalog"), status=("?? catalog/reviews.py", " M README.md")):
+                 bare=True, remote=("main", "fix/catalog"), status=("?? catalog/reviews.py", " M README.md"),
+                 merged=(), worktrees=None):
         self.head, self.local, self.origin_url = head, local, origin_url
-        self.bare, self.remote, self.status = bare, remote, status
+        self.bare, self.remote, self.status, self.merged = bare, remote, status, merged
+        self.worktrees = worktrees or {}
 
     def __call__(self, args, cwd):
         if args[:2] == ["rev-parse", "--abbrev-ref"]:
@@ -44,6 +46,13 @@ class FakeGit:
             return "\n".join(self.remote) + "\n"
         if args[0] == "status":
             return "\n".join(self.status) + "\n"
+        if args[:2] == ["worktree", "list"]:
+            return "\n\n".join(f"worktree {path}\nHEAD 0000\nbranch refs/heads/{branch}"
+                               for branch, path in self.worktrees.items()) + "\n"
+        if args[:2] == ["merge-base", "--is-ancestor"]:
+            if args[2] in self.merged:
+                return ""
+            raise ValueError(f"git {' '.join(args)} failed")
         raise AssertionError(f"unexpected git call {args}")
 
 
@@ -84,6 +93,7 @@ def test_registry_names_existing_fixtures_and_known_checks():
         "absent_beside",
         "absent_text",
         "probe",
+        "merged_into_head",
     }
     for name, spec in registry.items():
         assert set(spec) <= allowed, name
@@ -151,6 +161,25 @@ def test_prepare_validates_the_tree_before_the_probe_runs(tmp_path, monkeypatch)
     with pytest.raises(ValueError, match="symlink"):
         capture.prepare(fixture, "catalog-integration-ready", config_for("catalog-integration-ready", baseline),
                         tmp_path / "prepared.json")
+
+
+def test_integrated_leftover_preflight_requires_a_merged_branch_and_a_clean_registered_worktree(tmp_path, monkeypatch):
+    name = "orders-service-integrated-leftover"
+    fixture = tmp_path / "fixture"
+    capture.materialize(name, fixture)
+    (fixture / ".git").mkdir()
+    worktrees = {"main": str(fixture), "agent/contributing-notes": str(fixture / ".worktrees/contributing-notes")}
+    complete = FakeGit(head="main", local=("main", "agent/contributing-notes"), status=(),
+                       merged=("agent/contributing-notes",), worktrees=worktrees)
+    monkeypatch.setattr(capture, "_git", complete)
+    assert capture.preflight(fixture, name) == []
+    unmerged = FakeGit(head="main", local=("main", "agent/contributing-notes"), status=(), worktrees=worktrees)
+    monkeypatch.setattr(capture, "_git", unmerged)
+    assert "branch agent/contributing-notes is not merged into HEAD" in capture.preflight(fixture, name)
+    unregistered = FakeGit(head="main", local=("main", "agent/contributing-notes"), status=(),
+                           merged=("agent/contributing-notes",), worktrees={"main": str(fixture)})
+    monkeypatch.setattr(capture, "_git", unregistered)
+    assert "worktree for branch agent/contributing-notes is missing" in capture.preflight(fixture, name)
 
 
 def test_unregistered_fixture_and_non_repository_are_handled(tmp_path):

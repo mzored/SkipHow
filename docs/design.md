@@ -24,7 +24,7 @@ Both host manifests point to the same skills directory. `skiphow` remains the CT
 
 ## Kernel and playbooks
 
-`SKILL.md` is the CTO kernel. It keeps the mission, decision rights, adaptive routing triggers, authority, trust, preservation of unrelated work, delegate safety, risk-scaled review, persistence, and honest completion in context.
+`SKILL.md` is the CTO kernel. It keeps the mission, decision rights, adaptive routing triggers, authority, trust, custody of engineering state, delegate safety, risk-scaled review, persistence, and honest completion in context.
 
 The files under `references/` hold shared guidance for product, technical design, diagnosis, tracked work, delegation, integration, verification, operations, and setup. Their observable triggers live in the kernel. A playbook carries technique, not a product-defining duty whose absence would erase CTO behavior.
 
