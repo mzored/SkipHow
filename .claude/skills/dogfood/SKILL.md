@@ -95,9 +95,19 @@ Only when the evidence names a defect in the package's own wording. A verdict of
 deviated from text that was plain and in context, and a question that was only ever about cost or time all end
 at the report. Do not manufacture a change for them.
 
-Locate the problem as narrowly as the evidence allows. Start with this project's own record. The decision
-history and the prior art page say what was already argued and turned down, so a settled argument is not
-reopened without new evidence — and when this session is that evidence, say so.
+Identify the shared failure mechanism behind the example, separating it from incidental symptoms. Choose
+the smallest solution that reliably addresses the supported class of problems at the lowest total cost under
+the owner-outcome contract. Its acceptance should cover materially different manifestations and preserve
+legitimate behavior that only resembles the symptom. Generalize only as far as the evidence and the owner's
+requested outcome justify.
+
+SkipHow runs on frontier models. Write prompts and instructions around outcomes, authority, constraints, and
+observable success, leaving methods to their judgment. Prescribe steps or gates only where evidence shows
+that they are needed to preserve a material outcome or boundary.
+
+Start with this project's own record. The decision history and the prior art page say what was already
+argued and turned down, so a settled argument is not reopened without new evidence. When this session is
+that evidence, say so.
 
 Those same pages name which outside projects are comparable on the shape in front of you. Read the ones that
 are, as their text stands now rather than as this project summarised it or as you remember it; both go stale,
