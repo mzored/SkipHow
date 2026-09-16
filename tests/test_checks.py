@@ -470,6 +470,23 @@ def test_plugin_markdown_does_not_treat_innocent_prose_as_a_destination(
     assert check.validate_skill_markdown_reachability(skill) == []
 
 
+def test_skill_markdown_must_fit_one_host_view(tmp_path: Path) -> None:
+    skill = write_skill(tmp_path / "skills", "skiphow")
+    references = skill / "references"
+    references.mkdir()
+    limit = check.SKILL_MARKDOWN_VIEW_LIMIT
+    prefix = check.SKILL_MARKDOWN_LINE_PREFIX
+    fits = "x" * (limit - prefix - 1) + "\n"
+    (references / "fits.md").write_text(fits, encoding="utf-8")
+    (references / "long.md").write_text(fits + "y\n", encoding="utf-8")
+
+    errors = check.validate_skill_markdown_view_size(skill)
+
+    assert len(errors) == 1
+    assert "long.md" in errors[0]
+    assert f"at most {limit}" in errors[0]
+
+
 def test_local_links_decode_one_uri_layer_without_rewriting_literal_names(
     tmp_path: Path,
 ) -> None:

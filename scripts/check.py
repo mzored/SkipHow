@@ -89,6 +89,10 @@ SKILL_NAME = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 AGENT_SKILL_FIELDS = frozenset(
     {"name", "description", "license", "compatibility", "metadata", "allowed-tools"}
 )
+# Claude Code middle-truncates tool output beyond about 10,000 characters, and a
+# numbered view adds seven characters per line, so a larger file loses its middle.
+SKILL_MARKDOWN_VIEW_LIMIT = 10_000
+SKILL_MARKDOWN_LINE_PREFIX = 7
 COMMON_MANIFEST_METADATA_FIELDS = frozenset(
     {
         "name",
@@ -1539,7 +1543,29 @@ def validate_skill_directory(skill_dir: Path) -> list[str]:
         ):
             errors.append(f"{relative} allowed-tools must be a nonempty string when present")
     errors.extend(validate_skill_markdown_reachability(skill_dir))
+    errors.extend(validate_skill_markdown_view_size(skill_dir))
     errors.extend(validate_openai_metadata(skill_dir, name))
+    return errors
+
+
+def validate_skill_markdown_view_size(skill_dir: Path) -> list[str]:
+    """Keep every skill Markdown file small enough to reach context in one view."""
+    errors: list[str] = []
+    for path in markdown_files(skill_dir):
+        if path.is_symlink():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeError) as exc:
+            errors.append(f"cannot measure {display_path(path)}: {exc}")
+            continue
+        size = len(text) + SKILL_MARKDOWN_LINE_PREFIX * len(text.splitlines())
+        if size > SKILL_MARKDOWN_VIEW_LIMIT:
+            errors.append(
+                f"{display_path(path)} numbered view is {size} characters; keep it at most "
+                f"{SKILL_MARKDOWN_VIEW_LIMIT} so a host tool output shows it whole "
+                "instead of dropping its middle"
+            )
     return errors
 
 
