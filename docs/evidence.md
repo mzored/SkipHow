@@ -2,6 +2,32 @@
 
 This page separates package checks from observed model behavior. The full 2.0 evidence remains in the immutable [`v2.0.1` research snapshot](https://github.com/mzored/SkipHow/tree/1c811262e6acdbdc58a2ee862b54e0b8d3478eaa/docs/research/2026-08-27).
 
+## 5.0.1 a kernel that loads whole
+
+Version 5.0.1 cuts the kernel from 25,024 to 9,614 characters and makes every runtime Markdown file fit one numbered tool
+view, characters plus seven per line at most 10,000, which `scripts/check.py` enforces. The delegate dispatch sentence says an
+unset model or effort control still resolves to some default, often the parent's route, that must be justified like any other route, and a brief states
+whether its delegate may dispatch delegates, how widely, and at what route. The size limit is `Deterministic`; the wording is
+`Contract`.
+
+The host limit is measured, not assumed. Across the maintainer's local Claude Code transcripts, 52 of 53 middle-truncated
+tool outputs showed exactly 10,012 visible characters, and the smallest truncated original was 10,082. Compaction re-attaches
+an invoked skill cut at 20,000 characters. In eleven private installed sessions a shell read of the 5.0.0 kernel lost its
+middle, which held routing, the delegate brief contract, and custody; one read of `tracked-work` at 12,076 characters was cut
+the same way. The limit binds shell reads, which is how those sessions read the kernel.
+
+The routing defect is readable in private 5.0.0 sessions, not in a retained receipt. In the session the owner reported, all
+five dispatches omitted a model and inherited the lead's, with the routing text in context; about five of twenty sessions with
+that text in context did the same. Fourteen of nineteen agents in that session ran at depth two or three, none briefed on
+route or fan-out, and they used about 60% of roughly 39 million subagent input tokens. No session content is retained.
+
+A paired isolated receipt was prepared and did not run: two `claude -p` sessions, the 5.0.0 package against the candidate,
+the same planning prompt on a four-module fixture, with a `PreToolUse` hook that records and denies each dispatch so a
+session stops at its first delegate batch. The observables were the skill's reported base directory, whether the kernel's
+last section reached context before the first dispatch, and whether each dispatch set a model and stated a fan-out bound.
+Both sessions ended before their first model call because the headless host's sign-in had expired. Behavior on both hosts
+stays `UNVERIFIED`.
+
 ## 5.0.0 full custody of engineering state
 
 Version 5.0.0 replaces the kernel's account of state the run did not create. Every branch, worktree, checkout, checkpoint,

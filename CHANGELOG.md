@@ -2,6 +2,46 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 5.0.1 (2026-09-16)
+
+The kernel now reaches context whole. It is 9,614 characters instead of 25,024, keeps the rules a capable model cannot
+infer from the repository, and leaves method to the playbook whose trigger fires at the act. A delegate's route is decided at
+dispatch: an unset model or effort control still resolves to some default, often the lead's route, that must be justified like any other route, and every
+brief says whether its delegate may dispatch delegates of its own, how widely, and at what route.
+
+### Changed
+
+- `SKILL.md` keeps trust, request grants, iteration, protected actions, owner and engineering decisions, custody and liveness, the dispatch obligation, completion, and reporting, and moves or deletes the rest; the disposition of each part is in [decisions](docs/decisions.md#the-501-kernel-that-loads-whole). Observed defect: Claude Code middle-truncates tool output above about 10,000 characters (52 of 53 truncated outputs in the maintainer's local transcripts showed exactly 10,012 visible characters), agents usually read the kernel with a shell command, and in eleven private installed 5.0.0 sessions the middle of the 25,024-character kernel, which held routing, the delegate brief contract, and custody, never reached context.
+- The dispatch sentence in `SKILL.md` and `references/delegation.md` say an unset control still resolves to some default, often the parent's route, so leaving it unset is a routing decision held to the same test, preserve only a route already shown adequate for comparable work, and require the brief to state the delegate's own fan-out and route. `delegation` gives the reason: a delegate may not have this guidance in context, and its own delegates often inherit its route. Observed defect: in the reported session all five dispatches omitted a model and inherited the lead's with the routing text in context, about five of twenty such sessions did the same, and fourteen of nineteen agents in that session ran nested at depth two or three, unbriefed on route or fan-out, using about 60% of roughly 39 million subagent input tokens. The 5.0.0 phrase "including separate or inherited settings" read as though inheritance was already a choice.
+- `references/verification.md` now owns review scaling, the stronger independent challenge for architecture, security, authentication, payments, privacy, migration, concurrency, and public-contract changes, and when review stops, and `skiphow-deploy-ready` takes its review depth from there. Observed defect: the same truncation; these rules sat in the lost middle of the kernel.
+- `references/tracked-work.md` fits one view (it was 12,076 characters and was cut once in the field) by removing restatements of kernel rules and compressing its sections without dropping a rule. `skiphow-fast-fixes` points its pause and resume reconciliation at `tracked-work`, which now holds resume reconstruction.
+- `scripts/check.py` fails when a runtime Markdown file's numbered view, characters plus seven per line, exceeds 10,000. The limit is a measured host limit and reopens when that limit changes.
+
+### Behavioral coverage
+
+- The six `routing-*` cases now cite the kernel's dispatch section instead of its leadership section, since the routing obligation moved there. Their expectations are unchanged; `routing-bounded-cheap-verification` already forbade inheriting a stronger parent by default.
+- The kernel's empty "Continuing and scope" heading is gone. `change-fully-specified-local-fix` now cites the reporting section, which holds the rule to continue and where to stop; `auth-005-protected-release-needs-exact-grant` cites that section and the trust section, which holds that project procedure and records grant nothing; `tracked-work-finding-reported-not-recorded` cites the leadership section, which holds the disposition of a found problem, and `tracked-work`'s record-destination section, which now holds the rule for a project with no safe destination; and `complete-001-unstarted-part-withholds-completion` drops the duplicate. No expectation changes.
+
+### Compatibility and evidence
+
+This patch restores behavior the kernel already promised and no longer reached: no owner interface, authority boundary, default side effect, public skill name, activation scope, or package layout changes. The kernel's description keeps its triggers and its compaction condition in fewer words. The owner's global instruction that subagents may be used lives outside this repository and was not changed.
+
+Review ran on Claude subagents with explicit models; the Codex review round was not run, per the owner's instruction, so cross-host review of this change is not claimed. An invariant lane (Opus 5) compared the candidate kernel with `v5.0.0` and raised eleven qualifying findings, all confirmed against the files and fixed: the compression had dropped an invoked iteration workflow's deference until delivery is requested, the limit that work while waiting must demonstrably advance acceptance without inventing prerequisites, the compaction condition in the description, the ban on taking over a concurrent session's outcome, the distinction between automatic selection and explicit workflow invocation, privacy, legal or business risk, and authoritative product evidence in the owner's decisions, masked handling of an authorized credential at its secure destination and the lead's custody of sensitive context, the hook, signing, authentication, and network limits on a commit, and a material separable problem as a reason to track; and the new text had asserted that SkipHow reaches a delegate only through its brief, which the recorded subagent documentation contradicts, and that an unset control inherits the parent's route, which depends on host defaults. A release-consistency lane (Sonnet 5) raised three, all confirmed and fixed: the old `tracked-work` size was given in bytes instead of characters, `skiphow-deploy-ready` still took review depth from the kernel, and two historical kernel sizes were rounded. A second invariant round over the fixes raised seven, all confirmed and fixed: the waiting rule read as applying to a requested pause, liveness had become an open record rather than a live one and lost that a name, timestamp, or running process proves nothing and that state is never described as the owner's or another's, credential handling had narrowed to shell history and dropped customer-data findings and minimization, the execution check had narrowed from operations that may run hooks or scripts, the trust boundary had narrowed to forks and pull requests, an upgrade no longer said it lifts no restriction, and the decisions record claimed no 5.0.0 sentence reached nested delegation where none addressed it. A third round raised two, both confirmed and fixed: two repointed corpus cases did not cite the sections that now hold their rules, and broad language had narrowed to the literal word "finish"; it confirmed that every earlier fix and compensating cut held. No findings were refused. Between rounds, the literal-term contract tests caught three safety phrases lost while compressing, restored before review.
+
+The full local package gate passed all 391 tests under the pinned dependencies, and `git diff --check` passed. Both host schema validators passed on the candidate tree. Clean installation, invocation, activation, and continuity were not retested. Behavior under the new text is `UNVERIFIED` on both hosts, and no paid behavioral run was made.
+
+| Capability | Local candidate evidence |
+| --- | --- |
+| Deterministic package gate | PASS, full local command and 391 tests |
+| Codex schema validation | PASS |
+| Claude schema validation | PASS |
+| Clean Codex install | UNVERIFIED |
+| Clean Claude install | UNVERIFIED |
+| Explicit invocation | UNVERIFIED |
+| Implicit activation | UNVERIFIED |
+| Continuity | UNVERIFIED |
+| Behavioral suite | UNVERIFIED, [evidence](docs/evidence.md#501-a-kernel-that-loads-whole) |
+
 ## 5.0.0 (2026-09-16)
 
 Every branch, worktree, checkout, checkpoint, running service, and uncommitted change in a governed project is
