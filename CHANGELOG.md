@@ -2,6 +2,46 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 5.1.0 (2026-09-19)
+
+A problem the agent finds while changing the project no longer waits for the owner to notice it. Once the requested change
+is delivered, the agent fixes and delivers the engineering problems it found, records where the project tracks work those
+that need an owner decision, a protected action, or more than the run can finish, and never leaves one as a suggestion for
+the owner to start. Delivery under an established workflow now says it settles what may travel and not how often, so work
+the run already holds goes out in as few trips as the project's procedure and review allow.
+
+### Changed
+
+- `SKILL.md`'s disposition of a found problem replaces "without widening the work" with the owner's ruling of 2026-09-19. A problem the change itself adds is still fixed before delivery. Read-only requests, iteration, protected actions, owner constraints, and a trusted project's narrower procedure are unchanged. Until a requested change is delivered, a problem outside it is reported, which keeps read-only requests and iteration writing nothing for it. Evidence: 15 host follow-up suggestions in 6 sessions carrying the kernel between 9 and 18 September 2026, four of them withdrawn as taken up in the same session, two at the owner's request. The disposition list had let an ephemeral card pass as recorded, while it handed a technical and priority decision back to the owner.
+- `SKILL.md` makes room within its one-view limit by deleting method its references already carry at the act: the sentence on when delegation repays coordination, which `delegation` states in full under "Whether to delegate at all" and which the kernel still requires in context before any dispatch, and the confirm-fix-re-review clause of the final review, which `verification` states in full. "A material separable problem" left the tracking trigger because the disposition sentence now routes one to the tracker.
+- `references/integration.md` adds one sentence under "Where the work lands": the delivery grant settles what may travel, not how often, and each push and pull request costs the project a check run and a review, without holding a finished result back for work not yet requested. Evidence: one second-hand report of roughly 130 billed CI minutes for five small pull requests where roughly 50 would have done. The proposal behind it targeted the kernel and was refused there. It quoted 5.0.0 text that 5.0.1 had removed, it would not fit the kernel's view limit, and it restated the existing rule that trusted procedure sets the unit of integration while missing projects that set none. A full test job for a one-file prompt change is that project's CI topology, which `operations` already covers.
+- The owner-outcome contract, the README, and the decision index say the same.
+
+### Behavioral coverage
+
+- `tracked-work-finding-reported-not-recorded` now requires candidate arms to fix the unquoted CSV fields after the penny fix, and still forbids any record in a project that keeps none.
+- `stewardship-small-export-change` narrows its forbidden implementation to the row serialization the owner said to keep unchanged, since other repairs are now part of a change request; its acceptance says that constraint holds until the owner decides.
+
+### Compatibility and evidence
+
+This minor release widens what a request that changes the project delivers by default, within the grants it already carries. A project that wants the earlier behavior can say so in its trusted instructions. No new grant, public skill name, activation scope, or package layout changes.
+
+The Codex review round was blocked by the review service's usage limit, so cross-host review of this change is not claimed. An independent same-host review (Opus) raised three qualifying findings, all confirmed against the files and fixed. First, a tightening of the disposition sentence had dropped its "once delivered" scope, which let it contradict read-only requests and iteration and left reporting off the list of exits. Second, the CHANGELOG pointed the delegation criteria at the wrong section of `delegation`. Third, the suggestion counts could not be reproduced as first written; they were recounted with the method now stated. A second round confirmed the fixes and raised nothing further. It also confirmed that "delegate only where it repays coordination" could leave the kernel, because `delegation` carries the criteria and the kernel still requires that file before any dispatch.
+
+The full local package gate passed all 391 tests under the pinned dependencies, and `git diff --check` passed. `scripts/check_hosts.py` passed Claude schema validation and a clean Claude install; the Codex validator was unavailable locally and pull-request CI supplies it for its revision. Invocation, activation, and continuity were not retested. Behavior under the new text is `UNVERIFIED` on both hosts, and no paid behavioral run was made.
+
+| Capability | Local candidate evidence |
+| --- | --- |
+| Deterministic package gate | PASS, full local command and 391 tests |
+| Codex schema validation | UNVERIFIED locally; pull-request CI |
+| Claude schema validation | PASS, `claude plugin validate --strict` |
+| Clean Codex install | UNVERIFIED |
+| Clean Claude install | PASS, install and inspect; uninstall not run |
+| Explicit invocation | UNVERIFIED |
+| Implicit activation | UNVERIFIED |
+| Continuity | UNVERIFIED |
+| Behavioral suite | UNVERIFIED, [evidence](docs/evidence.md#510-found-problems-and-integration-cadence) |
+
 ## 5.0.1 (2026-09-16)
 
 The kernel now reaches context whole. It is 9,614 characters instead of 25,024, keeps the rules a capable model cannot

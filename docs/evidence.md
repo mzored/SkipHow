@@ -2,6 +2,19 @@
 
 This page separates package checks from observed model behavior. The full 2.0 evidence remains in the immutable [`v2.0.1` research snapshot](https://github.com/mzored/SkipHow/tree/1c811262e6acdbdc58a2ee862b54e0b8d3478eaa/docs/research/2026-08-27).
 
+## 5.1.0 found problems and integration cadence
+
+Version 5.1.0 has a change request fix and deliver the engineering problems it found, after the requested change when they lie
+outside it, and record the rest where the project tracks work; a suggestion left for the owner to start is not a disposition.
+`integration` says that a delivery grant settles what may travel and not how often. Both are `Contract`.
+
+The found-problem change rests on an owner ruling and on counts from local Claude Code transcripts: the desktop app's follow-up
+suggestion tool was called 23 times in 12 sessions between 9 and 18 September 2026, counting subagent transcripts, 15 of them in 6 sessions whose transcript carries the kernel's opening sentence, on 4.7.x through 5.0.1.
+Four suggestions were withdrawn as taken up in the same session, two of them at the owner's request. The cadence sentence
+rests on one second-hand report, roughly 130 billed CI minutes for five small pull requests where roughly 50 would have done;
+its transcripts were not read. No session content is retained, and no paid run was made. Behavior on both hosts stays
+`UNVERIFIED`.
+
 ## 5.0.1 a kernel that loads whole
 
 Version 5.0.1 cuts the kernel from 25,024 to 9,614 characters and makes every runtime Markdown file fit one numbered tool

@@ -4,8 +4,8 @@
 
 | Version | Supported |
 | --- | --- |
-| 5.0.x | Yes |
-| 4.8.x, 4.7.x, 4.6.x, 4.5.x, 4.4.x, 4.3.x, 4.2.x, 4.1.x, and 4.0.x | No; upgrade to 5.0.x without changing existing authorization |
+| 5.1.x | Yes |
+| 5.0.x, 4.8.x, 4.7.x, 4.6.x, 4.5.x, 4.4.x, 4.3.x, 4.2.x, 4.1.x, and 4.0.x | No; upgrade to 5.1.x without changing existing authorization |
 | 3.0.x and earlier | No |
 
 Security review covers the packaged owner skill, its linked playbooks, host manifests,
@@ -14,6 +14,8 @@ boundaries. Codex, Claude Code, GitHub, Git, operating systems, and third-party
 services keep their own security policies.
 
 ## Package validation, 2026-09-08
+
+Version 5.1.0 has a request that changes the project also repair the engineering problems the run found, after the requested change, within the grants that request already carries. Read-only requests, protected actions, owner decisions, audience boundaries, and a trusted project's own narrower procedure are unchanged, and no new grant, activation mechanism, package layout, or host binding is added. The new behavior remains `UNVERIFIED`.
 
 Version 4.7.0 adds verification-health guidance and focused behavioral cases without changing the authority boundary, public workflow set, activation mechanism, package layout, or host binding. The new behavior remains `UNVERIFIED`; deterministic corpus checks prove only the case contract and internal satisfiability.
 
