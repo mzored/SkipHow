@@ -8,9 +8,9 @@ Version 5.1.0 has a change request fix and deliver the engineering problems it f
 outside it, and record the rest where the project tracks work; a suggestion left for the owner to start is not a disposition.
 `integration` says that a delivery grant settles what may travel and not how often. Both are `Contract`.
 
-The found-problem change rests on an owner ruling and on counts from local Claude Code transcripts: in September 2026 the
-desktop app's follow-up suggestion tool was called 19 times in 9 sessions, 15 of them in 6 SkipHow sessions on 4.7.x through
-5.0.1, and several suggestions were withdrawn because the owner asked for the work in the same session. The cadence sentence
+The found-problem change rests on an owner ruling and on counts from local Claude Code transcripts: the desktop app's follow-up
+suggestion tool was called 23 times in 12 sessions between 9 and 18 September 2026, counting subagent transcripts, 15 of them in 6 sessions whose transcript carries the kernel's opening sentence, on 4.7.x through 5.0.1.
+Four suggestions were withdrawn as taken up in the same session, two of them at the owner's request. The cadence sentence
 rests on one second-hand report, roughly 130 billed CI minutes for five small pull requests where roughly 50 would have done;
 its transcripts were not read. No session content is retained, and no paid run was made. Behavior on both hosts stays
 `UNVERIFIED`.
