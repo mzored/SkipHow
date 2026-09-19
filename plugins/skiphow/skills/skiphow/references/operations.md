@@ -28,7 +28,7 @@ Bound work in progress by integration and review capacity. Starting more lanes t
 
 ## Learn from failures
 
-Classify a failure as product ambiguity, code, architecture, environment, host, missing capability, or process before choosing the remedy. Fix the systemic source when it will recur and the fix belongs in the authorized outcome. Otherwise preserve the evidence in the project's existing work system under [tracked work](tracked-work.md).
+Classify a failure as product ambiguity, code, architecture, environment, host, missing capability, or process before choosing the remedy. Fix the systemic source within the change when it will recur and the fix belongs in the authorized outcome; otherwise the failure takes the kernel's disposition for a problem you find.
 
 After an incident or repeated failure, keep the smallest durable fact that stops the next capable agent from repeating the investigation. Delete temporary diagnostics and stale recovery instructions. A transcript is not operational documentation.
 

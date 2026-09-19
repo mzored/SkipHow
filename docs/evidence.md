@@ -4,14 +4,16 @@ This page separates package checks from observed model behavior. The full 2.0 ev
 
 ## 5.1.1 partly delivered tracked items
 
-Version 5.1.1 removes four sentences in `skiphow-bug`, `operations`, and `diagnosis` that still recorded or reported a
-separable problem after 5.1.0 had the kernel fix it, and `tracked-work` now says that what delivered work leaves open in an
-item is a found problem. Both are `Contract`.
+Version 5.1.1 rewrites six sentences in `skiphow-bug`, `operations`, `diagnosis`, and `integration` that still recorded or
+reported a found problem, or recorded unfinished work, without the kernel's conditions after 5.1.0 had the kernel fix it, and
+`tracked-work` now says that what this session's delivery, or a finished session's in an item the request reaches, leaves
+open is a found problem. Both are `Contract`.
 
 The change rests on one private 5.1.0 change session, with the kernel in context whole, that delivered part of a tracked item
-and reported the rest as still open. The contradictions are readable in the text; which of them decided that session is
-`UNVERIFIED`, since no isolated reproduction was run. No session content is retained, and no paid run was made. Behavior on
-both hosts stays `UNVERIFIED`.
+and reported the rest as still open. The contradictions are readable in the text. Located by each file's opening sentence,
+that session had the bug workflow, `diagnosis`, `integration`, and `tracked-work` in context and not `operations`; which
+reading decided it is `UNVERIFIED`, since no isolated reproduction was run. No session content is retained, and no paid run
+was made. Behavior on both hosts stays `UNVERIFIED`.
 
 ## 5.1.0 found problems and integration cadence
 
