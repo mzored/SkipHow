@@ -2,6 +2,17 @@
 
 This page separates package checks from observed model behavior. The full 2.0 evidence remains in the immutable [`v2.0.1` research snapshot](https://github.com/mzored/SkipHow/tree/1c811262e6acdbdc58a2ee862b54e0b8d3478eaa/docs/research/2026-08-27).
 
+## 5.1.1 partly delivered tracked items
+
+Version 5.1.1 removes four sentences in `skiphow-bug`, `operations`, and `diagnosis` that still recorded or reported a
+separable problem after 5.1.0 had the kernel fix it, and `tracked-work` now says that what delivered work leaves open in an
+item is a found problem. Both are `Contract`.
+
+The change rests on one private 5.1.0 change session, with the kernel in context whole, that delivered part of a tracked item
+and reported the rest as still open. The contradictions are readable in the text; which of them decided that session is
+`UNVERIFIED`, since no isolated reproduction was run. No session content is retained, and no paid run was made. Behavior on
+both hosts stays `UNVERIFIED`.
+
 ## 5.1.0 found problems and integration cadence
 
 Version 5.1.0 has a change request fix and deliver the engineering problems it found, after the requested change when they lie

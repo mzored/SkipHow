@@ -2,6 +2,40 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 5.1.1 (2026-09-19)
+
+What a change leaves unfinished in a tracked item no longer goes back to the owner. 5.1.0 changed what happens to a problem
+the agent finds only in the kernel. Four sentences in the bug workflow and two references still told the run to record or
+report one, and nothing said that the part of a tracked item a delivery leaves open is a found problem. This patch removes
+the contradictions and says so where the run decides whether an item closes. The behavior it promises is the one 5.1.0
+already states.
+
+### Changed
+
+- `skiphow-bug`, `references/operations.md` (two sentences), and `references/diagnosis.md` no longer restate the disposition 5.1.0 replaced: "record a separable problem", "record it as technical work", "preserve the finding … instead of silently widening the request", and "report the control". Each now points at the kernel's disposition for a problem you find. Evidence: one private 5.1.0 change session, with the kernel in context whole, delivered part of an item already open in the project's tracker, commented on it, and reported the rest as still open; the owner had to start another session to have it done. The contradictions are a readable property of the text. Which of them decided that session is `UNVERIFIED`. The report the owner quoted came from a later session still on 5.0.0, whose "without widening the work" 5.1.0 had already replaced.
+- `references/tracked-work.md` adds one sentence under "Closing what the tracker carries": whatever delivered work leaves open in an item, whichever session delivered it, is a problem you found, disposed of under the kernel as though it had no record. It loads at the step where that session decided to keep the item open. A kernel clause covering problems already on record was refused. It would load on every request in a kernel six characters under its view limit, and it would invite loosely related backlog into a change request.
+- The decision index says the same.
+
+### Behavioral coverage
+
+No case is added or changed. `project-reconciliation-records` still reopens an item whose gate, destination, and rollout remain incomplete and forbids any product change: a reconciliation request grants records, not repair.
+
+### Compatibility and evidence
+
+This patch changes no grant, public skill name, activation scope, or package layout. It aligns the workflows and references with the behavior 5.1.0 already promised, and a project that wants the earlier behavior can still say so in its trusted instructions.
+
+| Capability | Local candidate evidence |
+| --- | --- |
+| Deterministic package gate | PASS, full local command and 391 tests |
+| Codex schema validation | UNVERIFIED locally; pull-request CI |
+| Claude schema validation | PASS, `claude plugin validate --strict` |
+| Clean Codex install | UNVERIFIED |
+| Clean Claude install | PASS, install and inspect; uninstall not run |
+| Explicit invocation | UNVERIFIED |
+| Implicit activation | UNVERIFIED |
+| Continuity | UNVERIFIED |
+| Behavioral suite | UNVERIFIED, [evidence](docs/evidence.md#511-partly-delivered-tracked-items) |
+
 ## 5.1.0 (2026-09-19)
 
 A problem the agent finds while changing the project no longer waits for the owner to notice it. Once the requested change

@@ -39,7 +39,7 @@ Some defects recur across unrelated projects and are cheap to check when the sym
 
 Never silence a failure you cannot explain. Raising a timeout, adding a retry, disabling or skipping a check, weakening an assertion, and accepting an intermittent pass all require a stated diagnosis first. Never reach for a bypass flag or a destructive reset to make a failing path go quiet.
 
-Repeated workarounds are a signal about the system, not about the task. When the same failure pattern, manual step, or coordination defect keeps recurring, fix the control that produces it, or report the control when fixing it lies outside the requested result.
+Repeated workarounds are a signal about the system, not about the task. When the same failure pattern, manual step, or coordination defect keeps recurring, fix the control that produces it; a control outside the requested result takes the kernel's disposition for a problem you find.
 
 Fix the cause rather than the symptom, then rerun the original signal and not only whatever new check the fix came with. Where a durable check belongs is [verification](verification.md)'s question.
 
