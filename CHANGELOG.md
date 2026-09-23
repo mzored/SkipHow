@@ -28,6 +28,20 @@ assignments or left their own split for later, and had to ask for the slicing th
 
 This patch changes no grant, public skill name or description, activation scope, or package layout. It restores the vertical slices the workflow description already promises.
 
+An isolated read-only Codex review ran two rounds, with separate scratch homes and no personal skills or installed package in the session. The first round raised two qualifying findings; both were confirmed against the files and fixed. First, the decision record said a task is carried "to a reviewed change" while the workflow says "verified, reviewable change", which conflated the plan review with review of the implemented change. Second, the two workflow cases required every tracker issue, including a grouping issue the workflow permits, to be a one-agent task and to be reviewed; both events now name issues recorded for execution. The second round, over the fixes, returned no qualifying findings.
+
+| Capability | Local candidate evidence |
+| --- | --- |
+| Deterministic package gate | PASS, full local command and 391 tests |
+| Codex schema validation | UNVERIFIED locally; pull-request CI |
+| Claude schema validation | PASS, `claude plugin validate --strict` |
+| Clean Codex install | UNVERIFIED |
+| Clean Claude install | UNVERIFIED |
+| Explicit invocation | UNVERIFIED |
+| Implicit activation | UNVERIFIED |
+| Continuity | UNVERIFIED |
+| Behavioral suite | UNVERIFIED, [evidence](docs/evidence.md#512-one-agent-plan-tasks) |
+
 ## 5.1.1 (2026-09-19)
 
 What a change leaves unfinished in a tracked item no longer goes back to the owner. 5.1.0 changed what happens to a problem
