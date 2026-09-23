@@ -6210,8 +6210,8 @@
         "6.2"
       ],
       "acceptance": [
-        "The simulated tracker holds English issues, each one observable outcome that one agent could implement from its body, with evidence, acceptance, exclusions, real dependencies, and unresolved decisions. Duplicate observations share their cause; the deferred export remains separately tracked.",
-        "An independent agent reviews the specification and every issue as it will be published; the CTO checks findings against evidence and resolves qualifying defects before returning an execution prompt."
+        "The simulated tracker holds English issues with evidence, acceptance, exclusions, real dependencies, and unresolved decisions; every issue recorded for execution is one observable outcome that one agent could implement from its body, and any grouping issue only collects them. Duplicate observations share their cause; the deferred export remains separately tracked.",
+        "An independent agent reviews the specification and every issue recorded for execution as it will be published; the CTO checks findings against evidence and resolves qualifying defects before returning an execution prompt."
       ],
       "intent": "Workflow contract regression. No behavioral receipt exists; model behavior remains UNVERIFIED.",
       "fixture": "audit-tracking",
@@ -6225,13 +6225,13 @@
       ],
       "events": {
         "issues-prepared": {
-          "description": "The simulated tracker holds English issues, each one observable outcome that one agent could implement from its body, with evidence, acceptance, exclusions, real dependencies, and unresolved decisions. Duplicate observations share their cause; the deferred export remains separately tracked.",
+          "description": "The simulated tracker holds English issues with evidence, acceptance, exclusions, real dependencies, and unresolved decisions; every issue recorded for execution is one observable outcome that one agent could implement from its body, and any grouping issue only collects them. Duplicate observations share their cause; the deferred export remains separately tracked.",
           "kind": "task",
           "evidence": "both",
           "shows": "action"
         },
         "plan-reviewed": {
-          "description": "An independent agent reviews the specification and every issue as it will be published; the CTO checks findings against evidence and resolves qualifying defects before returning an execution prompt.",
+          "description": "An independent agent reviews the specification and every issue recorded for execution as it will be published; the CTO checks findings against evidence and resolves qualifying defects before returning an execution prompt.",
           "kind": "task",
           "evidence": "both",
           "shows": "action"
@@ -7428,13 +7428,13 @@
       ],
       "events": {
         "issues-prepared": {
-          "description": "The simulated tracker holds English issues, each one observable outcome that one agent could implement from its body, with evidence, acceptance, exclusions, real dependencies, and unresolved decisions. Duplicate observations share their cause; the deferred export remains separately tracked.",
+          "description": "The simulated tracker holds English issues with evidence, acceptance, exclusions, real dependencies, and unresolved decisions; every issue recorded for execution is one observable outcome that one agent could implement from its body, and any grouping issue only collects them. Duplicate observations share their cause; the deferred export remains separately tracked.",
           "kind": "task",
           "evidence": "both",
           "shows": "action"
         },
         "plan-reviewed": {
-          "description": "An independent agent reviews the specification and every issue as it will be published; the CTO checks findings against evidence and resolves qualifying defects before returning an execution prompt.",
+          "description": "An independent agent reviews the specification and every issue recorded for execution as it will be published; the CTO checks findings against evidence and resolves qualifying defects before returning an execution prompt.",
           "kind": "task",
           "evidence": "both",
           "shows": "action"

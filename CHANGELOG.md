@@ -22,7 +22,7 @@ assignments or left their own split for later, and had to ask for the slicing th
 
 ### Behavioral coverage
 
-`planning-localization-assignments` now expects every execution task to be one agent-completable outcome. It forbids, in the candidate arms, a task that holds several outcomes or agents' work or defers its own split. `workflow-plan-durable` and `workflow-plan-invocation-grant` expect one-agent issues and a review of every issue as it will be published. These are acceptance scenarios, not receipts.
+`planning-localization-assignments` now expects every execution task to be one agent-completable outcome. It forbids, in the candidate arms, a task that holds several outcomes or agents' work or defers its own split. `workflow-plan-durable` and `workflow-plan-invocation-grant` expect every issue recorded for execution to be one agent's outcome, with any grouping issue only collecting them, and a review of each execution issue as it will be published. These are acceptance scenarios, not receipts.
 
 ### Compatibility and evidence
 
