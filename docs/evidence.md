@@ -2,6 +2,21 @@
 
 This page separates package checks from observed model behavior. The full 2.0 evidence remains in the immutable [`v2.0.1` research snapshot](https://github.com/mzored/SkipHow/tree/1c811262e6acdbdc58a2ee862b54e0b8d3478eaa/docs/research/2026-08-27).
 
+## 5.1.2 one-agent plan tasks
+
+Version 5.1.2 has the plan workflow record every task for execution as one slice with one outcome verifiable on its
+own that one agent can carry from its record, size the whole accepted scope rather than only the next assignments,
+write each task for an agent that lacks the planning conversation, and have its independent review cover every task
+as it will be published. This is `Contract`.
+
+The change rests on one private installed Codex session on 5.1.1. It published a specification and child issues,
+some holding several assignments or several outcomes, and re-sliced them in the same session only after the owner
+named one-agent vertical slices written for a capable model. The defect is readable in the 4.8.2 wording, which let a
+recorded task differ from an assignment, required only the next assignments to be executable, let later boundaries
+stay provisional, and reviewed the proposed work without naming the published tasks. The slicing text was in that
+session's context. No isolated reproduction or paid run was made, and no session content is retained. Behavior on
+both hosts stays `UNVERIFIED`.
+
 ## 5.1.1 partly delivered tracked items
 
 Version 5.1.1 rewrites six sentences in `skiphow-bug`, `operations`, `diagnosis`, and `integration` that still recorded or

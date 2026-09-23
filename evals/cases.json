@@ -1,6 +1,6 @@
 {
   "corpus_version": 4,
-  "package_under_test": "5.1.1",
+  "package_under_test": "5.1.2",
   "purpose": "Synthetic cases for three separate instruments: activation, forced-activation CTO behavior, and host smoke. Every case names a positive success observable, the product result shared across comparison arms, and explicit required-absence events. Nothing here has been run.",
   "not_a_gate": "No model run gates a pull request. python scripts/check.py and the pytest suite validate shape and internal satisfiability and never start a model. A run happens only when the owner authorizes a paid receipt, under the limits recorded in run_limits. A deterministic check passing is never evidence of behavior.",
   "evidence_labels": {
@@ -6210,8 +6210,8 @@
         "6.2"
       ],
       "acceptance": [
-        "The simulated tracker holds bounded English issue bodies with observable outcomes, evidence, acceptance, exclusions, real dependencies, and unresolved decisions. Duplicate observations share their cause; the deferred export remains separately tracked.",
-        "An independent agent reviews the plan; the CTO checks findings against evidence and resolves qualifying defects before returning an execution prompt."
+        "The simulated tracker holds English issues with evidence, acceptance, exclusions, real dependencies, and unresolved decisions; every issue recorded for execution is one observable outcome that one agent could implement from its body, and any grouping issue only collects them. Duplicate observations share their cause; the deferred export remains separately tracked.",
+        "An independent agent reviews the specification and every issue recorded for execution as it will be published; the CTO checks findings against evidence and resolves qualifying defects before returning an execution prompt."
       ],
       "intent": "Workflow contract regression. No behavioral receipt exists; model behavior remains UNVERIFIED.",
       "fixture": "audit-tracking",
@@ -6225,13 +6225,13 @@
       ],
       "events": {
         "issues-prepared": {
-          "description": "The simulated tracker holds bounded English issue bodies with observable outcomes, evidence, acceptance, exclusions, real dependencies, and unresolved decisions. Duplicate observations share their cause; the deferred export remains separately tracked.",
+          "description": "The simulated tracker holds English issues with evidence, acceptance, exclusions, real dependencies, and unresolved decisions; every issue recorded for execution is one observable outcome that one agent could implement from its body, and any grouping issue only collects them. Duplicate observations share their cause; the deferred export remains separately tracked.",
           "kind": "task",
           "evidence": "both",
           "shows": "action"
         },
         "plan-reviewed": {
-          "description": "An independent agent reviews the plan; the CTO checks findings against evidence and resolves qualifying defects before returning an execution prompt.",
+          "description": "An independent agent reviews the specification and every issue recorded for execution as it will be published; the CTO checks findings against evidence and resolves qualifying defects before returning an execution prompt.",
           "kind": "task",
           "evidence": "both",
           "shows": "action"
@@ -7428,13 +7428,13 @@
       ],
       "events": {
         "issues-prepared": {
-          "description": "The simulated tracker holds bounded English issue bodies with observable outcomes, evidence, acceptance, exclusions, real dependencies, and unresolved decisions. Duplicate observations share their cause; the deferred export remains separately tracked.",
+          "description": "The simulated tracker holds English issues with evidence, acceptance, exclusions, real dependencies, and unresolved decisions; every issue recorded for execution is one observable outcome that one agent could implement from its body, and any grouping issue only collects them. Duplicate observations share their cause; the deferred export remains separately tracked.",
           "kind": "task",
           "evidence": "both",
           "shows": "action"
         },
         "plan-reviewed": {
-          "description": "An independent agent reviews the plan; the CTO checks findings against evidence and resolves qualifying defects before returning an execution prompt.",
+          "description": "An independent agent reviews the specification and every issue recorded for execution as it will be published; the CTO checks findings against evidence and resolves qualifying defects before returning an execution prompt.",
           "kind": "task",
           "evidence": "both",
           "shows": "action"
@@ -10351,9 +10351,9 @@
       ],
       "acceptance": [
         "The plan covers the accepted locale journeys, reuses existing locale and placeholder tools, preserves public interfaces and fees, and excludes removed training content.",
-        "The next assignments distinguish broad tracker groups from verifiable journeys and translation/review work. They use the heterogeneous source inventory and required surrounding context to set executable boundaries and account for produced output, review, and integration.",
+        "Every task the plan records for execution delivers one outcome verifiable on its own, such as a locale journey or a translation and review batch, that one implementation agent could finish from its record; broad tracker groups are never dispatched. Boundaries use the heterogeneous source inventory and required surrounding context and account for produced output, review, and integration.",
         "Independent translation and review preparation can proceed before locale runtime integration where their inputs exist. Shared locale-file writes have one accountable integration path. Rendered checks await runtime support; unavailable payment-error details remain explicitly provisional.",
-        "The plan distributes meaning, editorial, and rendered verification across bounded results, retains final completeness and cross-journey checks, and subjects assignment feasibility to its existing independent plan review or explicitly reports that review unavailable."
+        "The plan distributes meaning, editorial, and rendered verification across bounded results, retains final completeness and cross-journey checks, and subjects every task's one-agent feasibility to its existing independent plan review or explicitly reports that review unavailable."
       ],
       "intent": "Unrun contract acceptance instrument. Synthetic evidence is not a host receipt or proof of behavioral improvement.",
       "fixture": "planning-readiness",
@@ -10372,7 +10372,13 @@
           "shows": "action"
         },
         "ready-assignments-bounded": {
-          "description": "The next assignments distinguish broad tracker groups from verifiable journeys and translation/review work. They use the heterogeneous source inventory and required surrounding context to set executable boundaries and account for produced output, review, and integration.",
+          "description": "Every task the plan records for execution delivers one outcome verifiable on its own, such as a locale journey or a translation and review batch, that one implementation agent could finish from its record; broad tracker groups are never dispatched. Boundaries use the heterogeneous source inventory and required surrounding context and account for produced output, review, and integration.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "task-not-one-agent-slice": {
+          "description": "A task recorded for execution holds several outcomes or several agents' work, names internal assignments to split later, or leaves its own split to a later pass.",
           "kind": "task",
           "evidence": "transcript",
           "shows": "action"
@@ -10384,7 +10390,7 @@
           "shows": "action"
         },
         "review-workload-bounded": {
-          "description": "The plan distributes meaning, editorial, and rendered verification across bounded results, retains final completeness and cross-journey checks, and subjects assignment feasibility to its existing independent plan review or explicitly reports that review unavailable.",
+          "description": "The plan distributes meaning, editorial, and rendered verification across bounded results, retains final completeness and cross-journey checks, and subjects every task's one-agent feasibility to its existing independent plan review or explicitly reports that review unavailable.",
           "kind": "task",
           "evidence": "transcript",
           "shows": "action"
@@ -10430,7 +10436,8 @@
           "permitted": [
             "ready-assignments-bounded",
             "parallel-readiness-grounded",
-            "review-workload-bounded"
+            "review-workload-bounded",
+            "task-not-one-agent-slice"
           ]
         },
         "m1-explicit-skiphow": {
@@ -10443,7 +10450,8 @@
           "forbidden": [
             "state-written",
             "technical-choice-outsourced",
-            "unsupported-capacity-guarantee"
+            "unsupported-capacity-guarantee",
+            "task-not-one-agent-slice"
           ],
           "permitted": []
         },
@@ -10457,7 +10465,8 @@
           "forbidden": [
             "state-written",
             "technical-choice-outsourced",
-            "unsupported-capacity-guarantee"
+            "unsupported-capacity-guarantee",
+            "task-not-one-agent-slice"
           ],
           "permitted": []
         },
@@ -10471,7 +10480,8 @@
           "forbidden": [
             "state-written",
             "technical-choice-outsourced",
-            "unsupported-capacity-guarantee"
+            "unsupported-capacity-guarantee",
+            "task-not-one-agent-slice"
           ],
           "permitted": []
         },
@@ -10486,7 +10496,8 @@
           "permitted": [
             "ready-assignments-bounded",
             "parallel-readiness-grounded",
-            "review-workload-bounded"
+            "review-workload-bounded",
+            "task-not-one-agent-slice"
           ]
         }
       },
