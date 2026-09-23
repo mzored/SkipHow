@@ -2,6 +2,32 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 5.1.2 (2026-09-23)
+
+A plan prepared with `skiphow-plan` is dispatchable when it is returned. Every task it records for execution is one
+slice with one outcome that one agent can carry from its record to a verified, reviewable change, and the independent
+review checks every task as it will be published. Before this patch the owner could receive issues that held several
+assignments or left their own split for later, and had to ask for the slicing the workflow promises.
+
+### Changed
+
+- `skiphow-plan` rewrites its slicing and review paragraphs.
+  - Every task recorded for execution delivers one outcome verifiable on its own, cut through the layers where the work has them, and one implementation agent can carry it from its record. A grouping record may collect tasks but is never dispatched.
+  - A task holding several outcomes or several agents' work, or leaving its own split for later, is split before the records are final. Work with no honest vertical slice, such as a wide mechanical change, still slices into batches each verifiable on its own.
+  - The workflow sizes every task the accepted scope needs, not only the next ones. Where an earlier result could change a later task, the plan names that result so the lead rechecks the task at dispatch. This replaces "keep later boundaries provisional", which echoed delegation's next-outcome rule for ordinary work.
+  - Each task is written for a capable agent that has the repository and its record but not the planning conversation. The record carries the outcome and what shows it true, links to the accepted specification and decisions, relevant evidence, what it takes from earlier tasks and leaves to later ones, exclusions, and what it returns. Files, names, and steps stay with the implementer unless an accepted decision fixes them.
+  - The independent review covers the specification and every task as it will be published. For each task it checks one outcome and one-agent feasibility from the record alone. Across tasks it checks dependencies, overlap, coverage, and prescribed implementation.
+- Evidence: one private installed Codex session on 5.1.1 published a specification and child issues, some holding several assignments or several outcomes. It re-sliced them in the same session once the owner named one-agent vertical slices written for a capable model. The 4.8.2 wording licensed that first pass, and its review covered the specification but not the published issues. The slicing text was in context. The decision index and [decisions](docs/decisions.md#the-482-planning-readiness-clarification) record the change and what reopens it.
+- Refused: changing delegation's "decompose only as far as the next verifiable outcome", which correctly governs ordinary work; a kernel sentence, which would load on every request for one workflow's rule; and a numeric task size or context-window promise.
+
+### Behavioral coverage
+
+`planning-localization-assignments` now expects every execution task to be one agent-completable outcome. It forbids, in the candidate arms, a task that holds several outcomes or agents' work or defers its own split. `workflow-plan-durable` and `workflow-plan-invocation-grant` expect one-agent issues and a review of every issue as it will be published. These are acceptance scenarios, not receipts.
+
+### Compatibility and evidence
+
+This patch changes no grant, public skill name or description, activation scope, or package layout. It restores the vertical slices the workflow description already promises.
+
 ## 5.1.1 (2026-09-19)
 
 What a change leaves unfinished in a tracked item no longer goes back to the owner. 5.1.0 changed what happens to a problem
