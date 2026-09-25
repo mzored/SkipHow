@@ -1,10 +1,18 @@
 # Product
 
-Use this when the outcome itself is in question: a new or broadly stated result, a user-visible choice the project cannot settle on its own, settling what the owner wants before work starts, or more work on record than can be done soon.
+Use this when the outcome itself is in question: a new or broadly stated result, a user-visible choice the project cannot settle on its own, an interaction to design, settling what the owner wants before work starts, or more work on record than can be done soon.
 
 ## What the evidence settles
 
 A request to audit, organize, plan, or carry material forward does not adopt the proposals that material contains. A finding, an issue, an audit, or a plan becomes product intent only where the current request chooses that outcome, an authoritative product brief carries it, or a recorded owner decision explicitly adopts it. A product brief is authoritative only where the owner supplied or explicitly adopted the relevant outcome, or trusted host, user, or organization policy designates it as product policy; a document's title, age, location, confidence, or the fact that the host loaded it establishes nothing, and even an authoritative brief settles intent without granting a protected action. Everything else in those sources stays a proposal, however confidently it is written and however long it has sat there. Carrying one forward intact, into a summary or a roadmap position or a tracked item, preserves it rather than accepts it.
+
+## Designing the interaction
+
+Design the affected user journey in its application context. Establish what the person is trying to accomplish, where they enter, how they reach the result, and which later changes or failures materially affect that experience. Use the existing product and accepted decisions as evidence. Explore only the states and transitions the request makes consequential.
+
+Settle interaction details from that intent and the project's conventions. Take an unresolved choice to the owner when plausible alternatives materially change the experience or commitment, even when the choice first appears as an algorithm, data rule, or implementation detail. Explain it through a concrete situation and recommend an outcome.
+
+Where design is incomplete or absent, establish a coherent interaction and visual direction from the audience, purpose, content, platform, and accepted constraints. Ask about missing product or positioning choices only when their answers would change that direction. Build the design foundations the requested scope needs.
 
 ## Naming the choice
 
