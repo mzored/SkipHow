@@ -4,10 +4,11 @@ This page records the choices that still matter when SkipHow changes. Read it be
 
 ## Current decisions
 
-The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-09-25 against the 5.1.3 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
+The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-09-26 against the 5.1.4 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
 
 | Decision | Active rationale | Premises | Evidence | Reopens when |
 | --- | --- | --- | --- | --- |
+| Assignment size includes implementation, verification, and review; lengthy assignments carry progress and return conditions; checkout isolation does not isolate shared mutable resources | Independent repairs are not interface migrations; useful progress can precede commits; shared latest pointers can identify another lane's work | Existing evidence may suffice to size work; checkpoints follow project policy; host waits and events support observation without new state | Clarified `Contract` in 5.1.4 after one private 5.1.3 session; behavioral effect `UNVERIFIED` | A receipt shows unnecessary splitting, healthy work interrupted, missed progress breaches, or shared-state damage |
 | A repeat of the same kind of failure is evidence about a class, found with the cheapest check that covers the whole class and fixed together before the loop that found it runs again; a session the skill was governing reopens the kernel after the host compacts its context | Fixing each recurrence as a new instance sent the owner hunting the next one and re-ran a half-hour gate once per stale expectation; Codex keeps no text from any package file across compaction and only the skill description in the host's own skill list survives | The second appearance is readable in the owner's words or the gate's output; the description is the one package-owned surface that survives on both hosts; the sentence conditions on the skill already governing | `Contract` (4.8.4); one private Codex session on 4.8.2 motivates both; effect `UNVERIFIED` | A run sweeps unrelated surfaces on a first report, a governed Codex session still never reopens the kernel after compaction, or the description sentence selects the skill for an ungoverned session |
 | A prepared plan records every task for execution as one slice with one verifiable outcome that one agent can carry from its record to a verified, reviewable change, bounds review as well as implementation, and has its independent review cover every task as published | A tracker group can name an outcome without establishing a feasible assignment; later tasks that defer their own split leave the plan undispatchable, and a review of the specification alone lets such tasks through; source size and shared writes affect execution | The owner selects this workflow for a dispatchable task set, so it sizes the whole accepted scope where ordinary delegation stops at the next outcome; an earlier result can still change a later task, which is named and rechecked at dispatch | Clarified `Contract` in 4.8.2 and corrected in 5.1.2 after one private Codex session on 5.1.1; behavioral improvement `UNVERIFIED` | A plan session on 5.1.2 or later still publishes a task holding several outcomes or a deferred split, or the rule forces small cohesive work into needless tasks or speculative decomposition |
 | Assess material technical risks and accumulating costs encountered in ordinary work; under a change request, fix and deliver the engineering problems found, after the requested change when they lie outside it, and record where the project tracks work those that need an owner decision, a protected action, or more than the run can finish; a suggestion left for the owner to start is not a disposition, and what this session's delivery, or a finished session's in an item the request reaches, leaves open in a tracked item is a found problem | Passing requested behavior and checks can leave a narrow acceptance-only reading of CTO supervision; a host follow-up suggestion left each fix waiting on the owner's click, and the owner then had to bring it back into the session; an open tracked item passed for a disposition of the part a delivery left undone | Concerns need evidence and foreseeable product, development, or operational consequences; the owner ruled on 2026-09-19 that repairing found engineering problems belongs to a change request, while owner constraints, product choices, protected actions, and read-only requests still bound it | Owner-requested clarification in 4.8.1, owner ruling in 5.1.0, and workflows and references aligned with it in 5.1.1; behavioral benefit `UNVERIFIED` | A controlled receipt shows missed material concerns, speculative audit expansion, follow-up repairs delaying or outgrowing the requested work, or routine work made heavier without benefit |
@@ -31,6 +32,48 @@ The live decisions, their premises, and what would reopen each. "Evidence" says 
 | CTO evidence belongs to a scenario; suite status reports declared coverage and carries no behavioral label; an eligible terminal outcome also needs a verified fixture manifest and retained end-state artifact for suite coverage; outside the suite, eligibility is judged per claim (loaded, delivered at destination, foreign work preserved, completion honesty, comparative benefit), each with its own required evidence, a confirmed failure recorded as `FAIL` rather than as missing evidence, and a loading observation labelling nothing else | One successful run cannot support eleven unrun scenarios or imply another host, activation arm, or trial; prose summaries cannot replace inspectable state; a per-run standard left every 3.x and 4.x observation unlabelled while the ledger quoted them | Coverage, terminal outcome, and receipt sufficiency are independent; a complete run set may contain failures; the rules for each claim were fixed before any new run and validated against the retained captures | `Deterministic` corpus validation in 4.0.1 and per-claim validation in 4.3.0 (`scripts/claim_eligibility.py`); suite behavior `UNVERIFIED` | A claim needs evidence no rule expresses, or a rule is found to weaken the public meaning of `Observed` |
 
 The sections below are the history behind those rows: what each release tried, measured, and rejected. They are non-normative. Where a section and the index disagree, the index is current and the section records how it got there.
+
+## Delegation boundaries and progress
+
+Version 5.1.4 fixes three readable gaps, motivated by one private 5.1.3 session described in
+[evidence](evidence.md#514-delegation-boundaries-and-progress). It does not attribute the session's behavior to a sentence
+or claim that the new text changes model behavior. The owner declined paid reproduction.
+
+The general mechanical-change paragraph prescribed a compatibility migration even for independent repairs. Its replacement
+retains the add, migrate, remove path for an interface, gives independent repairs verifiable dependency-based groups, and
+preserves the single automated transformation where splitting buys nothing. Sizing accounts for verification and review
+as well as implementation. Existing measurements can be enough; a cheap sample addresses uncertainty without a mandatory
+inventory stage. The migration, independent-repair, and uniform-transformation cases cover these distinct paths.
+
+The progress expectation already existed in diagnosis, but the kernel's trigger and the reference's opening waited for
+failure or growing work. The earlier discovery defect recorded under "A healthy lane reaches the root only on new evidence"
+therefore applies again. Both triggers now include the impending lengthy step. The lengthy-assignment brief carries the
+expectation and its return conditions, so a delegate can preserve completed work and expose an outgrown assignment before
+trying to finish a different task. Relevant check results establish progress; time, call counts, and commits alone do not.
+Project checkpoint and authority rules remain binding, including where a commit cannot safely run its hooks. Host waits
+and events remain the observation mechanism, with no new scheduler or status store.
+
+The kernel's live-lane preservation rule now explicitly covers resources a checkout does not isolate. Delegation explains
+the concrete checkpoint boundary: a verified immutable identity or coordinated shared operation, with peer preservation
+through cleanup. Reading the shared latest pointer after a concurrent push is not proof of ownership. The useful behavior
+of saving and restoring one's own work survives without an unrestricted stash pop or a blanket stash ban. The shared-checkpoint
+case checks that decision. No lock service or resource registry is introduced.
+
+Three candidates were weighed. A numeric file, time, call, or uncommitted-change limit plus mandatory commits would add
+work to every assignment, contradict legitimate progress and some project commit policies, and has no comparative receipt.
+Only narrowing the migration example costs less text but leaves discovery and shared-state ambiguity intact. The selected
+clarification uses existing kernel and reference boundaries, adds a brief condition only for lengthy assignments, and leaves
+methods to engineering judgment. Reopen it if receipts show needless splitting, returns during healthy work, missed breaches,
+or peer-state damage. A mandatory codemod or periodic base refresh was rejected for the same lack of task-independent evidence.
+
+The kernel and delegation were already at the measured one-view limit. Nearby wording was shortened while retaining
+owner decision rights, outcome proof, allowed write surfaces, proportional split review, technical question ownership,
+host-managed cleanup, in-project fallback placement, and compact reports carrying every finding. No public skill, authority,
+package shape, or default external effect changes. The work fits a patch release.
+
+Current [prior art](prior-art.md#delegation-boundaries-in-514) supports preserving a return path when the task outgrows its
+brief and batching uniform work, but provides no comparative proof for adopting another project's fixed process. No source
+text was copied.
 
 ## Assignment handoff and delivery boundaries
 

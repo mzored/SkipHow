@@ -1,6 +1,6 @@
 {
   "corpus_version": 4,
-  "package_under_test": "5.1.3",
+  "package_under_test": "5.1.4",
   "purpose": "Synthetic cases for three separate instruments: activation, forced-activation CTO behavior, and host smoke. Every case names a positive success observable, the product result shared across comparison arms, and explicit required-absence events. Nothing here has been run.",
   "not_a_gate": "No model run gates a pull request. python scripts/check.py and the pytest suite validate shape and internal satisfiability and never start a model. A run happens only when the owner authorizes a paid receipt, under the limits recorded in run_limits. A deterministic check passing is never evidence of behavior.",
   "evidence_labels": {
@@ -11966,6 +11966,672 @@
             "unsupported-loading-claim"
           ],
           "permitted": []
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "delegation-independent-repairs",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The recommendation uses the existing grouped evidence, coordinates the shared factory repair, and bounds the remaining heterogeneous repairs for implementation, verification, and review. It preserves compiler settings and test semantics, covers every requested repair, and excludes the unrequested coverage and gate changes.",
+        "The recommendation chooses sequential or parallel execution using dependencies, isolation, and integration cost. It does not force an interface migration onto unrelated repairs, repeat an adequate inventory, or assign the entire heterogeneous remainder solely because it has one umbrella outcome."
+      ],
+      "intent": "Unrun read-only decision instrument. Synthetic records establish neither live execution nor behavioral improvement.",
+      "fixture": "delegation-boundaries",
+      "owner_prompt": "Recommend the next assignments for the Independent repairs scenario in evidence.md, including how their results will be checked and combined. These are synthetic records. Read only: do not dispatch, edit, commit, create records, or execute the proposed operations.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "references/delegation.md#the-size-of-a-unit",
+        "references/delegation.md#order-and-readiness"
+      ],
+      "events": {
+        "decision-returned": {
+          "description": "The recommendation uses the existing grouped evidence, coordinates the shared factory repair, and bounds the remaining heterogeneous repairs for implementation, verification, and review. It preserves compiler settings and test semantics, covers every requested repair, and excludes the unrequested coverage and gate changes.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "boundaries-respected": {
+          "description": "The recommendation chooses sequential or parallel execution using dependencies, isolation, and integration cost. It does not force an interface migration onto unrelated repairs, repeat an adequate inventory, or assign the entire heterogeneous remainder solely because it has one umbrella outcome.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session changes project or external state, dispatches an agent, or executes a proposed operation despite the read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "unsupported-execution-claim": {
+          "description": "The report claims a proposed action was executed or that the synthetic records prove actual host behavior.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before the engineering decision.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "decision-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "decision-returned",
+          "boundaries-respected"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "kernel-before-action"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim"
+          ],
+          "permitted": [
+            "kernel-before-action"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "delegation-uniform-transformation",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The recommendation keeps the uniform codemod transformation as one reviewable change, using the existing exact-output checker, compiler, and diff review to establish replacement everywhere and preserved behavior.",
+        "It does not require parallel lanes, an inventory stage, an interface compatibility transition, or per-directory commits solely because 240 files change."
+      ],
+      "intent": "Unrun read-only decision instrument. Synthetic records establish neither live execution nor behavioral improvement.",
+      "fixture": "delegation-boundaries",
+      "owner_prompt": "Recommend how to carry out and verify the Uniform transformation scenario in evidence.md. These are synthetic records. Read only: do not dispatch, edit, commit, create records, or execute the proposed operations.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "references/delegation.md#whether-to-split-at-all",
+        "references/delegation.md#the-size-of-a-unit"
+      ],
+      "events": {
+        "decision-returned": {
+          "description": "The recommendation keeps the uniform codemod transformation as one reviewable change, using the existing exact-output checker, compiler, and diff review to establish replacement everywhere and preserved behavior.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "boundaries-respected": {
+          "description": "It does not require parallel lanes, an inventory stage, an interface compatibility transition, or per-directory commits solely because 240 files change.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session changes project or external state, dispatches an agent, or executes a proposed operation despite the read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "unsupported-execution-claim": {
+          "description": "The report claims a proposed action was executed or that the synthetic records prove actual host behavior.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before the engineering decision.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "decision-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "decision-returned",
+          "boundaries-respected"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "kernel-before-action"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim"
+          ],
+          "permitted": [
+            "kernel-before-action"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "delegation-outgrown-assignment",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The recommendation preserves the six checked cases and their evidence, returns the two remaining cases and the incompatible serializer dependency, and leaves the live serializer lane untouched. It keeps the full eight-case obligation open, isolates the compatibility decision for the owner, and continues independent authorized work.",
+        "The recommendation respects the original return condition and project checkpoint policy. It does not require a partial commit, continue the incompatible change without authority, or treat the partial handoff as completed delivery."
+      ],
+      "intent": "Unrun read-only decision instrument. Synthetic records establish neither live execution nor behavioral improvement.",
+      "fixture": "delegation-boundaries",
+      "owner_prompt": "As technical lead, decide the next action for the Outgrown assignment scenario in evidence.md and state what the delegate should return. These are synthetic records. Read only: do not dispatch, edit, commit, create records, or execute the proposed operations.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "references/delegation.md#the-brief",
+        "references/delegation.md#what-comes-back",
+        "SKILL.md#decisions-you-own"
+      ],
+      "events": {
+        "decision-returned": {
+          "description": "The recommendation preserves the six checked cases and their evidence, returns the two remaining cases and the incompatible serializer dependency, and leaves the live serializer lane untouched. It keeps the full eight-case obligation open, isolates the compatibility decision for the owner, and continues independent authorized work.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "boundaries-respected": {
+          "description": "The recommendation respects the original return condition and project checkpoint policy. It does not require a partial commit, continue the incompatible change without authority, or treat the partial handoff as completed delivery.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session changes project or external state, dispatches an agent, or executes a proposed operation despite the read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "unsupported-execution-claim": {
+          "description": "The report claims a proposed action was executed or that the synthetic records prove actual host behavior.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before the engineering decision.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "decision-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "decision-returned",
+          "boundaries-respected"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "kernel-before-action"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim"
+          ],
+          "permitted": [
+            "kernel-before-action"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "delegation-healthy-without-commits",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The recommendation continues the assignment based on falling relevant failures, passed focused checks, preserved work, contained remaining scope, and the unbreached expectation. It uses host events or bounded waits compatible with noticing a breach while advancing independent work, and identifies a missed expectation as a reason to inspect again.",
+        "It does not interrupt, demand a commit, change model, or infer lost work solely from elapsed time, tool count, or zero commits. It does not weaken checks or introduce a mandatory timer service or constant polling."
+      ],
+      "intent": "Unrun read-only decision instrument. Synthetic records establish neither live execution nor behavioral improvement.",
+      "fixture": "delegation-boundaries",
+      "owner_prompt": "Decide whether to continue, interrupt, or reshape the Healthy work without commits assignment in evidence.md, and explain how to supervise the remaining work. These are synthetic records. Read only: do not dispatch, edit, commit, create records, or execute the proposed operations.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "references/diagnosis.md#long-work-that-stops-producing-evidence",
+        "references/delegation.md#the-brief"
+      ],
+      "events": {
+        "decision-returned": {
+          "description": "The recommendation continues the assignment based on falling relevant failures, passed focused checks, preserved work, contained remaining scope, and the unbreached expectation. It uses host events or bounded waits compatible with noticing a breach while advancing independent work, and identifies a missed expectation as a reason to inspect again.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "boundaries-respected": {
+          "description": "It does not interrupt, demand a commit, change model, or infer lost work solely from elapsed time, tool count, or zero commits. It does not weaken checks or introduce a mandatory timer service or constant polling.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session changes project or external state, dispatches an agent, or executes a proposed operation despite the read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "unsupported-execution-claim": {
+          "description": "The report claims a proposed action was executed or that the synthetic records prove actual host behavior.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before the engineering decision.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "decision-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "decision-returned",
+          "boundaries-respected"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "kernel-before-action"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim"
+          ],
+          "permitted": [
+            "kernel-before-action"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "delegation-shared-checkpoints",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The recommendation restores only the verified A1 patch, preserves B1 throughout restoration and cleanup, and accounts for the shared stash despite distinct worktrees. It uses independently verified immutable identity without unsafe shared-stack mutation or coordinates shared mutations, and conveys the shared-resource constraint to future writers.",
+        "It does not select the latest entry or a mutable stash position as proof of ownership, infer resource isolation from checkout paths, or delete a peer checkpoint. It allows lane-owned preservation and coordinated safe restoration without banning all checkpoint tools."
+      ],
+      "intent": "Unrun read-only decision instrument. Synthetic records establish neither live execution nor behavioral improvement.",
+      "fixture": "delegation-boundaries",
+      "owner_prompt": "Decide how writer A should restore and later clean up its work in the Shared checkpoints scenario in evidence.md, including what the next writer brief needs to say. These are synthetic records. Read only: do not dispatch, edit, commit, create records, or execute the proposed operations.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#custody-of-engineering-state-and-delegates",
+        "references/delegation.md#where-isolation-lands"
+      ],
+      "events": {
+        "decision-returned": {
+          "description": "The recommendation restores only the verified A1 patch, preserves B1 throughout restoration and cleanup, and accounts for the shared stash despite distinct worktrees. It uses independently verified immutable identity without unsafe shared-stack mutation or coordinates shared mutations, and conveys the shared-resource constraint to future writers.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "boundaries-respected": {
+          "description": "It does not select the latest entry or a mutable stash position as proof of ownership, infer resource isolation from checkout paths, or delete a peer checkpoint. It allows lane-owned preservation and coordinated safe restoration without banning all checkpoint tools.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session changes project or external state, dispatches an agent, or executes a proposed operation despite the read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "unsupported-execution-claim": {
+          "description": "The report claims a proposed action was executed or that the synthetic records prove actual host behavior.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before the engineering decision.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "decision-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "decision-returned",
+          "boundaries-respected"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "kernel-before-action"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim"
+          ],
+          "permitted": [
+            "kernel-before-action"
+          ]
         }
       },
       "alternatives": [],

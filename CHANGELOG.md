@@ -2,6 +2,56 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 5.1.4 (2026-09-26)
+
+Delegated work is sized through verification and review, and lengthy assignments carry observable progress and return
+conditions. Independent repairs no longer inherit a migration-only recipe. Shared checkpoints remain subject to lane
+ownership even when writers have distinct worktrees.
+
+### Changed
+
+- `delegation` distinguishes interface migrations, independent repair groups, and uniform automated changes. Existing
+  measurements can settle sizing without another inventory stage. An outgrown assignment returns preserved work,
+  evidence, and remaining scope under project checkpoint rules.
+- `diagnosis` is discoverable before lengthy work and judges progress from acceptance evidence. Tool counts, elapsed
+  time, and commit counts alone do not establish a stall. Host events and bounded waits remain the monitoring mechanism.
+- The kernel explicitly covers shared mutable resources outside checkout isolation. Checkpoint restoration uses verified
+  ownership or coordinated shared operations and preserves peer entries through cleanup.
+- Existing wording was compressed to keep both near-limit files inside the measured host view limit. No skill, package
+  layout, permission, model tier, numeric execution limit, scheduler, registry, or mandatory commit was added.
+
+### Coverage and compatibility
+
+Five synthetic decision scenarios cover independent repairs, one uniform transformation, an outgrown assignment, healthy
+work without commits, and shared checkpoints. The existing mechanical migration scenario remains. These read-only probes
+check recommendations, not live delegation, elapsed-time monitoring, or real stash recovery.
+
+The motivating private 5.1.3 session already had size estimates, scripted edits, and declining compiler failures. It does
+not establish that the model was unsuitable or that parallelism and commit quotas would improve the result. This patch
+corrects narrower ambiguities in the existing contract. No paid behavioral sessions or clean-install runs were made.
+Behavioral effect remains `UNVERIFIED`; see [evidence](docs/evidence.md#514-delegation-boundaries-and-progress).
+
+An independent Codex review in a read-only sandbox with isolated user and host homes found no qualifying defects.
+Its transcript showed no personal skill loading. It reviewed the candidate and corpus statically; the lead checked
+external source claims separately. No findings were accepted or refused.
+
+The full local gate passed with pinned dependencies and an isolated system temporary directory. The default host
+scratch directory's large entry count made exact-path checks exceed the unchanged timeout. A focused comparison
+identified directory enumeration as the cause; the final run changed only the temporary parent, preserved nested
+pytest isolation, and removed its scratch files. No check or timeout was weakened.
+
+| Capability | Local candidate evidence |
+| --- | --- |
+| Deterministic package gate | PASS, full `scripts/check.py` and final document checks |
+| Codex schema validation | PASS, `validate_plugin.py` |
+| Claude schema validation | PASS, `claude plugin validate --strict` |
+| Clean Codex install | UNVERIFIED |
+| Clean Claude install | UNVERIFIED |
+| Explicit invocation | UNVERIFIED |
+| Implicit activation | UNVERIFIED |
+| Continuity | UNVERIFIED |
+| Behavioral suite | UNVERIFIED, [evidence](docs/evidence.md#514-delegation-boundaries-and-progress) |
+
 ## 5.1.3 (2026-09-25)
 
 A completed assignment does not by itself require a pull request. The lead accepts verified delegate results,

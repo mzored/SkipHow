@@ -114,3 +114,27 @@ Version 5.0.1 read two sources again on 2026-09-16. Anthropic's current [skill a
 An idea from another project becomes a focused method or a kernel invariant only when it answers an observed task need or protects a high-risk boundary. Good practice somewhere else is not enough. The default stays the least process that reaches a fresh, verified result while preserving the owner's authority and unrelated work.
 
 The reasoning behind each rule that survived is in [decision history](decisions.md), and what real runs have and have not shown is in [current evidence](evidence.md).
+
+## Delegation boundaries in 5.1.4
+
+Read on 2026-09-26. Superpowers' [implementer brief](https://github.com/obra/superpowers/blob/8ca22dba9a94f28898bbce59f2537ff4d87c747d/skills/subagent-driven-development/implementer-prompt.md)
+returns an assignment when its assumptions or scope no longer support implementation. Its
+[orchestration skill](https://github.com/obra/superpowers/blob/8ca22dba9a94f28898bbce59f2537ff4d87c747d/skills/subagent-driven-development/SKILL.md)
+also batches small same-shape edits. Those ideas fit the existing return and proportional-splitting boundaries.
+SkipHow takes no source text and adds no status vocabulary, standing ledger, fixed review loop, or mandatory commit.
+The brief's cost is conditional on a lengthy assignment; the lead still settles engineering questions.
+
+GSD's [executor](https://github.com/open-gsd/gsd-core/blob/4713ffba761a069bbd79e4833b4bea4e14848388/agents/gsd-executor.md)
+uses task commits, checkpoint records, and numeric guards on consecutive reads and repair attempts. These require
+per-task bookkeeping and can stop useful work merely because it crosses a count. The motivating session supplies no
+comparison that would justify that cost, so none is adopted.
+
+The same executor bans every stash subcommand and offers owned temporary commits or read-only Git inspection instead.
+SkipHow retains the narrower ownership boundary, allowing an already verified checkpoint to be restored without shared
+stack mutation. It does not adopt the blanket ban or the source's claim that branches have a per-worktree namespace.
+Git's shared-ref rules require distinct ownership even for a temporary branch.
+
+[Git's worktree reference rules](https://git-scm.com/docs/git-worktree#_REFS) establish that refs are generally shared,
+with named exceptions. The stash warning is therefore a shared-state preservation problem, not a missing worktree.
+The selected change uses ownership and coordination without a new lock service. Its alternatives and reopen conditions
+are in the [decision record](decisions.md#delegation-boundaries-and-progress).

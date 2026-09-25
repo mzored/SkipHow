@@ -72,6 +72,10 @@ The exact adapted paths and inspected revision live in [`SOURCES.json`](../plugi
 
 [Prior art](prior-art.md) records the other projects this one learned from, what each contributed, and which of their ideas were read and rejected.
 
+The [5.1.4 delegation decision](decisions.md#delegation-boundaries-and-progress) keeps outgrown assignments returnable
+and uniform transformations batchable. It adapts those ideas without source text or another framework's fixed limits,
+ledger, or checkpoint protocol. Progress and shared-resource preservation remain under the existing lead's responsibility.
+
 ## Packaging
 
 The plugin root follows the [OpenAI plugin package layout](https://developers.openai.com/plugins/build/plugins): a required `.codex-plugin/plugin.json` beside optional skills and hooks. Root marketplace catalogs expose only `plugins/skiphow/`.

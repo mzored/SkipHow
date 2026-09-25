@@ -1,6 +1,6 @@
 # Diagnosis
 
-Open this when the cause of a failure is unknown, when the same problem survives repeated attempts, when work keeps running without new evidence of the result the owner asked for, or under pressure to raise a timeout, add a retry, skip a check or weaken an assertion.
+Open this before a step that could take real time, when a failure is unexplained or recurring, when work runs without new evidence of the requested result, or under pressure to raise a timeout, retry, skip a check, or weaken an assertion.
 
 ## Build a signal before naming a cause
 
@@ -45,6 +45,6 @@ Fix the cause rather than the symptom, then rerun the original signal and not on
 
 ## Long work that stops producing evidence
 
-Give a step that could take real time an expectation of what healthy progress looks like, and treat a breach as information rather than a reason to wait longer. When monitoring delegated work, prefer the host's own wait or event mechanism to repeated status reads or a sleep loop that holds your turn open. A long synchronous build or test that is itself the work, with a healthy progress expectation, remains the right call. An unchanged timeout is not new evidence: reuse the same wait once without narration; after another expiry, a stated deadline, an error, or a missed progress expectation, inspect state once and decide whether to continue, change approach, stop the affected work, or report a blocker.
+Give a step that could take real time an expectation of healthy progress, and treat a breach as information rather than a reason to wait longer. Use evidence toward acceptance, such as checked parts or fewer relevant failures. Process liveness, tool counts, and commit counts alone establish neither progress nor a stall. When monitoring delegated work, prefer host waits or events that let you notice a missed expectation to repeated status reads or a sleep loop holding your turn open. A long synchronous build or test with a healthy progress expectation remains appropriate. An unchanged timeout is not new evidence: reuse the wait once without narration; after another expiry, a stated deadline, an error, or a missed expectation, inspect state once and decide whether to continue, change approach, stop affected work, or report a blocker.
 
 Reassess direction when repairs, integration conflicts, or process work keep growing while evidence of the owner's requested result does not. The question to ask of the next piece of work is whether it removes a named obstacle to that result, proves a needed part of it, or only extends the mechanism and the assurance around the mechanism. Work that only extends the mechanism is a reason to change direction, not to continue more carefully. This is a judgment made when the signal appears, not a state anything tracks for you. Stop affected work at its next safe boundary, keep independent work moving, and reconcile what it established. Do not add a second review pass to decide it.
