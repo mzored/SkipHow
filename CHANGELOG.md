@@ -2,6 +2,52 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 5.1.3 (2026-09-25)
+
+A completed assignment does not by itself require a pull request. The lead accepts verified delegate results,
+combines related changes into reviewable delivery units, and continues to the destination the owner authorized.
+Local combination for checking or feedback does not establish shared delivery or authorize publication.
+
+### Changed
+
+- `delegation` makes the checked return to the lead explicit and points to `integration` for delivery boundaries.
+- `integration` groups related changes by dependencies, rollback needs, review, and project procedure, while keeping
+  independent finished results moving. A local intermediate branch remains optional working state.
+- `longrun` distinguishes accepting each slice from delivering the owner's outcome. Its independent fix/review loop
+  survives, and record closure follows the existing promised-outcome rule in `tracked-work`.
+- The remaining workflows and contributor instructions were inspected for contradictions. No change to the kernel,
+  planning task size, project delivery mechanisms, or global instructions was needed.
+
+### Coverage and compatibility
+
+The existing longrun scenario now covers a grouped catalog correction. Three additional scenarios cover local
+iteration, independent delivery beside a blocked product choice, and a shared review destination. They forbid
+premature delivery claims and renewed permission questions where delivery is already authorized. Existing
+reconciliation scenarios retain live-lane preservation coverage.
+
+This is a wording clarification of the existing delivery and authority contract, with no new skill, process gate,
+public interface, default side effect, or package layout. The motivating recommendation is second-hand; inspection
+establishes the ambiguity, not its causal effect on a model. No paid behavior sessions or clean-install runs were made.
+
+An independent review found one qualifying defect in the new independent-delivery scenario: it expected a shipping
+cutoff absent from the fixture. The expectation now names the actual per-line charge and the missing cutoff, while
+leaving the owner's product decision pending. The reviewer confirmed the correction. The full gate also found that
+the added delegation paragraph exceeded the measured host view limit; combining it with the existing return-check
+paragraph restored the limit, and targeted review confirmed the same responsibilities survive. The five tests that
+failed on that size constraint passed after the correction; the other 386 had passed in the full run.
+
+| Capability | Local candidate evidence |
+| --- | --- |
+| Deterministic package gate | PASS, full 391-test run plus five affected rechecks and corpus validation |
+| Codex schema validation | PASS, `validate_plugin.py` |
+| Claude schema validation | PASS, `claude plugin validate --strict` |
+| Clean Codex install | UNVERIFIED |
+| Clean Claude install | UNVERIFIED |
+| Explicit invocation | UNVERIFIED |
+| Implicit activation | UNVERIFIED |
+| Continuity | UNVERIFIED |
+| Behavioral suite | UNVERIFIED, [evidence](docs/evidence.md#513-assignment-and-delivery-boundaries) |
+
 ## 5.1.2 (2026-09-23)
 
 A plan prepared with `skiphow-plan` is dispatchable when it is returned. Every task it records for execution is one

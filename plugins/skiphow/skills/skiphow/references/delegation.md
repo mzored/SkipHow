@@ -64,7 +64,7 @@ Where the output is long, have the delegate leave it in the host's own working a
 
 Settle a returned question from the project, the records, or your own technical judgment. Fifteen lanes returning questions is not fifteen questions for the owner.
 
-Bring each result back and confirm it against current state rather than trusting a report. Reviewing each unit as it lands keeps integration affordable; the alternative is one pass over everything at the end.
+Delegates return the requested result and verification evidence to the lead, who checks each against current state as it arrives. A handoff alone requires no pull request or publication; the lead chooses delivery units under [integration](integration.md), whose boundaries may differ from assignments.
 
 ## Reconciling the set
 

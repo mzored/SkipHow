@@ -2,6 +2,23 @@
 
 This page separates package checks from observed model behavior. The full 2.0 evidence remains in the immutable [`v2.0.1` research snapshot](https://github.com/mzored/SkipHow/tree/1c811262e6acdbdc58a2ee862b54e0b8d3478eaa/docs/research/2026-08-27).
 
+## 5.1.3 assignment and delivery boundaries
+
+Version 5.1.3 distinguishes a delegate's checked handoff from the owner's delivery. `delegation` defines the return,
+`integration` owns grouping and local combination, and `longrun` continues beyond handoffs to the agreed destination.
+Record closure still follows each record's promised outcome. These are clarifications of the existing `Contract`.
+
+The owner supplied another agent's recommendation. Inspection confirmed an ambiguity: `longrun` required integration
+and destination verification for each slice without distinguishing an intermediate handoff, while `integration` already
+said that a technical branch creates no delivery obligation and that authorized delivery should be batched. No source
+session was inspected, and this is not a demonstrated causal explanation of a model's actions.
+
+The corpus extends `workflow-longrun-reviewed-slices` and adds `delivery-unit-local-iteration`,
+`delivery-unit-independent-outcome`, and `delivery-unit-shared-review`. They specify joint verification, proportional
+delivery boundaries, no premature completion, and no renewed permission for already authorized delivery. Existing
+reconciliation cases retain live-lane preservation coverage. No model sessions were run; behavior on both hosts remains
+`UNVERIFIED`. Deterministic corpus validation establishes internal consistency only.
+
 ## 5.1.2 one-agent plan tasks
 
 Version 5.1.2 has the plan workflow record every task for execution as one slice with one outcome verifiable on its
