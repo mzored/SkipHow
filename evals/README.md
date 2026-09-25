@@ -456,6 +456,14 @@ state reconstruction from the supplied resumption request; it does not prove
 host compaction or durable scheduling. Existing continuity receipts retain
 those separate evidence requirements.
 
+The longrun case also treats the four repairs as one requested catalog correction,
+with smaller assignments accepted and checked together before shared delivery.
+`delivery-unit-local-iteration`, `delivery-unit-independent-outcome`, and
+`delivery-unit-shared-review` use the same synthetic catalog to distinguish local
+feedback, an independently deliverable repair beside a pending product choice,
+and delivery to a review branch without integration into the default branch.
+They require positive checked results as well as restraint. All remain unrun.
+
 Send fast-fixes feedback only after the first rendered preview is shown and the
 agent has stopped. Inspect commit order and command traces across both turns.
 The production cases use a local receive hook and marker, never a live service.
