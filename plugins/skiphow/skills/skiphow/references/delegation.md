@@ -10,15 +10,15 @@ Prefer units that deliver an outcome someone can verify end to end. Split when t
 
 ## The size of a unit
 
-Cut through the layers rather than along them. A unit named for a layer, a schema, an interface, an endpoint, or a screen usually cannot be demonstrated alone, and one cut through them usually can. Treat that as a heuristic rather than a law.
+Prefer a demonstrable outcome across layers. A layer, schema, interface, endpoint, or screen alone may not be one. This is a heuristic, not a law.
 
-Too small is also wrong. Something that cannot be shown true by itself is a step inside a unit, not a unit, and parts whose only boundary is the order you imagined doing them in are not units either.
+Size the unit for implementation, verification, and review together, using existing measurements or a cheap sample where its breadth is uncertain. A step with no independently verifiable result stays inside a unit.
 
-A mechanical change with a wide blast radius has no honest vertical slice. Sequence it: add the new form beside the old one, move call sites in batches, then delete the old form.
+For an interface migration, add the compatible form, migrate consumers in batches, then remove the old form. Independent repairs can form separately verifiable groups around real dependencies, coordinating shared definitions. A wide uniform transformation may cost less as one automated change. Parallelism still depends on isolation and integration capacity.
 
-State each unit as its outcome and what would show it true. The surface a delegate may touch is a boundary on its authority; which files, names, structures, or steps implement the outcome stays the delegate's judgment unless the task itself requires them.
+State the outcome, its proof, and the allowed surface. Implementation stays the delegate's judgment unless the task requires otherwise.
 
-Where the split is risky or tightly coupled, an independent check of it against the request earns its cost; elsewhere none is required. Such a check looks for a unit with no observable outcome, an invented dependency, a prescribed implementation, two units that would end up doing the same work, or a part of the result no unit covers.
+Where a split is risky or tightly coupled, an independent check can earn its cost. Look for unverifiable units, invented dependencies, prescribed implementation, duplicate work, and uncovered outcomes. Elsewhere no split review is required.
 
 ## Order and readiness
 
@@ -34,9 +34,9 @@ Having a delegate available is not a reason to use one. Keep simple work, anythi
 
 ## The brief
 
-The kernel states the minimum contract every brief carries. A delegate handed several outcomes, or an open-ended body of work, runs until it exhausts its room.
+The kernel states every brief's minimum contract. For a lengthy assignment, use [diagnosis](diagnosis.md#long-work-that-stops-producing-evidence) to give the delegate an observable progress expectation and conditions for returning an outgrown assignment. Preserve completed work and return evidence and the remaining scope when those conditions hold. Checkpoint by project rules; a commit is one option, not the progress measure.
 
-Give each delegate the assignment-specific rules and observable completion condition it needs, accounting for context the host actually supplies. Point to the material those instructions apply to rather than copying it into the brief: name the record, the prior change, or the file to read.
+Supply assignment-specific rules and completion evidence absent from the host's context. Point to their source record, prior change, or file instead of copying it.
 
 ## The level each delegate runs at
 
@@ -56,13 +56,13 @@ Treat a delegate as a writer only after verifying its distinct checkout and star
 
 ## Where isolation lands
 
-Prefer the host's own worktree mechanism, which owns placement and cleanup. Otherwise put it where this repository already ignores, confirmed rather than assumed. Where it ignores no such location, create one inside the checkout and add it to the repository's ignore rules rather than placing the worktree beside the checkout or outside the project. The kernel's placement rule closes the list there. Isolation is not total: separate worktrees share one stash stack, so a stash pushed in one is poppable from the others.
+Prefer host-managed worktrees and cleanup. Otherwise verify an ignored in-project location, creating and ignoring one if absent. Separate worktrees share a stash stack. Give writers the applicable shared-resource constraints: preserve work in lane-owned state or coordinate shared operations. An unqualified stash pop can consume another lane's work. Capture and verify your own checkpoint's immutable identity without racing a shared latest pointer, or serialize the operation; restoration and cleanup must preserve other lanes' entries too.
 
 ## What comes back
 
-Where the output is long, have the delegate leave it in the host's own working area rather than the project and return its verdict, its findings, and the path. Every finding still comes back; only the bulk stays behind. Pulling entire reports into the context that dispatched them undoes the isolation the delegate was for.
+Leave bulky output in the host's working area and return the verdict, every finding, and its path. Keep the bulk out of the lead's context.
 
-Settle a returned question from the project, the records, or your own technical judgment. Fifteen lanes returning questions is not fifteen questions for the owner.
+Settle returned technical questions from project evidence and your judgment, without passing them to the owner.
 
 Delegates return the requested result and verification evidence to the lead, who checks each against current state as it arrives. A handoff alone requires no pull request or publication; the lead chooses delivery units under [integration](integration.md), whose boundaries may differ from assignments.
 

@@ -2,6 +2,37 @@
 
 This page separates package checks from observed model behavior. The full 2.0 evidence remains in the immutable [`v2.0.1` research snapshot](https://github.com/mzored/SkipHow/tree/1c811262e6acdbdc58a2ee862b54e0b8d3478eaa/docs/research/2026-08-27).
 
+## 5.1.4 delegation boundaries and progress
+
+Version 5.1.4 clarifies assignment sizing through implementation, verification, and review, distinguishes independent
+repairs from interface migrations, and gives lengthy assignments observable progress and return conditions. Diagnosis
+opens before lengthy work. The kernel extends its existing lane-preservation boundary to shared mutable resources;
+delegation applies it to checkpoints whose ownership a worktree path cannot establish. These are `Contract` clarifications.
+
+One private Claude Code session using 5.1.3 prompted the change. Its implementation brief already carried an estimate
+of 429 errors across 131 files. The delegate made 982 tool calls before the owner's intervention, used scripts, and
+repeatedly reduced the relevant compiler failures. Its first commit came about 79 minutes after dispatch. The assignment
+combined test repairs, new typecheck coverage, and gate integration. Two other delegates exchanged stash entries across
+distinct worktrees. These observations belong to one session, not several independent trials. No private transcript,
+project identifier, file list, or task content is retained here.
+
+The report that prompted inspection overstated what was missing: scope was estimated, automation was used, and progress
+was observable without commits. The trace does not establish that a different model, mandatory checkpoints, or more agents
+would have improved the result. The package's own wording does have narrower defects: its general mechanical-change
+recipe describes only an interface migration, its progress guidance sits behind reactive discovery, and its shared-stash
+warning states a fact without explaining the preservation boundary. Source inspection supports those corrections.
+It does not establish which sentence caused the field behavior or what remained in context through every compaction.
+
+Five cases in the [corpus](../evals/cases.json), using the synthetic `delegation-boundaries` fixture, cover independent
+repairs, a uniform transformation, an outgrown assignment, healthy progress without commits, and shared checkpoints.
+They grade read-only engineering decisions, including preservation and verification plans. They do not exercise live
+delegates, elapsed-time monitoring, actual stash recovery, or execution to completion. The existing mechanical migration
+case remains the compatibility counterexample. Deterministic checks prove corpus consistency only.
+
+The owner chose no paid experiments. No paired reproduction or behavioral session was run. Actual behavior, improvement,
+model suitability, and timing or cost savings remain `UNVERIFIED`. The [decision](decisions.md#delegation-boundaries-and-progress)
+records alternatives and the conditions for revisiting them.
+
 ## 5.1.3 assignment and delivery boundaries
 
 Version 5.1.3 distinguishes a delegate's checked handoff from the owner's delivery. `delegation` defines the return,

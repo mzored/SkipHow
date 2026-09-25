@@ -61,6 +61,11 @@ A case is run only when the owner authorizes a paid receipt.
 
 ## The arms
 
+The `delegation-*` cases using `delegation-boundaries` are read-only decision probes. Their supplied records distinguish
+heterogeneous repairs, one uniform transformation, scope growth, healthy work without commits, and shared checkpoints.
+They accept decisions appropriate to the evidence without requiring actual delegation. They do not measure live progress
+supervision or prove that a proposed checkpoint operation preserves a real peer's work. All are unrun.
+
 The arm-aware catalog defines five possible arms, and a run belongs to one of
 them. A receipt selects only the arms that answer its question. Compared arms
 use identical fixtures and prompts, or the comparison says nothing.

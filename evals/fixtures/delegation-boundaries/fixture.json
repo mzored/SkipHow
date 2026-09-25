@@ -1,0 +1,23 @@
+{
+  "id": "delegation-boundaries",
+  "summary": "Synthetic decisions about repair groups, progress, outgrown assignments, and checkpoint ownership.",
+  "kind": "checked-in decision evidence",
+  "synthetic": true,
+  "planted": [
+    "Independent repairs share a type factory but have separate acceptance checks.",
+    "A broad uniform transformation has one existing codemod and exact-output check.",
+    "A delegate discovers an incompatible prerequisite after completing a checked subset.",
+    "A long assignment has verified progress without commits, within its agreed expectation.",
+    "Two isolated worktrees share a stash stack whose latest entry changes."
+  ],
+  "absent_on_purpose": [
+    "No real agents, timers, worktrees, stash entries, application, or performance receipt.",
+    "No requirement to dispatch agents or execute the proposed operations."
+  ],
+  "setup": [
+    "Use the existing capture preparation path to copy this fixture into an owned isolated session.",
+    "Keep evidence and the selected owner prompt identical across arms. Treat named states as synthetic records, not live repository facts."
+  ],
+  "run_checks": "none; grade the returned decision against the selected evidence.md section",
+  "privacy": "All names, counts, timings, and resource identities are invented."
+}
