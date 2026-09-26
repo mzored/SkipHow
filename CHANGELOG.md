@@ -36,9 +36,27 @@ sessions do not show that more invocation or a generic reuse rule would have cha
 narrower wording gaps. No paid behavioral sessions or clean-install runs were made. Behavioral effect remains
 `UNVERIFIED`; see [evidence](docs/evidence.md#515-interaction-design-reuse-and-specialist-capabilities).
 
-REVIEW_PLACEHOLDER
+An independent Codex review in a read-only sandbox with isolated user and host homes ran two rounds. Its transcript
+showed no personal skill or installed plugin loading; it read only the repository's contributor `dogfood` skill. The
+first round found one qualifying contradiction: the outcome contract made reuse of maintained compositions unconditional,
+while `technical design` and the justified-new-composition case permit a bounded replacement. The sentence was fixed and
+the second round found no remaining defect. A first attempt ended on a host capacity error and returned no result.
 
-MATRIX_PLACEHOLDER
+The implementation plan claimed an earlier conclusion took intent preservation from Superpowers' `brainstorming`. The
+repository records `brainstorming` as rejected whole, so the records keep that rejection and attribute plan decision
+carrying to SkipHow's own provenance rules.
+
+| Capability | Local candidate evidence |
+| --- | --- |
+| Deterministic package gate | PASS, full `scripts/check.py` |
+| Codex schema validation | PASS, `validate_plugin.py` |
+| Claude schema validation | PASS, `claude plugin validate --strict` |
+| Clean Codex install | UNVERIFIED, managed source policy refused the local marketplace |
+| Clean Claude install | PASS, isolated install and inspect without uninstall |
+| Explicit invocation | UNVERIFIED |
+| Implicit activation | UNVERIFIED |
+| Continuity | UNVERIFIED |
+| Behavioral suite | UNVERIFIED, [evidence](docs/evidence.md#515-interaction-design-reuse-and-specialist-capabilities) |
 
 ## 5.1.4 (2026-09-26)
 
