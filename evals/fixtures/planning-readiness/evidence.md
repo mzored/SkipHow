@@ -35,3 +35,69 @@ One confirmation message has an incorrect noun in one locale. Its single source 
 snapshot are the entire affected scope. Existing snapshot tooling verifies the message. There are no parallel
 consumers, schema changes, unresolved product decisions, or downstream assignments. The owner wants the noun
 to match the existing button label. A plan can explain this cohesive change without multiple workers or tickets.
+
+## Specialist guidance available
+
+The accepted outcome lets a patient move an existing appointment from the booking list. The host lists these
+available capabilities by description only: an interface-design skill for product UI, forms, states, and
+interaction review; a slide-deck skill; and a spreadsheet skill. None was invoked by the owner. The project keeps
+a booking list, an appointment detail sheet, a shared date picker, and a confirmation toast. Cancellation already
+uses the detail sheet followed by the toast. Clinics may refuse changes less than 24 hours before the slot; that
+rule is accepted and recorded. The same plan will be executed later by an agent on a different host whose
+installed skills are unknown.
+
+## Specialist guidance unavailable
+
+The accepted outcome and project evidence match the Specialist guidance available scenario. The host lists only a
+slide-deck skill and a spreadsheet skill. A project note says an interface-design plugin exists in a public
+marketplace. No installation, spending, or new account has been authorized.
+
+## Maintained and legacy compositions
+
+The accepted outcome adds a filter by clinician to the booking list. The repository holds two filter bars.
+`FilterBar` lives in the shared components package, is used by the six screens changed in the last quarter, has
+keyboard and empty-result behavior covered by tests, and follows the current spacing tokens. `LegacyFilterRow`
+has the name used in the original booking screen, matches it visually, and appears in older screens, but its
+file header says it is frozen and it has no keyboard tests. Neither needs a new dependency.
+
+## Duplicated composition review
+
+A candidate change adds a reschedule flow. It imports the shared button, sheet, and spacing tokens, and renders
+like the cancellation flow. Its new `RescheduleDialog` reimplements the detail sheet's slot list, focus trap,
+unsaved-change guard, and error banner in 220 lines. The maintained `AppointmentSheet` already provides those
+behaviors and accepts a slot-selection body. Screenshots of the two flows are nearly identical. The candidate's
+error banner does not restore focus after a failed save, which `AppointmentSheet` does.
+
+## Requirement beyond the existing composition
+
+The accepted outcome lets clinic staff reschedule several appointments at once from a day view. The maintained
+`AppointmentSheet` edits one appointment and has no multi-selection. The shared list, checkbox, sheet, and toast
+primitives exist. Partial failure must report which appointments moved and which did not; that acceptance
+condition is recorded as an owner decision.
+
+## Partial design
+
+A new internal tool lets clinic managers review weekly no-show counts. The repository has a small token file
+with two colours and one font, a button, and no layout, table, or empty-state conventions. The audience is ten
+managers on desktop browsers. The owner accepted the purpose and data and gave no visual direction. No
+positioning or brand change is requested.
+
+## Hidden product choice
+
+The accepted outcome is automatic waitlist fill when an appointment is cancelled. The technical ticket says
+"choose the matching algorithm". Two plausible rules exist: offer the slot to the longest-waiting patient, or to
+the patient whose requested time is closest. The first favours fairness by queue position; the second fills more
+slots but can repeatedly skip patients with narrow availability. No product brief or owner decision chooses
+between them. Notification wording and retry timing follow existing conventions.
+
+## Settled small interaction
+
+The owner asks to change the confirmation toast after rescheduling from "Saved" to "Appointment moved", matching
+the recorded copy decision. The toast component, its snapshot test, and the copy decision already exist.
+Nothing else in the journey changes.
+
+## Specialist guidance for a non-interface task
+
+The accepted outcome moves nightly reminder jobs from a cron script to the project's existing job queue. The host
+lists a database-migration skill, an interface-design skill, and a slide-deck skill. The job reads appointments
+and sends messages through an existing notification service. No screen, copy, or user-visible timing changes.

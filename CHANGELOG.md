@@ -2,6 +2,62 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 5.1.5 (2026-09-26)
+
+User-facing work is designed as a journey in its product, reuses maintained compositions rather than only primitives,
+and carries those decisions through planning to an implementer on any host. SkipHow states that applicable available
+skills and tools are used when their benefit warrants the cost.
+
+### Changed
+
+- The kernel adds the general capability-use responsibility and routes interaction design to `product` and capability
+  selection to `technical design`. Its engineering-ownership sentences were merged to stay within the measured view
+  limit; owner decisions, authority, custody, and completion rules are unchanged.
+- `product` gains a section on designing the affected journey: entry, path, consequential later changes and failures,
+  hidden product choices phrased as algorithms or data rules, and coherent foundations where design is partial or absent.
+- `technical design` covers selecting specialist guidance from what the host actually lists, without installation,
+  spending, disclosure, or wider scope, and extends reuse to maintained compositions, interaction behavior, navigation,
+  and styling conventions identified by evidence rather than name or appearance.
+- `skiphow-plan` carries journey scenarios, design direction, and reuse constraints into dependent tasks independently of
+  the capability that produced them. Its review keeps justified contracts and reuse constraints while removing
+  unnecessary prescription, and checks the journey against its application context.
+- `verification` checks changed journeys in the surrounding product and inspects reuse separately from rendered
+  similarity. No skill, module, workflow, interview, registry, approval stage, or record format was added.
+
+### Coverage and compatibility
+
+Ten synthetic scenarios in the existing `planning-readiness` fixture cover available, unavailable, and non-interface
+specialist capabilities, a change of executing host, maintained and legacy compositions, duplicated composition review,
+a justified new composition, partial design, a hidden product choice, and a settled small change. They probe read-only
+decisions, not native plugin discovery or completed interface work.
+
+Two private 5.1.1 sessions prompted the change. The planner already loaded specialist guidance and required reuse, so the
+sessions do not show that more invocation or a generic reuse rule would have changed the result; the patch corrects
+narrower wording gaps. No paid behavioral sessions or clean-install runs were made. Behavioral effect remains
+`UNVERIFIED`; see [evidence](docs/evidence.md#515-interaction-design-reuse-and-specialist-capabilities).
+
+An independent Codex review in a read-only sandbox with isolated user and host homes ran two rounds. Its transcript
+showed no personal skill or installed plugin loading; it read only the repository's contributor `dogfood` skill. The
+first round found one qualifying contradiction: the outcome contract made reuse of maintained compositions unconditional,
+while `technical design` and the justified-new-composition case permit a bounded replacement. The sentence was fixed and
+the second round found no remaining defect. A first attempt ended on a host capacity error and returned no result.
+
+The implementation plan claimed an earlier conclusion took intent preservation from Superpowers' `brainstorming`. The
+repository records `brainstorming` as rejected whole, so the records keep that rejection and attribute plan decision
+carrying to SkipHow's own provenance rules.
+
+| Capability | Local candidate evidence |
+| --- | --- |
+| Deterministic package gate | PASS, full `scripts/check.py` |
+| Codex schema validation | PASS, `validate_plugin.py` |
+| Claude schema validation | PASS, `claude plugin validate --strict` |
+| Clean Codex install | UNVERIFIED, managed source policy refused the local marketplace |
+| Clean Claude install | PASS, isolated install and inspect without uninstall |
+| Explicit invocation | UNVERIFIED |
+| Implicit activation | UNVERIFIED |
+| Continuity | UNVERIFIED |
+| Behavioral suite | UNVERIFIED, [evidence](docs/evidence.md#515-interaction-design-reuse-and-specialist-capabilities) |
+
 ## 5.1.4 (2026-09-26)
 
 Delegated work is sized through verification and review, and lengthy assignments carry observable progress and return

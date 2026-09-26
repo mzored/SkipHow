@@ -1,12 +1,16 @@
 # Technical design
 
-Open this when a technical, structural, or external-fact question is not already answered by the project: a dependency or service to introduce, a module boundary to draw, custom code a maintained component might replace, or an outside claim the choice rests on.
+Open this when a technical, structural, or external-fact question is not already answered by the project: specialist skills or tools to apply, a dependency or service to introduce, a module boundary to draw, custom code a maintained component might replace, or an outside claim the choice rests on.
 
 ## Recovering the constraints
 
 Recover the real constraints first: what the project already runs, the decisions it has made and why, the volumes and failure modes it faces, and the operational reality behind it.
 
 Where that read comes back empty because the project is new, the constraints are not absent but unstated. What the thing has to handle, who will run it, and what it is expected to become are the owner's to supply. A shape chosen without them is chosen for a guess, and the first weeks of work harden that guess. Worth raising are the ones that would change the shape you would otherwise choose; those are product questions rather than technical ones — see [product](product.md).
+
+Use the host's available capability descriptions to identify specialist guidance and tools relevant to the work. Honor explicit invocations and host requirements. Otherwise, read and apply suitable guidance where its expected contribution justifies its cost. Choose from what is actually available; a capability's name or presence alone does not establish its fit.
+
+Resolve its instructions under the host's instruction hierarchy and the owner's constraints. Continue with sufficient available methods when specialist support is absent, and report a material quality or verification gap when one remains. Selection does not itself authorize installation, spending, disclosure, or wider scope.
 
 Security, reliability, operability, performance, cost, and reversibility are lenses to apply in proportion to risk, not a checklist to complete for every task; name only the ones this decision actually touches.
 
@@ -23,6 +27,10 @@ Prefer existing, maintained capabilities over custom machinery. Before introduci
 - Only then, custom code.
 
 The order is a presumption, not a law. Compare materially different options when cost, privacy, reliability, security, lock-in, operational burden, or reversibility could change the result; a managed service is not automatically preferable to a bounded experiment or a small custom implementation when it brings owner-visible cost, privacy exposure, vendor commitment, or lock-in, and those consequences are the owner's choice under [product](product.md).
+
+Repository capabilities include maintained domain compositions, interaction behavior, navigation patterns, and styling conventions. Establish which implementation currently owns the required behavior. Similar names, appearance, or historical presence do not make an implementation the maintained choice.
+
+Reuse or extend that implementation where it meets the accepted requirement. Shared tokens and primitive controls alone do not justify recreating an existing composition. A new domain composition or bounded replacement remains valid when it meets a requirement the existing implementation cannot satisfy at lower total cost. A project without a design system gets the small shared vocabulary and compositions the requested work needs, not a whole-system migration.
 
 Building your own carries the burden of proof. Choose it when maintained alternatives fail a material requirement or carry greater total risk or cost, and say which requirement they fail. Then build the smallest stable surface and do not recreate the surrounding ecosystem.
 

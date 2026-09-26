@@ -2,6 +2,41 @@
 
 This page separates package checks from observed model behavior. The full 2.0 evidence remains in the immutable [`v2.0.1` research snapshot](https://github.com/mzored/SkipHow/tree/1c811262e6acdbdc58a2ee862b54e0b8d3478eaa/docs/research/2026-08-27).
 
+## 5.1.5 interaction design, reuse, and specialist capabilities
+
+Version 5.1.5 makes four `Contract` clarifications. The kernel states the general responsibility to use applicable
+available skills and tools when their benefit warrants the cost, and routes interaction design to `product` and
+capability selection to `technical design`. `product` asks for the affected journey to be designed in its application
+context, including absent or partial design. `technical design` covers selecting host capabilities and reusing
+maintained compositions, not only primitives and tokens. `skiphow-plan` carries journey, design, and reuse decisions
+into tasks independently of the capability that produced them, and its review keeps justified reuse constraints while
+removing unnecessary prescription. `verification` separates evidence of a coherent journey from evidence of reuse.
+
+Two private sessions on 5.1.1 prompted the change, one planning and one implementing the same user-facing feature. The
+planner already loaded specialist interface guidance and required design-system reuse in its plan. The implementer
+reused many shared primitives but only partly preserved the requested composition, recreating part of an established
+one. These are two sessions of one feature, not independent trials. No transcript, application identifier, path, or
+task content is retained here.
+
+What the sessions demonstrate is limited: the existing package already produced specialist loading and a reuse
+requirement, so neither another invocation nor another generic reuse sentence would demonstrably have prevented the
+result. Inspection establishes narrower wording gaps. `product` explained how to ask a question but not what to
+understand about the journey before deciding none remained; the reuse hierarchy could be read as satisfied by
+primitives; plan review rejected prescribed implementation without distinguishing a necessary reuse constraint; and no
+shipped text described selecting available capabilities or carrying their results across hosts. The owner explicitly
+requested the capability-selection responsibility and the handling of projects without a design system.
+
+Ten cases in the [corpus](../evals/cases.json), using new sections of the synthetic `planning-readiness` fixture, cover
+an available and an unavailable specialist capability, a change of executing host, maintained and legacy compositions,
+a duplicated composition under review, a requirement beyond the existing composition, partial design, a product choice
+presented as an algorithm, a settled small change, and specialist support for a non-interface task. The capability lists
+are text, so the cases probe decisions, not native plugin discovery or completed interface work. Deterministic checks
+prove corpus consistency only.
+
+The owner chose no paid experiments. Behavioral effect, including whether implementation now preserves an established
+composition, remains `UNVERIFIED`. The [decision](decisions.md#interaction-design-reuse-and-specialist-capabilities)
+records the alternatives and what would reopen it.
+
 ## 5.1.4 delegation boundaries and progress
 
 Version 5.1.4 clarifies assignment sizing through implementation, verification, and review, distinguishes independent

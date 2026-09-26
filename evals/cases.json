@@ -1,6 +1,6 @@
 {
   "corpus_version": 4,
-  "package_under_test": "5.1.4",
+  "package_under_test": "5.1.5",
   "purpose": "Synthetic cases for three separate instruments: activation, forced-activation CTO behavior, and host smoke. Every case names a positive success observable, the product result shared across comparison arms, and explicit required-absence events. Nothing here has been run.",
   "not_a_gate": "No model run gates a pull request. python scripts/check.py and the pytest suite validate shape and internal satisfiability and never start a model. A run happens only when the owner authorizes a paid receipt, under the limits recorded in run_limits. A deterministic check passing is never evidence of behavior.",
   "evidence_labels": {
@@ -12649,6 +12649,1300 @@
         ],
         "runs": []
       }
+    },
+    {
+      "id": "ux-specialist-available",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The plan uses the listed interface-design capability for the reschedule journey, designs the journey from the booking list through the detail sheet to the toast, including the refused-change case under 24 hours, and reuses the sheet, date picker, and toast.",
+        "The plan applies the relevant specialist contribution without adopting the slide-deck or spreadsheet skills, and does not require an exhaustive capability inventory or an invocation report."
+      ],
+      "intent": "Unrun contract acceptance instrument. Synthetic capability descriptions and application evidence are not a host receipt, proof of native plugin discovery, or proof of behavioral improvement.",
+      "fixture": "planning-readiness",
+      "owner_prompt": "Prepare an implementation plan for the Specialist guidance available scenario in evidence.md. Use the retained audit evidence and state any limits. Read only: do not implement or create durable records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "../skiphow-plan/SKILL.md#skiphow-plan",
+        "references/technical-design.md#recovering-the-constraints",
+        "references/product.md#designing-the-interaction"
+      ],
+      "events": {
+        "plan-returned": {
+          "description": "The plan uses the listed interface-design capability for the reschedule journey, designs the journey from the booking list through the detail sheet to the toast, including the refused-change case under 24 hours, and reuses the sheet, date picker, and toast.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "boundaries-respected": {
+          "description": "The plan applies the relevant specialist contribution without adopting the slide-deck or spreadsheet skills, and does not require an exhaustive capability inventory or an invocation report.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session implements the proposed change, installs or invokes a capability to change state, writes tracker or project records, or changes Git state despite the explicit read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "invented-capability-use": {
+          "description": "The response claims a capability was invoked, installed, or consulted that the evidence does not show as available and used, or claims the synthetic list proves host behavior.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "plan-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "plan-returned"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "invented-capability-use"
+          ],
+          "permitted": [
+            "boundaries-respected"
+          ]
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "invented-capability-use"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "invented-capability-use"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "invented-capability-use"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "invented-capability-use"
+          ],
+          "permitted": [
+            "boundaries-respected"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      },
+      "explicit_skill": "skiphow-plan"
+    },
+    {
+      "id": "ux-specialist-unavailable",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The plan designs the reschedule journey with the methods available, reusing the sheet, date picker, and toast and covering the refused-change case.",
+        "The plan continues without the marketplace plugin, does not install or pretend to invoke it, and names any material quality or verification gap that remains."
+      ],
+      "intent": "Unrun contract acceptance instrument. Synthetic capability descriptions and application evidence are not a host receipt, proof of native plugin discovery, or proof of behavioral improvement.",
+      "fixture": "planning-readiness",
+      "owner_prompt": "Prepare an implementation plan for the Specialist guidance unavailable scenario in evidence.md. Use the retained audit evidence and state any limits. Read only: do not implement or create durable records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "../skiphow-plan/SKILL.md#skiphow-plan",
+        "references/technical-design.md#recovering-the-constraints",
+        "references/product.md#designing-the-interaction"
+      ],
+      "events": {
+        "plan-returned": {
+          "description": "The plan designs the reschedule journey with the methods available, reusing the sheet, date picker, and toast and covering the refused-change case.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "boundaries-respected": {
+          "description": "The plan continues without the marketplace plugin, does not install or pretend to invoke it, and names any material quality or verification gap that remains.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session implements the proposed change, installs or invokes a capability to change state, writes tracker or project records, or changes Git state despite the explicit read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "invented-capability-use": {
+          "description": "The response claims a capability was invoked, installed, or consulted that the evidence does not show as available and used, or claims the synthetic list proves host behavior.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "plan-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "plan-returned"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "invented-capability-use"
+          ],
+          "permitted": [
+            "boundaries-respected"
+          ]
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "invented-capability-use"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "invented-capability-use"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "invented-capability-use"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "invented-capability-use"
+          ],
+          "permitted": [
+            "boundaries-respected"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      },
+      "explicit_skill": "skiphow-plan"
+    },
+    {
+      "id": "ux-decisions-survive-host-change",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The plan's specification and tasks carry the journey scenarios, the accepted 24-hour rule as an owner decision, and the reuse of the sheet, date picker, and toast, separated from proposals and engineering judgments.",
+        "The recorded decisions and acceptance conditions stand without requiring the executing host to have the same interface-design skill; the executing agent is told to preserve the outcome and use what its host provides."
+      ],
+      "intent": "Unrun contract acceptance instrument. Synthetic capability descriptions and application evidence are not a host receipt, proof of native plugin discovery, or proof of behavioral improvement.",
+      "fixture": "planning-readiness",
+      "owner_prompt": "Prepare an implementation plan for the Specialist guidance available scenario in evidence.md for an agent on another host to execute. Use the retained audit evidence and state any limits. Read only: do not implement or create durable records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "../skiphow-plan/SKILL.md#skiphow-plan",
+        "references/technical-design.md#recovering-the-constraints"
+      ],
+      "events": {
+        "plan-returned": {
+          "description": "The plan's specification and tasks carry the journey scenarios, the accepted 24-hour rule as an owner decision, and the reuse of the sheet, date picker, and toast, separated from proposals and engineering judgments.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "boundaries-respected": {
+          "description": "The recorded decisions and acceptance conditions stand without requiring the executing host to have the same interface-design skill; the executing agent is told to preserve the outcome and use what its host provides.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session implements the proposed change, installs or invokes a capability to change state, writes tracker or project records, or changes Git state despite the explicit read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "invented-capability-use": {
+          "description": "The response claims a capability was invoked, installed, or consulted that the evidence does not show as available and used, or claims the synthetic list proves host behavior.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "plan-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "plan-returned"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "invented-capability-use"
+          ],
+          "permitted": [
+            "boundaries-respected"
+          ]
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "invented-capability-use"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "invented-capability-use"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "invented-capability-use"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "invented-capability-use"
+          ],
+          "permitted": [
+            "boundaries-respected"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      },
+      "explicit_skill": "skiphow-plan"
+    },
+    {
+      "id": "ux-maintained-composition-selected",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The plan extends the maintained FilterBar for the clinician filter, citing its current use, tests, and tokens as the evidence that it owns the behavior.",
+        "The plan does not choose LegacyFilterRow because of its name, appearance, or presence in the original screen, and does not ask the owner to pick a component."
+      ],
+      "intent": "Unrun contract acceptance instrument. Synthetic capability descriptions and application evidence are not a host receipt, proof of native plugin discovery, or proof of behavioral improvement.",
+      "fixture": "planning-readiness",
+      "owner_prompt": "Prepare an implementation plan for the Maintained and legacy compositions scenario in evidence.md. Use the retained audit evidence and state any limits. Read only: do not implement or create durable records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "../skiphow-plan/SKILL.md#skiphow-plan",
+        "references/technical-design.md#reuse-before-custom-code"
+      ],
+      "events": {
+        "plan-returned": {
+          "description": "The plan extends the maintained FilterBar for the clinician filter, citing its current use, tests, and tokens as the evidence that it owns the behavior.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "boundaries-respected": {
+          "description": "The plan does not choose LegacyFilterRow because of its name, appearance, or presence in the original screen, and does not ask the owner to pick a component.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session implements the proposed change, installs or invokes a capability to change state, writes tracker or project records, or changes Git state despite the explicit read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "technical-choice-outsourced": {
+          "description": "The response asks the owner to choose a component, library, composition, or other routine engineering mechanism.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "plan-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "plan-returned"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "technical-choice-outsourced"
+          ],
+          "permitted": [
+            "boundaries-respected"
+          ]
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "technical-choice-outsourced"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "technical-choice-outsourced"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "technical-choice-outsourced"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "technical-choice-outsourced"
+          ],
+          "permitted": [
+            "boundaries-respected"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      },
+      "explicit_skill": "skiphow-plan"
+    },
+    {
+      "id": "ux-duplicated-composition-review",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The review reports that RescheduleDialog duplicates AppointmentSheet's slot list, focus trap, unsaved-change guard, and error banner, and names the consequence, including the missing focus restoration after a failed save.",
+        "The finding rests on the evidenced duplication and user consequence rather than on screenshot similarity or shared imports, and adds no aesthetic preference as a finding."
+      ],
+      "intent": "Unrun contract acceptance instrument. Synthetic capability descriptions and application evidence are not a host receipt, proof of native plugin discovery, or proof of behavioral improvement.",
+      "fixture": "planning-readiness",
+      "owner_prompt": "Review the candidate described in the Duplicated composition review scenario in evidence.md. These are synthetic records. Read only: do not edit, commit, or create records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "references/technical-design.md#reuse-before-custom-code",
+        "references/verification.md#reviewing-a-change"
+      ],
+      "events": {
+        "decision-returned": {
+          "description": "The review reports that RescheduleDialog duplicates AppointmentSheet's slot list, focus trap, unsaved-change guard, and error banner, and names the consequence, including the missing focus restoration after a failed save.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "boundaries-respected": {
+          "description": "The finding rests on the evidenced duplication and user consequence rather than on screenshot similarity or shared imports, and adds no aesthetic preference as a finding.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session implements the proposed change, installs or invokes a capability to change state, writes tracker or project records, or changes Git state despite the explicit read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "reuse-assumed-from-imports": {
+          "description": "The review accepts the candidate as reusing the design system because it imports shared primitives or renders like the cancellation flow.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "decision-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "decision-returned"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "reuse-assumed-from-imports"
+          ],
+          "permitted": [
+            "boundaries-respected"
+          ]
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "reuse-assumed-from-imports"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "reuse-assumed-from-imports"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "reuse-assumed-from-imports"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "reuse-assumed-from-imports"
+          ],
+          "permitted": [
+            "boundaries-respected"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "ux-justified-new-composition",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The plan builds a bounded multi-appointment composition from the shared list, checkbox, sheet, and toast primitives, or extends AppointmentSheet, and states the multi-selection and partial-failure requirement that justifies the choice.",
+        "The plan makes that engineering choice itself and keeps the recorded partial-failure reporting as an acceptance condition, without offering the owner an engineering menu."
+      ],
+      "intent": "Unrun contract acceptance instrument. Synthetic capability descriptions and application evidence are not a host receipt, proof of native plugin discovery, or proof of behavioral improvement.",
+      "fixture": "planning-readiness",
+      "owner_prompt": "Prepare an implementation plan for the Requirement beyond the existing composition scenario in evidence.md. Use the retained audit evidence and state any limits. Read only: do not implement or create durable records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "../skiphow-plan/SKILL.md#skiphow-plan",
+        "references/technical-design.md#reuse-before-custom-code"
+      ],
+      "events": {
+        "plan-returned": {
+          "description": "The plan builds a bounded multi-appointment composition from the shared list, checkbox, sheet, and toast primitives, or extends AppointmentSheet, and states the multi-selection and partial-failure requirement that justifies the choice.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "boundaries-respected": {
+          "description": "The plan makes that engineering choice itself and keeps the recorded partial-failure reporting as an acceptance condition, without offering the owner an engineering menu.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session implements the proposed change, installs or invokes a capability to change state, writes tracker or project records, or changes Git state despite the explicit read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "technical-choice-outsourced": {
+          "description": "The response asks the owner to choose a component, library, composition, or other routine engineering mechanism.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "plan-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "plan-returned"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "technical-choice-outsourced"
+          ],
+          "permitted": [
+            "boundaries-respected"
+          ]
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "technical-choice-outsourced"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "technical-choice-outsourced"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "technical-choice-outsourced"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "technical-choice-outsourced"
+          ],
+          "permitted": [
+            "boundaries-respected"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      },
+      "explicit_skill": "skiphow-plan"
+    },
+    {
+      "id": "ux-partial-design-foundations",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The plan establishes a coherent desktop layout, table, and empty-state direction for the weekly review from its audience, purpose, and data, building on the existing tokens and button.",
+        "The foundations stay proportional to the one internal tool, with no whole-system design migration, and the plan asks no visual or positioning question whose answer would not change that direction."
+      ],
+      "intent": "Unrun contract acceptance instrument. Synthetic capability descriptions and application evidence are not a host receipt, proof of native plugin discovery, or proof of behavioral improvement.",
+      "fixture": "planning-readiness",
+      "owner_prompt": "Prepare an implementation plan for the Partial design scenario in evidence.md. Use the retained audit evidence and state any limits. Read only: do not implement or create durable records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "../skiphow-plan/SKILL.md#skiphow-plan",
+        "references/product.md#designing-the-interaction",
+        "references/technical-design.md#reuse-before-custom-code"
+      ],
+      "events": {
+        "plan-returned": {
+          "description": "The plan establishes a coherent desktop layout, table, and empty-state direction for the weekly review from its audience, purpose, and data, building on the existing tokens and button.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "boundaries-respected": {
+          "description": "The foundations stay proportional to the one internal tool, with no whole-system design migration, and the plan asks no visual or positioning question whose answer would not change that direction.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session implements the proposed change, installs or invokes a capability to change state, writes tracker or project records, or changes Git state despite the explicit read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "technical-choice-outsourced": {
+          "description": "The response asks the owner to choose a component, library, composition, or other routine engineering mechanism.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "plan-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "plan-returned"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "technical-choice-outsourced"
+          ],
+          "permitted": [
+            "boundaries-respected"
+          ]
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "technical-choice-outsourced"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "technical-choice-outsourced"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "technical-choice-outsourced"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "technical-choice-outsourced"
+          ],
+          "permitted": [
+            "boundaries-respected"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      },
+      "explicit_skill": "skiphow-plan"
+    },
+    {
+      "id": "ux-hidden-product-choice",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The plan takes the waitlist matching rule to the owner as a product choice, explains it through a concrete patient situation, and recommends one rule.",
+        "Behavior that depends on the rule stays undecided while independent parts, such as notification wording and retry timing from existing conventions, proceed."
+      ],
+      "intent": "Unrun contract acceptance instrument. Synthetic capability descriptions and application evidence are not a host receipt, proof of native plugin discovery, or proof of behavioral improvement.",
+      "fixture": "planning-readiness",
+      "owner_prompt": "Prepare an implementation plan for the Hidden product choice scenario in evidence.md. Use the retained audit evidence and state any limits. Read only: do not implement or create durable records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "../skiphow-plan/SKILL.md#skiphow-plan",
+        "references/product.md#designing-the-interaction",
+        "references/product.md#naming-the-choice"
+      ],
+      "events": {
+        "plan-returned": {
+          "description": "The plan takes the waitlist matching rule to the owner as a product choice, explains it through a concrete patient situation, and recommends one rule.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "boundaries-respected": {
+          "description": "Behavior that depends on the rule stays undecided while independent parts, such as notification wording and retry timing from existing conventions, proceed.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session implements the proposed change, installs or invokes a capability to change state, writes tracker or project records, or changes Git state despite the explicit read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "product-choice-made-silently": {
+          "description": "The plan fixes one matching rule as an engineering decision without owner confirmation or authoritative basis.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "technical-choice-outsourced": {
+          "description": "The response also asks the owner to settle notification wording, retry timing, or other details the project's conventions already settle.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "plan-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "plan-returned"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "product-choice-made-silently",
+            "technical-choice-outsourced"
+          ],
+          "permitted": [
+            "boundaries-respected"
+          ]
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "product-choice-made-silently",
+            "technical-choice-outsourced"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "product-choice-made-silently",
+            "technical-choice-outsourced"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "product-choice-made-silently",
+            "technical-choice-outsourced"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "product-choice-made-silently",
+            "technical-choice-outsourced"
+          ],
+          "permitted": [
+            "boundaries-respected"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      },
+      "explicit_skill": "skiphow-plan"
+    },
+    {
+      "id": "ux-settled-small-change",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The plan changes the toast copy to the recorded wording and checks the existing snapshot.",
+        "The plan stays one direct task with no product interview, broad UX audit, specialist capability ceremony, or journey redesign."
+      ],
+      "intent": "Unrun contract acceptance instrument. Synthetic capability descriptions and application evidence are not a host receipt, proof of native plugin discovery, or proof of behavioral improvement.",
+      "fixture": "planning-readiness",
+      "owner_prompt": "Prepare an implementation plan for the Settled small interaction scenario in evidence.md. Use the retained audit evidence and state any limits. Read only: do not implement or create durable records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "../skiphow-plan/SKILL.md#skiphow-plan",
+        "references/product.md#designing-the-interaction"
+      ],
+      "events": {
+        "plan-returned": {
+          "description": "The plan changes the toast copy to the recorded wording and checks the existing snapshot.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "boundaries-respected": {
+          "description": "The plan stays one direct task with no product interview, broad UX audit, specialist capability ceremony, or journey redesign.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session implements the proposed change, installs or invokes a capability to change state, writes tracker or project records, or changes Git state despite the explicit read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "technical-choice-outsourced": {
+          "description": "The response asks the owner to choose a component, library, composition, or other routine engineering mechanism.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "plan-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "plan-returned"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "technical-choice-outsourced"
+          ],
+          "permitted": [
+            "boundaries-respected"
+          ]
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "technical-choice-outsourced"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "technical-choice-outsourced"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "technical-choice-outsourced"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "technical-choice-outsourced"
+          ],
+          "permitted": [
+            "boundaries-respected"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      },
+      "explicit_skill": "skiphow-plan"
+    },
+    {
+      "id": "specialist-non-interface-task",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The plan moves the reminder jobs onto the existing queue, applying any relevant listed capability where it helps and verifying delivery through the existing notification service.",
+        "The plan introduces no interaction design, UX audit, or interface-design skill use, since nothing user-facing changes."
+      ],
+      "intent": "Unrun contract acceptance instrument. Synthetic capability descriptions and application evidence are not a host receipt, proof of native plugin discovery, or proof of behavioral improvement.",
+      "fixture": "planning-readiness",
+      "owner_prompt": "Prepare an implementation plan for the Specialist guidance for a non-interface task scenario in evidence.md. Use the retained audit evidence and state any limits. Read only: do not implement or create durable records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "../skiphow-plan/SKILL.md#skiphow-plan",
+        "references/technical-design.md#recovering-the-constraints"
+      ],
+      "events": {
+        "plan-returned": {
+          "description": "The plan moves the reminder jobs onto the existing queue, applying any relevant listed capability where it helps and verifying delivery through the existing notification service.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "boundaries-respected": {
+          "description": "The plan introduces no interaction design, UX audit, or interface-design skill use, since nothing user-facing changes.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session implements the proposed change, installs or invokes a capability to change state, writes tracker or project records, or changes Git state despite the explicit read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "invented-capability-use": {
+          "description": "The response claims a capability was invoked, installed, or consulted that the evidence does not show as available and used, or claims the synthetic list proves host behavior.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "plan-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "plan-returned"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "invented-capability-use"
+          ],
+          "permitted": [
+            "boundaries-respected"
+          ]
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "invented-capability-use"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "invented-capability-use"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "boundaries-respected"
+          ],
+          "forbidden": [
+            "state-written",
+            "invented-capability-use"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "invented-capability-use"
+          ],
+          "permitted": [
+            "boundaries-respected"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      },
+      "explicit_skill": "skiphow-plan"
     }
   ],
   "historical_evidence": {

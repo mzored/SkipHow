@@ -115,6 +115,14 @@ An idea from another project becomes a focused method or a kernel invariant only
 
 The reasoning behind each rule that survived is in [decision history](decisions.md), and what real runs have and have not shown is in [current evidence](evidence.md).
 
+## Interaction design and capability use in 5.1.5
+
+Version 5.1.5 re-applies the earlier conclusions rather than reading new sources. The `grilling` question frontier
+already adopted now also covers a product choice that first appears as an algorithm or data rule. Superpowers'
+`brainstorming` stays rejected whole: its design approval gate is not adopted, and carrying accepted journey, design, and
+reuse decisions into plan tasks extends SkipHow's own decision-provenance and plan rules rather than adapting it. The full
+interview, universal design approval, and any owner choice of engineering method stay rejected. No source text was taken.
+
 ## Delegation boundaries in 5.1.4
 
 Read on 2026-09-26. Superpowers' [implementer brief](https://github.com/obra/superpowers/blob/8ca22dba9a94f28898bbce59f2537ff4d87c747d/skills/subagent-driven-development/implementer-prompt.md)

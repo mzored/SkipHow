@@ -61,6 +61,11 @@ A case is run only when the owner authorizes a paid receipt.
 
 ## The arms
 
+The `ux-*` cases and `specialist-non-interface-task` use later sections of `planning-readiness`. Their capability lists
+are synthetic text, so they probe whether a plan or review applies suitable specialist guidance, preserves decisions
+across hosts, selects maintained compositions, designs proportionately, and surfaces hidden product choices. They do not
+test native plugin discovery or completed interface work. All are unrun.
+
 The `delegation-*` cases using `delegation-boundaries` are read-only decision probes. Their supplied records distinguish
 heterogeneous repairs, one uniform transformation, scope growth, healthy work without commits, and shared checkpoints.
 They accept decisions appropriate to the evidence without requiring actual delegation. They do not measure live progress

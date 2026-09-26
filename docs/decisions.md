@@ -4,10 +4,11 @@ This page records the choices that still matter when SkipHow changes. Read it be
 
 ## Current decisions
 
-The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-09-26 against the 5.1.4 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
+The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-09-26 against the 5.1.5 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
 
 | Decision | Active rationale | Premises | Evidence | Reopens when |
 | --- | --- | --- | --- | --- |
+| Use applicable available skills and tools when their benefit warrants the cost; design the affected journey in its application context; reuse maintained compositions, not only primitives; plans carry journey, design, and reuse decisions independently of the capability that produced them | A planner loaded specialist guidance and required reuse, yet the implementation recreated part of an established composition; the package described asking a product question but not designing the journey, and did not describe capability selection | Hosts list capabilities differently and an executing host may lack the planner's plugins; a reuse constraint can be a justified contract rather than prescription; projects without a design system still need coherent foundations | Clarified `Contract` in 5.1.5 after two private 5.1.1 sessions and an owner request; behavioral effect `UNVERIFIED` | A receipt shows a recreated maintained composition despite a carried reuse constraint, specialist ceremony on settled or non-interface work, invented or installed capabilities, or owner questions about routine interaction details |
 | Assignment size includes implementation, verification, and review; lengthy assignments carry progress and return conditions; checkout isolation does not isolate shared mutable resources | Independent repairs are not interface migrations; useful progress can precede commits; shared latest pointers can identify another lane's work | Existing evidence may suffice to size work; checkpoints follow project policy; host waits and events support observation without new state | Clarified `Contract` in 5.1.4 after one private 5.1.3 session; behavioral effect `UNVERIFIED` | A receipt shows unnecessary splitting, healthy work interrupted, missed progress breaches, or shared-state damage |
 | A repeat of the same kind of failure is evidence about a class, found with the cheapest check that covers the whole class and fixed together before the loop that found it runs again; a session the skill was governing reopens the kernel after the host compacts its context | Fixing each recurrence as a new instance sent the owner hunting the next one and re-ran a half-hour gate once per stale expectation; Codex keeps no text from any package file across compaction and only the skill description in the host's own skill list survives | The second appearance is readable in the owner's words or the gate's output; the description is the one package-owned surface that survives on both hosts; the sentence conditions on the skill already governing | `Contract` (4.8.4); one private Codex session on 4.8.2 motivates both; effect `UNVERIFIED` | A run sweeps unrelated surfaces on a first report, a governed Codex session still never reopens the kernel after compaction, or the description sentence selects the skill for an ungoverned session |
 | A prepared plan records every task for execution as one slice with one verifiable outcome that one agent can carry from its record to a verified, reviewable change, bounds review as well as implementation, and has its independent review cover every task as published | A tracker group can name an outcome without establishing a feasible assignment; later tasks that defer their own split leave the plan undispatchable, and a review of the specification alone lets such tasks through; source size and shared writes affect execution | The owner selects this workflow for a dispatchable task set, so it sizes the whole accepted scope where ordinary delegation stops at the next outcome; an earlier result can still change a later task, which is named and rechecked at dispatch | Clarified `Contract` in 4.8.2 and corrected in 5.1.2 after one private Codex session on 5.1.1; behavioral improvement `UNVERIFIED` | A plan session on 5.1.2 or later still publishes a task holding several outcomes or a deferred split, or the rule forces small cohesive work into needless tasks or speculative decomposition |
@@ -32,6 +33,39 @@ The live decisions, their premises, and what would reopen each. "Evidence" says 
 | CTO evidence belongs to a scenario; suite status reports declared coverage and carries no behavioral label; an eligible terminal outcome also needs a verified fixture manifest and retained end-state artifact for suite coverage; outside the suite, eligibility is judged per claim (loaded, delivered at destination, foreign work preserved, completion honesty, comparative benefit), each with its own required evidence, a confirmed failure recorded as `FAIL` rather than as missing evidence, and a loading observation labelling nothing else | One successful run cannot support eleven unrun scenarios or imply another host, activation arm, or trial; prose summaries cannot replace inspectable state; a per-run standard left every 3.x and 4.x observation unlabelled while the ledger quoted them | Coverage, terminal outcome, and receipt sufficiency are independent; a complete run set may contain failures; the rules for each claim were fixed before any new run and validated against the retained captures | `Deterministic` corpus validation in 4.0.1 and per-claim validation in 4.3.0 (`scripts/claim_eligibility.py`); suite behavior `UNVERIFIED` | A claim needs evidence no rule expresses, or a rule is found to weaken the public meaning of `Observed` |
 
 The sections below are the history behind those rows: what each release tried, measured, and rejected. They are non-normative. Where a section and the index disagree, the index is current and the section records how it got there.
+
+## Interaction design, reuse, and specialist capabilities
+
+Version 5.1.5 answers two private 5.1.1 sessions described in
+[evidence](evidence.md#515-interaction-design-reuse-and-specialist-capabilities) and an explicit owner request about
+capability selection and projects without a design system. The planning session already loaded specialist interface
+guidance and required design-system reuse; the implementation reused primitives but only partly preserved the requested
+composition. The change does not claim that a further invocation or a generic reuse rule would have prevented that.
+
+It corrects four narrower gaps. `product` opened for unclear intent but said nothing about designing the journey, so a
+clearly requested capability could pass with its interaction undesigned; the kernel trigger and the reference opening now
+name interaction design, and a short section says what to establish before deciding no product question remains,
+including hidden product choices phrased as algorithms and design foundations where none exist. The reuse hierarchy in
+`technical design` now names compositions, interaction behavior, navigation, and styling conventions as repository
+capabilities and says evidence, not name or appearance, identifies the maintained one; the existing burden of proof for
+custom work is unchanged, and a project without a design system builds only the vocabulary the work needs. Plan review
+now removes unnecessary prescription while keeping justified contracts and reuse constraints, and plans record decisions
+so that an executing agent on another host preserves them without the same plugin. `verification` keeps journey
+evidence and reuse evidence separate and names the kinds of consequence a finding needs.
+
+The general selection sentence replaces the kernel's "add process only" opening and states a responsibility without
+naming a provider or adding a discovery stage; `technical design` holds the method, including that selection authorizes
+no installation, spending, disclosure, or wider scope. To fit the measured view limit, the kernel's engineering-ownership
+sentences were merged; the preceding owner-decision rule is unchanged, and the merged sentence keeps ownership of models,
+effort, and delegation, explanation of consequences, and the prohibition on asking the owner to choose.
+
+Two alternatives lose. Repeating generic "ask more" or "reuse components" rules adds text the motivating plan already
+followed. A mandatory specialist workflow, capability inventory, reuse inventory, design approval, or invocation report
+would add turns and state to every task without a receipt showing capable agents need it. The prior-art conclusions stand: the
+dependent-question frontier comes from `grilling`, `brainstorming` stays rejected whole, and exhaustive interviews,
+universal design approval, and owner-selected engineering methods stay rejected; carrying decisions into plan tasks
+extends SkipHow's own provenance rules. No public skill, package layout,
+authority boundary, record format, or default side effect changes, so the work fits a patch release.
 
 ## Delegation boundaries and progress
 
