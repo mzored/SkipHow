@@ -1,0 +1,18 @@
+{
+  "id": "live-coordination-evidence",
+  "summary": "Synthetic live-work coordination and human-blocker decisions.",
+  "kind": "checked-in decision evidence",
+  "synthetic": true,
+  "planted": [
+    "Five coordination situations and one human-blocker situation with settled constraints."
+  ],
+  "absent_on_purpose": [
+    "No real agents, workspaces, service, timers, or executed repairs."
+  ],
+  "setup": [
+    "Copy this evidence through the existing capture preparation path. Do not materialize the described application or dispatch agents.",
+    "Keep the evidence and selected prompt identical across arms."
+  ],
+  "run_checks": "none; grade the response against the named evidence section",
+  "privacy": "Invented product and state only; no credentials, personal data, or live service."
+}

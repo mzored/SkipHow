@@ -1,0 +1,23 @@
+{
+  "id": "workflow-fast-live",
+  "summary": "Live delegated catalog fixes with controlled incoming owner turns.",
+  "kind": "checked-in overlay with host-driven turns",
+  "synthetic": true,
+  "planted": [
+    "The inherited catalog defects, existing reviews work, and synthetic local origin fix/catalog."
+  ],
+  "absent_on_purpose": [
+    "No fabricated delegates, precomputed returns, wall-clock delay scripts, or claim of measured delegation savings."
+  ],
+  "setup": [
+    "Materialize and prepare catalog-integration-ready using its setup, preserving the two pre-existing uncommitted files.",
+    "Use a host with actual delegate controls and isolated writer workspaces. Record effective capabilities and limits before running; unavailable capabilities leave the live case unrun.",
+    "For incoming-work, deliver the revision/cancellation after both initial assignments are dispatched and before their results are accepted. Retain actual message and assignment ordering.",
+    "For pause-and-resume, deliver pause while assignments remain active, then resume only after the pause response and preserved state are recorded. Retain any already-running effects that host controls cannot revoke.",
+    "For delivery-in-flight, send the delivery request while an assignment is active, then the search correction before the candidate is accepted for delivery. Retain ordering; a run missing these conditions cannot prove the in-flight claim.",
+    "Stop at the declared completed result. Preserve the fixture, remote contents, checks, and message ordering through the existing capture path before cleanup."
+  ],
+  "run_checks": "Use the existing catalog imports and focused behavior checks; compare local or remote result, preserved files, and publication-marker absence as each case requires.",
+  "privacy": "Invented product and state only; no credentials, personal data, or live service.",
+  "derives_from": "catalog-integration-ready"
+}

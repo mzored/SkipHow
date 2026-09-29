@@ -1,0 +1,20 @@
+{
+  "id": "orders-service-no-git",
+  "summary": "The orders repair as a plain local directory with no Git or browser prerequisites.",
+  "kind": "checked-in overlay with non-Git setup",
+  "synthetic": true,
+  "planted": [
+    "The inherited split-basket rounding defect and focused pytest checks."
+  ],
+  "absent_on_purpose": [
+    "No Git repository, enclosing repository, remote, server, tracker, or delegation requirement."
+  ],
+  "setup": [
+    "Materialize orders-service source and this metadata in an owned scratch directory outside any repository. This setup replaces the base Git initialization steps.",
+    "Verify that neither the directory nor any enclosing directory supplies Git repository state; initialize no repository.",
+    "Send the subsequent README request only after the corrected calculation and focused check have been shown. Retain the preservation mechanism and final artifact evidence."
+  ],
+  "run_checks": "python -m pytest tests/order_total_checks.py",
+  "privacy": "Invented product and state only; no credentials, personal data, or live service.",
+  "derives_from": "orders-service"
+}

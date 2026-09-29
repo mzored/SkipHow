@@ -474,8 +474,25 @@ feedback, an independently deliverable repair beside a pending product choice,
 and delivery to a review branch without integration into the default branch.
 They require positive checked results as well as restraint. All remain unrun.
 
-Send fast-fixes feedback only after the first rendered preview is shown and the
+For the existing explicit-wait fast-fixes cases, send feedback only after the first rendered preview is shown and the
 agent has stopped. Inspect commit order and command traces across both turns.
 The production cases use a local receive hook and marker, never a live service.
 No workflow regression authorizes a paid run, creates a repository from a test,
 or changes the release evidence labels.
+
+### Live fixes across stacks
+
+The 6.0.0 cases retain explicit owner restrictions in the older fast-fixes regressions. New cases exercise focused pytest
+checks, non-Git artifact preservation, independent inspection beside a blocked checkpoint, and unanswered product choices.
+`orders-service-no-git` replaces its base fixture's Git setup with a plain directory outside any repository.
+
+The three `workflow-fast-live` cases require actual delegates and host message delivery during active work. Its fixture
+metadata specifies the injection points for additions/cancellation, pause/resume, and delivery/correction. Retain actual
+ordering and host capabilities; unsupported controls or missed timing leave the corresponding claim unverified. Do not
+simulate delegates, add delay scripts, or treat sequential turns as evidence of concurrency. These small catalog cases
+explicitly request delegation and therefore establish no autonomous routing advantage or comparative cost saving.
+
+`workflow-fast-fixes-coordination-boundaries` and `workflow-longrun-human-blocker` use synthetic decision evidence and are
+read-only probes. They prove neither actual resource isolation nor execution of the proposed continuation. All new cases
+remain `UNVERIFIED` without qualifying receipts. Existing capture and cleanup mechanisms apply; no deterministic test
+creates a repository or starts a model.

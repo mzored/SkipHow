@@ -34,7 +34,7 @@ Search closed records as well as open ones before writing. Merge reports one rep
 
 ## Writing one that survives the wait
 
-A record is acted on after the code has moved. State the behavior the project should have, naming types, commands, and observable conditions rather than file paths and line numbers. Carry the problem, what would show it resolved, its impact, what surfaced it, the evidence gathered, and the explanations ruled out, so an agent with no history does not repeat the investigation.
+Write a record usable after the code moves: the required behavior, observable acceptance, impact, source, evidence, and explanations ruled out. Name types and commands rather than brittle file locations. For a human blocker, include the exact decision or action, dependent work, and resume condition; recording it neither completes the outcome nor schedules resumption.
 
 A recorded idea, audit recommendation, or proposed plan establishes only what was recorded. Where recording one would commit product scope the request has not settled, keep the open decision in the record and take it to [product](product.md) before dependent work. Do not invent certainty, labels, owners, deadlines, or implementation detail; an order the tracker already carries is the project's answer.
 

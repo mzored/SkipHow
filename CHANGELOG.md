@@ -2,6 +2,38 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 6.0.0 (2026-09-30)
+
+### Changed
+
+- Fast-fixes coordinates incoming local changes across interfaces, services, scripts, configuration, and artifacts.
+  Independent accepted work continues after a result is shown. Simple fixes stay direct; delegation follows expected
+  completion cost, isolation, and integration capacity. New requests, revisions, cancellations, and pauses update active
+  assignments, and obsolete returns cannot restore superseded behavior.
+- Shown results are preserved before an edit or integration replaces them. Git projects retain local checkpoint commits;
+  other projects use an available safe preservation mechanism. Browser previews and Git initialization are not prerequisites.
+  A blocked checkpoint leaves the shown state intact while independent work can continue.
+- Focused checks may use pytest or browser tests. Full delivery gates remain deferred during iteration. Explicit owner
+  restrictions, mandatory project checks, shared-resource coordination, and hook integrity still govern actual execution.
+- Plan finishes the known product interview before calling the accepted scope execution-ready. Missing answers leave
+  preparation explicitly incomplete. Longrun retains unfinished human blockers while safe independent work continues.
+- Deploy-ready reconciles running assignments, feedback, cancellations, and later work into the requested delivery set.
+  Corrections receive review and affected revalidation before entering the candidate.
+
+### Compatibility
+
+This major version changes fast-fixes defaults: it no longer stops the whole session after every result or defers every
+pytest/e2e invocation. To preserve that cadence, explicitly request waiting after each result and name the checks to defer.
+Existing restrictions and accepted session agreements remain binding. Feedback alone still grants no push, shared
+integration, or release; upgrades grant no new authority. No scheduler, database, fixed agent roster, or host adapter is added.
+
+### Validation
+
+Nine new unrun corpus cases cover live coordination, focused checks, non-Git results, checkpoint boundaries, readiness,
+and human blockers. Existing explicit-wait and deferred-hook cases are retained. Deterministic validation establishes
+package and corpus consistency, not model behavior. Behavioral improvement, concurrency, and savings remain `UNVERIFIED`;
+see [the evidence ledger](docs/evidence.md#600-live-fixes-across-stacks). No paid experiments were run.
+
 ## 5.1.5 (2026-09-26)
 
 User-facing work is designed as a journey in its product, reuses maintained compositions rather than only primitives,
