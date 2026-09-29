@@ -4,7 +4,7 @@
 
 Describe the product outcome in ordinary language. You keep product decisions. SkipHow owns technical research, architecture, planning, task management, model and subagent selection, implementation, review, integration, and verification. It uses the host's native capabilities and remains an instruction layer, not a standalone runtime or security boundary.
 
-The `skiphow` skill covers ordinary project requests. Optional workflow skills make recurring bug repair, planning, long-running delivery, release preparation, and preview iteration available by name or by request. They share the CTO kernel and its internal references. You can choose a work pattern while SkipHow keeps technical supervision. The [owner-outcome contract](docs/outcome-contract.md) defines the responsibilities that future implementation changes must preserve.
+The `skiphow` skill covers ordinary project requests. Optional workflow skills make recurring bug repair, planning, long-running delivery, release preparation, and live local fixes available by name or by request. They share the CTO kernel and its internal references. You can choose a work pattern while SkipHow keeps technical supervision. The [owner-outcome contract](docs/outcome-contract.md) defines the responsibilities that future implementation changes must preserve.
 
 [![CI status](https://github.com/mzored/SkipHow/actions/workflows/ci.yml/badge.svg)](https://github.com/mzored/SkipHow/actions/workflows/ci.yml)
 [![Latest release](https://img.shields.io/github/v/release/mzored/SkipHow?label=release)](https://github.com/mzored/SkipHow/releases)
@@ -125,14 +125,16 @@ Use these when you know the work pattern you want. Ordinary requests still need 
 | Workflow | Example request | Completion |
 | --- | --- | --- |
 | `skiphow-bug` | `$skiphow-bug Discounts sometimes change when an order is retried. Find and repair the general cause.` | Verified repair at the authorized destination, with original and general-case evidence. |
-| `skiphow-plan` | `$skiphow-plan Prepare team invitations for implementation in this project's GitHub issues.` | Researched specification, independently reviewed vertical slices, issue links, and a short execution prompt. No implementation. |
-| `skiphow-longrun` | `$skiphow-longrun Deliver the accepted implementation children of this epic to our development branch.` | Verified integrated slices or recorded blockers, with delegated implementation and independent fix/review loops. |
+| `skiphow-plan` | `$skiphow-plan Prepare team invitations for implementation in this project's GitHub issues.` | Reviewed specification and executable slices with no known open product choices, or explicitly incomplete preparation. No implementation. |
+| `skiphow-longrun` | `$skiphow-longrun Deliver the accepted implementation children of this epic to our development branch.` | Verified delivery or recorded unfinished blockers, with delegated implementation and independent fix/review loops. |
 | `skiphow-deploy-ready` | `$skiphow-deploy-ready Prepare our agreed changes for delivery.` | Deferred checks, review, coherent commits, and any authorized non-production integration. |
-| `skiphow-fast-fixes` | `$skiphow-fast-fixes Start the local preview so we can iterate on this screen.` | A reviewed, inspected preview, followed by a stop for feedback. |
+| `skiphow-fast-fixes` | `$skiphow-fast-fixes Fix the search and export bugs locally. I will add feedback while you work.` | Checked local results as they become ready; independent work continues while feedback is pending. |
 
 Explicit `skiphow-plan` invocation requests durable planning records within the authorized audience. A read-only constraint overrides that default. Automatic selection for an ordinary planning question does not grant tracker writes. Unavailable tracking leaves complete issue drafts and a blocker.
 
-In fast-fixes, feedback or the next task first saves the previous shown iteration as a local commit, even when you want it revised. Acceptance keeps the session in iteration mode. Playwright/e2e test runs, full backend gates, and pytest wait for delivery; browser inspection and permitted focused checks remain available. Say `deploy-ready` or `clean` in this session to begin preparation. Say `deploy prod` to authorize the specified production release. Preparation and contextual clean alone do not authorize production or arbitrary deletion.
+Fast-fixes accepts new changes, revisions, and cancellations while accepted work continues. The lead handles tiny fixes directly and delegates independent work when that pays, with verified writer isolation and coordination of shared resources. It shows an inspected preview, demonstrated behavior, or an artifact as appropriate to the project; a browser and Git are not prerequisites. Before replacing a shown state, it preserves a recoverable checkpoint, using local commits in Git projects. Focused tests may run, including pytest or browser tests, while full delivery gates wait. Explicit requests to wait or restrict tests still govern.
+
+Acceptance keeps fast-fixes in local iteration. Say `deploy-ready` or `clean` to reconcile the delivery set, including running assignments, and begin preparation. Corrections receive affected review and revalidation; later work stays accounted for outside that delivery. Say `deploy prod` to authorize the specified production release. Preparation and contextual clean alone do not authorize production or arbitrary deletion. Hosts determine when messages arrive and which delegation or continuation controls exist; the plugin adds no background scheduler.
 
 Workflow selection and loading the shared kernel remain model behavior, currently `UNVERIFIED`. See the [workflow evidence](docs/evidence.md#optional-workflow-contract).
 

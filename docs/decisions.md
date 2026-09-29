@@ -4,10 +4,11 @@ This page records the choices that still matter when SkipHow changes. Read it be
 
 ## Current decisions
 
-The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-09-26 against the 5.1.5 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
+The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-09-30 against the 6.0.0 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
 
 | Decision | Active rationale | Premises | Evidence | Reopens when |
 | --- | --- | --- | --- | --- |
+| Fast-fixes coordinates incoming local work across stacks, preserves shown states, and continues independent work; plan distinguishes unanswered choices from execution readiness; deploy-ready reconciles active work into a checked candidate | The owner explicitly requested live orchestration; the old fast-fixes required a browser, Git worktree, stop after every shown result, and deferred every pytest/e2e invocation | Existing delegation, tracking, integration, and verification cover the shared responsibilities; host controls determine concurrency and message timing; restrictions and protected-action grants survive upgrades | Owner-requested `Contract` in 6.0.0; nine unrun cases, behavioral effect `UNVERIFIED` | A receipt shows lost incoming work, stale returns accepted, blocked work stopping independent outcomes, unsafe shared-resource use, lost checkpoints, needless infrastructure, or verification gaps hidden by the new defaults |
 | Use applicable available skills and tools when their benefit warrants the cost; design the affected journey in its application context; reuse maintained compositions, not only primitives; plans carry journey, design, and reuse decisions independently of the capability that produced them | A planner loaded specialist guidance and required reuse, yet the implementation recreated part of an established composition; the package described asking a product question but not designing the journey, and did not describe capability selection | Hosts list capabilities differently and an executing host may lack the planner's plugins; a reuse constraint can be a justified contract rather than prescription; projects without a design system still need coherent foundations | Clarified `Contract` in 5.1.5 after two private 5.1.1 sessions and an owner request; behavioral effect `UNVERIFIED` | A receipt shows a recreated maintained composition despite a carried reuse constraint, specialist ceremony on settled or non-interface work, invented or installed capabilities, or owner questions about routine interaction details |
 | Assignment size includes implementation, verification, and review; lengthy assignments carry progress and return conditions; checkout isolation does not isolate shared mutable resources | Independent repairs are not interface migrations; useful progress can precede commits; shared latest pointers can identify another lane's work | Existing evidence may suffice to size work; checkpoints follow project policy; host waits and events support observation without new state | Clarified `Contract` in 5.1.4 after one private 5.1.3 session; behavioral effect `UNVERIFIED` | A receipt shows unnecessary splitting, healthy work interrupted, missed progress breaches, or shared-state damage |
 | A repeat of the same kind of failure is evidence about a class, found with the cheapest check that covers the whole class and fixed together before the loop that found it runs again; a session the skill was governing reopens the kernel after the host compacts its context | Fixing each recurrence as a new instance sent the owner hunting the next one and re-ran a half-hour gate once per stale expectation; Codex keeps no text from any package file across compaction and only the skill description in the host's own skill list survives | The second appearance is readable in the owner's words or the gate's output; the description is the one package-owned surface that survives on both hosts; the sentence conditions on the skill already governing | `Contract` (4.8.4); one private Codex session on 4.8.2 motivates both; effect `UNVERIFIED` | A run sweeps unrelated surfaces on a first report, a governed Codex session still never reopens the kernel after compaction, or the description sentence selects the skill for an ungoverned session |
@@ -33,6 +34,40 @@ The live decisions, their premises, and what would reopen each. "Evidence" says 
 | CTO evidence belongs to a scenario; suite status reports declared coverage and carries no behavioral label; an eligible terminal outcome also needs a verified fixture manifest and retained end-state artifact for suite coverage; outside the suite, eligibility is judged per claim (loaded, delivered at destination, foreign work preserved, completion honesty, comparative benefit), each with its own required evidence, a confirmed failure recorded as `FAIL` rather than as missing evidence, and a loading observation labelling nothing else | One successful run cannot support eleven unrun scenarios or imply another host, activation arm, or trial; prose summaries cannot replace inspectable state; a per-run standard left every 3.x and 4.x observation unlabelled while the ledger quoted them | Coverage, terminal outcome, and receipt sufficiency are independent; a complete run set may contain failures; the rules for each claim were fixed before any new run and validated against the retained captures | `Deterministic` corpus validation in 4.0.1 and per-claim validation in 4.3.0 (`scripts/claim_eligibility.py`); suite behavior `UNVERIFIED` | A claim needs evidence no rule expresses, or a rule is found to weaken the public meaning of `Observed` |
 
 The sections below are the history behind those rows: what each release tried, measured, and rejected. They are non-normative. Where a section and the index disagree, the index is current and the section records how it got there.
+
+## Live fixes across stacks
+
+The owner requested live orchestration for a stream of fixes, with independent work continuing while new requests and
+feedback arrive. They explicitly broadened fast-fixes beyond interface work and permitted focused tests, including
+pytest and browser tests, while retaining deferred delivery gates. Source inspection found the serial boundary in both
+fast-fixes and the kernel. Existing references already owned delegation, isolation, integration, and tracking.
+
+Version 6.0.0 changes that optional workflow's defaults rather than adding another orchestration layer. The lead handles
+simple work directly, delegates when its full cost is justified, reconciles additions, revisions, cancellation, and
+pause, and checks returns against current intent. Workspace isolation does not isolate test databases or services.
+Shown results require recoverable preservation before replacement; Git commits remain the Git path, with project or
+host preservation elsewhere. A blocked checkpoint stops that transition rather than all independent work. Plan declares
+known unanswered product choices incomplete, and deploy-ready reconciles in-flight work and late corrections before
+accepting a concrete delivery candidate. Human blockers retain their evidence and resume condition without closing the
+outcome or inventing automatic continuation.
+
+This is a major release because existing fast-fixes users previously received a stop after every shown result and a
+blanket pytest/e2e deferral. The new default can continue work and run focused checks. Existing explicit wait and test
+restrictions remain binding, and ongoing sessions preserve their accepted feedback agreement and authority. Users can
+retain the earlier cadence by asking to wait after each result and naming the tests to defer. No new publication,
+production, spending, or external-record authority comes from the upgrade.
+
+| Changed responsibility | Surviving execution path | Acceptance scenario |
+| --- | --- | --- |
+| Stop after showing an iteration | Continue independent accepted work; explicit wait or pause still stops it | Incoming-work and pause/resume cases; existing explicit-wait regressions |
+| Browser preview and Git worktree prerequisites | Demonstrate the actual behavior or artifact, preserve shown state through an available safe mechanism, verify separate writer state | Focused-check, non-Git artifact, and coordination-boundaries cases |
+| Blanket pytest/e2e ban | Focused behavior checks with mandatory project requirements, explicit restrictions, and hook integrity | Focused-check case and existing deferred-hook cases |
+| Checkpoint before any later edit | Checkpoint before superseding the shown state; independent work can continue | Blocked-checkpoint independent-inspection case |
+| Current-state acceptance of delegate returns | Current intent as well as checked state; updates and cancellation reach affected assignments | Incoming-work and in-flight delivery cases |
+
+No scheduler, fixed roles, new tracker schema, mandatory plan, or host adapter was added. No paid behavioral runs were
+performed. The new cases specify acceptance, not measured speed, savings, or host reliability. Reopen this design when
+receipts identify a concrete failure that these existing mechanisms cannot address.
 
 ## Interaction design, reuse, and specialist capabilities
 

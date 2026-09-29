@@ -2,6 +2,26 @@
 
 This page separates package checks from observed model behavior. The full 2.0 evidence remains in the immutable [`v2.0.1` research snapshot](https://github.com/mzored/SkipHow/tree/1c811262e6acdbdc58a2ee862b54e0b8d3478eaa/docs/research/2026-08-27).
 
+## 6.0.0 live fixes across stacks
+
+Version 6.0.0 implements an explicitly requested workflow contract. Fast-fixes accepts incoming changes and feedback,
+continues independent work, delegates proportionately, preserves shown states, and permits focused verification across
+stacks. Plan distinguishes incomplete preparation from scope with no known open product choice. Deploy-ready reconciles
+active assignments and late corrections into a checked delivery candidate. Human-dependent outcomes remain unfinished
+with concrete resume conditions. The [decision](decisions.md#live-fixes-across-stacks) records compatibility and the
+surviving paths for responsibilities whose old mechanisms changed.
+
+The basis is the owner's request and source inspection, not a controlled behavioral comparison. Nine new cases in the
+[corpus](../evals/cases.json) cover focused checks, non-Git artifacts, live incoming work, pause/resume, blocked checkpoints,
+in-flight delivery, coordination limits, unanswered planning choices, and human blockers. The coordination and blocker
+cases are explicitly read-only decision probes. The live catalog cases request delegation to exercise its coordination;
+they do not establish that delegation is cheaper for those small repairs. Message-injection timing and real host controls
+must be retained in any future live receipt; a sequential replay does not prove in-flight handling.
+
+Existing explicit-wait and deferred-test cases remain intact. Deterministic checks validate package and corpus contracts
+only. No paid model sessions or new clean-install receipts were requested. Actual behavior, cross-host continuity,
+concurrency, latency improvement, and cost savings on this package remain `UNVERIFIED`.
+
 ## 5.1.5 interaction design, reuse, and specialist capabilities
 
 Version 5.1.5 makes four `Contract` clarifications. The kernel states the general responsibility to use applicable
