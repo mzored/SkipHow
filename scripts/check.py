@@ -89,10 +89,14 @@ SKILL_NAME = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 AGENT_SKILL_FIELDS = frozenset(
     {"name", "description", "license", "compatibility", "metadata", "allowed-tools"}
 )
-# Claude Code middle-truncates tool output beyond about 10,000 characters, and a
+# Claude Code cuts a failing command's output to about 10,000 characters of head
+# and tail, agents often read a skill file in a chained command that fails, and a
 # numbered view adds seven characters per line, so a larger file loses its middle.
 SKILL_MARKDOWN_VIEW_LIMIT = 10_000
 SKILL_MARKDOWN_LINE_PREFIX = 7
+# Room a playbook keeps below that limit, so a method addition does not first
+# have to shorten unrelated guidance. The kernel is budgeted by displacement.
+SKILL_MARKDOWN_VIEW_RESERVE = 500
 COMMON_MANIFEST_METADATA_FIELDS = frozenset(
     {
         "name",
@@ -1548,6 +1552,32 @@ def validate_skill_directory(skill_dir: Path) -> list[str]:
     return errors
 
 
+def numbered_view_size(text: str) -> int:
+    """Return the characters a line-numbered host view of this text occupies."""
+    return len(text) + SKILL_MARKDOWN_LINE_PREFIX * len(text.splitlines())
+
+
+def lint_reference_view_headroom(plugin_root: Path | None = None) -> list[str]:
+    """Name playbooks inside the reserve below the one-view limit; never fails a run."""
+    root = PLUGIN_ROOT if plugin_root is None else plugin_root
+    warnings: list[str] = []
+    for references in sorted((root / "skills").glob("*/references")):
+        for path in markdown_files(references):
+            if path.is_symlink():
+                continue
+            try:
+                size = numbered_view_size(path.read_text(encoding="utf-8"))
+            except (OSError, UnicodeError):
+                continue
+            headroom = SKILL_MARKDOWN_VIEW_LIMIT - size
+            if 0 <= headroom < SKILL_MARKDOWN_VIEW_RESERVE:
+                warnings.append(
+                    f"{display_path(path)} has {headroom} characters of view headroom; "
+                    "tighten it before an addition needs the room"
+                )
+    return warnings
+
+
 def validate_skill_markdown_view_size(skill_dir: Path) -> list[str]:
     """Keep every skill Markdown file small enough to reach context in one view."""
     errors: list[str] = []
@@ -1559,7 +1589,7 @@ def validate_skill_markdown_view_size(skill_dir: Path) -> list[str]:
         except (OSError, UnicodeError) as exc:
             errors.append(f"cannot measure {display_path(path)}: {exc}")
             continue
-        size = len(text) + SKILL_MARKDOWN_LINE_PREFIX * len(text.splitlines())
+        size = numbered_view_size(text)
         if size > SKILL_MARKDOWN_VIEW_LIMIT:
             errors.append(
                 f"{display_path(path)} numbered view is {size} characters; keep it at most "
@@ -2127,6 +2157,8 @@ def offline_checks(base: str | None = None, lint: list[str] | None = None) -> li
         + validate_plugin_static()
         + validate_release_version_change(base)
     )
+    if lint is not None:
+        lint.extend(lint_reference_view_headroom())
     commands = [
         [sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider", "--durations=10"],
     ]

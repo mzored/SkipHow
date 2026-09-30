@@ -151,7 +151,7 @@ A request only to answer, compare, diagnose, review, research, or plan is read-o
 
 ## Does it orchestrate agents?
 
-Yes, at the instruction level. SkipHow makes the lead agent accountable for planning, decomposition, deliberate model and effort selection, verified writer isolation, monitoring, independent review, integration, and reconciliation when the request calls for them. Claude Code or Codex runs the model, tools, permissions, sessions, worktrees, and subagents.
+Yes, at the instruction level. SkipHow makes the lead agent accountable for planning, decomposition, deliberate model and effort selection, verified writer isolation, monitoring, independent review, integration, and reconciliation when the request calls for them. Each delegate is briefed to act as CTO of its own assignment: it fixes what it finds inside that assignment and returns the rest to the lead, who decides what happens to it. Claude Code or Codex runs the model, tools, permissions, sessions, worktrees, and subagents.
 
 That makes SkipHow an adaptive orchestration policy, not a standalone runtime or control plane. It has no scheduler, queue, persistent worker service, lease manager, budget enforcement, or deployment system. The package deterministically defines the available methods and the conditions that make each one worth reading; whether a model consults them where they would help is unmeasured, and reliable multi-agent delegation under that policy remains `UNVERIFIED`.
 

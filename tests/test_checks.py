@@ -487,6 +487,26 @@ def test_skill_markdown_must_fit_one_host_view(tmp_path: Path) -> None:
     assert f"at most {limit}" in errors[0]
 
 
+def test_playbook_near_the_view_limit_is_non_blocking_lint(tmp_path: Path) -> None:
+    plugin = tmp_path / "skiphow"
+    skill = write_skill(plugin / "skills", "skiphow")
+    references = skill / "references"
+    references.mkdir()
+    limit = check.SKILL_MARKDOWN_VIEW_LIMIT
+    prefix = check.SKILL_MARKDOWN_LINE_PREFIX
+    reserve = check.SKILL_MARKDOWN_VIEW_RESERVE
+    (references / "tight.md").write_text("x" * (limit - reserve - prefix) + "\n", encoding="utf-8")
+    (references / "roomy.md").write_text("x" * (limit - reserve - prefix - 1) + "\n", encoding="utf-8")
+    (skill / "SKILL.md").write_text("x" * (limit - prefix - 1) + "\n", encoding="utf-8")
+
+    warnings = check.lint_reference_view_headroom(plugin)
+
+    assert len(warnings) == 1
+    assert "tight.md" in warnings[0]
+    assert f"has {reserve - 1} characters" in warnings[0]
+    assert check.validate_skill_markdown_view_size(skill) == []
+
+
 def test_local_links_decode_one_uri_layer_without_rewriting_literal_names(
     tmp_path: Path,
 ) -> None:

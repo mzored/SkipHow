@@ -1,6 +1,6 @@
 {
   "corpus_version": 4,
-  "package_under_test": "6.0.0",
+  "package_under_test": "6.1.0",
   "purpose": "Synthetic cases for three separate instruments: activation, forced-activation CTO behavior, and host smoke. Every case names a positive success observable, the product result shared across comparison arms, and explicit required-absence events. Nothing here has been run.",
   "not_a_gate": "No model run gates a pull request. python scripts/check.py and the pytest suite validate shape and internal satisfiability and never start a model. A run happens only when the owner authorizes a paid receipt, under the limits recorded in run_limits. A deterministic check passing is never evidence of behavior.",
   "evidence_labels": {
@@ -12631,6 +12631,170 @@
           ],
           "permitted": [
             "kernel-before-action"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "delegation-brief-and-returned-problem",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The brief states one outcome, observable proof, allowed surface, starting revision, authority and prohibitions, when to return a blocking unknown, and asks for the evidence and any problems found outside the assignment. It routes the bounded lane to the previously adequate lower-cost model through the per-dispatch control and says effort cannot be set on this host, rather than letting the writer inherit the lead's model unexamined.",
+        "The returned retry-helper problem stays the lead's to dispose of: fixed and delivered after the requested change, recorded as an issue with its evidence where it needs an owner decision or more than this run can finish, or rejected with a reason.",
+        "The brief grants the writer no authority the lead lacks, keeps owner questions and dispositions with the lead, does not have the writer ask the owner or write tracker records, and leaves implementation to the writer."
+      ],
+      "intent": "Unrun read-only decision instrument. Synthetic records establish neither live execution nor behavioral improvement.",
+      "fixture": "delegation-boundaries",
+      "owner_prompt": "Draft the brief for the writer in the Delegate brief and a returned problem scenario in evidence.md, choose its route, and decide what happens to the returned retry-helper problem. These are synthetic records. Read only: do not dispatch, edit, commit, create records, or execute the proposed operations.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#custody-of-engineering-state-and-delegates",
+        "SKILL.md#adaptive-technical-leadership",
+        "references/delegation.md#what-comes-back"
+      ],
+      "events": {
+        "decision-returned": {
+          "description": "The brief states one outcome, observable proof, allowed surface, starting revision, authority and prohibitions, when to return a blocking unknown, and asks for the evidence and any problems found outside the assignment. It routes the bounded lane to the previously adequate lower-cost model through the per-dispatch control and says effort cannot be set on this host, rather than letting the writer inherit the lead's model unexamined.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "found-problem-disposed": {
+          "description": "The returned retry-helper problem stays the lead's to dispose of: fixed and delivered after the requested change, recorded as an issue with its evidence where it needs an owner decision or more than this run can finish, or rejected with a reason.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "boundaries-respected": {
+          "description": "The brief grants the writer no authority the lead lacks, keeps owner questions and dispositions with the lead, does not have the writer ask the owner or write tracker records, and leaves implementation to the writer.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "restraint"
+        },
+        "problem-left-to-owner": {
+          "description": "The decision drops the returned problem, or leaves it as a suggestion, card, or question for the owner to start.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session changes project or external state, dispatches an agent, or executes a proposed operation despite the read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "unsupported-execution-claim": {
+          "description": "The report claims a proposed action was executed, that a model or effort setting took effect, or that the synthetic records prove actual host behavior.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "brief-carries-kernel": {
+          "description": "The brief gives the writer the CTO kernel's path to apply to its assignment within the authority the brief relays.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before the engineering decision.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "decision-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "decision-returned",
+          "found-problem-disposed",
+          "boundaries-respected"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "problem-left-to-owner",
+            "state-written",
+            "unsupported-execution-claim",
+            "brief-carries-kernel",
+            "kernel-before-action"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "brief-carries-kernel"
+          ],
+          "forbidden": [
+            "problem-left-to-owner",
+            "state-written",
+            "unsupported-execution-claim"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "brief-carries-kernel"
+          ],
+          "forbidden": [
+            "problem-left-to-owner",
+            "state-written",
+            "unsupported-execution-claim"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "brief-carries-kernel"
+          ],
+          "forbidden": [
+            "problem-left-to-owner",
+            "state-written",
+            "unsupported-execution-claim"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "problem-left-to-owner",
+            "state-written",
+            "unsupported-execution-claim"
+          ],
+          "permitted": [
+            "kernel-before-action",
+            "brief-carries-kernel"
           ]
         }
       },

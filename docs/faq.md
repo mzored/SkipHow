@@ -14,7 +14,7 @@ They already plan, write code, run tests, and often make sound technical choices
 
 ## Does SkipHow orchestrate agents?
 
-Yes, at the instruction level. It instructs the host agent to choose methods, plan, decompose, delegate, monitor, review, and reconcile work when the request calls for it. This matches the modern use of orchestration for deciding which agents or tools run, in what order, and how the next step is chosen.
+Yes, at the instruction level. It instructs the host agent to choose methods, plan, decompose, delegate, monitor, review, and reconcile work when the request calls for it. Each delegate is briefed to act as CTO of its own assignment: it fixes what it finds inside that assignment and returns the rest to the lead, who decides what happens to it. This matches the modern use of orchestration for deciding which agents or tools run, in what order, and how the next step is chosen.
 
 Reliable multi-agent delegation under that policy remains `UNVERIFIED`. The package design can be inspected deterministically; model compliance needs receipts.
 
