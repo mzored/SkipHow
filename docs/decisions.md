@@ -4,10 +4,11 @@ This page records the choices that still matter when SkipHow changes. Read it be
 
 ## Current decisions
 
-The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-09-30 against the 6.1.0 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
+The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-10-01 against the 6.1.1 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
 
 | Decision | Active rationale | Premises | Evidence | Reopens when |
 | --- | --- | --- | --- | --- |
+| Briefs convey a compact, evidenced handoff; bulky artifacts stay accessible by reference through review and return checks; corrections carry current evidence and unresolved findings; shortened check output retains the check's own terminal status | The lead can read a return-size rule without conveying it to the worker, and a filter can succeed while the check fails | Small results can stay inline; all findings, blockers, and uncertainty survive; the lead still verifies current state and destination; no file format, size quota, or new coordinator is required | Clarified `Contract` in 6.1.1 after three private installed sessions and owner-approved implementation; four unrun cases; causal and behavioral effects `UNVERIFIED` | A receipt shows lost findings, inaccessible proof treated as acceptance, blanket report files, repeated bulk copied into the coordinator, or a filter status accepted as check status |
 | Fast-fixes coordinates incoming local work across stacks, preserves shown states, and continues independent work; plan distinguishes unanswered choices from execution readiness; deploy-ready reconciles active work into a checked candidate | The owner explicitly requested live orchestration; the old fast-fixes required a browser, Git worktree, stop after every shown result, and deferred every pytest/e2e invocation | Existing delegation, tracking, integration, and verification cover the shared responsibilities; host controls determine concurrency and message timing; restrictions and protected-action grants survive upgrades | Owner-requested `Contract` in 6.0.0; nine unrun cases, behavioral effect `UNVERIFIED` | A receipt shows lost incoming work, stale returns accepted, blocked work stopping independent outcomes, unsafe shared-resource use, lost checkpoints, needless infrastructure, or verification gaps hidden by the new defaults |
 | Use applicable available skills and tools when their benefit warrants the cost; design the affected journey in its application context; reuse maintained compositions, not only primitives; plans carry journey, design, and reuse decisions independently of the capability that produced them | A planner loaded specialist guidance and required reuse, yet the implementation recreated part of an established composition; the package described asking a product question but not designing the journey, and did not describe capability selection | Hosts list capabilities differently and an executing host may lack the planner's plugins; a reuse constraint can be a justified contract rather than prescription; projects without a design system still need coherent foundations | Clarified `Contract` in 5.1.5 after two private 5.1.1 sessions and an owner request; behavioral effect `UNVERIFIED` | A receipt shows a recreated maintained composition despite a carried reuse constraint, specialist ceremony on settled or non-interface work, invented or installed capabilities, or owner questions about routine interaction details |
 | Assignment size includes implementation, verification, and review; lengthy assignments carry progress and return conditions; checkout isolation does not isolate shared mutable resources | Independent repairs are not interface migrations; useful progress can precede commits; shared latest pointers can identify another lane's work | Existing evidence may suffice to size work; checkpoints follow project policy; host waits and events support observation without new state | Clarified `Contract` in 5.1.4 after one private 5.1.3 session; behavioral effect `UNVERIFIED` | A receipt shows unnecessary splitting, healthy work interrupted, missed progress breaches, or shared-state damage |
@@ -34,6 +35,44 @@ The live decisions, their premises, and what would reopen each. "Evidence" says 
 | CTO evidence belongs to a scenario; suite status reports declared coverage and carries no behavioral label; an eligible terminal outcome also needs a verified fixture manifest and retained end-state artifact for suite coverage; outside the suite, eligibility is judged per claim (loaded, delivered at destination, foreign work preserved, completion honesty, comparative benefit), each with its own required evidence, a confirmed failure recorded as `FAIL` rather than as missing evidence, and a loading observation labelling nothing else | One successful run cannot support eleven unrun scenarios or imply another host, activation arm, or trial; prose summaries cannot replace inspectable state; a per-run standard left every 3.x and 4.x observation unlabelled while the ledger quoted them | Coverage, terminal outcome, and receipt sufficiency are independent; a complete run set may contain failures; the rules for each claim were fixed before any new run and validated against the retained captures | `Deterministic` corpus validation in 4.0.1 and per-claim validation in 4.3.0 (`scripts/claim_eligibility.py`); suite behavior `UNVERIFIED` | A claim needs evidence no rule expresses, or a rule is found to weaken the public meaning of `Observed` |
 
 The sections below are the history behind those rows: what each release tried, measured, and rejected. They are non-normative. Where a section and the index disagree, the index is current and the section records how it got there.
+
+## Proportionate handoffs and terminal check evidence
+
+The owner approved an information-flow correction after three private installed longrun sessions were inspected,
+two on 6.1.0 and one on 6.0.0. The return-size rule reached each lead but was not found in its delegates' tool-result
+reads. Returns contributed to recorded message volume alongside the lead's own command inputs and tool output;
+the first compaction in one session occurred with returns making up only about 6.5% of that volume. This does not
+locate the cause of compaction or show that changing the package will reduce it. See [the evidence ledger](evidence.md#611-proportionate-handoffs-and-check-status).
+
+Version 6.1.1 makes the existing handoff boundary explicit in the kernel's brief contract. Its point-of-use guidance
+in `delegation` defines the actionable return: status, checked result identity, acceptance evidence, every finding
+and blocker, and accessible references. Bulk stays with the agent that needs it through briefs, review inputs,
+and return checks. The lead still checks necessary evidence and widens inspection when risk or contradiction
+warrants it. Corrections return changes and current evidence without losing unresolved obligations. A small result
+can stay inline; an existing artifact can carry details; no assignment owes a new report file.
+
+Three candidates were weighed. Conveying the existing boundary at dispatch, and preserving it through the handoff,
+is adopted because it closes the readable gap without a new role or state store. A word or line cap was refused:
+one installed session already briefed such caps, and a cap says nothing about which facts must survive. Fixed
+intermediate coordinators and a report registry were refused because they add dispatch and reconciliation costs
+without evidence that the native return path is insufficient. Current Superpowers supplies the comparable idea
+of a compact return contract conveyed in the brief; its numeric ceiling and mandatory report file are not adopted.
+The sources and costs are recorded in [prior art](prior-art.md#proportionate-delegation-handoffs-in-611).
+
+The same inspection found check statuses lost behind output filters. `verification` now preserves the check's own
+terminal result and relevant failures during output reduction; a successful display process proves no check,
+and unknown status or inaccessible evidence stays unverified. This clarifies existing evidence responsibility,
+not a shell-specific command requirement. The already-written compaction reload rule is left alone: a 6.1.0
+session not rereading the kernel is an observation, not evidence for another reminder.
+
+Four arm-aware read-only corpus cases cover a short and a bulky result, numerous review findings, correction and
+stale evidence, and inaccessible or filtered evidence. They impose no return-length assertion and make no live
+execution or context-saving claim. The kernel's brief replaces its old return clause; `delegation` retains every
+finding and current-state acceptance; `verification` retains original check results. Kernel frame and custody
+wording and delegation's trigger, readiness, and routing wording were tightened to preserve the one-view boundary
+and playbook reserve, without removing a responsibility.
+Reopen if concise returns lose actionable facts, evidence cannot be reached, or the lead stops validating results.
+Behavior and reduced compaction remain `UNVERIFIED`; no paid comparison was run.
 
 ## Delegates as CTO of their brief, and workflow continuity
 

@@ -1,6 +1,6 @@
 # Delegation
 
-Open this when work holds a sizeable independent piece a delegate could carry, when its parts would land, be verified, or be reviewed separately, or when a delegate's results have to come back and be reconciled.
+Open this for sizeable independent work, parts that land, verify, or review separately, or delegate returns to reconcile.
 
 ## Whether to split at all
 
@@ -20,7 +20,7 @@ Where a split is risky or tightly coupled, an independent check can earn its cos
 
 ## Order and readiness
 
-A unit is blocked when it needs another's result, and not when you would rather do it first. Record only those edges; a part is ready when nothing it needs is outstanding, whatever order you imagined for it. Readiness is not capacity: start only ready units you can keep isolated and integrate as each lands.
+A unit is blocked when it needs another's result; record those edges. It is ready when none remain, regardless of preferred order. Readiness is not capacity: start only ready units you can isolate and integrate as each lands.
 
 Serialize parts that would change the same shared surface even when nothing else blocks them: concurrent edits to one file, interface, schema, or migration cost more to reconcile than they save. The kernel's isolation rule decides whether a delegate may write at all.
 
@@ -40,15 +40,15 @@ Supply assignment-specific rules and completion evidence absent from the host's 
 
 ## The level each delegate runs at
 
-Choose the lead's and each delegate's model and effort separately, for the lowest expected total cost of a verified acceptable outcome with a credible chance of meeting the lane's acceptance bar in one pass. That cost includes retries, latency, verification, correction, and integration, within the owner's token, spending, and latency constraints. Compare model and effort independently: a more capable model at reduced effort can cost less per accepted result than a cheaper model at greater effort. No total order across models and effort levels is assumed, and the parent's setting is neither a floor nor a ceiling. Judge the reasoning and ambiguity involved, the breadth and interaction of context, the consequence of error and how hard it is to detect and undo, and the cost and independence of the lead's verification. Task labels such as planning, implementation, review, and diagnosis do not determine capability, and ordinary routing needs no new benchmark or persistent routing state.
+Choose the lead's and each delegate's model and effort separately to minimize expected total cost with a credible chance of meeting acceptance in one pass. Include retries, latency, verification, correction, and integration within the owner's token, spending, and latency constraints. Compare model and effort independently: a stronger model at lower effort can cost less per accepted result than a cheaper model at higher effort. Models and effort have no assumed total order; the parent's setting is neither floor nor ceiling. Judge reasoning, ambiguity, context breadth and interactions, error consequences and detectability and reversibility, and the cost and independence of the lead's verification. Task labels do not determine capability; ordinary routing needs no new benchmark or persistent state.
 
-Preserve a route already shown adequate for comparable work unless evidence justifies a change; root status, orchestration, duration, and stronger settings being available are not such evidence. Favor a lower-cost sufficient route when the lane is bounded, its completion condition is explicit, context is contained, and errors are cheap to detect and repair. Use greater capability when it materially improves the chance of acceptance, especially with substantial ambiguity or errors expensive to detect, integrate, or undo. High consequence alone does not require the strongest model when independent verification catches mistakes cheaply, and routine-looking work can need more when its failures are hard to observe.
+Preserve a route shown adequate for comparable work unless evidence justifies a change; root status, orchestration, duration, and available stronger settings are not evidence. Favor a cheaper sufficient route for bounded work with explicit acceptance, contained context, and errors cheap to detect and repair. Use greater capability when it materially improves acceptance, especially with ambiguity or errors costly to detect, integrate, or undo. High consequence alone does not require the strongest model when independent verification catches mistakes cheaply; routine-looking work can need more when failures are hard to observe.
 
 Keep an escalation local to the assignment that needs it and reconsider the route for simpler follow-up work. Use actual task consumption where available; API list prices, cached-input charges, and subscription allowances measure different things, and unavailable costs stay unknown.
 
 After a miss, identify what limited the result: capability or effort, the brief, task or context size, missing evidence or tools, or the boundary. Change the cheapest responsible factor; an unclear completion condition needs a clearer brief, not escalation. Repeat only with a justified change; there is no fixed escalation count.
 
-Naming a model or effort in your own message is not setting it. Use the host's model and effort controls, which may be separate, configured ahead of dispatch, or inherited, and read the effective settings back where the host reveals them; a model override does not establish an effort override. Report an unavailable control or hidden setting honestly, and where only inheritance is available, count that when deciding whether delegation pays.
+Naming a model or effort does not set it. Use host controls, whether separate, preconfigured, or inherited; read effective settings back where exposed. A model override proves no effort override. Report unavailable controls or hidden settings, and count inheritance-only routing when weighing delegation.
 
 A delegate that can dispatch its own may lack this guidance, and its delegates often inherit its route. The brief's bound on nested fan-out, which may be none, keeps cost the lead cannot see from multiplying.
 
@@ -60,7 +60,9 @@ Prefer host-managed worktrees and cleanup. Otherwise verify an ignored in-projec
 
 ## What comes back
 
-Leave bulky output in the host's working area and return the verdict, every finding, and its path.
+Convey the handoff contract in the brief: status, checked result identity, acceptance-evidence summary, every finding and blocker, and accessible detail references. Keep decision-relevant facts inline and bulky reports, logs, inventories, and attempt histories in the host's working area. Reuse artifacts; small results need no report file. Preserve every finding and uncertainty.
+
+Carry this boundary through briefs, review inputs, and return checks, passing bulk directly by reference to whoever needs it. The lead checks evidence, widening inspection for risk, contradiction, or missing proof; a verdict or pointer alone is not acceptance. Corrections return changes, current evidence, and all unresolved findings and blockers rather than the whole history.
 
 Settle returned technical questions from project evidence and your judgment, without passing them to the owner. A problem a delegate returns is one you found.
 

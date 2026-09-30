@@ -2,6 +2,37 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 6.1.1 (2026-10-01)
+
+### Changed
+
+- Delegate briefs convey a compact handoff with status, checked result identity, acceptance evidence, every finding
+  and blocker, and accessible detail references. Bulky reports and logs stay outside the coordinator's conversation
+  through briefs, review inputs, and return checks; small results can remain inline without a report file.
+- Corrections return changes and current evidence while preserving every unresolved finding and blocker. The lead
+  still checks necessary evidence and expands inspection when risk, contradiction, or missing proof warrants it.
+- Shortening check output preserves the check's own terminal status and relevant failures. A successful filter
+  does not prove its input check passed; unknown status or inaccessible evidence remains `UNVERIFIED`.
+
+### Compatibility
+
+Patch release clarifying existing return-size and verification responsibilities. No owner interface, authority
+boundary, default side effect, public skill, project file format, or package structure changes. No fixed reply
+limit, mandatory report file, new coordinator, or continuation registry.
+
+### Validation
+
+Four unrun, arm-aware corpus cases cover short and bulky returns, numerous review findings, correction and stale
+evidence, and inaccessible or filtered evidence. Three private installed sessions motivate the correction; character
+shares are not token attribution, and compaction causality and changed behavior remain `UNVERIFIED`. See
+[the evidence ledger](docs/evidence.md#611-proportionate-handoffs-and-check-status). No paid comparison was run.
+
+The full local deterministic gate passed with pinned dependencies, and `git diff --check` passed. An isolated
+read-only Codex review returned APPROVE with no qualifying findings; it confirmed preserved responsibilities and
+arm-valid cases. A final self-check removed an overly restrictive "only" from the tightened readiness sentence,
+preserving the original dependency condition without excluding other blockers. Host schema validation, clean install,
+explicit and implicit activation, continuity, and behavioral effects for this candidate remain `UNVERIFIED`.
+
 ## 6.1.0 (2026-09-30)
 
 Delegates act as CTO of their own brief, workflows survive context compaction, and the routing objective sits where a

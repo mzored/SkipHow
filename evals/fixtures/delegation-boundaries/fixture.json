@@ -1,6 +1,6 @@
 {
   "id": "delegation-boundaries",
-  "summary": "Synthetic decisions about repair groups, progress, outgrown assignments, checkpoint ownership, and delegate briefs.",
+  "summary": "Synthetic decisions about repair groups, progress, outgrown assignments, checkpoints, briefs, handoffs, and check evidence.",
   "kind": "checked-in decision evidence",
   "synthetic": true,
   "planted": [
@@ -9,7 +9,11 @@
     "A delegate discovers an incompatible prerequisite after completing a checked subset.",
     "A long assignment has verified progress without commits, within its agreed expectation.",
     "Two isolated worktrees share a stash stack whose latest entry changes.",
-    "A bounded writer lane has an adequate cheaper route, and an earlier delegate returned a problem outside its assignment."
+    "A bounded writer lane has an adequate cheaper route, and an earlier delegate returned a problem outside its assignment.",
+    "Short and bulky results need proportionate handoffs with accessible evidence and visible concerns.",
+    "A review has twelve distinct confirmed findings and one unresolved compatibility limitation.",
+    "A correction has current evidence and an unresolved blocker beside a delayed superseded completion.",
+    "An inaccessible report, a failed check behind a successful filter, and an interrupted probe cannot prove acceptance."
   ],
   "absent_on_purpose": [
     "No real agents, timers, worktrees, stash entries, application, or performance receipt.",
