@@ -2,6 +2,46 @@
 
 This page separates package checks from observed model behavior. The full 2.0 evidence remains in the immutable [`v2.0.1` research snapshot](https://github.com/mzored/SkipHow/tree/1c811262e6acdbdc58a2ee862b54e0b8d3478eaa/docs/research/2026-08-27).
 
+## 6.1.1 proportionate handoffs and check status
+
+Three private installed Claude Code longrun sessions were inspected, two on 6.1.0 and one on 6.0.0. They remain
+private; no transcript, project identity, issue content, or raw output is retained here. The owner approved the
+following aggregate findings and the contract correction. Counts describe the inspected prefixes of those sessions,
+not a promise about their later continuation.
+
+| Installed package and inspected session | Automatic compactions | Return share of recorded message characters |
+| --- | --- | --- |
+| 6.1.0, shorter remaining-work session | 0 | About 16% |
+| 6.1.0, longer preparation session | 3 | About 19% |
+| 6.0.0, repair session | 3 | About 22% |
+
+The denominator is recorded user and assistant message content, including tool inputs and outputs; returns include
+their host wrapper. It excludes system prompts, tool definitions, and metadata. These are character shares, not token
+attribution or billed usage. Before the repair session's first compaction, returns made up about 6.5% of that content.
+The lead's own reads and command inputs are substantial contributors; returns alone do not explain the symptom.
+All six compact-boundary records named the automatic trigger, at roughly 267,000 to 271,000 pre-compaction tokens.
+Different package versions are kept separate, and no rate or causal effect is inferred from them.
+
+The existing bulky-return sentence reached each lead. A scan of delegates' tool-result text found no load of that
+sentence. The repair session already put numeric word limits in 41 of its 56 initial dispatches. This supports
+examining whether the lead conveys the information boundary rather than imposing another length cap. Which sentence
+produced the observed returns, and whether compact handoffs reduce compaction, remain `UNVERIFIED`.
+
+The inspection also found a pipeline's display status used as a check status and an empty recorded check status.
+These show unavailable terminal evidence, not proof that a failed suite was subsequently called successful. The
+6.1.0 preparation session did not reread the kernel after its three compactions despite the loaded workflow's rule;
+that observation does not justify another wording change here.
+
+Version 6.1.1 clarifies the existing contract at dispatch and in `delegation`: compact actionable returns, accessible
+detail references, every finding and blocker, and correction deltas carrying current evidence. `verification`
+retains the original check's terminal result when output is shortened. The host's own [subagent documentation](https://code.claude.com/docs/en/sub-agents#run-parallel-research)
+describes returned summaries consuming main context; [how Claude Code works](https://code.claude.com/docs/en/how-claude-code-works#when-context-fills-up)
+describes automatic context management. These support the mechanism, not an effectiveness claim for this package.
+
+The four `delegation-*handoff`, correction/stale-evidence, and inaccessible/filtered-evidence cases use synthetic
+records in `delegation-boundaries`. They are unrun decision probes, not live delegates or performance measurements.
+No paid comparison or clean-install receipt was run. Changed behavior and reduced compaction remain `UNVERIFIED`.
+
 ## 6.1.0 delegates as CTO of their brief and workflow continuity
 
 Version 6.1.0 makes three `Contract` changes on the evidence of one private 6.0.0 Claude Code fast-fixes session with

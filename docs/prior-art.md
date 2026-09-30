@@ -115,6 +115,25 @@ An idea from another project becomes a focused method or a kernel invariant only
 
 The reasoning behind each rule that survived is in [decision history](decisions.md), and what real runs have and have not shown is in [current evidence](evidence.md).
 
+## Proportionate delegation handoffs in 6.1.1
+
+Read on 2026-10-01. Claude Code's [subagent guidance](https://code.claude.com/docs/en/sub-agents#run-parallel-research)
+warns that detailed returns from many agents consume main context. Its [best practices](https://code.claude.com/docs/en/best-practices#manage-context-aggressively)
+also count file reads, messages, and command output, so a return-size boundary cannot make coordination context-free.
+
+Superpowers' current [implementer prompt](https://github.com/obra/superpowers/blob/main/skills/subagent-driven-development/implementer-prompt.md)
+conveys the return contract at dispatch: full details in a report, then a short reply with status, commits, test summary,
+concerns, and its path, with blockers directly actionable. Its [orchestration skill](https://github.com/obra/superpowers/blob/main/skills/subagent-driven-development/SKILL.md)
+passes bulk by reference instead of copying accumulated history into each brief. SkipHow adopts that information
+boundary at its existing dispatch and return points. It does not adopt the fifteen-line cap, report file per assignment,
+or another lifecycle ledger: those add format and maintenance costs to small work, and a cap can hide findings.
+
+GSD's current [executor](https://github.com/open-gsd/gsd-core/blob/main/agents/gsd-executor.md) also returns completion
+metadata and a summary path. Its planning-state documents and per-task commit structure impose a larger persistent
+workflow than this defect needs. No additional mechanism is adopted from it. SkipHow keeps every actionable finding,
+accessible proof, and the lead's own verification while allowing small results to stay inline. Neither comparison
+establishes SkipHow's behavioral benefit.
+
 ## Interaction design and capability use in 5.1.5
 
 Version 5.1.5 re-applies the earlier conclusions rather than reading new sources. The `grilling` question frontier

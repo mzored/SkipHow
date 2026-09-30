@@ -32,6 +32,8 @@ Before integration or release, satisfy the broader evidence the project's delive
 
 Bind each result to the code, dependencies, configuration, environment, and destination it exercised. Reuse it while those inputs remain equivalent. A commit, rebase, merge, tag, or named stage does not invalidate evidence by itself. Establish equivalence from revision-bound CI, the relevant tree and configuration, or an immutable artifact, and rerun only the checks whose inputs changed.
 
+When filtering, redirecting, or summarizing output, preserve the check's own terminal status and relevant failures. A filter's success does not prove the check passed; an unknown status or inaccessible evidence stays `UNVERIFIED` until established.
+
 An intermittent test is a defect or an explicit blocker until it is classified; [diagnosis](diagnosis.md) covers that.
 
 ## Reviewing a change
