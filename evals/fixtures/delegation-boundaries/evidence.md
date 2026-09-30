@@ -65,3 +65,18 @@ position, not an immutable identity. Another push or drop can change it. The eng
 restore A's patch and preserve B's checkpoint, including during cleanup. Serializing shared mutations
 or restoring an independently verified immutable checkpoint without stack mutation are available.
 Future preservation can use lane-owned state. Worktree paths alone do not isolate the shared resource.
+
+## Delegate brief and a returned problem
+
+The lead is about to dispatch one writer to correct a bookings-screen date label that shows the previous
+day for evening bookings west of UTC. The cause is located in one formatting helper, and a focused unit
+test plus a screenshot of the screen prove the fix. The writer's isolated checkout at the recorded starting
+revision is verified. The host's agent tool accepts a model per dispatch and exposes no effort control;
+with no model set, the writer inherits the lead's, the most capable available. A mid-tier model passed
+three comparable bounded fixes in this project on the first attempt.
+
+An earlier delegate in this session returned its checked result with one note outside its assignment: the
+orders client's retry helper swallows timeouts, so a slow checkout reports success. It attached the failing
+request log. Fixing it changes shared client behavior that other services call, and the owner's request
+covers only the bookings screen. The project tracks work in GitHub Issues within its authorized workflow.
+Nobody has told the owner about the problem yet.

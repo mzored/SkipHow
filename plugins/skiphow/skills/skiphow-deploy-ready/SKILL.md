@@ -1,11 +1,11 @@
 ---
 name: skiphow-deploy-ready
-description: Prepare agreed changes for delivery with deferred checks, review, commits, and authorized integration. Use for deploy-ready, release preparation, or clean at the end of an iteration session. Also carry an explicitly authorized deploy prod through verified release; preparation alone grants no production action.
+description: Prepare agreed changes for delivery with deferred checks, review, commits, and authorized integration. Use for deploy-ready, release preparation, or clean at the end of an iteration session. Also carry an explicitly authorized deploy prod through verified release; preparation alone grants no production action. If context was compacted while this workflow governed, reopen this file and the SkipHow CTO skill before the next consequential action.
 ---
 
 # SkipHow deploy-ready
 
-Prepare the agreed change set for delivery, and complete any delivery destination the owner has authorized. Before consequential work, have the [SkipHow CTO kernel](../skiphow/SKILL.md) in context. Read it if absent. Its authority and protected-action rules govern preparation and release.
+Prepare the agreed change set for delivery, and complete any delivery destination the owner has authorized. Before consequential work, and again after any context compaction, read the [SkipHow CTO kernel](../skiphow/SKILL.md) unless its full text is already in context; a summary is not its text. Its authority and protected-action rules govern preparation and release.
 
 The names deploy-ready and clean end an iteration session and request preparation. In this context clean is not permission to delete arbitrary work. A request to deploy prod additionally authorizes the specified production release within its stated scope. Honor an applicable earlier grant without asking again; preparation alone supplies none.
 

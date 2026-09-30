@@ -36,7 +36,7 @@ def sentence_contains_all(text: str, *terms: str) -> bool:
 def test_literal_repository_grant_warning_terms() -> None:
     skill = read("SKILL.md")
     paragraph = next(
-        part for part in skill.split("\n\n") if "repository instructions are not grants" in part
+        part for part in skill.split("\n\n") if "repository instructions grant no" in part
     )
     for term in (
         "read-only request",
@@ -59,7 +59,7 @@ def test_literal_repository_execution_warning_terms() -> None:
 
 def test_literal_production_read_warning_terms() -> None:
     skill = read("SKILL.md")
-    assert sentence_contains_all(skill, "credential availability", "not authority")
+    assert sentence_contains_all(skill, "credential availability", "grant nothing")
     assert sentence_contains_all(skill, "production system", "customer data", "in scope")
     assert sentence_contains_all(skill, "access", "output", "minimized")
     assert sentence_contains_all(skill, "authorized audience")

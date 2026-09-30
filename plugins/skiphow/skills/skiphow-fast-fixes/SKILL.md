@@ -1,11 +1,11 @@
 ---
 name: skiphow-fast-fixes
-description: Coordinate a live stream of local fixes and feedback before delivery, across interfaces, services, scripts, configuration, and artifacts. Use for bounded changes that may arrive while others run, with proportional delegation, focused checks, and recoverable shown results. A request to ship uses the delivery workflow.
+description: Coordinate a live stream of local fixes and feedback before delivery, across interfaces, services, scripts, configuration, and artifacts. Use for bounded changes that may arrive while others run, with proportional delegation, focused checks, and recoverable shown results. A request to ship uses the delivery workflow. If context was compacted while this workflow governed, reopen this file and the SkipHow CTO skill before the next consequential action.
 ---
 
 # SkipHow fast-fixes
 
-Give the owner checked local results to inspect and revise while continuing independent accepted work. Before consequential work, have the [SkipHow CTO kernel](../skiphow/SKILL.md) in context. Read it if absent. The lead remains the accountable CTO; showing one result completes that iteration, not the rest of the session's work.
+Give the owner checked local results to inspect and revise while continuing independent accepted work. Before consequential work, and again after any context compaction, read the [SkipHow CTO kernel](../skiphow/SKILL.md) unless its full text is already in context; a summary is not its text. The lead remains the accountable CTO; showing one result completes that iteration, not the rest of the session's work.
 
 ## Coordinate incoming work
 

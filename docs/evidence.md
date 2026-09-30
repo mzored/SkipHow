@@ -2,6 +2,30 @@
 
 This page separates package checks from observed model behavior. The full 2.0 evidence remains in the immutable [`v2.0.1` research snapshot](https://github.com/mzored/SkipHow/tree/1c811262e6acdbdc58a2ee862b54e0b8d3478eaa/docs/research/2026-08-27).
 
+## 6.1.0 delegates as CTO of their brief and workflow continuity
+
+Version 6.1.0 makes three `Contract` changes on the evidence of one private 6.0.0 Claude Code fast-fixes session with
+two compactions and twelve dispatches. Every dispatch named a model and none set effort, which that host's agent tool
+does not expose; the report did not say so. The `delegation` routing text never reached context. Nine dispatches came
+after compaction had removed the workflow and the kernel, and no surviving text told the run to reopen them. Briefs
+carried CTO standards only where the lead wrote them, and after compaction the lead left a found problem as a follow-up
+card for the owner. That reads as wording that was missing or unreachable after compaction. It is one session, so it
+shows no general deviation from text that was in context.
+
+Workflow descriptions now reopen the workflow and the kernel after compaction, and each workflow's kernel link reads
+again after compaction unless the full text is in context. The kernel reads its rules for a delegate as CTO of its
+brief, within the owner's authority the brief relays, and the lead keeps records; briefs ask for found problems and pass the kernel's path; and the dispatch
+sentence carries the routing objective. The [decision](decisions.md#delegates-as-cto-of-their-brief-and-workflow-continuity)
+records the surviving paths and rejected alternatives. One new unrun corpus case,
+`delegation-brief-and-returned-problem`, states acceptance for the brief and the returned problem's disposition.
+
+Host output limits were remeasured on 2026-09-30 from local transcripts. Claude Code passes a successful command's output
+inline up to about 30,000 characters, then a file path and a 2,000-character preview; it cuts a failing command's output
+to about 10,000 characters of head and tail. Codex passes about 40,000 characters. Of 101 recent kernel reads in local
+Claude transcripts, 10 were cut by the failing-command path, all of kernels larger than the view limit, which therefore
+stays. No paid model sessions or clean-install receipts were run. Whether compacted sessions reopen the workflow and
+kernel, whether delegates return found problems or route differently, and any cost effect remain `UNVERIFIED`.
+
 ## 6.0.0 live fixes across stacks
 
 Version 6.0.0 implements an explicitly requested workflow contract. Fast-fixes accepts incoming changes and feedback,

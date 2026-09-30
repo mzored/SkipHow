@@ -4,8 +4,8 @@
 
 | Version | Supported |
 | --- | --- |
-| 6.0.x | Yes |
-| 5.1.x, 5.0.x, 4.8.x, 4.7.x, 4.6.x, 4.5.x, 4.4.x, 4.3.x, 4.2.x, 4.1.x, and 4.0.x | No; upgrade to 6.0.x, reviewing its iteration defaults; existing authorization stays unchanged |
+| 6.1.x | Yes |
+| 6.0.x, 5.1.x, 5.0.x, 4.8.x, 4.7.x, 4.6.x, 4.5.x, 4.4.x, 4.3.x, 4.2.x, 4.1.x, and 4.0.x | No; upgrade to 6.1.x, reviewing the 6.0 iteration defaults when coming from 5.x or earlier; existing authorization stays unchanged |
 | 3.0.x and earlier | No |
 
 Security review covers the packaged owner skill, its linked playbooks, host manifests,

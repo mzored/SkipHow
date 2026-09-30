@@ -2,6 +2,47 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 6.1.0 (2026-09-30)
+
+Delegates act as CTO of their own brief, workflows survive context compaction, and the routing objective sits where a
+delegate is dispatched.
+
+### Changed
+
+- The kernel reads its rules for a delegate: it is CTO of its brief, within the owner's authority the brief relays. It fixes what it
+  finds inside its allowed surface, returns the rest with evidence, asks the lead rather than the owner, and gains no
+  authority the lead lacks. Briefs ask for found problems and pass the kernel's path. The kernel now names records among what the
+  lead keeps, with owner questions and dispositions; a problem a delegate returns counts as one the lead found.
+- The kernel's dispatch sentence states the routing objective: the cheapest route likely to meet the lane's acceptance
+  in one pass, set through host controls. `delegation` keeps the routing factors; its duplicate sentences moved into
+  the kernel or were merged with the rule that already carried them.
+- Every workflow description asks for the workflow and the kernel to be reopened after context compaction, and each
+  workflow's kernel link now reads again after compaction unless the kernel's full text is in context.
+- `delegation`, `verification`, and `tracked work` were tightened without changing a heading, anchor, or responsibility,
+  so each keeps room below the one-view limit. A non-blocking lint in `scripts/check.py` names any playbook within 500
+  characters of that limit. Kernel sentences were merged to fit the additions; no rule was removed.
+
+### Compatibility
+
+Minor release. No owner interface, authority boundary, default side effect, or project file format changes. Briefs gain
+two items, and delegates return found problems to the lead instead of dropping them; they do not write records or ask
+the owner. Existing projects need no action.
+
+### Validation
+
+One new unrun corpus case, `delegation-brief-and-returned-problem`, states acceptance for the brief and the returned
+problem's disposition. Deterministic validation establishes package and corpus consistency, not model behavior. One
+private 6.0.0 session motivates the change; its behavioral effect remains `UNVERIFIED`; see
+[the evidence ledger](docs/evidence.md#610-delegates-as-cto-of-their-brief-and-workflow-continuity). No paid
+experiments were run.
+
+An isolated read-only Codex review ran three rounds. Round 1 confirmed two findings: "with the lead in the owner's
+place" let a lead's instruction pass for the owner's explicit grant on a protected action, so the frame now limits a
+delegate to the owner's authority its brief relays; and the kernel did not keep records with the lead, so it now names
+them. Round 2 confirmed that one tightening in `tracked work` had turned "does not prove abandonment" into an ambiguous
+"proves no abandonment"; the original wording is restored. Round 3, limited to the three tightened playbooks, found
+nothing further.
+
 ## 6.0.0 (2026-09-30)
 
 ### Changed

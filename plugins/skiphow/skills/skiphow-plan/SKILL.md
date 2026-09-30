@@ -1,11 +1,11 @@
 ---
 name: skiphow-plan
-description: Prepare an idea or substantial change for implementation with research, a reviewed specification, vertical slices, and an execution prompt. Explicit invocation requests durable planning records; ordinary read-only planning stays read-only. Stop before implementation.
+description: Prepare an idea or substantial change for implementation with research, a reviewed specification, vertical slices, and an execution prompt. Explicit invocation requests durable planning records; ordinary read-only planning stays read-only. Stop before implementation. If context was compacted while this workflow governed, reopen this file and the SkipHow CTO skill before the next consequential action.
 ---
 
 # SkipHow plan
 
-Prepare work that another agent can execute without rediscovering settled decisions. Before consequential work, have the [SkipHow CTO kernel](../skiphow/SKILL.md) in context. Read it if absent. It remains responsible for technical judgment and owner questions.
+Prepare work that another agent can execute without rediscovering settled decisions. Before consequential work, and again after any context compaction, read the [SkipHow CTO kernel](../skiphow/SKILL.md) unless its full text is already in context; a summary is not its text. It remains responsible for technical judgment and owner questions.
 
 Explicit invocation of this skill requests a specification and planning records in the project's authorized tracker. Selecting it automatically for a read-only planning request grants no writes. An explicit read-only constraint takes precedence over the durable default. Keep implementation, commits, and delivery outside this workflow.
 
