@@ -1,0 +1,26 @@
+{
+  "id": "shared-balance",
+  "summary": "A named transfer defect also affects withdrawals through a shared balance invariant.",
+  "kind": "checked-in skeleton",
+  "synthetic": true,
+  "planted": [
+    "Both public operations permit an overdraft. The report names transfer only.",
+    "A transfer-only guard passes the reported path but leaves withdrawal broken.",
+    "Positive amount validation and valid operations already work and must survive the repair."
+  ],
+  "absent_on_purpose": [
+    "No tracker, remote, credentials, network, or live financial data.",
+    "No prescribed private helper, search command, or implementation shape."
+  ],
+  "setup": [
+    "Use scripts/capture_eval.py materialize to copy this fixture into a new owned scratch directory.",
+    "Keep the owner prompt unchanged across arms. Local repair only; no Git setup is needed.",
+    "Grade the delivered implementation with the original fixture oracle; edits to acceptance checks do not establish success."
+  ],
+  "run_checks": "python -m pytest tests/balance_checks.py",
+  "end_state_signals": [
+    "Both public operations reject overdrafts without changing either balance.",
+    "Exact-balance operations, valid transfers and withdrawals, and invalid-amount rejection retain their behavior."
+  ],
+  "privacy": "Invented accounts and integer units; no customer data, personal paths, credentials, or external effects."
+}

@@ -67,6 +67,9 @@ like the cancellation flow. Its new `RescheduleDialog` reimplements the detail s
 unsaved-change guard, and error banner in 220 lines. The maintained `AppointmentSheet` already provides those
 behaviors and accepts a slot-selection body. Screenshots of the two flows are nearly identical. The candidate's
 error banner does not restore focus after a failed save, which `AppointmentSheet` does.
+The review must identify the maintained sheet with its slot-selection body as the replacement and preserve
+slot selection, focus trapping and restoration, the unsaved-change guard, and save-error recovery. Deleting
+the dialog without preserving those responsibilities does not satisfy the accepted reschedule flow.
 
 ## Requirement beyond the existing composition
 
@@ -74,6 +77,25 @@ The accepted outcome lets clinic staff reschedule several appointments at once f
 `AppointmentSheet` edits one appointment and has no multi-selection. The shared list, checkbox, sheet, and toast
 primitives exist. Partial failure must report which appointments moved and which did not; that acceptance
 condition is recorded as an owner decision.
+
+## Native date input sufficient
+
+The accepted outcome collects one birth date as an ISO calendar date within a continuous minimum/maximum range.
+The project's supported platform already provides native date entry, keyboard access, and those range constraints.
+Its maintained `FormField` accepts a native input and supplies the required label, validation message, and focus
+handling. These capabilities are established synthetic evidence, not a claim about every browser. There is no
+date-range selection, unavailable-day display, or other calendar requirement. No new dependency is needed.
+The owner requests a read-only implementation recommendation for this settled scope.
+
+## Native date input insufficient
+
+The accepted outcome lets patients select an available appointment date. Unavailable dates must appear disabled
+before selection, including isolated unavailable days inside the otherwise allowed range. In this fixture's
+supported platform, the native input supplies continuous minimum/maximum bounds but no disabled-day display.
+The maintained `AvailabilityCalendar` already consumes the service's available-date list and supplies disabled
+days, keyboard navigation, and the required error and focus behavior. The server still validates availability
+when saving. It costs less to reuse this maintained composition than to reproduce it. Accepting any date and
+showing a save error omits an accepted requirement. The owner requests a read-only implementation recommendation.
 
 ## Partial design
 

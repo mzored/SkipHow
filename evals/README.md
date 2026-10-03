@@ -61,6 +61,19 @@ A case is run only when the owner authorizes a paid receipt.
 
 ## The arms
 
+The 6.1.2 simplification probes remain `UNVERIFIED`. `bug-shared-balance-invariant` uses `shared-balance`:
+the report names transfer, while acceptance exercises transfer and withdrawal with valid, exact-balance, excessive,
+zero, and negative amounts. The grader uses the fixture's original `tests/balance_checks.py` against the delivered
+implementation rather than trusting an edited oracle. `tests/test_simplification_fixtures.py` materializes scratch
+fixtures through the existing helper and proves that the oracle accepts two complete repair shapes and rejects both
+the unfixed implementation and a plausible transfer-only repair. It creates no Git repositories and starts no models.
+
+`design-native-capability-sufficient` and `design-native-capability-insufficient` use separate settled requirement
+sections of `planning-readiness` as read-only recommendation probes. They reward native range selection where sufficient
+and the maintained availability calendar where disabled dates are required, while rejecting omitted behavior and needless
+machinery. The strengthened `ux-duplicated-composition-review` requires the maintained sheet replacement and preserved
+selection, focus, unsaved-change protection, and error recovery. These synthetic probes do not prove browser behavior.
+
 The `ux-*` cases and `specialist-non-interface-task` use later sections of `planning-readiness`. Their capability lists
 are synthetic text, so they probe whether a plan or review applies suitable specialist guidance, preserves decisions
 across hosts, selects maintained compositions, designs proportionately, and surfaces hidden product choices. They do not

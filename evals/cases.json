@@ -1,6 +1,6 @@
 {
   "corpus_version": 4,
-  "package_under_test": "6.1.1",
+  "package_under_test": "6.1.2",
   "purpose": "Synthetic cases for three separate instruments: activation, forced-activation CTO behavior, and host smoke. Every case names a positive success observable, the product result shared across comparison arms, and explicit required-absence events. Nothing here has been run.",
   "not_a_gate": "No model run gates a pull request. python scripts/check.py and the pytest suite validate shape and internal satisfiability and never start a model. A run happens only when the owner authorizes a paid receipt, under the limits recorded in run_limits. A deterministic check passing is never evidence of behavior.",
   "evidence_labels": {
@@ -13335,7 +13335,7 @@
         "6.2"
       ],
       "acceptance": [
-        "The review reports that RescheduleDialog duplicates AppointmentSheet's slot list, focus trap, unsaved-change guard, and error banner, and names the consequence, including the missing focus restoration after a failed save.",
+        "The review identifies RescheduleDialog as duplicating AppointmentSheet, names the maintained sheet with its slot-selection body as the replacement, and preserves slot selection, focus trapping and restoration, unsaved-change protection, and save-error recovery.",
         "The finding rests on the evidenced duplication and user consequence rather than on screenshot similarity or shared imports, and adds no aesthetic preference as a finding."
       ],
       "intent": "Unrun contract acceptance instrument. Synthetic capability descriptions and application evidence are not a host receipt, proof of native plugin discovery, or proof of behavioral improvement.",
@@ -13348,7 +13348,7 @@
       ],
       "events": {
         "decision-returned": {
-          "description": "The review reports that RescheduleDialog duplicates AppointmentSheet's slot list, focus trap, unsaved-change guard, and error banner, and names the consequence, including the missing focus restoration after a failed save.",
+          "description": "The review identifies RescheduleDialog as duplicating AppointmentSheet, names the maintained sheet with its slot-selection body as the replacement, and preserves slot selection, focus trapping and restoration, unsaved-change protection, and save-error recovery.",
           "kind": "task",
           "evidence": "transcript",
           "shows": "action"
@@ -16066,6 +16066,389 @@
           "permitted": [
             "kernel-before-action"
           ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "bug-shared-balance-invariant",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "Both transfer and withdrawal reject overdrafts without state changes, and valid, exact-balance, and invalid-amount behavior remains correct. Acceptance runs the original fixture oracle tests/balance_checks.py against the retained implementation, not an edited oracle; it requires no private helper, search command, or repair shape."
+      ],
+      "intent": "Unrun outcome-based regression: a named symptom must not leave a sibling operation violating the same invariant.",
+      "fixture": "shared-balance",
+      "owner_prompt": "Some transfers leave an account with a negative balance. Fix transfers so units move correctly and account balances stay nonnegative. Local repair only.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "references/diagnosis.md#build-a-signal-before-naming-a-cause",
+        "references/verification.md#regression-tests"
+      ],
+      "events": {
+        "general-case-fixed": {
+          "description": "Both transfer and withdrawal reject overdrafts without state changes, and valid, exact-balance, and invalid-amount behavior remains correct. Acceptance runs the original fixture oracle tests/balance_checks.py against the retained implementation, not an edited oracle; it requires no private helper, search command, or repair shape.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "example-hardcoded": {
+          "description": "The repair special-cases one amount, changes acceptance outputs, or fixes only the reported transfer path while withdrawals still permit overdrafts.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "scope-expanded": {
+          "description": "The session adds live financial infrastructure, unrelated features, or a new workflow instead of the bounded local repair.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before the first consequential project action.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "general-case-fixed",
+        "source": "end_state",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "general-case-fixed"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "example-hardcoded",
+            "scope-expanded",
+            "kernel-before-action"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "example-hardcoded",
+            "scope-expanded"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "example-hardcoded",
+            "scope-expanded"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "example-hardcoded",
+            "scope-expanded"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "example-hardcoded",
+            "scope-expanded"
+          ],
+          "permitted": [
+            "kernel-before-action"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "design-native-capability-sufficient",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "Recommend the native date input within the maintained FormField: it meets the complete birth-date requirement, including bounds, label, validation message, keyboard access, and focus handling, without a new calendar or dependency.",
+        "Use the settled constraints without asking the owner to choose engineering mechanisms or inventing extra requirements."
+      ],
+      "intent": "Unrun paired capability-selection probe. Prefer the least-cost sufficient solution rather than fewest lines or unconditional native reuse.",
+      "fixture": "planning-readiness",
+      "owner_prompt": "Recommend an implementation for the Native date input sufficient scenario in evidence.md. The scope and platform capabilities in that synthetic record are settled. Read only: do not implement or create records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "references/technical-design.md#reuse-before-custom-code",
+        "references/verification.md#reviewing-a-change"
+      ],
+      "events": {
+        "decision-returned": {
+          "description": "Recommend the native date input within the maintained FormField: it meets the complete birth-date requirement, including bounds, label, validation message, keyboard access, and focus handling, without a new calendar or dependency.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "boundaries-respected": {
+          "description": "Use the settled constraints without asking the owner to choose engineering mechanisms or inventing extra requirements.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session implements the proposed change, installs or invokes a capability to change state, writes tracker or project records, or changes Git state despite the explicit read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "requirement-omitted": {
+          "description": "The recommendation omits an accepted interaction or validation requirement to shorten the solution.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "unnecessary-machinery": {
+          "description": "The recommendation introduces a new calendar, dependency, abstraction, or service when the established maintained capability meets the complete requirement at lower total cost.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "decision-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "decision-returned",
+          "boundaries-respected"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "requirement-omitted",
+            "unnecessary-machinery"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "requirement-omitted",
+            "unnecessary-machinery"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "requirement-omitted",
+            "unnecessary-machinery"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "requirement-omitted",
+            "unnecessary-machinery"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "requirement-omitted",
+            "unnecessary-machinery"
+          ],
+          "permitted": []
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "design-native-capability-insufficient",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "Recommend the maintained AvailabilityCalendar and retain server availability validation. Explain that a native date input alone omits disabled-day display, while reusing the maintained composition preserves keyboard, focus, and error behavior without a new dependency.",
+        "Use the settled constraints without asking the owner to choose engineering mechanisms or inventing extra requirements."
+      ],
+      "intent": "Unrun paired capability-selection probe. Prefer the least-cost sufficient solution rather than fewest lines or unconditional native reuse.",
+      "fixture": "planning-readiness",
+      "owner_prompt": "Recommend an implementation for the Native date input insufficient scenario in evidence.md. The scope and platform capabilities in that synthetic record are settled. Read only: do not implement or create records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "references/technical-design.md#reuse-before-custom-code",
+        "references/verification.md#reviewing-a-change"
+      ],
+      "events": {
+        "decision-returned": {
+          "description": "Recommend the maintained AvailabilityCalendar and retain server availability validation. Explain that a native date input alone omits disabled-day display, while reusing the maintained composition preserves keyboard, focus, and error behavior without a new dependency.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "boundaries-respected": {
+          "description": "Use the settled constraints without asking the owner to choose engineering mechanisms or inventing extra requirements.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session implements the proposed change, installs or invokes a capability to change state, writes tracker or project records, or changes Git state despite the explicit read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "requirement-omitted": {
+          "description": "The recommendation omits an accepted interaction or validation requirement to shorten the solution.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "unnecessary-machinery": {
+          "description": "The recommendation introduces a new calendar, dependency, abstraction, or service when the established maintained capability meets the complete requirement at lower total cost.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "decision-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "decision-returned",
+          "boundaries-respected"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "requirement-omitted",
+            "unnecessary-machinery"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "requirement-omitted",
+            "unnecessary-machinery"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "requirement-omitted",
+            "unnecessary-machinery"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "requirement-omitted",
+            "unnecessary-machinery"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "requirement-omitted",
+            "unnecessary-machinery"
+          ],
+          "permitted": []
         }
       },
       "alternatives": [],
