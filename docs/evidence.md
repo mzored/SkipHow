@@ -26,6 +26,15 @@ The release matrix keeps the deterministic package gate, each host schema, each 
 implicit activation, continuity, and behavioral suite separate. No package structure or installation mechanism changes,
 so fresh installation and activation experiments are not required and remain visible as `UNVERIFIED`.
 
+The independent read-only Codex review of source candidate `af8223e` against `b5c3a88` returned APPROVE with no
+qualifying findings or nonqualifying suggestions. It read the changed records, checked all existing corpus cases
+survived, and inspected the focused checks' scope without running models against the corpus. Host and operating-system
+homes were isolated, with a controlled reference to the minimum authentication file rather than a credential copy.
+The transcript confirmed the configured model, read-only sandbox, and no personal skill or installed-plugin paths.
+The reference and scratch were removed on exit. Subsequent edits record this verdict only; review establishes
+independent inspection, not behavioral evidence. Claude strict schema validation passed locally; Codex schema validation
+uses the pinned validator in CI, unavailable locally.
+
 ## 6.1.2 sufficient reuse and concrete complexity findings
 
 The owner requested this clarification after a read-only comparison with Ponytail revision

@@ -33,6 +33,12 @@ context-fit, cost, or parallel-execution gain is claimed. See [the evidence ledg
 The release matrix separates deterministic checks, host schemas, installation, activation, continuity, and behavior.
 Prose changes within the existing package structure require no fresh clean-install experiment.
 
+An isolated read-only Codex review of source candidate `af8223e` returned APPROVE with no qualifying findings or
+nonqualifying suggestions. It confirmed surviving responsibilities, valid comparison arms, and aligned 6.2.0 records.
+Both host and operating-system homes were isolated; the transcript confirmed the configured model, read-only sandbox,
+and absence of personal skill or installed-plugin paths. The minimum authentication reference and review scratch were
+removed on exit. Claude strict schema validation passed locally; the pinned Codex validator remains required in CI.
+
 ## 6.1.2 (2026-10-03)
 
 ### Changed
