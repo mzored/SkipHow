@@ -2,6 +2,39 @@
 
 This page separates package checks from observed model behavior. The full 2.0 evidence remains in the immutable [`v2.0.1` research snapshot](https://github.com/mzored/SkipHow/tree/1c811262e6acdbdc58a2ee862b54e0b8d3478eaa/docs/research/2026-08-27).
 
+## 6.2.0 workload-based planning and short launches
+
+Two private installed Codex planning sessions from 2026-10-02 carried the full 6.1.1 plan text. One returned a short
+launch without explicit longrun. Another returned a longer launch after an owner follow-up requesting longrun and
+reference-only task content, and repeated execution guidance. No transcript, project identity, private issue content,
+or personal path is retained here. These observations establish differing handoffs under the prior generic prompt
+requirement, not a failure rate or the cause of oversized tasks. The owner explicitly requested the new plan capability.
+
+The existing task review now assesses complete one-agent workload and requires supported smaller cuts when a task
+is too large. A conditional thin first working path, real parallel readiness and resource constraints, and a two-line
+launch are added inside plan. The kernel, delegation, and longrun retain their existing responsibilities, including
+outgrown-assignment recovery. [Prior art](prior-art.md#bounded-plans-and-first-working-paths-in-620) and
+[the decision](decisions.md#workload-based-planning-and-a-short-execution-launch) record the sources, scope, and alternatives.
+
+New arm-aware scenarios cover heterogeneous umbrella tasks, uncertain workload sampling, uniform automated changes,
+artificial microtasks, a first working path and mature reuse, real blocking edges and shared resources, host-native
+short launches and selected workflows, constraint provenance, and blocked preparation or sources. Existing migration,
+localization, small-change, and isolation cases remain. Every new scenario is `UNVERIFIED`; no paid behavioral
+comparison was run. Corpus checks establish scenario semantics, not successful agents, context savings, or parallelism.
+
+The release matrix keeps the deterministic package gate, each host schema, each clean install, explicit invocation,
+implicit activation, continuity, and behavioral suite separate. No package structure or installation mechanism changes,
+so fresh installation and activation experiments are not required and remain visible as `UNVERIFIED`.
+
+The independent read-only Codex review of source candidate `af8223e` against `b5c3a88` returned APPROVE with no
+qualifying findings or nonqualifying suggestions. It read the changed records, checked all existing corpus cases
+survived, and inspected the focused checks' scope without running models against the corpus. Host and operating-system
+homes were isolated, with a controlled reference to the minimum authentication file rather than a credential copy.
+The transcript confirmed the configured model, read-only sandbox, and no personal skill or installed-plugin paths.
+The reference and scratch were removed on exit. Subsequent edits record this verdict only; review establishes
+independent inspection, not behavioral evidence. Claude strict schema validation passed locally; Codex schema validation
+uses the pinned validator in CI, unavailable locally.
+
 ## 6.1.2 sufficient reuse and concrete complexity findings
 
 The owner requested this clarification after a read-only comparison with Ponytail revision

@@ -4,10 +4,11 @@ This page records the choices that still matter when SkipHow changes. Read it be
 
 ## Current decisions
 
-The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-10-03 against the 6.1.2 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
+The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-10-03 against the 6.2.0 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
 
 | Decision | Active rationale | Premises | Evidence | Reopens when |
 | --- | --- | --- | --- | --- |
+| Plan reviews actual one-agent workload, prepares bounded vertical slices across the accepted scope, proves an absent component path with a thin real slice, and returns an explicit short longrun launch unless the owner selected another workflow | One common outcome can conceal heterogeneous work; a generic short-prompt instruction permits missing invocation or repeated task and policy content | The owner requested these optional plan behaviors; existing delegation and longrun own execution, reslicing, writer isolation, and resource coordination; mature paths and uniform automated work need no artificial foundation or quotas | Owner-requested `Contract` in 6.2.0; two private 6.1.1 planning sessions show differing handoffs, not causal improvement; new scenarios and behavioral benefit `UNVERIFIED` | A receipt shows oversized assignments passing review, unnecessary fragmentation, invented blocking edges, safety deferred from a first slice, repeated launch content, or authority lost or expanded |
 | Simplification preserves complete accepted behavior at the lowest total cost; a complexity finding names a redundant construct, its consequence, a cheaper replacement or justified deletion, and surviving responsibilities | A short diff or native capability can omit required behavior, and a deletion can remove necessary focus, change protection, or recovery | The owner requested clarification after the Ponytail comparison; existing design and verification references already own these judgments | Clarified `Contract` in 6.1.2; three new unrun scenarios and one strengthened review scenario; deterministic oracle checks are not model evidence | A receipt shows insufficient reuse accepted as complete, needless machinery retained, or a complexity finding losing a required responsibility |
 | Briefs convey a compact, evidenced handoff; bulky artifacts stay accessible by reference through review and return checks; corrections carry current evidence and unresolved findings; shortened check output retains the check's own terminal status | The lead can read a return-size rule without conveying it to the worker, and a filter can succeed while the check fails | Small results can stay inline; all findings, blockers, and uncertainty survive; the lead still verifies current state and destination; no file format, size quota, or new coordinator is required | Clarified `Contract` in 6.1.1 after three private installed sessions and owner-approved implementation; four unrun cases; causal and behavioral effects `UNVERIFIED` | A receipt shows lost findings, inaccessible proof treated as acceptance, blanket report files, repeated bulk copied into the coordinator, or a filter status accepted as check status |
 | Fast-fixes coordinates incoming local work across stacks, preserves shown states, and continues independent work; plan distinguishes unanswered choices from execution readiness; deploy-ready reconciles active work into a checked candidate | The owner explicitly requested live orchestration; the old fast-fixes required a browser, Git worktree, stop after every shown result, and deferred every pytest/e2e invocation | Existing delegation, tracking, integration, and verification cover the shared responsibilities; host controls determine concurrency and message timing; restrictions and protected-action grants survive upgrades | Owner-requested `Contract` in 6.0.0; nine unrun cases, behavioral effect `UNVERIFIED` | A receipt shows lost incoming work, stale returns accepted, blocked work stopping independent outcomes, unsafe shared-resource use, lost checkpoints, needless infrastructure, or verification gaps hidden by the new defaults |
@@ -36,6 +37,47 @@ The live decisions, their premises, and what would reopen each. "Evidence" says 
 | CTO evidence belongs to a scenario; suite status reports declared coverage and carries no behavioral label; an eligible terminal outcome also needs a verified fixture manifest and retained end-state artifact for suite coverage; outside the suite, eligibility is judged per claim (loaded, delivered at destination, foreign work preserved, completion honesty, comparative benefit), each with its own required evidence, a confirmed failure recorded as `FAIL` rather than as missing evidence, and a loading observation labelling nothing else | One successful run cannot support eleven unrun scenarios or imply another host, activation arm, or trial; prose summaries cannot replace inspectable state; a per-run standard left every 3.x and 4.x observation unlabelled while the ledger quoted them | Coverage, terminal outcome, and receipt sufficiency are independent; a complete run set may contain failures; the rules for each claim were fixed before any new run and validated against the retained captures | `Deterministic` corpus validation in 4.0.1 and per-claim validation in 4.3.0 (`scripts/claim_eligibility.py`); suite behavior `UNVERIFIED` | A claim needs evidence no rule expresses, or a rule is found to weaken the public meaning of `Observed` |
 
 The sections below are the history behind those rows: what each release tried, measured, and rejected. They are non-normative. Where a section and the index disagree, the index is current and the section records how it got there.
+
+## Workload-based planning and a short execution launch
+
+Version 6.2.0 implements the owner's accepted planning contract. Two private Codex sessions carrying the full 6.1.1
+plan text returned different handoffs: a short launch omitted explicit longrun, while another supplied a longer one
+after an owner follow-up and repeated execution guidance. The previous workflow required only a short prompt; this
+establishes freedom in its shape, not violation of a prior explicit-longrun default or a general model failure rate.
+The workload complaint motivates an explicitly requested review clarification; no transcript establishes its cause.
+
+The existing mandatory review of every published task now weighs context, heterogeneous changes, manual output,
+verification, review, and integration together. A common outcome does not establish one-agent feasibility. Existing
+measurements, comparable work, or a representative sample can settle material uncertainty. Supported size findings
+name the load, credible smaller independently verifiable cuts, and surviving acceptance and dependencies. Splits
+must repay repeated context and coordination costs. Tools and review corrections remain part of one implementation
+assignment. Large uniform automated changes and small cohesive work can stay whole. No score, inventory gate,
+universal file or context limit, sizing registry, or new review stage is added.
+
+For a path not yet established through the components, plan selects a thin first slice with real behavior and only
+the structure it needs, preserving required safety, integrity, and compatibility. The entire accepted scope is still
+prepared as bounded tasks, with the earlier result and later assumptions named for rechecking at dispatch. Independent
+preparation can start sooner. Mature projects reuse their path; compatible migrations and mechanical changes retain
+their existing treatment. Actual blocking results differ from shared-write, runtime-resource, and capacity constraints.
+Two consumers of a settled API need no dependency edge solely for that reason.
+
+Ready scope gets one explicit workflow invocation and one delivery sentence pointing to the concrete accepted records
+and agreed destination. Longrun is the default, using the target host's syntax; an owner-selected workflow survives.
+Only otherwise-missing project, subset, and run constraints are added. Existing records carry acceptance, dependencies,
+and authorization provenance; the launch copies no task content or CTO policy and creates no grant. Inaccessible
+sources and unfinished preparation remain blockers to affected scope. This is a compatible optional-workflow capability,
+so it receives a MINOR version without changing the kernel, authority, package structure, or installation.
+
+Alternatives rejected: a prompt generator or new scheduler for a prose-only gap, an unconditional skeleton stage in
+every project, horizontal setup/implementation/test/handoff tickets with no standalone outcome, numeric size quotas,
+and leaving accepted later tasks for decomposition during longrun. Existing longrun and delegation already preserve
+an outgrown assignment's work and evidence and return its remaining scope for reassessment.
+
+[Prior art](prior-art.md#bounded-plans-and-first-working-paths-in-620) records the primary sources and rejected mechanisms.
+The new acceptance scenarios are arm-aware and unrun. Deterministic validation and independent instruction review
+do not prove model reliability, context fit, parallel execution, or lower token cost. Reopen this decision on receipts
+showing oversized accepted tasks, microtask overhead, invented dependencies, omitted first-slice protections, or lost
+launch constraints and authority.
 
 ## Sufficient reuse and concrete complexity findings
 

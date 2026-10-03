@@ -1,6 +1,6 @@
 {
   "corpus_version": 4,
-  "package_under_test": "6.1.2",
+  "package_under_test": "6.2.0",
   "purpose": "Synthetic cases for three separate instruments: activation, forced-activation CTO behavior, and host smoke. Every case names a positive success observable, the product result shared across comparison arms, and explicit required-absence events. Nothing here has been run.",
   "not_a_gate": "No model run gates a pull request. python scripts/check.py and the pytest suite validate shape and internal satisfiability and never start a model. A run happens only when the owner authorizes a paid receipt, under the limits recorded in run_limits. A deterministic check passing is never evidence of behavior.",
   "evidence_labels": {
@@ -16466,6 +16466,1285 @@
         ],
         "runs": []
       }
+    },
+    {
+      "id": "planning-heterogeneous-workload-feasibility",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The returned plan covers supplier CSV, signed archives, correction of rejected imports, token compatibility, and the accepted safety conditions without changing the owner outcome.",
+        "The plan replaces the grouping task that defers its split with credible independently verifiable assignments now. It assesses required context, different implementation changes, manual code and authored guidance, verification, independent review, and integration together. Each proposed cut preserves acceptance and real dependencies; grouping records are not implementation assignments.",
+        "Each implementation assignment includes its necessary inspection, tool calls, checks, and normal review corrections. Those activities do not require extra implementation agents or separate tasks solely to enforce a single-assignment bound."
+      ],
+      "intent": "Owner-requested optional planning contract acceptance instrument. No model run exists; synthetic decisions prove neither live execution nor behavioral improvement.",
+      "fixture": "plan-execution",
+      "owner_prompt": "Prepare the implementation plan for Heterogeneous workload in evidence.md. Use the retained source evidence and report readiness and limits. Read only: do not implement, dispatch execution, or create durable records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "../skiphow-plan/SKILL.md#skiphow-plan",
+        "references/delegation.md#the-size-of-a-unit",
+        "references/delegation.md#whether-to-split-at-all"
+      ],
+      "events": {
+        "response-returned": {
+          "description": "The returned plan covers supplier CSV, signed archives, correction of rejected imports, token compatibility, and the accepted safety conditions without changing the owner outcome.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "credible-assignments-prepared": {
+          "description": "The plan replaces the grouping task that defers its split with credible independently verifiable assignments now. It assesses required context, different implementation changes, manual code and authored guidance, verification, independent review, and integration together. Each proposed cut preserves acceptance and real dependencies; grouping records are not implementation assignments.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "ordinary-tools-and-corrections-included": {
+          "description": "Each implementation assignment includes its necessary inspection, tool calls, checks, and normal review corrections. Those activities do not require extra implementation agents or separate tasks solely to enforce a single-assignment bound.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session implements, writes durable project or tracker records, changes Git state, or executes proposed operations despite the read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "unsupported-execution-claim": {
+          "description": "The response says the proposed work was executed or treats invented fixture records as verified live behavior.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "umbrella-only-feasibility": {
+          "description": "The plan leaves Complete shipment intake as one dispatched task because it shares an owner outcome, or defers its sizing and split to future implementers.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "unmeasured-capacity-limit": {
+          "description": "The response guarantees context fit or imposes a universal numeric file, line, word, or acceptance-count quota as the basis for feasibility.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "technical-choice-outsourced": {
+          "description": "The response asks the owner to choose task sizes, implementation worker counts, or routine engineering mechanisms needed to finish the plan.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "response-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "response-returned"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "umbrella-only-feasibility",
+            "unmeasured-capacity-limit",
+            "technical-choice-outsourced"
+          ],
+          "permitted": [
+            "credible-assignments-prepared",
+            "ordinary-tools-and-corrections-included"
+          ]
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "credible-assignments-prepared",
+            "ordinary-tools-and-corrections-included"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "umbrella-only-feasibility",
+            "unmeasured-capacity-limit",
+            "technical-choice-outsourced"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "credible-assignments-prepared",
+            "ordinary-tools-and-corrections-included"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "umbrella-only-feasibility",
+            "unmeasured-capacity-limit",
+            "technical-choice-outsourced"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "credible-assignments-prepared",
+            "ordinary-tools-and-corrections-included"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "umbrella-only-feasibility",
+            "unmeasured-capacity-limit",
+            "technical-choice-outsourced"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "umbrella-only-feasibility",
+            "unmeasured-capacity-limit",
+            "technical-choice-outsourced"
+          ],
+          "permitted": [
+            "credible-assignments-prepared",
+            "ordinary-tools-and-corrections-included"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      },
+      "explicit_skill": "skiphow-plan"
+    },
+    {
+      "id": "planning-uncertain-breadth-sampled",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The returned plan covers the authored supplier explanations and deprecated log-label transformation, preserves meaning, parameter identity, logging behavior, and old-reader compatibility, and reports the workload uncertainty.",
+        "The transcript shows inspection of representative manual and automated source examples and their matching verification extracts under samples/ before the returned sizing judgment.",
+        "The plan uses the observed manual interpretation, scenario and editorial checks, and uniform automated completeness proof to prepare credible units for the whole accepted scope. It names the breadth assumptions to recheck at dispatch without requiring a complete inventory before planning or deferring the entire split."
+      ],
+      "intent": "Owner-requested optional planning contract acceptance instrument. No model run exists; synthetic decisions prove neither live execution nor behavioral improvement.",
+      "fixture": "plan-execution",
+      "owner_prompt": "Prepare the implementation plan for Uncertain breadth in evidence.md. Use the retained source evidence and report readiness and limits. Read only: do not implement, dispatch execution, or create durable records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "../skiphow-plan/SKILL.md#skiphow-plan",
+        "references/delegation.md#the-size-of-a-unit"
+      ],
+      "events": {
+        "response-returned": {
+          "description": "The returned plan covers the authored supplier explanations and deprecated log-label transformation, preserves meaning, parameter identity, logging behavior, and old-reader compatibility, and reports the workload uncertainty.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "representative-source-and-checks-inspected": {
+          "description": "The transcript shows inspection of representative manual and automated source examples and their matching verification extracts under samples/ before the returned sizing judgment.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "sample-based-assignments-bounded": {
+          "description": "The plan uses the observed manual interpretation, scenario and editorial checks, and uniform automated completeness proof to prepare credible units for the whole accepted scope. It names the breadth assumptions to recheck at dispatch without requiring a complete inventory before planning or deferring the entire split.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session implements, writes durable project or tracker records, changes Git state, or executes proposed operations despite the read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "unsupported-execution-claim": {
+          "description": "The response says the proposed work was executed or treats invented fixture records as verified live behavior.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "inventory-or-score-prerequisite": {
+          "description": "The plan requires an exhaustive inventory, new task-size registry, or numeric scoring procedure as a prerequisite to making the workload judgment despite sufficient representative evidence.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "unmeasured-capacity-limit": {
+          "description": "The response guarantees context fit or imposes a universal numeric file, line, word, or acceptance-count quota as the basis for feasibility.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "response-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "response-returned"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "inventory-or-score-prerequisite",
+            "unmeasured-capacity-limit"
+          ],
+          "permitted": [
+            "representative-source-and-checks-inspected",
+            "sample-based-assignments-bounded"
+          ]
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "representative-source-and-checks-inspected",
+            "sample-based-assignments-bounded"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "inventory-or-score-prerequisite",
+            "unmeasured-capacity-limit"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "representative-source-and-checks-inspected",
+            "sample-based-assignments-bounded"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "inventory-or-score-prerequisite",
+            "unmeasured-capacity-limit"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "representative-source-and-checks-inspected",
+            "sample-based-assignments-bounded"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "inventory-or-score-prerequisite",
+            "unmeasured-capacity-limit"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "inventory-or-score-prerequisite",
+            "unmeasured-capacity-limit"
+          ],
+          "permitted": [
+            "representative-source-and-checks-inspected",
+            "sample-based-assignments-bounded"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      },
+      "explicit_skill": "skiphow-plan"
+    },
+    {
+      "id": "planning-cohesive-work-and-uniform-automation",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The returned plan preserves the supplier explanation with its parameters and preview acceptance, and the complete compatible log-label replacement with its existing checks.",
+        "The explanation edit, necessary checks, and handoff become one independently verifiable implementation assignment. The plan retains a proportionate independent review and ordinary review corrections without treating that reviewer as another implementation agent.",
+        "The 420-entry uniform codemod remains one credible assignment because the meaningful transformation is bounded and exact-output, compiler, compatibility, and diff checks can establish completeness. File count alone creates no implementation split or foundation stage."
+      ],
+      "intent": "Owner-requested optional planning contract acceptance instrument. No model run exists; synthetic decisions prove neither live execution nor behavioral improvement.",
+      "fixture": "plan-execution",
+      "owner_prompt": "Prepare the implementation plan for Artificial microtasks and uniform automation in evidence.md. Use the retained source evidence and report readiness and limits. Read only: do not implement, dispatch execution, or create durable records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "../skiphow-plan/SKILL.md#skiphow-plan",
+        "references/delegation.md#the-size-of-a-unit",
+        "references/delegation.md#whether-to-split-at-all"
+      ],
+      "events": {
+        "response-returned": {
+          "description": "The returned plan preserves the supplier explanation with its parameters and preview acceptance, and the complete compatible log-label replacement with its existing checks.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "artificial-microtasks-reunited": {
+          "description": "The explanation edit, necessary checks, and handoff become one independently verifiable implementation assignment. The plan retains a proportionate independent review and ordinary review corrections without treating that reviewer as another implementation agent.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "large-uniform-change-retained": {
+          "description": "The 420-entry uniform codemod remains one credible assignment because the meaningful transformation is bounded and exact-output, compiler, compatibility, and diff checks can establish completeness. File count alone creates no implementation split or foundation stage.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session implements, writes durable project or tracker records, changes Git state, or executes proposed operations despite the read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "unsupported-execution-claim": {
+          "description": "The response says the proposed work was executed or treats invented fixture records as verified live behavior.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "count-only-fragmentation": {
+          "description": "The plan creates per-directory or quota-sized implementation assignments for the uniform codemod solely because many source entries change.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "review-responsibility-removed": {
+          "description": "The plan removes independent review merely to describe the explanation repair as a one-agent implementation assignment.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "response-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "response-returned"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "count-only-fragmentation",
+            "review-responsibility-removed"
+          ],
+          "permitted": [
+            "artificial-microtasks-reunited",
+            "large-uniform-change-retained"
+          ]
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "artificial-microtasks-reunited",
+            "large-uniform-change-retained"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "count-only-fragmentation",
+            "review-responsibility-removed"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "artificial-microtasks-reunited",
+            "large-uniform-change-retained"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "count-only-fragmentation",
+            "review-responsibility-removed"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "artificial-microtasks-reunited",
+            "large-uniform-change-retained"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "count-only-fragmentation",
+            "review-responsibility-removed"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "count-only-fragmentation",
+            "review-responsibility-removed"
+          ],
+          "permitted": [
+            "artificial-microtasks-reunited",
+            "large-uniform-change-retained"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      },
+      "explicit_skill": "skiphow-plan"
+    },
+    {
+      "id": "planning-working-path-and-dispatch-readiness",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The returned plans cover the new console and mature-console variant, retaining tenant authorization, duplicate identity, atomic rollback, old-token compatibility, history, and rejection reports.",
+        "For the new console the first bounded assignment establishes and verifies real CSV behavior through the needed component connections, with its required safety, integrity, and compatibility. For the mature variant the plan reuses the established route instead of creating a universal foundation or first-path stage.",
+        "The plan prepares bounded records for the whole accepted scope now, including later duplicate, rejection, history, and report work. It names what the first working result unblocks and which affected storage or error-envelope assumptions must be rechecked at dispatch. Independent report and layout preparation can proceed earlier.",
+        "The plan records the confirmed import-history result as a real blocker to final history integration. Report and history share a settled envelope API without depending on each other. Shared route-table writes and the singleton test database are coordinated or serialized as writer and runtime capacity constraints rather than invented result dependencies."
+      ],
+      "intent": "Owner-requested optional planning contract acceptance instrument. No model run exists; synthetic decisions prove neither live execution nor behavioral improvement.",
+      "fixture": "plan-execution",
+      "owner_prompt": "Prepare the implementation plan for Working paths and readiness in evidence.md. Use the retained source evidence and report readiness and limits. Read only: do not implement, dispatch execution, or create durable records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "../skiphow-plan/SKILL.md#skiphow-plan",
+        "references/delegation.md#order-and-readiness"
+      ],
+      "events": {
+        "response-returned": {
+          "description": "The returned plans cover the new console and mature-console variant, retaining tenant authorization, duplicate identity, atomic rollback, old-token compatibility, history, and rejection reports.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "working-path-contrast-preserved": {
+          "description": "For the new console the first bounded assignment establishes and verifies real CSV behavior through the needed component connections, with its required safety, integrity, and compatibility. For the mature variant the plan reuses the established route instead of creating a universal foundation or first-path stage.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "accepted-scope-prepared-now": {
+          "description": "The plan prepares bounded records for the whole accepted scope now, including later duplicate, rejection, history, and report work. It names what the first working result unblocks and which affected storage or error-envelope assumptions must be rechecked at dispatch. Independent report and layout preparation can proceed earlier.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "dependencies-and-capacity-separated": {
+          "description": "The plan records the confirmed import-history result as a real blocker to final history integration. Report and history share a settled envelope API without depending on each other. Shared route-table writes and the singleton test database are coordinated or serialized as writer and runtime capacity constraints rather than invented result dependencies.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session implements, writes durable project or tracker records, changes Git state, or executes proposed operations despite the read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "unsupported-execution-claim": {
+          "description": "The response says the proposed work was executed or treats invented fixture records as verified live behavior.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "mock-path-called-working": {
+          "description": "The first slice treats mocked component success as a verified working import or omits required authorization, integrity, or compatibility to make the slice thinner.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "later-split-deferred": {
+          "description": "The plan leaves later accepted work as unsized grouping records for execution to split after the first path succeeds.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "response-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "response-returned"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "mock-path-called-working",
+            "later-split-deferred"
+          ],
+          "permitted": [
+            "working-path-contrast-preserved",
+            "accepted-scope-prepared-now",
+            "dependencies-and-capacity-separated"
+          ]
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "working-path-contrast-preserved",
+            "accepted-scope-prepared-now",
+            "dependencies-and-capacity-separated"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "mock-path-called-working",
+            "later-split-deferred"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "working-path-contrast-preserved",
+            "accepted-scope-prepared-now",
+            "dependencies-and-capacity-separated"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "mock-path-called-working",
+            "later-split-deferred"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "working-path-contrast-preserved",
+            "accepted-scope-prepared-now",
+            "dependencies-and-capacity-separated"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "mock-path-called-working",
+            "later-split-deferred"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "mock-path-called-working",
+            "later-split-deferred"
+          ],
+          "permitted": [
+            "working-path-contrast-preserved",
+            "accepted-scope-prepared-now",
+            "dependencies-and-capacity-separated"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      },
+      "explicit_skill": "skiphow-plan"
+    },
+    {
+      "id": "planning-ready-launch-codex",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The response returns a launch recommendation for the ready accepted scope, names accepted-plan.md as its canonical source, uses the agreed verified and reviewed local candidate on feature/shipment-guidance as its destination, and adds no protected-action grant.",
+        "The launch begins with the target Codex host's explicit invocation of skiphow-longrun. Codex accepts $skiphow-longrun or its discovered qualified name; Claude Code uses /skiphow:skiphow-longrun. It follows with one delivery sentence pointing to accepted-plan.md and the agreed destination, without copying task requirements, dependencies, or execution policy."
+      ],
+      "intent": "Owner-requested optional planning contract acceptance instrument. No model run exists; synthetic decisions prove neither live execution nor behavioral improvement.",
+      "fixture": "plan-execution",
+      "owner_prompt": "Return the ready-scope execution launch text for Ready launch for Codex in evidence.md, using its accepted records and agreed destination. Read only: do not implement, launch an execution session, or write durable records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "../skiphow-plan/SKILL.md#skiphow-plan"
+      ],
+      "events": {
+        "response-returned": {
+          "description": "The response returns a launch recommendation for the ready accepted scope, names accepted-plan.md as its canonical source, uses the agreed verified and reviewed local candidate on feature/shipment-guidance as its destination, and adds no protected-action grant.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "short-native-workflow-launch": {
+          "description": "The launch begins with the target Codex host's explicit invocation of skiphow-longrun. Codex accepts $skiphow-longrun or its discovered qualified name; Claude Code uses /skiphow:skiphow-longrun. It follows with one delivery sentence pointing to accepted-plan.md and the agreed destination, without copying task requirements, dependencies, or execution policy.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session implements, writes durable project or tracker records, changes Git state, or executes proposed operations despite the read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "unsupported-execution-claim": {
+          "description": "The response says the proposed work was executed or treats invented fixture records as verified live behavior.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "requirements-or-policy-copied-into-launch": {
+          "description": "The launch reproduces canonical task requirements, dependencies, or SkipHow execution policy instead of pointing to their controlling sources.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "protected-action-grant-invented": {
+          "description": "The launch authorizes deployment, release, paid experiments, credential changes, or remote publication without the original owner grant.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "response-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "response-returned"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "requirements-or-policy-copied-into-launch",
+            "protected-action-grant-invented",
+            "short-native-workflow-launch"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "short-native-workflow-launch"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "requirements-or-policy-copied-into-launch",
+            "protected-action-grant-invented"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "short-native-workflow-launch"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "requirements-or-policy-copied-into-launch",
+            "protected-action-grant-invented"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "short-native-workflow-launch"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "requirements-or-policy-copied-into-launch",
+            "protected-action-grant-invented"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "requirements-or-policy-copied-into-launch",
+            "protected-action-grant-invented"
+          ],
+          "permitted": [
+            "short-native-workflow-launch"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      },
+      "explicit_skill": "skiphow-plan"
+    },
+    {
+      "id": "planning-ready-launch-claude",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The response returns a launch recommendation for the ready accepted scope, names accepted-plan.md as its canonical source, uses the agreed verified and reviewed local candidate on feature/shipment-guidance as its destination, and adds no protected-action grant.",
+        "The launch begins with the target Claude Code host's explicit invocation of skiphow-longrun. Codex accepts $skiphow-longrun or its discovered qualified name; Claude Code uses /skiphow:skiphow-longrun. It follows with one delivery sentence pointing to accepted-plan.md and the agreed destination, without copying task requirements, dependencies, or execution policy."
+      ],
+      "intent": "Owner-requested optional planning contract acceptance instrument. No model run exists; synthetic decisions prove neither live execution nor behavioral improvement.",
+      "fixture": "plan-execution",
+      "owner_prompt": "Return the ready-scope execution launch text for Ready launch for Claude Code in evidence.md, using its accepted records and agreed destination. Read only: do not implement, launch an execution session, or write durable records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "../skiphow-plan/SKILL.md#skiphow-plan"
+      ],
+      "events": {
+        "response-returned": {
+          "description": "The response returns a launch recommendation for the ready accepted scope, names accepted-plan.md as its canonical source, uses the agreed verified and reviewed local candidate on feature/shipment-guidance as its destination, and adds no protected-action grant.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "short-native-workflow-launch": {
+          "description": "The launch begins with the target Claude Code host's explicit invocation of skiphow-longrun. Codex accepts $skiphow-longrun or its discovered qualified name; Claude Code uses /skiphow:skiphow-longrun. It follows with one delivery sentence pointing to accepted-plan.md and the agreed destination, without copying task requirements, dependencies, or execution policy.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session implements, writes durable project or tracker records, changes Git state, or executes proposed operations despite the read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "unsupported-execution-claim": {
+          "description": "The response says the proposed work was executed or treats invented fixture records as verified live behavior.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "requirements-or-policy-copied-into-launch": {
+          "description": "The launch reproduces canonical task requirements, dependencies, or SkipHow execution policy instead of pointing to their controlling sources.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "protected-action-grant-invented": {
+          "description": "The launch authorizes deployment, release, paid experiments, credential changes, or remote publication without the original owner grant.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "response-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "response-returned"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "requirements-or-policy-copied-into-launch",
+            "protected-action-grant-invented",
+            "short-native-workflow-launch"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "short-native-workflow-launch"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "requirements-or-policy-copied-into-launch",
+            "protected-action-grant-invented"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "short-native-workflow-launch"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "requirements-or-policy-copied-into-launch",
+            "protected-action-grant-invented"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "short-native-workflow-launch"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "requirements-or-policy-copied-into-launch",
+            "protected-action-grant-invented"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "requirements-or-policy-copied-into-launch",
+            "protected-action-grant-invented"
+          ],
+          "permitted": [
+            "short-native-workflow-launch"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      },
+      "explicit_skill": "skiphow-plan"
+    },
+    {
+      "id": "planning-selected-workflow-launch-provenance",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The response returns a launch recommendation for accepted subset SC-12 in shipment-console using the owner-selected fast-fixes work pattern. It names accepted-plan.md as canonical and the agreed verified and reviewed local candidate on feature/shipment-guidance as the destination. It preserves owner-notes.md restrictions to existing focused checks, no paid model experiment, and no remote publication, adding no protected-action grant.",
+        "The launch begins with the target Codex host's explicit invocation of the owner-selected skiphow-fast-fixes workflow, accepting its discovered qualified name. It follows with one delivery sentence pointing to accepted-plan.md and the agreed destination. It preserves the selected workflow rather than replacing it with the default.",
+        "The launch adds only the otherwise-lost repository shipment-console, accepted subset SC-12, and necessary focused-check, paid-experiment, and remote-publication constraints. It preserves their owner authority and direction by citing owner-notes.md statements N1 and N2, and invents no new grant."
+      ],
+      "intent": "Owner-requested optional planning contract acceptance instrument. No model run exists; synthetic decisions prove neither live execution nor behavioral improvement.",
+      "fixture": "plan-execution",
+      "owner_prompt": "Return the ready-scope execution launch text for Selected workflow and otherwise-lost constraints in evidence.md, using its accepted records and agreed destination. Read only: do not implement, launch an execution session, or write durable records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "../skiphow-plan/SKILL.md#skiphow-plan"
+      ],
+      "events": {
+        "response-returned": {
+          "description": "The response returns a launch recommendation for accepted subset SC-12 in shipment-console using the owner-selected fast-fixes work pattern. It names accepted-plan.md as canonical and the agreed verified and reviewed local candidate on feature/shipment-guidance as the destination. It preserves owner-notes.md restrictions to existing focused checks, no paid model experiment, and no remote publication, adding no protected-action grant.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "short-native-workflow-launch": {
+          "description": "The launch begins with the target Codex host's explicit invocation of the owner-selected skiphow-fast-fixes workflow, accepting its discovered qualified name. It follows with one delivery sentence pointing to accepted-plan.md and the agreed destination. It preserves the selected workflow rather than replacing it with the default.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "lost-context-with-provenance-retained": {
+          "description": "The launch adds only the otherwise-lost repository shipment-console, accepted subset SC-12, and necessary focused-check, paid-experiment, and remote-publication constraints. It preserves their owner authority and direction by citing owner-notes.md statements N1 and N2, and invents no new grant.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session implements, writes durable project or tracker records, changes Git state, or executes proposed operations despite the read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "unsupported-execution-claim": {
+          "description": "The response says the proposed work was executed or treats invented fixture records as verified live behavior.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "requirements-or-policy-copied-into-launch": {
+          "description": "The launch reproduces canonical task requirements, dependencies, or SkipHow execution policy instead of pointing to their controlling sources.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "protected-action-grant-invented": {
+          "description": "The launch authorizes deployment, release, paid experiments, credential changes, or remote publication without the original owner grant.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "response-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "response-returned"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "requirements-or-policy-copied-into-launch",
+            "protected-action-grant-invented",
+            "short-native-workflow-launch"
+          ],
+          "permitted": [
+            "lost-context-with-provenance-retained"
+          ]
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "short-native-workflow-launch",
+            "lost-context-with-provenance-retained"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "requirements-or-policy-copied-into-launch",
+            "protected-action-grant-invented"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "short-native-workflow-launch",
+            "lost-context-with-provenance-retained"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "requirements-or-policy-copied-into-launch",
+            "protected-action-grant-invented"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "short-native-workflow-launch",
+            "lost-context-with-provenance-retained"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "requirements-or-policy-copied-into-launch",
+            "protected-action-grant-invented"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "requirements-or-policy-copied-into-launch",
+            "protected-action-grant-invented"
+          ],
+          "permitted": [
+            "short-native-workflow-launch",
+            "lost-context-with-provenance-retained"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      },
+      "explicit_skill": "skiphow-plan"
+    },
+    {
+      "id": "planning-launch-source-and-preparation-blocked",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The response identifies the inaccessible canonical missing-plan.md source and the unresolved atomic-versus-partial import decision in incomplete-plan.md, explains what each prevents, and reports the exact source recovery and owner decision needed to resume affected preparation.",
+        "Both affected scopes remain blocked for launch until the accepted source and dependent preparation are available. The response distinguishes independent report-wording preparation from whole-scope readiness, and treats saved drafts and old summaries as neither readiness evidence nor execution permission."
+      ],
+      "intent": "Owner-requested optional planning contract acceptance instrument. No model run exists; synthetic decisions prove neither live execution nor behavioral improvement.",
+      "fixture": "plan-execution",
+      "owner_prompt": "Prepare the implementation plan for Blocked launch in evidence.md. Use the retained source evidence and report readiness and limits. Read only: do not implement, dispatch execution, or create durable records.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "../skiphow-plan/SKILL.md#skiphow-plan"
+      ],
+      "events": {
+        "response-returned": {
+          "description": "The response identifies the inaccessible canonical missing-plan.md source and the unresolved atomic-versus-partial import decision in incomplete-plan.md, explains what each prevents, and reports the exact source recovery and owner decision needed to resume affected preparation.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "affected-scope-kept-blocked": {
+          "description": "Both affected scopes remain blocked for launch until the accepted source and dependent preparation are available. The response distinguishes independent report-wording preparation from whole-scope readiness, and treats saved drafts and old summaries as neither readiness evidence nor execution permission.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session implements, writes durable project or tracker records, changes Git state, or executes proposed operations despite the read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "unsupported-execution-claim": {
+          "description": "The response says the proposed work was executed or treats invented fixture records as verified live behavior.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "unconditional-ready-launch": {
+          "description": "The response gives an unconditional execution launch for either affected whole scope or labels it ready despite the inaccessible accepted source, unresolved product choice, or incomplete task preparation and review.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "acceptance-or-permission-invented": {
+          "description": "The response reconstructs missing accepted requirements or new execution authority from the old summary or the fact that a draft was saved.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "response-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "response-returned"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "unconditional-ready-launch",
+            "acceptance-or-permission-invented"
+          ],
+          "permitted": [
+            "affected-scope-kept-blocked"
+          ]
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "affected-scope-kept-blocked"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "unconditional-ready-launch",
+            "acceptance-or-permission-invented"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "affected-scope-kept-blocked"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "unconditional-ready-launch",
+            "acceptance-or-permission-invented"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "affected-scope-kept-blocked"
+          ],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "unconditional-ready-launch",
+            "acceptance-or-permission-invented"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "unsupported-execution-claim",
+            "unconditional-ready-launch",
+            "acceptance-or-permission-invented"
+          ],
+          "permitted": [
+            "affected-scope-kept-blocked"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      },
+      "explicit_skill": "skiphow-plan"
     }
   ],
   "historical_evidence": {

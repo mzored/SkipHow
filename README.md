@@ -132,6 +132,22 @@ Use these when you know the work pattern you want. Ordinary requests still need 
 
 Explicit `skiphow-plan` invocation requests durable planning records within the authorized audience. A read-only constraint overrides that default. Automatic selection for an ordinary planning question does not grant tracker writes. Unavailable tracking leaves complete issue drafts and a blocker.
 
+Plan reviews each assignment's actual context, implementation, verification, review, and integration load. It prepares
+the whole accepted scope as bounded vertical slices with real dependencies and parallel work. A new component path
+starts with a thin working slice; a mature project reuses its established path. The planner keeps large checkable
+automated changes whole and avoids steps that have no independently verifiable result.
+
+Ready plans end with a short launch using the target host's explicit invocation syntax. Longrun is the default unless
+you already chose another workflow. For example, with a concrete accepted plan and destination:
+
+```text
+$skiphow-longrun
+Deliver the accepted implementation scope in issue #42 to the development branch.
+```
+
+Tasks carry requirements and dependencies, so the launch adds only otherwise-missing project, subset, or run constraints.
+Preparation and inaccessible sources remain explicit blockers, and the prompt creates no new authorization.
+
 Fast-fixes accepts new changes, revisions, and cancellations while accepted work continues. The lead handles tiny fixes directly and delegates independent work when that pays, with verified writer isolation and coordination of shared resources. It shows an inspected preview, demonstrated behavior, or an artifact as appropriate to the project; a browser and Git are not prerequisites. Before replacing a shown state, it preserves a recoverable checkpoint, using local commits in Git projects. Focused tests may run, including pytest or browser tests, while full delivery gates wait. Explicit requests to wait or restrict tests still govern.
 
 Acceptance keeps fast-fixes in local iteration. Say `deploy-ready` or `clean` to reconcile the delivery set, including running assignments, and begin preparation. Corrections receive affected review and revalidation; later work stays accounted for outside that delivery. Say `deploy prod` to authorize the specified production release. Preparation and contextual clean alone do not authorize production or arbitrary deletion. Hosts determine when messages arrive and which delegation or continuation controls exist; the plugin adds no background scheduler.
