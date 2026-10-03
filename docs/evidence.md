@@ -2,6 +2,33 @@
 
 This page separates package checks from observed model behavior. The full 2.0 evidence remains in the immutable [`v2.0.1` research snapshot](https://github.com/mzored/SkipHow/tree/1c811262e6acdbdc58a2ee862b54e0b8d3478eaa/docs/research/2026-08-27).
 
+## 6.1.2 sufficient reuse and concrete complexity findings
+
+The owner requested this clarification after a read-only comparison with Ponytail revision
+[`c982cd411abb53323c4baa1baa3c2f020b8d0b08`](https://github.com/dietrichgebert/ponytail/tree/c982cd411abb53323c4baa1baa3c2f020b8d0b08).
+No private chats were inspected and no local behavioral defect was demonstrated. The existing design and review
+paragraphs now state sufficient reuse at the lowest total cost and the evidence a complexity finding carries.
+[Prior art](prior-art.md#sufficient-reuse-and-complexity-review-in-612) records the adopted ideas, rejected mechanisms,
+and primary sources. [The decision](decisions.md#sufficient-reuse-and-concrete-complexity-findings) records the scope and alternatives.
+
+Three new arm-aware cases cover a shared invariant missed by repairing only the reported operation, sufficient native
+date selection, and a native date input that cannot express required availability. The existing composition-review case
+now requires its maintained replacement and preserved selection, focus handling, unsaved-change protection, and error
+recovery. The fixtures and wording are original. The executable balance oracle is checked against two correct repair
+shapes, the unfixed fixture, and a plausible transfer-only repair using the existing materializer, without Git setup
+or model execution. These deterministic results validate the oracle, not an agent's ability to satisfy it.
+
+All new and strengthened behavioral scenarios remain `UNVERIFIED`. No paid comparison was run, and no claim is made
+about measured savings, compaction, or improved model reliability. Package checks, host schema validation, installation,
+activation, continuity, and behavioral coverage retain separate rows in the release validation matrix. Prose changes
+inside the existing package structure do not require a new clean-install experiment.
+
+The independent read-only Codex review returned APPROVE with no qualifying findings or wording preferences. It
+inspected the candidate files and oracle without running models against the corpus. Host and operating-system homes
+were isolated, with a controlled reference to the minimum authentication file rather than a credential copy; that
+reference was removed on exit. The session header and context confirmed the configured model, read-only sandbox,
+and no personal skill or installed-plugin paths. Review establishes independent inspection, not behavioral evidence.
+
 ## 6.1.1 proportionate handoffs and check status
 
 Three private installed Claude Code longrun sessions were inspected, two on 6.1.0 and one on 6.0.0. They remain

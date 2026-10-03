@@ -14,6 +14,7 @@ SkipHow exists because I used the popular agent frameworks on my own work first 
 | [GSD](https://github.com/open-gsd/gsd-core) | Fresh context per unit, dependency-aware parallelism, proportional depth | No large command tree, mandatory phases, or parallel state files |
 | [Mesa](https://github.com/msoedov/mesa) | Atomic ownership, event-driven wake-up | No fixed roles, embedded tracker, or company simulation |
 | [Autonomous PM](https://github.com/mlobo2012/autonomous-pm-plugin) | Provenance and separation of facts from assumptions | No standing personas or mandatory scoring |
+| [Ponytail](https://github.com/dietrichgebert/ponytail) | Sufficient reuse, concrete complexity findings, and regression probes beyond the reported path | Complete accepted behavior and total cost govern simplification; no line-count objective, mode, hook, or debt ledger |
 
 ## What went wrong for me
 
@@ -114,6 +115,32 @@ Version 5.0.1 read two sources again on 2026-09-16. Anthropic's current [skill a
 An idea from another project becomes a focused method or a kernel invariant only when it answers an observed task need or protects a high-risk boundary. Good practice somewhere else is not enough. The default stays the least process that reaches a fresh, verified result while preserving the owner's authority and unrelated work.
 
 The reasoning behind each rule that survived is in [decision history](decisions.md), and what real runs have and have not shown is in [current evidence](evidence.md).
+
+## Sufficient reuse and complexity review in 6.1.2
+
+Read on 2026-10-03 at Ponytail revision `c982cd411abb53323c4baa1baa3c2f020b8d0b08`.
+Its [implementation skill](https://github.com/dietrichgebert/ponytail/blob/c982cd411abb53323c4baa1baa3c2f020b8d0b08/skills/ponytail/SKILL.md)
+and [review skill](https://github.com/dietrichgebert/ponytail/blob/c982cd411abb53323c4baa1baa3c2f020b8d0b08/skills/ponytail-review/SKILL.md)
+make reuse and complexity concrete. SkipHow adopts the ideas in original wording within its existing design and review
+paragraphs: compare sufficient solutions by total cost, and identify the unnecessary construct, consequence, replacement,
+and surviving responsibilities. Shorter code and native capabilities qualify only when accepted behavior survives.
+
+Ponytail's [comprehension experiment](https://github.com/dietrichgebert/ponytail/blob/c982cd411abb53323c4baa1baa3c2f020b8d0b08/benchmarks/results/2026-06-22-issue-245-217-comprehension.md)
+uses unreported related paths to distinguish a general repair from one matching the complaint. SkipHow's original
+synthetic fixture applies that question to two public balance operations; the oracle grades behavior and accepts
+different repair shapes. Paired date-selection probes distinguish sufficient native reuse from omitted availability
+requirements. The existing duplicated-composition probe requires the maintained replacement and preserved focus,
+unsaved-change protection, and recovery. These cases have not been run on a model.
+
+SkipHow does not adopt a shortest-diff or line-count objective, unconditional standard-library or native reuse, a rigid
+one-test rule, intensity modes, hook-managed state, or a persistent debt registry. Existing operation guidance already
+covers known ceilings and triggers, so no parallel rule is added. The owner's request authorizes the clarifications;
+inspection alone does not demonstrate a local behavior defect or justify a universal procedure.
+
+The upstream [agentic report](https://github.com/dietrichgebert/ponytail/blob/c982cd411abb53323c4baa1baa3c2f020b8d0b08/benchmarks/results/2026-06-18-agentic.md)
+and [cost report](https://github.com/dietrichgebert/ponytail/blob/c982cd411abb53323c4baa1baa3c2f020b8d0b08/benchmarks/results/2026-06-17-cost-verification.md)
+describe their own tasks, models, and measurements. They were not reproduced here and establish neither SkipHow's
+behavior nor its savings. Ponytail is MIT licensed; no source text or code is copied or adapted in this release.
 
 ## Proportionate delegation handoffs in 6.1.1
 

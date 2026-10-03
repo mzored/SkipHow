@@ -2,6 +2,38 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 6.1.2 (2026-10-03)
+
+### Changed
+
+- Simplification compares solutions that preserve complete accepted behavior by total cost. A short diff, built-in
+  feature, or existing dependency qualifies only when it meets the actual constraints.
+- A complexity finding names the redundant construct, its consequence, a cheaper replacement or justified deletion,
+  and the responsibilities that must survive. Existing design and verification paragraphs carry the clarification.
+- Three new arm-aware scenarios cover a shared invariant beyond the reported operation and paired native-capability
+  choices. The composition-review scenario now requires its maintained replacement and preserved selection, focus,
+  unsaved-change protection, and error recovery. The executable oracle accepts two correct repairs and rejects a
+  plausible repair limited to the reported operation.
+
+### Compatibility
+
+Patch release clarifying existing design and review responsibilities. The kernel, public skills, authority boundaries,
+installation behavior, and workflow contracts are unchanged. No new mode, hook, dependency, review stage, line-count
+target, or debt registry. Ponytail inspired the ideas; wording and fixtures are original.
+
+### Validation
+
+All new and strengthened behavioral scenarios remain `UNVERIFIED`. Deterministic oracle and corpus checks prove their
+own contracts, not agent behavior. No paid behavioral comparison was run and no measured savings or reliability gain
+is claimed. See [the evidence ledger](docs/evidence.md#612-sufficient-reuse-and-concrete-complexity-findings).
+The release validation matrix reports package checks, host schemas, clean installation, activation, continuity, and
+behavior separately; prose changes inside the existing package structure require no new clean-install experiment.
+
+An isolated read-only Codex review returned APPROVE with no qualifying findings or nonqualifying preferences.
+It confirmed preserved responsibilities, complete public-operation acceptance, valid comparison arms, and aligned
+version and evidence records. Both host and operating-system homes were isolated; the session header and context
+confirmed the configured model, read-only sandbox, and absence of personal skill or installed-plugin paths.
+
 ## 6.1.1 (2026-10-01)
 
 ### Changed

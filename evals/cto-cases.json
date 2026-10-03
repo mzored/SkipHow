@@ -1,6 +1,6 @@
 {
   "instrument": "forced_activation_behavior",
-  "package_under_test": "6.1.1",
+  "package_under_test": "6.1.2",
   "suite_status": "not_run",
   "minimum_coverage": {
     "case_ids": [
@@ -96,7 +96,8 @@
         "runs": []
       },
       "regression_cases": [
-        "audit-small-visible-two-file"
+        "audit-small-visible-two-file",
+        "bug-shared-balance-invariant"
       ]
     },
     {
@@ -199,7 +200,11 @@
         "status": "not_run",
         "evidence_label": "UNVERIFIED",
         "runs": []
-      }
+      },
+      "regression_cases": [
+        "design-native-capability-sufficient",
+        "design-native-capability-insufficient"
+      ]
     },
     {
       "id": "cto-large-programme",

@@ -4,10 +4,11 @@ This page records the choices that still matter when SkipHow changes. Read it be
 
 ## Current decisions
 
-The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-10-01 against the 6.1.1 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
+The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-10-03 against the 6.1.2 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
 
 | Decision | Active rationale | Premises | Evidence | Reopens when |
 | --- | --- | --- | --- | --- |
+| Simplification preserves complete accepted behavior at the lowest total cost; a complexity finding names a redundant construct, its consequence, a cheaper replacement or justified deletion, and surviving responsibilities | A short diff or native capability can omit required behavior, and a deletion can remove necessary focus, change protection, or recovery | The owner requested clarification after the Ponytail comparison; existing design and verification references already own these judgments | Clarified `Contract` in 6.1.2; three new unrun scenarios and one strengthened review scenario; deterministic oracle checks are not model evidence | A receipt shows insufficient reuse accepted as complete, needless machinery retained, or a complexity finding losing a required responsibility |
 | Briefs convey a compact, evidenced handoff; bulky artifacts stay accessible by reference through review and return checks; corrections carry current evidence and unresolved findings; shortened check output retains the check's own terminal status | The lead can read a return-size rule without conveying it to the worker, and a filter can succeed while the check fails | Small results can stay inline; all findings, blockers, and uncertainty survive; the lead still verifies current state and destination; no file format, size quota, or new coordinator is required | Clarified `Contract` in 6.1.1 after three private installed sessions and owner-approved implementation; four unrun cases; causal and behavioral effects `UNVERIFIED` | A receipt shows lost findings, inaccessible proof treated as acceptance, blanket report files, repeated bulk copied into the coordinator, or a filter status accepted as check status |
 | Fast-fixes coordinates incoming local work across stacks, preserves shown states, and continues independent work; plan distinguishes unanswered choices from execution readiness; deploy-ready reconciles active work into a checked candidate | The owner explicitly requested live orchestration; the old fast-fixes required a browser, Git worktree, stop after every shown result, and deferred every pytest/e2e invocation | Existing delegation, tracking, integration, and verification cover the shared responsibilities; host controls determine concurrency and message timing; restrictions and protected-action grants survive upgrades | Owner-requested `Contract` in 6.0.0; nine unrun cases, behavioral effect `UNVERIFIED` | A receipt shows lost incoming work, stale returns accepted, blocked work stopping independent outcomes, unsafe shared-resource use, lost checkpoints, needless infrastructure, or verification gaps hidden by the new defaults |
 | Use applicable available skills and tools when their benefit warrants the cost; design the affected journey in its application context; reuse maintained compositions, not only primitives; plans carry journey, design, and reuse decisions independently of the capability that produced them | A planner loaded specialist guidance and required reuse, yet the implementation recreated part of an established composition; the package described asking a product question but not designing the journey, and did not describe capability selection | Hosts list capabilities differently and an executing host may lack the planner's plugins; a reuse constraint can be a justified contract rather than prescription; projects without a design system still need coherent foundations | Clarified `Contract` in 5.1.5 after two private 5.1.1 sessions and an owner request; behavioral effect `UNVERIFIED` | A receipt shows a recreated maintained composition despite a carried reuse constraint, specialist ceremony on settled or non-interface work, invented or installed capabilities, or owner questions about routine interaction details |
@@ -35,6 +36,32 @@ The live decisions, their premises, and what would reopen each. "Evidence" says 
 | CTO evidence belongs to a scenario; suite status reports declared coverage and carries no behavioral label; an eligible terminal outcome also needs a verified fixture manifest and retained end-state artifact for suite coverage; outside the suite, eligibility is judged per claim (loaded, delivered at destination, foreign work preserved, completion honesty, comparative benefit), each with its own required evidence, a confirmed failure recorded as `FAIL` rather than as missing evidence, and a loading observation labelling nothing else | One successful run cannot support eleven unrun scenarios or imply another host, activation arm, or trial; prose summaries cannot replace inspectable state; a per-run standard left every 3.x and 4.x observation unlabelled while the ledger quoted them | Coverage, terminal outcome, and receipt sufficiency are independent; a complete run set may contain failures; the rules for each claim were fixed before any new run and validated against the retained captures | `Deterministic` corpus validation in 4.0.1 and per-claim validation in 4.3.0 (`scripts/claim_eligibility.py`); suite behavior `UNVERIFIED` | A claim needs evidence no rule expresses, or a rule is found to weaken the public meaning of `Observed` |
 
 The sections below are the history behind those rows: what each release tried, measured, and rejected. They are non-normative. Where a section and the index disagree, the index is current and the section records how it got there.
+
+## Sufficient reuse and concrete complexity findings
+
+Version 6.1.2 implements the owner's requested clarifications after inspecting Ponytail at
+`c982cd411abb53323c4baa1baa3c2f020b8d0b08`. No private sessions were inspected for this change, and the comparison
+established no SkipHow behavioral defect. The prior-art record credits ideas rather than copied wording or code.
+The owner selected a patch to the existing design and review guidance, with unrun regression scenarios and no paid
+behavioral comparison.
+
+The design paragraph now chooses among solutions that preserve complete accepted behavior, at the lowest total cost.
+Short diffs, built-in features, and existing dependencies must satisfy the actual constraints before they qualify.
+The review paragraph now makes an unnecessary-complexity finding concrete: the construct, consequence, cheaper
+replacement or justified deletion, and responsibilities to preserve. Both replace existing sentences behind existing
+triggers. The kernel, workflow contracts, authority, public skills, and installation behavior stay unchanged.
+
+| Responsibility | Execution path | Acceptance scenario |
+| --- | --- | --- |
+| Repair the cause beyond the reported manifestation | Existing diagnosis feedback loop and verification regression guidance | `bug-shared-balance-invariant`: both public operations preserve nonnegative balances and valid transfers and withdrawals |
+| Reuse a sufficient maintained capability | `technical-design` reuse guidance, with complete behavior as a constraint | `design-native-capability-sufficient` and `design-native-capability-insufficient`: native range selection in one case, maintained availability calendar in the other |
+| Remove evidenced duplication without losing behavior | `verification` review guidance | `ux-duplicated-composition-review`: maintained sheet and slot-selection body preserve selection, focus, unsaved-change protection, and error recovery |
+
+Leaving the wording unchanged and adding only cases would cost less editing, but would omit the clarification the
+owner requested. A new universal procedure, mode, hook, or debt ledger would add recurring process and state without
+evidence that capable agents need it. Treating fewer lines or native capability as an unconditional win would fail the
+complete-behavior constraint. The existing references cover the distinct failure domains without another module.
+No run shows that this wording changes decisions or saves effort; all four scenarios remain `UNVERIFIED`.
 
 ## Proportionate handoffs and terminal check evidence
 

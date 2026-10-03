@@ -16,7 +16,7 @@ Security, reliability, operability, performance, cost, and reversibility are len
 
 ## Reuse before custom code
 
-Prefer existing, maintained capabilities over custom machinery. Before introducing a subsystem, abstraction, dependency, infrastructure component, or service, look outward roughly in this order — and again whenever existing custom code looks like it duplicates something mature:
+Choose the lowest total cost among solutions that preserve the complete accepted behavior. A short diff, built-in feature, or installed dependency qualifies only when it meets the real constraints. Prefer maintained capabilities over custom machinery. Before introducing a subsystem, abstraction, dependency, infrastructure component, or service, look outward roughly in this order, and again when custom code duplicates something mature:
 
 - Capabilities the repository already has.
 - Primitives in the language, framework, or platform.
