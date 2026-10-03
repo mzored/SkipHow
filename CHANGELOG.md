@@ -2,6 +2,37 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 6.2.0 (2026-10-03)
+
+### Changed
+
+- Plan's existing independent task review assesses context, heterogeneous implementation, manual output, checks,
+  review, and integration together. A single outcome is insufficient proof of one-agent feasibility; supported size
+  findings preserve acceptance and dependencies in smaller independently verifiable slices. Large uniform automated
+  changes can stay whole, and implementation, checks, and handoff steps without separate outcomes remain one task.
+- Work lacking an established component path starts with a thin real slice and only its necessary structure, preserving
+  safety, integrity, and compatibility. Mature paths are reused. The whole accepted scope remains prepared in advance,
+  with actual blockers, independent preparation, shared resources, and assumptions to recheck at dispatch.
+- Ready plans return an explicit host-native longrun invocation and one delivery sentence referencing accepted records
+  and destination. An owner-selected workflow survives. Only otherwise-missing project, subset, or run constraints are
+  added, with authorization provenance; task content and SkipHow policy stay in their sources.
+- Arm-aware scenarios cover workload boundaries and sampling, useful grouping, first-path and mature planning,
+  parallel readiness and resources, short launches, selected workflows, and blocked sources or preparation.
+
+### Compatibility
+
+Compatible MINOR capability in the optional plan workflow. Public skill names, kernel, authority boundaries, package
+layout, installation, and existing execution workflows are unchanged. No new stage, module, scheduler, size score,
+quota, inventory gate, or sizing ledger. Unfinished preparation remains blocked, and launch text grants no new actions.
+Tracer bullets and to-tickets inspired the ideas; wording and fixtures are original.
+
+### Validation
+
+New behavioral scenarios and improvement claims remain `UNVERIFIED`. No paid behavioral comparison was run, and no
+context-fit, cost, or parallel-execution gain is claimed. See [the evidence ledger](docs/evidence.md#620-workload-based-planning-and-short-launches).
+The release matrix separates deterministic checks, host schemas, installation, activation, continuity, and behavior.
+Prose changes within the existing package structure require no fresh clean-install experiment.
+
 ## 6.1.2 (2026-10-03)
 
 ### Changed

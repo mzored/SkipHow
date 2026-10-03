@@ -61,6 +61,14 @@ A case is run only when the owner authorizes a paid receipt.
 
 ## The arms
 
+The 6.2.0 `planning-*` probes using `plan-execution` remain `UNVERIFIED`. Synthetic records contrast heterogeneous
+manual work with uniform automation, show representative sources and checks where breadth is uncertain, and distinguish
+a missing component path from a mature one. Read-only plan recommendations are graded for executable scope, preserved
+acceptance, true blocking edges, independent preparation, and writer or runtime constraints. Launch probes cover each
+host's explicit workflow syntax, a selected alternative, otherwise-lost restrictions, and inaccessible or incomplete
+sources. The no-package and previous-package arms are not required to produce the candidate's new workflow events.
+These cases start no models and prove no live parallel execution or reliable context fit.
+
 The 6.1.2 simplification probes remain `UNVERIFIED`. `bug-shared-balance-invariant` uses `shared-balance`:
 the report names transfer, while acceptance exercises transfer and withdrawal with valid, exact-balance, excessive,
 zero, and negative amounts. The grader uses the fixture's original `tests/balance_checks.py` against the delivered

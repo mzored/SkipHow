@@ -1,0 +1,25 @@
+{
+  "id": "plan-execution",
+  "summary": "Synthetic accepted scopes test workload-based assignments, representative sampling, working-path readiness, and portable launch prompts with preserved authority.",
+  "kind": "checked-in planning decision evidence",
+  "synthetic": true,
+  "planted": [
+    "One grouping task delegates its heterogeneous implementation split to execution despite distinct manual work and verification burdens.",
+    "Uncertain breadth has representative manual and automated source examples and matching check evidence, without a full inventory.",
+    "A cohesive implementation is split into implementation, checks, and handoff microtasks; a large uniform transformation already has an automated completeness check.",
+    "An absent integration path and a mature path require different first assignments while preserving safety, integrity, and compatibility.",
+    "Real result dependencies, independent preparation, shared writers, and one shared test service have distinct dispatch constraints.",
+    "A complete accepted plan has an agreed destination; separate owner notes select a workflow, a subset, and run constraints with original provenance.",
+    "One canonical source is unavailable and a separate readable preparation is incomplete. Neither is execution-ready."
+  ],
+  "absent_on_purpose": [
+    "No application, installed capabilities, live tracker, paid model session, running service, or implementation request.",
+    "The missing-plan.md canonical source is deliberately absent."
+  ],
+  "setup": [
+    "Use the existing capture preparation path to copy this fixture into an owned isolated session.",
+    "Keep the selected scenario, owner prompt, source files, and target-host facts identical across compared arms. Treat the records as synthetic evidence, not live repository measurements."
+  ],
+  "run_checks": "none; grade the returned plan or launch prompt against the selected source records",
+  "privacy": "All projects, tracker keys, workloads, owner notes, and destinations are invented."
+}

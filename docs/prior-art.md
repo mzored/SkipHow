@@ -116,6 +116,32 @@ An idea from another project becomes a focused method or a kernel invariant only
 
 The reasoning behind each rule that survived is in [decision history](decisions.md), and what real runs have and have not shown is in [current evidence](evidence.md).
 
+## Bounded plans and first working paths in 6.2.0
+
+Read on 2026-10-03. The [Hunt and Thomas interview on tracer bullets](https://www.artima.com/articles/tracer-bullets-and-prototypes)
+describes a thin path through the real components, followed by complete use cases that grow the running result.
+SkipHow adopts that idea only where the accepted work lacks an established path. The first slice creates the structure
+it needs and preserves required safety, integrity, and compatibility. A mature project can extend its existing path.
+A disposable uncertainty probe and an evolving implementation remain different engineering choices.
+
+Matt Pocock's [to-tickets skill at `d81f3a1`](https://github.com/mattpocock/skills/blob/d81f3a183412e71a5b1e84ca21bc1a35eea03a60/skills/engineering/to-tickets/SKILL.md)
+uses demonstrable vertical tickets with explicit blocking edges. SkipHow keeps those ideas, distinguishes true
+prerequisites from shared-write and runtime-capacity constraints, and sizes the whole accepted task set for dispatch.
+It rejects a setup interview and owner approval of technical granularity, and treats one-agent feasibility as an
+evidence-based workload judgment rather than a guarantee about fresh context.
+
+GSD's [MVP planner at `84b4dfe`](https://github.com/open-gsd/gsd-core/blob/84b4dfe84f35e58d4b35d57a54bd92af1b21fbce/gsd-core/references/planner-mvp-mode.md)
+provides another example of starting with a working tracer and expanding it. SkipHow does not adopt its per-phase
+tracer requirement, mandatory skeleton record, or task-count guidance. The selected behavior belongs inside the
+existing optional plan workflow, with no new module, universal foundation stage, or parallel state files.
+
+The owner also selected a stable minimal launch: explicit target-host workflow invocation and a delivery sentence
+referencing the accepted plan and destination. This follows the host's native syntax, documented for
+[Codex skills](https://learn.chatgpt.com/docs/build-skills) and
+[Claude plugin skills](https://code.claude.com/docs/en/skills), while preserving an already selected workflow and
+authorization provenance. It does not copy tracker content or runtime policy. Wording and synthetic fixtures are
+original; no comparative behavioral benefit has been measured.
+
 ## Sufficient reuse and complexity review in 6.1.2
 
 Read on 2026-10-03 at Ponytail revision `c982cd411abb53323c4baa1baa3c2f020b8d0b08`.
