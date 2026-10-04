@@ -12,7 +12,7 @@ Prefer stable product-facing contracts over incidental presentation or implement
 
 When setup or an earlier journey is not under test, establish the required state through an existing reliable cheaper path instead of replaying it through an expensive one. Keep direct coverage of a setup journey that is itself important.
 
-Derive the expected value independently of the implementation under test. A test that repeats the production algorithm can share the bug. A test is evidence about the system, not the definition of the solution. Never satisfy one with a hard-coded test-only path.
+Derive expected values independently of the implementation. Fixed examples from product rules can make a test clear; repeating the production algorithm can share its bug. Repeated test data or coverage is useful when it improves clarity or protects a distinct failure mode. Judge by evidence, not literals or repetition alone. Never satisfy a test with a hard-coded test-only path.
 
 ## When the test comes first
 
@@ -24,9 +24,9 @@ A regression test should close the class of bug. Assert the rule the defect brok
 
 ## How much to run
 
-Keep tests that protect behavior; remove only temporary harnesses and implementation-coupled checks owned by this work.
+Preserve required behavioral evidence. Within authority, consolidate, replace, or remove pre-existing checks when evidence shows they are redundant, obsolete, or coupled to an incidental implementation; retain or establish equivalent reliable proof of every required property and distinct failure mode. A test's age or cost alone does not justify deletion.
 
-The CTO owns test selection. During implementation and iteration, start with the smallest reliable evidence covering the changed behavior. Widen according to reachable behavior, crossed boundaries, uncertainty, and consequence. Do not rerun an unchanged expensive gate when narrower evidence answers the current engineering question.
+The CTO owns test selection. During implementation and iteration, use the smallest reliable evidence covering the changed behavior, widening by reachable behavior, crossed boundaries, uncertainty, and consequence. Frequent cheap checks can support safe refactoring. Inspect what a command selects, costs, and changes; repair material friction through [operations](operations.md). Do not rerun an unchanged expensive gate when narrower evidence answers the question.
 
 Before integration or release, satisfy the broader evidence the project's delivery contract and risk require. Use reliable native affected-test, dependency, project, tagging, or equivalent selection when available. When repeated verification cost is material and reliable selection is missing, improving it is legitimate engineering work. Do not replace reliable selection with brittle filename or path heuristics, or skip a required integration or release gate to reduce latency.
 
@@ -40,7 +40,7 @@ An intermittent test is a defect or an explicit blocker until it is classified; 
 
 Scale review to risk, assessed by changed behavior and possible consequences rather than visibility or counts of files or visible elements. A small clear low-risk edit may use a cold self-review and targeted evidence; a small specified label or layout correction can stay low risk across two files. Use an independent reviewer when substantive behavior, interacting changes, or dependency and integration risks make a shared blind spot consequential; architecture, security, authentication, payments, privacy, migration, concurrency, or public-contract changes get stronger independent challenge. Give that reviewer the request, relevant constraints, and actual change so it can form its own account.
 
-Establish the exact candidate revision under review and the request, issue, or specification it should satisfy. State what the result should do and derive the key expected values from the request, the agreed product rules, and the relevant constraints, rather than from the code or the author's explanation; this requires an independent source of expectation, not an order of opening files. A reviewer that inherits the author's expectation shares the author's blind spot, which a stronger model does not remove. Record an expectation you could not settle as contested rather than adopting the author's, and do not replace missing product data with an invented value. Read the repository's applicable standards, inspect the diff in its surrounding code, compare what the candidate produces with the values you derived, and probe the boundaries that matter. Tool output supports review but does not replace reading the change. The reviewer verifies the candidate before integration; the lead verifies the authorized destination after it.
+Establish the exact candidate and governing request, issue, or specification. Derive expected behavior and key values independently from that request, accepted product rules, and constraints; opening files in a different order or using a stronger model does not remove an inherited expectation. Record unsettled expectations as contested, without inventing product data. Read applicable repository standards and the diff in context, compare results with those expectations, and probe consequential boundaries. Tool output supports reading the change. The reviewer verifies the candidate before integration; the lead verifies the authorized destination after it.
 
 For changed interactions, verify the journey in the surrounding product, including consequential transitions and recovery paths. Compare it with accepted intent and applicable interaction and visual conventions. Inspect the implementation separately to confirm required shared behavior and compositions are reused. Rendered similarity does not establish reuse, and shared imports do not establish a coherent experience. A prototype or visual comparison earns its cost where it resolves a specific uncertainty.
 

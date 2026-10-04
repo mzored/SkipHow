@@ -707,7 +707,7 @@ def path_exists_with_exact_spelling(path: Path) -> bool:
     current = Path(parts[0])
     for part in parts[1:]:
         try:
-            if part not in {entry.name for entry in current.iterdir()}:
+            if part not in os.listdir(current):
                 return False
         except OSError:
             return False

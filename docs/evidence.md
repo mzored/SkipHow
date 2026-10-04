@@ -2,6 +2,64 @@
 
 This page separates package checks from observed model behavior. The full 2.0 evidence remains in the immutable [`v2.0.1` research snapshot](https://github.com/mzored/SkipHow/tree/1c811262e6acdbdc58a2ee862b54e0b8d3478eaa/docs/research/2026-08-27).
 
+## 6.2.1 bounded project supervision
+
+Two private installed Codex fast-fixes sessions from 2026-10-03 and 2026-10-04 were inspected. Their prefixes carried
+6.1.1 and later 6.2.0, or 6.2.0 throughout. One contained a verification selection estimated at 572 seconds against
+a 300-second phase and another selection spanning 593 test files. The lead noticed expansion and timeouts, narrowed
+proof, reused evidence, and handled some infrastructure defects. Literal expectation edits in the other session do
+not by themselves demonstrate bad tests. These observations do not establish a universal failure rate or a package
+sentence's causal effect. No private transcript, project identity, tracker text, session ID, or personal path is retained.
+
+Full kernel text was visible after all 25 genuine compactions counted in these prefixes. Workflow rereads were also
+visible. This establishes recovery of governing text at those boundaries, not that all guidance reached every delegate
+or every action followed it. Inherited compacted history was excluded from delegate compaction counts. A bounded search
+of recent Codex roots found these two standalone fast-fixes sessions; it was not an audit of every host or session.
+
+Inspection independently establishes three prose defects: verification restricted removal to checks owned by the
+current work despite later responsibilities for old redundant coverage; kernel compression left recognition of
+accumulating costs less explicit than the canonical outcome; design dismissed whole-project surveys categorically.
+The owner's clarification requests broader, finite technical attention. [The decision](decisions.md#bounded-technical-supervision-across-the-project)
+records why existing kernel and guidance were tightened instead of adding a test-specific mechanism or audit workflow.
+
+The original synthetic `project-supervision` fixture separates a passing CLI label change from recurring export
+corruption in another module. Its public oracle covers both exporters, quoted and multiline fields, ordering, numeric
+formatting, and healthy fixed discount examples. A private tracker is available, so a record without the feasible repair
+does not satisfy candidate acceptance. Oracle tests accept two correct repair shapes and reject the unfixed,
+label-only, and single-export repairs. The coupling case now includes pre-existing tests and legitimate fixed product
+examples; its rendered artifact and coverage declaration do not establish a live browser run. The existing setup oracle
+now accepts different remedies that reduce measured recurring setup while retaining useful evidence, rather than
+requiring all three implementation mechanisms. Its synthetic checks do not measure a real pipeline. Billing fixture
+metadata now describes the actual planted rounding error. The live-coordination decision probe includes a compacted
+feedback stream with a supported engineering finding and unchanged local authority.
+
+The existing explicit-deferral case now checks an executable task record, including evidence, observable acceptance,
+authority and constraints, a concrete next action and resume condition, and a conditional bug or ordinary SkipHow
+launch. Its human prerequisite must remain visible. This is the same writing contract plan now references in tracked
+work, not a second planning procedure. The read-only and missing-production-grant counterexamples remain intact.
+
+All behavioral scenarios and effectiveness claims remain `UNVERIFIED`. No paid comparison, activation experiment,
+or new clean-install receipt was run. Independent source review establishes inspection, and deterministic tests establish
+oracle validity and package contracts. Neither establishes measured savings, reliable supervision, or continuity.
+
+The independent isolated Codex source review of `281118e` against `1365be2` returned APPROVE with no qualifying
+findings or wording suggestions. Its transcript confirmed the configured model and read-only sandbox, isolated host
+and operating-system homes, and no personal skills, installed-plugin cache, or memory paths. A controlled reference
+to the minimum native authentication file was removed after the run; credentials were not copied. The optional
+Claude review stopped before analysis because its expired OAuth session could not refresh, so that review remains
+`UNVERIFIED`. Claude's authentication-independent strict package schema validation passed.
+
+The first full local gate and a narrowed checker selection hit their existing 120-second pytest bound. Diagnosis
+located repeated construction of `Path` objects for every entry in broad temporary ancestor directories during
+exact-spelling validation. Fifteen manifest variants plus the ordinary package/document check took 43.50 seconds;
+the same manifest variants under an owned short ancestor took 2.99 seconds. Using native entry-name enumeration
+preserves exact string membership, error handling, and final existence checks without adding a cache or changing
+timeouts. Eighteen focused manifest, spelling, collision, and alias checks then passed in 11.17 seconds under the
+ordinary temporary environment, and the full gate passed within its unchanged bound. These are local diagnostic
+observations with different selections and ancestry, not a portable performance guarantee. A separate narrow source
+review approved the one-line substitution and confirmed the existing semantic tests cover the preserved boundaries.
+No runtime wording changed after the independent review; later source edits record it and repair the checker cost.
+
 ## 6.2.0 workload-based planning and short launches
 
 Two private installed Codex planning sessions from 2026-10-02 carried the full 6.1.1 plan text. One returned a short

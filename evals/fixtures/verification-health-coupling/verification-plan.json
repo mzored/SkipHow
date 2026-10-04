@@ -6,5 +6,7 @@
   ],
   "duplicated_high_level_checks": 18,
   "stable_contract_checks": 12,
+  "check_origin": "All coupled checks predate this change.",
+  "independent_examples": "The fixed destinations /, /profile, and /settings are accepted product rules, not copies of production calculations.",
   "unique_evidence": "One browser check observes rendered keyboard focus order."
 }

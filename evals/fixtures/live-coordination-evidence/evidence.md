@@ -9,6 +9,7 @@ These records are invented decision inputs, not observations of a running projec
 3. The same repairs are ready, but the host exposes only the lead workspace and no safe separate writer environment. Read-only investigation and review are available.
 4. Writer workspaces are isolated, but both focused integration checks reset the same test database. The project provides a way to serialize those checks, not separate databases. An independent documentation inspection is also accepted and ready.
 5. Delegation is unavailable. The simple CLI correction can be implemented and checked directly. A separate concurrency repair requires independent review under project policy before acceptance; implementation itself is safely local.
+6. The host genuinely compacted an ongoing fast-fixes session. The summary retains accepted fixes, a checked shown state, still-valid focused evidence, and a delegate's supported finding that a retry helper repeats successful setup and causes recurring latency. The full kernel, workflow, and operations guidance are absent from the resumed context. A bounded local repair preserves required behavior and is safe under the existing change request; no product choice is open. The owner will keep sending edits, has not requested delivery, and has prohibited shared publication. Decide what to recover and how to handle the finding without losing accepted work, repeating unchanged expensive checks, waiting indefinitely for delivery, or inventing a project-wide rewrite.
 
 ## Human blocker
 

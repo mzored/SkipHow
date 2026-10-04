@@ -13,6 +13,8 @@ Use [delegation](../skiphow/references/delegation.md) to handle arriving request
 
 Resolve engineering choices yourself. Use [product](../skiphow/references/product.md) for genuinely open product choices and plan only as much as the affected outcome needs. Continue independent work while an answer is pending. Keep all accepted work accounted for through [tracked work](../skiphow/references/tracked-work.md), without a separate ticket for every small edit.
 
+Apply the kernel's technical supervision throughout the session. Resolve material engineering findings at safe local boundaries while prioritizing incoming accepted work; use [technical design](../skiphow/references/technical-design.md) when the current solution's suitability is in question and [operations](../skiphow/references/operations.md) when the working system repeatedly taxes progress. An endless feedback stream is no reason to defer every separable repair until delivery. Improvements keep the same authority, preservation, verification, and delivery boundary as requested fixes.
+
 ## Preserve and show local results
 
 Discover the project's working base, isolation, preservation, and inspection conventions. Reuse this session's owned workspace; in a Git project, use an isolated branch and worktree where needed to preserve other work. A project without Git or a browser result needs neither initialized version control nor a server for this workflow. Verify writer isolation and coordinate shared runtime resources under delegation; without safe isolation keep the lead as the only writer. Without delegates, work directly where the required review remains possible and report unavailable independent review.

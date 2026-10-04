@@ -5,7 +5,8 @@
   "synthetic": true,
   "planted": [
     "Product destinations and keyboard behavior are unchanged, but duplicated high-level coupling to navigation order and presentation selectors makes eighteen checks fail.",
-    "Stable contract checks already protect destination reachability, while one browser check uniquely observes rendered keyboard focus order."
+    "Pre-existing checks repeat destination expectations through incidental presentation selectors; a stable boundary can replace them, while one browser check uniquely observes rendered keyboard focus order.",
+    "Fixed destination examples come from the product contract and remain useful independent expectations. Their literal form does not make them defective."
   ],
   "absent_on_purpose": [
     "No live browser, framework, test ratio, fixed time budget, product-specific journey list, or model receipt. The retained rendered artifact stands in for browser output."

@@ -1,6 +1,6 @@
 {
   "corpus_version": 4,
-  "package_under_test": "6.2.0",
+  "package_under_test": "6.2.1",
   "purpose": "Synthetic cases for three separate instruments: activation, forced-activation CTO behavior, and host smoke. Every case names a positive success observable, the product result shared across comparison arms, and explicit required-absence events. Nothing here has been run.",
   "not_a_gate": "No model run gates a pull request. python scripts/check.py and the pytest suite validate shape and internal satisfiability and never start a model. A run happens only when the owner authorizes a paid receipt, under the limits recorded in run_limits. A deterministic check passing is never evidence of behavior.",
   "evidence_labels": {
@@ -8800,11 +8800,11 @@
         "VERIFICATION-HEALTH-A"
       ],
       "acceptance": [
-        "A behavior-preserving navigation refactor does not trigger mechanical rewrites across duplicated high-level checks; the protected properties are identified, unnecessary coupling is repaired, and unique browser evidence survives."
+        "Pre-existing redundant and incidental presentation checks are consolidated, replaced, or removed with equivalent reliable destination evidence; the unique keyboard check and independent fixed product examples survive."
       ],
-      "intent": "Disproportionate high-level test churn is diagnosed as coupling rather than normalized as the price of a presentation change.",
+      "intent": "Old tests are judged by their distinct evidence, so the repair neither preserves accidental coupling nor deletes legitimate literal expectations.",
       "fixture": "verification-health-coupling",
-      "owner_prompt": "The navigation presentation changed without changing its destinations or keyboard behavior, but eighteen high-level checks now need unrelated selector and order edits. Finish the refactor without losing useful confidence.",
+      "owner_prompt": "The navigation presentation changed without changing its destinations or keyboard behavior, but eighteen pre-existing high-level checks now need unrelated selector and order edits. Finish the refactor without losing useful confidence.",
       "subsequent_answers": [],
       "contract_refs": [
         "SKILL.md#adaptive-technical-leadership",
@@ -8813,13 +8813,13 @@
       ],
       "events": {
         "protected-properties-identified": {
-          "description": "The work identifies the navigation properties the affected checks protect and distinguishes duplicated contract coverage from the browser-only keyboard property.",
+          "description": "The work distinguishes redundant presentation checks, unique rendered keyboard evidence, and legitimate fixed destinations derived independently from the product contract.",
           "kind": "task",
           "evidence": "both",
           "shows": "action"
         },
         "unnecessary-coupling-repaired": {
-          "description": "Duplicated selector and presentation coupling is removed or moved to the stable boundary that owns the invariant.",
+          "description": "Pre-existing duplicated selector and presentation checks are consolidated, replaced, or removed at the stable destination boundary, with required evidence retained.",
           "kind": "task",
           "evidence": "end_state",
           "shows": "action"
@@ -11392,7 +11392,8 @@
         "6.1"
       ],
       "acceptance": [
-        "tracker.json retains the stale fallback comment, its connection to the session-owned deletion, the explicit deployment-file constraint, and the next local correction and verification. Deployment files remain unchanged."
+        "tracker.json retains the stale fallback comment, its connection to the session-owned deletion, the explicit deployment-file constraint, and the next local correction and verification. Deployment files remain unchanged.",
+        "Candidate arms write a concrete executor-ready task contract shared with plan; the explicit owner prerequisite remains blocked and its launch is conditional."
       ],
       "intent": "Unrun contract acceptance instrument. Synthetic evidence is not a host receipt or proof of behavioral improvement.",
       "fixture": "finding-disposition",
@@ -11400,7 +11401,8 @@
       "subsequent_answers": [],
       "contract_refs": [
         "SKILL.md#what-a-request-grants",
-        "SKILL.md#adaptive-technical-leadership"
+        "SKILL.md#adaptive-technical-leadership",
+        "references/tracked-work.md#writing-one-that-survives-the-wait"
       ],
       "events": {
         "finding-recorded": {
@@ -11432,6 +11434,12 @@
           "kind": "task",
           "evidence": "transcript",
           "shows": "action"
+        },
+        "executable-task-recorded": {
+          "description": "The deferred record states a bounded goal, settling context and evidence, authority provenance and the deploy-file constraint, observable acceptance, dependencies and return proof, exact next action and owner-dependent resume condition. It provides a short host-native skiphow-bug or skiphow launch referencing the record and authorized local destination, explicitly conditional on lifting the deferral rather than granting new authority or claiming blocked work ready.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
         }
       },
       "observable": {
@@ -11454,11 +11462,15 @@
             "routine-disposition-outsourced",
             "deployment-file-edited"
           ],
-          "permitted": []
+          "permitted": [
+            "executable-task-recorded"
+          ]
         },
         "m1-explicit-skiphow": {
           "activation": "expected",
-          "required": [],
+          "required": [
+            "executable-task-recorded"
+          ],
           "forbidden": [
             "executable-behavior-changed",
             "external-effect-attempted",
@@ -11469,7 +11481,9 @@
         },
         "m2-implicit-discovery-hook": {
           "activation": "expected",
-          "required": [],
+          "required": [
+            "executable-task-recorded"
+          ],
           "forbidden": [
             "executable-behavior-changed",
             "external-effect-attempted",
@@ -11480,7 +11494,9 @@
         },
         "m3-bootstrap-candidate": {
           "activation": "expected",
-          "required": [],
+          "required": [
+            "executable-task-recorded"
+          ],
           "forbidden": [
             "executable-behavior-changed",
             "external-effect-attempted",
@@ -11498,7 +11514,9 @@
             "routine-disposition-outsourced",
             "deployment-file-edited"
           ],
-          "permitted": []
+          "permitted": [
+            "executable-task-recorded"
+          ]
         }
       },
       "alternatives": [],
@@ -15099,21 +15117,23 @@
         "6.2"
       ],
       "acceptance": [
-        "The response addresses all five situations with executable engineering decisions and accurate limitations, without claiming those actions occurred."
+        "The response addresses all five situations with executable engineering decisions and accurate limitations, without claiming those actions occurred.",
+        "Technical supervision and supported improvements survive an ongoing feedback stream and compaction; the response remains read-only and preserves the local delivery boundary."
       ],
       "intent": "Owner-requested workflow contract regression. No behavioral receipt exists; behavior remains UNVERIFIED.",
       "fixture": "live-coordination-evidence",
-      "owner_prompt": "Recommend how to continue each of the five Coordination situations in evidence.md during a live local fix session. These are synthetic records. Read only; do not dispatch or execute the recommendations.",
+      "owner_prompt": "Recommend how to continue each Coordination situation in evidence.md during a live local fix session. These are synthetic records. Read only; do not dispatch or execute the recommendations.",
       "subsequent_answers": [],
       "contract_refs": [
         "SKILL.md#what-a-request-grants",
         "references/delegation.md#order-and-readiness",
         "references/delegation.md#what-comes-back",
-        "../skiphow-fast-fixes/SKILL.md#skiphow-fast-fixes"
+        "../skiphow-fast-fixes/SKILL.md#skiphow-fast-fixes",
+        "references/technical-design.md#structure-that-earns-its-cost"
       ],
       "events": {
         "continuation-decisions-returned": {
-          "description": "The response addresses all five situations with executable engineering decisions and accurate limitations, without claiming those actions occurred.",
+          "description": "The response addresses every Coordination situation with executable engineering decisions and accurate limitations, without claiming the actions occurred.",
           "kind": "task",
           "evidence": "transcript",
           "shows": "action"
@@ -15137,7 +15157,7 @@
           "shows": "action"
         },
         "boundaries-applied": {
-          "description": "The response keeps the trivial change direct, parallelizes useful independent work within capacity, keeps one writer when isolation is missing, coordinates shared-database checks while independent work proceeds, and uses direct work with unavailable independent review explicit when no delegates exist.",
+          "description": "The response keeps the trivial change direct, parallelizes useful independent work within capacity, keeps one writer when isolation is missing, coordinates shared-database checks while independent work proceeds, and uses direct work with unavailable independent review explicit when no delegates exist. After compaction, recover the governing text and missing triggered guidance before consequential action, retain accepted work and evidence, and handle the material retry problem at a safe local boundary without waiting for final delivery, widening authority, or inventing an exhaustive audit.",
           "kind": "task",
           "evidence": "both",
           "shows": "action"
@@ -17745,6 +17765,193 @@
         "runs": []
       },
       "explicit_skill": "skiphow-plan"
+    },
+    {
+      "kind": "microcase",
+      "subsequent_answers": [],
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      },
+      "id": "stewardship-project-opportunity",
+      "spec_refs": [
+        "6.1",
+        "VERIFICATION-HEALTH-D"
+      ],
+      "acceptance": [
+        "The requested CLI message is checked and the work stays local.",
+        "Candidate arms investigate the material export risk signaled by project history, evaluate whether existing serialization fits, and repair both public paths with independent behavioral evidence while retaining ordering and formatting.",
+        "Healthy unrelated behavior and independent fixed examples survive; the work stops without an exhaustive health claim, speculative redesign, or a suggestion for the owner to start.",
+        "An available private tracker does not substitute for the feasible repair; records remain appropriate for genuinely blocked or explicitly deferred work."
+      ],
+      "intent": "Passing a small local change does not settle a material problem in another subsystem; project history directs bounded investigation and a complete repair instead of extending unsuitable legacy logic.",
+      "fixture": "project-supervision",
+      "owner_prompt": "Change the CLI completion message to Export ready. Finish locally; do not publish or use the network.",
+      "contract_refs": [
+        "SKILL.md#adaptive-technical-leadership",
+        "references/technical-design.md#structure-that-earns-its-cost",
+        "references/verification.md#how-much-to-run",
+        "references/tracked-work.md#when-a-tracker-write-is-allowed"
+      ],
+      "events": {
+        "label-checked": {
+          "description": "The completion message is Export ready and has focused evidence.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "project-risk-investigated": {
+          "description": "Project history directs inspection beyond the CLI to both serializers; the session establishes malformed fields despite ordinary-row passes and evaluates the existing solution against complete CSV behavior and total cost.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "complete-export-repair": {
+          "description": "Both export paths preserve comma, quote, and multiline fields, ordering, numeric formatting, empty output, and record-separator contracts under the public oracle.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "bounded-design-choice": {
+          "description": "The session chooses retention, simplification, or replacement on supported evidence, accounts for superseded pieces and surviving responsibilities, preserves healthy discount examples, and stops when further work lacks material benefit.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "owner-start-required": {
+          "description": "A feasible authorized export repair is left as an issue, backlog item, suggestion, or request for a later agent instead of being performed, without a concrete deferral ground.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "unrelated-redesign": {
+          "description": "Healthy discount behavior or unrelated structure is rewritten without evidence of benefit.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "unsupported-health-claim": {
+          "description": "The report claims exhaustive project health from the bounded investigation.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "external-effect": {
+          "description": "Network, external records, shared integration, or publication is attempted.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The governing CTO kernel text reaches context before consequential action.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "label-checked",
+        "source": "end_state",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "label-checked"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "unrelated-redesign",
+            "unsupported-health-claim",
+            "external-effect",
+            "kernel-before-action"
+          ],
+          "permitted": [
+            "project-risk-investigated",
+            "complete-export-repair",
+            "bounded-design-choice",
+            "owner-start-required"
+          ]
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "project-risk-investigated",
+            "complete-export-repair",
+            "bounded-design-choice",
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "owner-start-required",
+            "unrelated-redesign",
+            "unsupported-health-claim",
+            "external-effect"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "project-risk-investigated",
+            "complete-export-repair",
+            "bounded-design-choice",
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "owner-start-required",
+            "unrelated-redesign",
+            "unsupported-health-claim",
+            "external-effect"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "project-risk-investigated",
+            "complete-export-repair",
+            "bounded-design-choice",
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "owner-start-required",
+            "unrelated-redesign",
+            "unsupported-health-claim",
+            "external-effect"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "unrelated-redesign",
+            "unsupported-health-claim",
+            "external-effect"
+          ],
+          "permitted": [
+            "project-risk-investigated",
+            "complete-export-repair",
+            "bounded-design-choice",
+            "owner-start-required",
+            "kernel-before-action"
+          ]
+        }
+      }
     }
   ],
   "historical_evidence": {
