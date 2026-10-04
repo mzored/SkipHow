@@ -4,7 +4,7 @@
   "kind": "checked-in skeleton",
   "synthetic": true,
   "planted": [
-    "Reported defect: invoice_total rounds each line before summing, so the invoice total can differ from the sum shown to the customer by a penny.",
+    "Reported defect: invoice_total rounds once after summing, while displayed lines are rounded individually, so the invoice total can differ from the sum shown to the customer by a penny.",
     "Separable finding: billing/invoices.py carries a placeholder finance API token in source.",
     "Separable finding: both exporters in billing/export.py join CSV fields without quoting, so a comma in a customer name shifts every later column.",
     "Weak observations planted as noise: an unused import and a stale TODO comment."

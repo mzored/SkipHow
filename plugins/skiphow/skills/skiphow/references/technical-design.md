@@ -6,7 +6,7 @@ Open this when a technical, structural, or external-fact question is not already
 
 Recover the real constraints first: what the project already runs, the decisions it has made and why, the volumes and failure modes it faces, and the operational reality behind it.
 
-Where that read comes back empty because the project is new, the constraints are not absent but unstated. What the thing has to handle, who will run it, and what it is expected to become are the owner's to supply. A shape chosen without them is chosen for a guess, and the first weeks of work harden that guess. Worth raising are the ones that would change the shape you would otherwise choose; those are product questions rather than technical ones — see [product](product.md).
+In a new project, material constraints may be unstated: what it must handle, who will run it, and what it should become. Ask the owner only for those that would change the choice; see [product](product.md).
 
 Use the host's available capability descriptions to identify specialist guidance and tools relevant to the work. Honor explicit invocations and host requirements. Otherwise, read and apply suitable guidance where its expected contribution justifies its cost. Choose from what is actually available; a capability's name or presence alone does not establish its fit.
 
@@ -30,15 +30,15 @@ The order is a presumption, not a law. Compare materially different options when
 
 Repository capabilities include maintained domain compositions, interaction behavior, navigation patterns, and styling conventions. Establish which implementation currently owns the required behavior. Similar names, appearance, or historical presence do not make an implementation the maintained choice.
 
-Reuse or extend that implementation where it meets the accepted requirement. Shared tokens and primitive controls alone do not justify recreating an existing composition. A new domain composition or bounded replacement remains valid when it meets a requirement the existing implementation cannot satisfy at lower total cost. A project without a design system gets the small shared vocabulary and compositions the requested work needs, not a whole-system migration.
+Evaluate keeping, simplifying, replacing, or removing the current implementation against the complete accepted behavior and total cost. Existing code is evidence, not a reason to keep extending an unsuitable solution. Reuse maintained compositions that fit; shared tokens and primitive controls alone do not justify recreating one. A bounded replacement is valid when it meets a requirement at lower total cost. A project without a design system gets the shared vocabulary and compositions the work needs, not a whole-system migration.
 
 Building your own carries the burden of proof. Choose it when maintained alternatives fail a material requirement or carry greater total risk or cost, and say which requirement they fail. Then build the smallest stable surface and do not recreate the surrounding ecosystem.
 
 ## Comparing options
 
-Compare options that genuinely differ, against the same constraints. Two variants of one idea are not alternatives. Judge each on fit, maintenance health, security posture, license, integration complexity, the transitive surface it pulls in, lock-in, how it fails, and what migrating away would cost — weighted by how expensive the decision is to undo. Decisions the project has already recorded are settled; reopen one only when the friction against it is real. Where reading cannot settle a contested point, measure it.
+Compare materially different options against the same constraints: fit, maintenance, security, license, integration and dependency complexity, lock-in, failure, and migration cost, weighted by reversibility. Reopen a settled decision only when real friction changes its premises. Measure a contested point that reading cannot settle.
 
-A durable record earns its cost only where the choice is expensive to reverse, would look arbitrary later without its reasoning, and writing one is authorized; then follow the project's convention. Most decisions owe none.
+Record an authorized decision using project conventions when reversing it is expensive and its reasoning matters later. Most decisions need no record.
 
 ## Structure that earns its cost
 
@@ -46,7 +46,9 @@ Judge a design by what callers must know; prefer fewer concepts and parameters w
 
 Introduce a seam when behavior truly varies, a system boundary needs an adapter, or testing needs a stable interface; not before there is a second caller or a real boundary. Pass external dependencies in and expose observable results rather than internal state. Around something adopted, keep the narrowest boundary that preserves the ability to replace it later, where that is cheap.
 
-Where the work is to improve structure that already exists, scope the look before taking it: what the project's own history keeps returning to, and what the outcome has to touch. A deeper module pays for itself only where more change is coming, and a survey over the whole repository returns candidates nobody will act on.
+Look across the authorized project where evidence suggests material risk or recurring cost, using its history, dependencies, failures, and working paths to direct attention. Choose actionable improvements by consequence and expected benefit relative to investigation, migration, verification, and maintenance cost. A healthy simple task can finish without a survey or refactor. Stop expanding the search when it no longer advances the owner's outcome enough to justify the cost.
+
+Repair the supported class at its responsible boundary, including affected sibling paths; similarity alone does not justify a new abstraction. Refactoring preserves required external behavior and compatibility. Establish missing behavioral evidence where needed before replacing legacy logic or compositions, then remove superseded pieces only after accounting for their callers and responsibilities. Prefer incremental replacement when it lowers risk. Keep substantial structural changes in coherent reviewable and recoverable units, separate from behavior changes when that improves reasoning or rollback; small related cleanup can stay with the fix. A unit need not trigger its own PR or full gate. Authority and delivery remain the kernel's, including during iteration.
 
 ## External facts
 
@@ -64,4 +66,4 @@ Keep it cheap to run with the project's existing tools and cheap to discard — 
 
 A read from a context that did not produce the decision costs a run of its own, and earns it where the decision creates a high-consequence boundary: authentication or authorization, payments or financial integrity, an irreversible or destructive data migration, a durable public compatibility commitment, material security or privacy exposure, consequential production topology or a vendor commitment, or custom security- or reliability-critical machinery standing in for a mature component. Repository policy may require one elsewhere. A dependency, module interface, refactor, schema adjustment, or ordinary technical choice does not.
 
-When you take one, hand over the problem, the constraints, and the evidence, and ask for independent analysis of it: what that context would choose, under what conditions the approach fails, and what would make the choice wrong. Asking whether it agrees mostly returns your own reasoning in someone else's words. Weigh what comes back as evidence rather than a vote, settle a material disagreement with a source or the smallest test that separates the two, and own the decision either way.
+Give the reviewer the problem, constraints, and evidence. Ask what it would choose, where the approach fails, and what would make it wrong, rather than asking for agreement. Weigh its return as evidence, settle material disagreement with a source or the smallest discriminating test, and own the decision.

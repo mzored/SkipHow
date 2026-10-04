@@ -22,9 +22,6 @@ def main() -> int:
     assert setup_cost > measured["browser_execution"]
     optimized_setup_cost = recurring_setup_seconds(measured, plan)
     assert optimized_setup_cost < setup_cost
-    assert plan["reuse_prepared_environment"] is True
-    assert plan["reuse_started_services"] is True
-    assert plan["reuse_test_data"] is True
     assert plan["browser_check_count"] == timings["browser_check_count"]
     assert plan["delivery_coverage"] == timings["delivery_contract"]
     assert run_coverage() == {

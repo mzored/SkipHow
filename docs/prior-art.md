@@ -116,6 +116,33 @@ An idea from another project becomes a focused method or a kernel invariant only
 
 The reasoning behind each rule that survived is in [decision history](decisions.md), and what real runs have and have not shown is in [current evidence](evidence.md).
 
+## Bounded project supervision in 6.2.1
+
+Primary sources read on 2026-10-04 support evidence-directed opportunistic improvement and bounded refactoring.
+[Fowler's refactoring definition](https://refactoring.com/) preserves observable behavior through small transformations
+and frequent checks. [Opportunistic refactoring](https://martinfowler.com/bliki/OpportunisticRefactoring.html) places
+improvements in ordinary work and requires judgment about when to stop. [Legacy displacement](https://martinfowler.com/articles/patterns-legacy-displacement/)
+starts with desired outcomes and makes replacement incremental where it reduces risk. SkipHow adopts these principles
+in its existing design guidance, without a mandatory migration plan or a refactor on every request.
+
+[Google's small-change guidance](https://google.github.io/eng-practices/review/developer/small-cls.html) favors a coherent
+conceptual change and separating substantial refactoring when helpful, while keeping relevant tests with the change.
+Its [review standard](https://google.github.io/eng-practices/review/reviewer/standard.html) seeks improved code health,
+not perfection. These support reviewable units and finite improvement; they do not imply a PR or hosted gate per tiny fix.
+
+[Google's testing chapter](https://abseil.io/resources/swe-book/html/ch12.html) favors stable behavioral tests and readable
+independent examples, including deliberate duplication where it helps clarity. Its notes on
+[narrow assertions](https://testing.googleblog.com/2024/04/prefer-narrow-assertions-in-unit-tests.html) and
+[brittle tests](https://testing.googleblog.com/2024/04/how-i-learned-to-stop-writing-brittle.html) support repairing
+incidental coupling. SkipHow preserves unique high-fidelity evidence and legitimate fixed expectations. It does not
+adopt blanket DRY, a ban on literals, a test-count target, or deletion based on elapsed time.
+
+The current [architecture-improvement skill](https://github.com/mattpocock/skills/blob/main/skills/engineering/improve-codebase-architecture/SKILL.md)
+uses project history and broad discovery when problems are scattered. SkipHow takes evidence-directed attention,
+without an owner-operated candidate menu or a recurring repository audit. Ponytail's existing sufficient-reuse and
+complexity ideas remain relevant as recorded below. No upstream prose or code is copied. These sources inform design;
+they are not behavioral receipts for SkipHow or evidence that every project benefits from the same procedure.
+
 ## Bounded plans and first working paths in 6.2.0
 
 Read on 2026-10-03. The [Hunt and Thomas interview on tracer bullets](https://www.artima.com/articles/tracer-bullets-and-prototypes)

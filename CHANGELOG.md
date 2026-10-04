@@ -2,6 +2,34 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 6.2.1 (2026-10-04)
+
+Clarify the existing CTO responsibility to assess material risks and recurring costs across the authorized project,
+question the fit of current solutions, and resolve supported engineering findings at safe boundaries, including
+fast-fixes iteration. The owner's outcome stays first and further improvement must justify its total cost. Authority,
+read-only requests, protected actions, and the local delivery boundary remain unchanged.
+
+Make feasible authorized repair in this run the default. An issue preserves genuinely unfinished work and cannot
+replace a feasible repair. Deferral needs a concrete decision, protected action, blocker, or evidenced cost that
+would materially compromise the owner's outcome, with its reason and resume condition retained. Separability or
+an existing issue alone is no reason to leave the work for a later agent.
+
+Reuse one task-writing contract for plan and genuinely deferred implementation issues. The issue carries context,
+evidence, authority, constraints, observable acceptance, dependencies, and return proof for an executor without this
+conversation. A short bug or ordinary SkipHow launch references the issue; blocked preparation stays explicitly
+blocked. Small findings do not inherit the full planning workflow.
+
+Design guidance compares retention, simplification, replacement, and removal, preserves complete required behavior,
+and accounts for callers and superseded responsibilities. Verification permits evidenced consolidation or replacement
+of pre-existing redundant checks while preserving unique proof and legitimate fixed product examples. Frequent cheap
+checks remain useful. Triggered guidance is recovered before its act when absent after compaction.
+
+Extend the unrun corpus with a project opportunity outside a small CLI edit, old coupled tests, and a compacted live
+feedback stream. Validate the export oracle against different complete and incomplete repairs. Remove a setup oracle's
+unnecessary requirement to apply every available remedy and correct reversed billing defect metadata. No paid model
+comparison was run; new behavior, savings, activation, and continuity remain `UNVERIFIED`. The package structure and
+installation mechanism are unchanged, so new clean-install experiments are not required.
+
 ## 6.2.0 (2026-10-03)
 
 ### Changed

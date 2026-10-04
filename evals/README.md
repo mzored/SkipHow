@@ -19,6 +19,11 @@ the receipt every future run has to leave behind.
 
 ## What is here
 
+The 6.2.1 supervision probes remain `UNVERIFIED`. The original `project-supervision` fixture tests bounded discovery
+beyond a small passing change, complete export behavior, and legitimate fixed examples. Existing coupling, measured
+setup, and live-continuation probes cover old checks, alternative remedies, and a compacted iteration stream. Their
+oracles test synthetic behavior and decision inputs, not model adherence or real browser and pipeline performance.
+
 - [`cases.json`](cases.json) holds the whole corpus: the comparison arms, the
   scoring rules, the terminal states, the condition variables, the measures,
   the run limits, the fields a run record must carry, and the cases.
