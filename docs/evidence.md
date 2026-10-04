@@ -2,6 +2,51 @@
 
 This page separates package checks from observed model behavior. The full 2.0 evidence remains in the immutable [`v2.0.1` research snapshot](https://github.com/mzored/SkipHow/tree/1c811262e6acdbdc58a2ee862b54e0b8d3478eaa/docs/research/2026-08-27).
 
+## 6.3.0 whole-scope planning and open interviews
+
+One private installed Codex session on exact 6.2.1 was inspected on 2026-10-05. The complete plan instructions arrived
+through explicit invocation, and the actual tool output contained the product reference before the first incomplete
+handoff. There was one asynchronous product question before that handoff, so a claim of no questions would be incorrect.
+Its options presumed a consequential constraint without a recorded owner decision. The answer was still pending when
+the agent reported incomplete preparation. After an owner reminder it offered an independent partial launch. Further
+owner answers reopened preparation and exposed a follow-up before the whole requested plan was returned.
+
+This is one uncontrolled field session. It shows neither that loading failed nor that a particular sentence caused the
+behavior. Existing 6.2.1 wording already required follow-ups and no known open product choices. Historical 2.4.2 receipts
+support only their named old packages. Causality, prevalence, and new behavioral improvement remain `UNVERIFIED`.
+No paid comparison was authorized or run. Private transcript text, identifiers, application data, and raw logs are not
+published. The current source diagnosis and owner-requested workflow capability are distinct from model evidence.
+
+Inspection identified an ambiguity between reporting incomplete preparation and returning an accepted-subset launch.
+The subset's owner provenance was not explicit. The existing corpus prohibited unconditional whole-scope launches but
+left an agent-created partial launch insufficiently distinguished from preparing independent work. The selected optional
+contract now ties readiness to the whole request, keeps a pending answer open with wait or resume semantics, and allows
+a smaller execution scope only when the owner selects it. Small cohesive work gets an ordinary SkipHow launch, substantial
+coordination gets longrun, and an already selected execution workflow survives. Product framing distinguishes a
+recommendation from an adopted constraint shared by all options. Engineering decisions remain the lead's.
+
+Original synthetic cases cover answer-revealed follow-ups, exhausted independent preparation beside a pending answer,
+consequences for existing dependent state, legitimate owner-selected partial scope, and a settled small-work launch.
+Existing substantial and selected-workflow launches, read-only constraints, independent review, and no-unnecessary-question
+controls remain. All new cases are `UNVERIFIED`; corpus tests prove their semantic contracts, not live waiting, successful
+interviews, or comparative reliability. The [decision](decisions.md#whole-scope-planning-and-interview-continuation) and
+[prior art](prior-art.md#planning-interviews-and-readiness-in-630) retain the alternatives, history, and current sources.
+
+Package layout, installation, and activation mechanisms are unchanged. Fresh clean-install or activation receipts are
+not required for prose within that structure. The release matrix keeps deterministic gate, host schemas, installation,
+explicit invocation, implicit activation, continuity, and behavioral suite separate, with unrun rows `UNVERIFIED`.
+
+An independent read-only Codex source review of the candidate against `6e5a672` returned APPROVE with no qualifying
+findings. It confirmed whole-scope readiness, pending continuation, selected subsets and workflows, lead-owned engineering,
+and compatible event expectations across all six affected corpus cases. Both host and operating-system homes were isolated.
+A separate empty-context control and the review transcript contained no personal skills or installed plugin paths.
+The review used the configured model at high effort with a read-only sandbox. Its attempted deterministic gate stopped on
+unavailable or mismatched dependency pins in its default interpreter and established no check result. The maintainer's
+pinned environment independently passed the full local gate and the 48 focused corpus checks. Nonqualifying wording
+objections and the rejected approval/interview/state mechanisms were declined. The authentication reference and both
+scratch directories were removed. Later edits record this review and clarify the decision index's existing default-routing
+ownership only; runtime, corpus, dependencies, and configuration are unchanged. Source review proves inspection, not behavior.
+
 ## 6.2.1 bounded project supervision
 
 Two private installed Codex fast-fixes sessions from 2026-10-03 and 2026-10-04 were inspected. Their prefixes carried

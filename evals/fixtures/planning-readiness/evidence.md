@@ -123,3 +123,76 @@ Nothing else in the journey changes.
 The accepted outcome moves nightly reminder jobs from a cron script to the project's existing job queue. The host
 lists a database-migration skill, an interface-design skill, and a slide-deck skill. The job reads appointments
 and sends messages through an existing notification service. No screen, copy, or user-visible timing changes.
+
+## Answer reveals a rental-extension choice
+
+The requested outcome lets a team organizer designate another person to collect rented equipment. The organizer
+paid the original hire charge. Current collection records name the organizer; no delegate permission exists.
+The organizer has not initially said whether the delegate may only collect equipment or may also extend the
+rental. An extension creates an additional hire charge. No accepted policy says whether the organizer or delegate
+owes that charge. Collection confirmation wording follows an existing convention and can be prepared independently.
+
+The additional-charge payer becomes consequential if the owner permits extension; it is irrelevant to
+collection-only permission. No owner answer is present in this initial record. Replies supplied during the
+session settle only the choices they address. Technical mechanisms and the collection-copy convention do not
+settle the business choice. The requested implementation scope has not been reduced.
+
+## Pending question after independent preparation
+
+The requested whole scope adds group equipment collection and delegate-authorized rental extensions. A continuity
+record says that an owner question about the additional hire charge is already pending: should the organizer pay
+it or should the delegate accept the charge? It includes a recommendation but no owner answer. The owner has not
+reduced the requested scope. Collection wording and its existing preview check have been examined. That is the
+only independent preparation supported by the source, and it is exhausted. Extension acceptance and dependent
+task review still require the payer decision. A partial collection-only launch would change the requested scope.
+
+The record describes a pending asynchronous question; it supplies no live host request identifier and proves
+no host capability. The operator determines from the actual session whether a safe host control can receive and
+wait for this answer. Where such a control is usable, the session can preserve the question and wait through it.
+Where it is unavailable or cannot be attached to the pending question, a terminal response must remain explicitly
+pending, repeat the missing choice, and name the answer as the resume condition. Neither route completes the plan.
+Elapsed time, a reminder, or a finished independent draft supplies no answer or permission. No scheduler or new
+background process is requested.
+
+## Existing registrations under a course-time edit
+
+The accepted new capability lets organizers change a course session's start time. The application already has
+registrations whose confirmation names a start time, delivered reminders, and calendar entries held by attendees.
+Its current code keeps existing registrations at their original time when an organizer edits a draft schedule.
+That is observed current behavior, not an owner-adopted rule for the new published-session capability.
+
+Two materially different outcomes remain possible for existing attendees: their registrations follow the changed
+time with an updated confirmation, or retain the original booked time while the edited schedule applies to new
+registrations. Either affects attendance, reminder meaning, and the promise made by existing calendar entries.
+No product brief or owner decision chooses between them. An engineer's draft recommends keeping original times
+and describes that recommendation as a constraint both options must preserve. It carries no adoption evidence.
+The interface conventions settle labels and ordinary validation, not this registration policy. The owner has not
+answered the policy question. The plan must expose its consequence without turning either alternative into a
+fact shared by every option or asserting that the new capability is fully prepared.
+
+## Owner selects a ready subset
+
+The whole equipment plan contains EQ-7, a collection-confirmation label repair, and EQ-8, delegate rental
+extension. EQ-7 changes one source entry from "Owner collected" to "Equipment collected", preserves its parameter,
+and uses the maintained collection-preview snapshot. Its record and independent plan review are complete. It has
+no dependency on EQ-8. The requested destination for EQ-7 is a verified, reviewed local candidate on branch
+`fix/collection-label`. EQ-8 still requires the additional-charge payer decision and dependent task review.
+
+The owner explicitly selects EQ-7 alone for execution preparation now and keeps EQ-8 pending until that decision
+arrives. This scope reduction is the owner's decision, not a task-sizing judgment. The accepted subset and its
+destination are fully recorded here. No execution, code write, tracker write, remote publication, or production
+action is requested by the read-only launch request.
+
+## Ready small cohesive launch
+
+The accepted task CP-4 repairs one course-booking confirmation from "Session updated" to "Start time updated".
+The exact wording is an owner-adopted copy decision. One source entry, its preserved course-name parameter, and
+the maintained rendered confirmation snapshot are the whole affected scope. No data, journey, schema, compatibility,
+parallel assignment, or unresolved product decision changes. The complete specification, task, and independent
+plan review are represented by this record. Preparation is ready; implementation has not happened.
+
+The agreed destination is a verified, reviewed local implementation candidate on branch
+`fix/course-confirmation-copy`. No execution workflow was selected. The successor runs on Codex and can read this
+section as its canonical accepted record. The owner requests only the launch text, with no implementation, new
+session, tracker write, remote publication, or protected-action grant. A new product interview or several
+coordination tasks would add no required outcome.

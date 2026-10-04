@@ -2,6 +2,42 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 6.3.0 (2026-10-05)
+
+Plan prepares the whole requested scope and keeps unanswered product interviews open. Useful independent preparation
+continues while a decision is pending. When it is exhausted, available host controls support waiting, or the result names
+the pending question and resume condition. An answer resumes preparation and newly revealed product questions. Saved
+drafts and a ready independent task do not complete planning or authorize a partial launch. An owner-selected smaller
+scope remains valid.
+
+Ready small cohesive plans launch ordinary SkipHow; substantial coordinated plans launch longrun. An already selected
+execution workflow takes precedence. Requirements and dependencies stay in accepted records, and the short host-native
+launch carries the destination and necessary constraints without adding implementation or protected-action authority.
+
+Clarify material question framing in the existing product reference. A recommendation cannot silently settle a related
+choice or make it a constraint shared by every option. Affected existing behavior and dependent state help identify
+product consequences. The owner keeps unresolved product decisions; the lead keeps research, algorithms, architecture,
+schemas, tests, slicing, routing, and review.
+
+The historical question frontier and decision-provenance rules were already adopted. Re-reading current grill-me,
+grilling, and Superpowers brainstorming preserves the old rejection of exhaustive interviews, mandatory understanding
+notes, universal design approvals, technical-choice menus, and owner-operated artifact chains. No new module, scheduler,
+hook, approval stage, question quota, or state format is added. This compatible MINOR release changes an optional planning
+capability, including the owner-requested adaptive replacement of the former longrun default.
+
+One private 6.2.1 session showed an asked-but-unanswered decision, incomplete handoff, and later partial launch, followed
+by successful continued preparation after owner input. It does not demonstrate causality. Original synthetic cases
+cover follow-ups, waiting and resume boundaries, dependent product state, legitimate selected subsets, and direct small
+launches. No paid behavioral comparison was run. Model behavior, reliability gains, and savings remain `UNVERIFIED`.
+Package structure and installation are unchanged. See [current evidence](docs/evidence.md#630-whole-scope-planning-and-open-interviews).
+
+Independent isolated read-only Codex source review returned APPROVE with no qualifying findings. Historical
+frontier/provenance rules, whole-scope readiness, pending continuation, owner-selected subsets, and engineering authority
+were preserved. Wording-only objections and the rejected heavier mechanisms were declined. The review's default
+interpreter did not satisfy dependency pins, so its gate attempt remained unverified. The maintainer's pinned interpreter
+passed the full local gate and 48 focused corpus tests. Strict Claude schema validation passed locally; the pinned Codex
+validator runs in CI. Review and control scratch directories and authentication references were removed.
+
 ## 6.2.1 (2026-10-04)
 
 Clarify the existing CTO responsibility to assess material risks and recurring costs across the authorized project,

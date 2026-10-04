@@ -76,11 +76,16 @@ identity, rollback, and old tokens. The new rejected-row report uses the same ac
 
 The successor runs on Codex. `accepted-plan.md` is the canonical accepted source and includes the agreed
 destination. Preparation and independent plan review are complete. No workflow was selected by the owner.
+SC-12 includes authored supplier explanations, parameter-identity review, rendered preview verification, and
+independent implementation review corrections. SC-13 has separate codemod and old-reader compatibility evidence.
+The accepted scope requires coordinating those assignments, shared error-map writes, review returns, and integration.
+This is substantial execution work even though each prepared task is independently bounded.
 
 ## Ready launch for Claude Code
 
 The successor runs on Claude Code. The same `accepted-plan.md` is canonical, prepared, and independently
 reviewed. No workflow was selected by the owner.
+The same substantial workload and coordination needs described for the Codex successor apply here.
 
 ## Selected workflow and otherwise-lost constraints
 
