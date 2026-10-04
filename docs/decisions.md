@@ -89,6 +89,12 @@ their limits are in [prior art](prior-art.md#bounded-project-supervision-in-621)
 separates deterministic oracles from agent behavior. Reopen this decision on a receipt that demonstrates a lost
 responsibility or disproportionate work, rather than extending the rules from an isolated symptom.
 
+The release gate exposed an actual verification bottleneck in exact-spelling validation. The checker needs entry
+names but constructed a `Path` for every sibling of every ancestor, repeatedly across links and test copies. Native
+name enumeration is the smallest equivalent replacement: exact comparison and failure handling survive, with no
+stale cache, new dependency, coverage deletion, or timeout increase. Existing portability and link tests remain the
+acceptance. The full bounded gate passed after the substitution; timings in evidence are local observations only.
+
 ## Workload-based planning and a short execution launch
 
 Version 6.2.0 implements the owner's accepted planning contract. Two private Codex sessions carrying the full 6.1.1

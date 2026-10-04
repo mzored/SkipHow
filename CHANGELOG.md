@@ -30,6 +30,16 @@ unnecessary requirement to apply every available remedy and correct reversed bil
 comparison was run; new behavior, savings, activation, and continuity remain `UNVERIFIED`. The package structure and
 installation mechanism are unchanged, so new clean-install experiments are not required.
 
+Repair an observed checker bottleneck: exact-spelling validation now enumerates native entry names instead of
+constructing a `Path` for every sibling in each ancestor directory. Exact case, Unicode spelling, symlink handling,
+and failure behavior remain unchanged. Focused boundary tests and the full local gate pass with the existing
+120-second limit; no timeout was raised or coverage removed.
+
+Independent isolated Codex source review approved the runtime candidate with no qualifying findings or wording
+suggestions. A narrow independent review approved the checker substitution. The optional Claude source review
+could not authenticate and remains `UNVERIFIED`; its strict schema validator passed. Behavioral effects and savings
+remain `UNVERIFIED`.
+
 ## 6.2.0 (2026-10-03)
 
 ### Changed

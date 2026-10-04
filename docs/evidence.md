@@ -42,6 +42,24 @@ All behavioral scenarios and effectiveness claims remain `UNVERIFIED`. No paid c
 or new clean-install receipt was run. Independent source review establishes inspection, and deterministic tests establish
 oracle validity and package contracts. Neither establishes measured savings, reliable supervision, or continuity.
 
+The independent isolated Codex source review of `281118e` against `1365be2` returned APPROVE with no qualifying
+findings or wording suggestions. Its transcript confirmed the configured model and read-only sandbox, isolated host
+and operating-system homes, and no personal skills, installed-plugin cache, or memory paths. A controlled reference
+to the minimum native authentication file was removed after the run; credentials were not copied. The optional
+Claude review stopped before analysis because its expired OAuth session could not refresh, so that review remains
+`UNVERIFIED`. Claude's authentication-independent strict package schema validation passed.
+
+The first full local gate and a narrowed checker selection hit their existing 120-second pytest bound. Diagnosis
+located repeated construction of `Path` objects for every entry in broad temporary ancestor directories during
+exact-spelling validation. Fifteen manifest variants plus the ordinary package/document check took 43.50 seconds;
+the same manifest variants under an owned short ancestor took 2.99 seconds. Using native entry-name enumeration
+preserves exact string membership, error handling, and final existence checks without adding a cache or changing
+timeouts. Eighteen focused manifest, spelling, collision, and alias checks then passed in 11.17 seconds under the
+ordinary temporary environment, and the full gate passed within its unchanged bound. These are local diagnostic
+observations with different selections and ancestry, not a portable performance guarantee. A separate narrow source
+review approved the one-line substitution and confirmed the existing semantic tests cover the preserved boundaries.
+No runtime wording changed after the independent review; later source edits record it and repair the checker cost.
+
 ## 6.2.0 workload-based planning and short launches
 
 Two private installed Codex planning sessions from 2026-10-02 carried the full 6.1.1 plan text. One returned a short
