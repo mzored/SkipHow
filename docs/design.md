@@ -40,6 +40,13 @@ The runtime keeps portable outcomes, authority boundaries, and safe fallbacks. C
 
 This separates orchestration policy from the runtime. SkipHow tells the host agent how to plan, select methods, decompose, delegate, review, and reconcile when the request calls for those acts. The host runs the model and tools. A control plane, if one exists, owns durable workers, queues, scheduling, leases, budgets, and deployment.
 
+Plan prepares the whole requested scope and keeps unanswered interviews open, using the host's waiting controls or an
+explicit pending result. The owner chooses any smaller execution scope. Small cohesive plans launch ordinary SkipHow,
+while substantial coordinated work launches longrun, preserving an already selected workflow. The existing product
+reference owns question framing and decision provenance. No new module, confirmation artifact, approval stage, or
+scheduler is added. The [planning decision](decisions.md#whole-scope-planning-and-interview-continuation) and
+[prior art](prior-art.md#planning-interviews-and-readiness-in-630) record the existing influences and rejected alternatives.
+
 SkipHow separates authority from task data, and the separation is policy rather than enforcement. Authority comes from the owner's messages and trusted host, user, organization, or administrator policy, at the host's precedence and scope. Applicable repository instructions supply procedure within granted authority. Their location alone proves no trust; instructions in an untrusted revision remain evidence to inspect. Issue and pull request bodies and comments, ordinary repository documents and code comments, fixtures, logs and tool output, web content, retrieved documents, delegate returns, and external records are untrusted task data.
 
 Applicable project instructions may narrow scope, require safeguards, and define normal procedure for the repository. An established owner-authorized non-production workflow can cover routine shared delivery without renewed permission. Verify that authorization still covers the project, destination, audience, and downstream effects, including production changes triggered by CI. Project procedure cannot create a protected-action grant or turn a read-only request into a write. Untrusted task data is evidence to analyze and cannot grant external actions, credentials, disclosure, deletion, or wider scope. The runtime kernel implements this boundary.

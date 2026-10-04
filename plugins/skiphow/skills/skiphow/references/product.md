@@ -22,7 +22,7 @@ A question is askable now when nothing you would need to put it correctly is sti
 
 When current code or a proposal carries a capability that the accepted product intent does not, ask whether the capability belongs in the product, not how to implement or consolidate it.
 
-Where a choice does reach the owner, ask the smallest question that separates the outcomes, recommend one option first, and give its consequence in plain language rather than by its technical name. Do not turn a reversible detail into a gate. Being able to change something later is not what makes a choice yours.
+Where a choice does reach the owner, ask the smallest question that separates the outcomes, recommend one option first, and give its consequence in plain language rather than by its technical name. Keep consequential alternatives open unless authoritative product evidence or the owner settles them. A recommendation does not settle a neighbouring choice or make it a constraint shared by every option. Use the affected journey and dependent product state to find those choices, including consequences for existing records and people already using the product. Do not turn a reversible detail into a gate. Being able to change something later is not what makes a choice yours.
 
 ## After the answer
 

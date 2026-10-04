@@ -4,12 +4,12 @@ This page records the choices that still matter when SkipHow changes. Read it be
 
 ## Current decisions
 
-The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-10-04 against the 6.2.1 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
+The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-10-05 against the 6.3.0 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
 
 | Decision | Active rationale | Premises | Evidence | Reopens when |
 | --- | --- | --- | --- | --- |
 | Technical supervision looks across the authorized project, questions current solutions, and resolves supported engineering findings at safe boundaries, including iteration, while prioritizing the owner's outcome and stopping when further benefit does not justify cost | Passing a narrow task can leave material risk or recurring cost elsewhere; a delivery-only repair sentence can defer separable work throughout an open feedback stream | Existing authority, owner decisions, protected actions, read-only restrictions, and delivery boundaries still govern; evidence directs attention without an exhaustive audit; complete behavior and distinct verification evidence survive simplification | Clarified `Contract` in 6.2.1; two private installed sessions support inspection of cost and continuity, not causality; synthetic opportunity, coupling, setup, and continuation probes remain `UNVERIFIED` | A receipt shows speculative redesign, authority expansion, endless improvement, missed supported risks, blind extension of unsuitable code, or lost unique evidence |
-| Plan reviews actual one-agent workload, prepares bounded vertical slices across the accepted scope, proves an absent component path with a thin real slice, and returns an explicit short longrun launch unless the owner selected another workflow | One common outcome can conceal heterogeneous work; a generic short-prompt instruction permits missing invocation or repeated task and policy content | The owner requested these optional plan behaviors; existing delegation and longrun own execution, reslicing, writer isolation, and resource coordination; mature paths and uniform automated work need no artificial foundation or quotas | Owner-requested `Contract` in 6.2.0; two private 6.1.1 planning sessions show differing handoffs, not causal improvement; new scenarios and behavioral benefit `UNVERIFIED` | A receipt shows oversized assignments passing review, unnecessary fragmentation, invented blocking edges, safety deferred from a first slice, repeated launch content, or authority lost or expanded |
+| Plan prepares the whole requested scope, keeps unanswered product interviews open, reviews actual one-agent workload, and returns an explicit short launch suited to the work | A recorded question is not completed preparation; an independent task does not authorize substituting a smaller execution scope; one common outcome can conceal heterogeneous work | Only the owner reduces the requested scope; an owner-selected workflow is preserved, and the lead owns default workflow selection, technical questions, slicing, and routing; available host controls govern waiting and no scheduler is added; mature paths and uniform automated work need no artificial foundation or quotas | Owner-requested `Contract` in 6.3.0, extending 6.2.0; one private 6.2.1 session shows a pending interview and partial handoff, not causality; new continuation and framing probes and behavioral improvement `UNVERIFIED` | A receipt shows premature launch, lost follow-up, assumptions accepted as product choices, endless or technical interviews, needless fragmentation, omitted safety, or expanded authority |
 | Simplification preserves complete accepted behavior at the lowest total cost; a complexity finding names a redundant construct, its consequence, a cheaper replacement or justified deletion, and surviving responsibilities | A short diff or native capability can omit required behavior, and a deletion can remove necessary focus, change protection, or recovery | The owner requested clarification after the Ponytail comparison; existing design and verification references already own these judgments | Clarified `Contract` in 6.1.2; three new unrun scenarios and one strengthened review scenario; deterministic oracle checks are not model evidence | A receipt shows insufficient reuse accepted as complete, needless machinery retained, or a complexity finding losing a required responsibility |
 | Briefs convey a compact, evidenced handoff; bulky artifacts stay accessible by reference through review and return checks; corrections carry current evidence and unresolved findings; shortened check output retains the check's own terminal status | The lead can read a return-size rule without conveying it to the worker, and a filter can succeed while the check fails | Small results can stay inline; all findings, blockers, and uncertainty survive; the lead still verifies current state and destination; no file format, size quota, or new coordinator is required | Clarified `Contract` in 6.1.1 after three private installed sessions and owner-approved implementation; four unrun cases; causal and behavioral effects `UNVERIFIED` | A receipt shows lost findings, inaccessible proof treated as acceptance, blanket report files, repeated bulk copied into the coordinator, or a filter status accepted as check status |
 | Fast-fixes coordinates incoming local work across stacks, preserves shown states, and continues independent work; plan distinguishes unanswered choices from execution readiness; deploy-ready reconciles active work into a checked candidate | The owner explicitly requested live orchestration; the old fast-fixes required a browser, Git worktree, stop after every shown result, and deferred every pytest/e2e invocation | Existing delegation, tracking, integration, and verification cover the shared responsibilities; host controls determine concurrency and message timing; restrictions and protected-action grants survive upgrades | Owner-requested `Contract` in 6.0.0; nine unrun cases, behavioral effect `UNVERIFIED` | A receipt shows lost incoming work, stale returns accepted, blocked work stopping independent outcomes, unsafe shared-resource use, lost checkpoints, needless infrastructure, or verification gaps hidden by the new defaults |
@@ -37,6 +37,51 @@ The live decisions, their premises, and what would reopen each. "Evidence" says 
 | CTO evidence belongs to a scenario; suite status reports declared coverage and carries no behavioral label; an eligible terminal outcome also needs a verified fixture manifest and retained end-state artifact for suite coverage; outside the suite, eligibility is judged per claim (loaded, delivered at destination, foreign work preserved, completion honesty, comparative benefit), each with its own required evidence, a confirmed failure recorded as `FAIL` rather than as missing evidence, and a loading observation labelling nothing else | One successful run cannot support eleven unrun scenarios or imply another host, activation arm, or trial; prose summaries cannot replace inspectable state; a per-run standard left every 3.x and 4.x observation unlabelled while the ledger quoted them | Coverage, terminal outcome, and receipt sufficiency are independent; a complete run set may contain failures; the rules for each claim were fixed before any new run and validated against the retained captures | `Deterministic` corpus validation in 4.0.1 and per-claim validation in 4.3.0 (`scripts/claim_eligibility.py`); suite behavior `UNVERIFIED` | A claim needs evidence no rule expresses, or a rule is found to weaken the public meaning of `Observed` |
 
 The sections below are the history behind those rows: what each release tried, measured, and rejected. They are non-normative. Where a section and the index disagree, the index is current and the section records how it got there.
+
+## Whole-scope planning and interview continuation
+
+Version 6.3.0 implements the owner's request that plan fully prepare the requested work before handing it to longrun,
+or ordinary SkipHow when the work is small. It reopens the 6.2.0 universal longrun default on that explicit product
+request. A previously selected execution workflow still wins. This is a compatible MINOR capability inside the optional
+planning workflow, with no change to public skill names, installation, protected-action grants, or implementation authority.
+
+One private installed 6.2.1 Codex session was inspected against the exact tagged text and its actual tool outputs.
+The complete plan instruction and product reference were in context before the first incomplete handoff. It asked a
+product question asynchronously, treated an unadopted consequential constraint as common to its options, finished with
+an unanswered decision, and offered an independent partial launch after an owner reminder. Further owner answers
+reopened preparation, exposed a dependent question, and produced a whole-scope handoff. This is one session, not several
+observations. The record establishes the behavior and loaded text, not the sentence that caused it or its prevalence.
+
+The history matters. Version 2.4.2 already adopted the independently answerable question frontier and follow-ups, backed
+by narrow receipts on the packages named there. Version 2.13.1 distinguished current state, proposals, and adopted intent.
+Version 3.0.0 preserved those responsibilities in product. Version 5.1.5 applied them to algorithms, data rules, and
+journeys. The 6.2.1 plan already required finishing the interview. Repeating those mechanisms as a new upstream adoption
+would misstate the history. Their historical receipts do not establish behavior on the current package.
+
+The narrower ambiguity is the incomplete-plan exit. Plan reported readiness and allowed an accepted subset without
+expressly assigning that scope reduction to the owner. Its corpus rejected an unconditional whole-scope launch, leaving
+an agent-selected partial handoff insufficiently distinguished from useful independent preparation. The selected change
+makes whole-request readiness the result, keeps a pending answer as an open interview, resumes on the answer, and permits
+a smaller execution scope only on an owner selection. A host without continuing input or wait controls can return an
+honest pending question with its resume condition. Waiting invents neither work nor a background scheduler.
+
+Question framing stays in product, behind its existing product-choice trigger. A recommendation cannot settle a related
+consequential choice or freeze it across every option. Affected existing behavior and dependent state help discover the
+material consequences. The kernel still limits owner questions to genuinely unresolved product decisions, commitments,
+protected actions, and human-only steps. The lead owns research, algorithms, schemas, tests, task size, and execution method.
+No design-tree traversal, compulsory confirmation note, owner architecture approval, technical menu, or question quota returns.
+
+Three candidates were weighed. A full grilling or brainstorming approval chain would increase owner turns and transfer
+technical supervision, contrary to the outcome contract and the recorded rejections. A second universal kernel interview
+rule or a new readiness module would duplicate existing authority and add discovery cost on unrelated requests. The chosen
+change tightens existing plan exits and product framing, with the adaptive launch explicitly requested by the owner. Its
+recurring cost falls only on selected planning and material product questions. It would be the wrong choice if controlled
+receipts still show partial substitutions or instead create technical interviews, endless waits, or needless planning.
+
+[Current prior art](prior-art.md#planning-interviews-and-readiness-in-630) confirms the old adoption boundary remains useful.
+[Evidence](evidence.md#630-whole-scope-planning-and-open-interviews) records the distinction between source diagnosis,
+deterministic corpus semantics, and unmeasured model behavior. No controlled package comparison was run and no causal
+or reliability improvement is claimed. Synthetic cases cover different decision chains and legitimate smaller work.
 
 ## Bounded technical supervision across the project
 

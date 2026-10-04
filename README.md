@@ -125,7 +125,7 @@ Use these when you know the work pattern you want. Ordinary requests still need 
 | Workflow | Example request | Completion |
 | --- | --- | --- |
 | `skiphow-bug` | `$skiphow-bug Discounts sometimes change when an order is retried. Find and repair the general cause.` | Verified repair at the authorized destination, with original and general-case evidence. |
-| `skiphow-plan` | `$skiphow-plan Prepare team invitations for implementation in this project's GitHub issues.` | Reviewed specification and executable slices with no known open product choices, or explicitly incomplete preparation. No implementation. |
+| `skiphow-plan` | `$skiphow-plan Prepare team invitations for implementation in this project's GitHub issues.` | Whole-scope preparation with a completed product interview, reviewed specification, executable tasks, and a launch suited to the work. Unanswered decisions keep preparation open. No implementation. |
 | `skiphow-longrun` | `$skiphow-longrun Deliver the accepted implementation children of this epic to our development branch.` | Verified delivery or recorded unfinished blockers, with delegated implementation and independent fix/review loops. |
 | `skiphow-deploy-ready` | `$skiphow-deploy-ready Prepare our agreed changes for delivery.` | Deferred checks, review, coherent commits, and any authorized non-production integration. |
 | `skiphow-fast-fixes` | `$skiphow-fast-fixes Fix the search and export bugs locally. I will add feedback while you work.` | Checked local results as they become ready; independent work continues while feedback is pending. |
@@ -137,15 +137,22 @@ the whole accepted scope as bounded vertical slices with real dependencies and p
 starts with a thin working slice; a mature project reuses its established path. The planner keeps large checkable
 automated changes whole and avoids steps that have no independently verifiable result.
 
-Ready plans end with a short launch using the target host's explicit invocation syntax. Longrun is the default unless
-you already chose another workflow. For example, with a concrete accepted plan and destination:
+Planning continues through product questions revealed by your answers. Recommendations and assumptions stay separate
+from your decisions, including consequences for existing records and dependent behavior. A pending answer keeps the
+interview open. The agent prepares useful independent work, then waits through available host controls or returns the
+question and what resumes preparation. Saving drafts does not finish planning or substitute a partial launch for the
+requested scope. You can explicitly choose a narrower scope.
+
+Ready plans end with a short launch using the target host's explicit invocation syntax. Small cohesive work uses
+ordinary SkipHow; substantial coordinated work uses longrun. A workflow you already selected takes precedence.
+For substantial work with a concrete accepted plan and destination:
 
 ```text
 $skiphow-longrun
 Deliver the accepted implementation scope in issue #42 to the development branch.
 ```
 
-Tasks carry requirements and dependencies, so the launch adds only otherwise-missing project, subset, or run constraints.
+Tasks carry requirements and dependencies, so the launch adds only otherwise-missing project, owner-selected subset, or run constraints.
 Preparation and inaccessible sources remain explicit blockers, and the prompt creates no new authorization.
 
 Fast-fixes accepts new changes, revisions, and cancellations while accepted work continues. The lead handles tiny fixes directly and delegates independent work when that pays, with verified writer isolation and coordination of shared resources. It shows an inspected preview, demonstrated behavior, or an artifact as appropriate to the project; a browser and Git are not prerequisites. Before replacing a shown state, it preserves a recoverable checkpoint, using local commits in Git projects. Focused tests may run, including pytest or browser tests, while full delivery gates wait. Explicit requests to wait or restrict tests still govern.

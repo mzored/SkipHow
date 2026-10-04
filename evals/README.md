@@ -66,6 +66,21 @@ A case is run only when the owner authorizes a paid receipt.
 
 ## The arms
 
+The 6.3.0 planning continuation and launch probes remain `UNVERIFIED`. Five original `planning-readiness`
+scenarios cover an answer that reveals a further product choice, an exhausted preparation waiting on a pending
+answer, consequential effects on existing registrations without converting a recommendation into a constraint,
+an explicitly owner-selected ready subset, and ordinary invocation for settled small cohesive work. The existing
+unanswered-choice probe also rejects an agent-selected partial launch. Ready `plan-execution` records retain
+substantial coordination and selected-workflow launch coverage. Settled work starts no gratuitous interview.
+
+The pending-answer probe conditions its wait path on a usable actual host control, not on a fixture claim or a
+tool merely being installed. Without that capability it accepts an explicitly incomplete waiting response with
+the missing question and resume condition. Its positive observable is safe pending continuation, not completed
+planning; a terminal response does not make the requested scope ready. Operators stop at that observable and
+never manufacture a host request identifier, background wait process, or owner answer. All probes are read-only,
+preserve authority boundaries, and run no models. Corpus validation proves neither waiting behavior nor model
+adherence.
+
 The 6.2.0 `planning-*` probes using `plan-execution` remain `UNVERIFIED`. Synthetic records contrast heterogeneous
 manual work with uniform automation, show representative sources and checks where breadth is uncertain, and distinguish
 a missing component path from a mature one. Read-only plan recommendations are graded for executable scope, preserved

@@ -116,6 +116,29 @@ An idea from another project becomes a focused method or a kernel invariant only
 
 The reasoning behind each rule that survived is in [decision history](decisions.md), and what real runs have and have not shown is in [current evidence](evidence.md).
 
+## Planning interviews and readiness in 6.3.0
+
+Read again on 2026-10-05, after checking the 2.4.2, 2.13.1, 3.0.0, and 5.1.5 decisions and shipped history.
+Matt Pocock's [grill-me wrapper](https://github.com/mattpocock/skills/blob/24fe0ef7737efae15c87225755e9f6f5965e4888/skills/productivity/grill-me/SKILL.md)
+now delegates to [grilling](https://github.com/mattpocock/skills/blob/24fe0ef7737efae15c87225755e9f6f5965e4888/skills/productivity/grilling/SKILL.md).
+It batches independently answerable questions, researches facts itself, recommends an answer, and recomputes the question
+frontier after replies. SkipHow already adopted that frontier in 2.4.2. The upstream exhaustive design-tree interview,
+compulsory fact-finding delegates, and final shared-understanding confirmation remain rejected. SkipHow asks only material
+product questions the available evidence cannot settle and leaves engineering choices to the lead.
+
+[Superpowers brainstorming](https://github.com/obra/superpowers/blob/8ca22dba9a94f28898bbce59f2537ff4d87c747d/skills/brainstorming/SKILL.md)
+now states a recognizable intent note and separates the owner's statements from assumptions. Its bounded, spike, and
+architectural paths still require human approvals, with architectural work requiring separate spec, plan, and execution
+choices. SkipHow's provenance distinction was already recorded in 2.13.1 and was not adopted from brainstorming.
+The intent note, universal design approvals, and owner-operated technical chain remain rejected. Settled small work
+receives no new interview or confirmation turn.
+
+The existing influences are revalidated rather than borrowed again. The new behavior is an owner-requested clarification
+of plan completion, scope-reduction authority, waiting and resume, and an adaptive ordinary-SkipHow or longrun launch.
+Recommendations cannot freeze an unadopted consequential alternative across all question options. The existing product
+reference owns that framing. No upstream text or code is copied, no separate module or state format is added, and no
+comparative behavioral gain is measured. See the [decision](decisions.md#whole-scope-planning-and-interview-continuation).
+
 ## Bounded project supervision in 6.2.1
 
 Primary sources read on 2026-10-04 support evidence-directed opportunistic improvement and bounded refactoring.
