@@ -2,6 +2,37 @@
 
 This page separates package checks from observed model behavior. The full 2.0 evidence remains in the immutable [`v2.0.1` research snapshot](https://github.com/mzored/SkipHow/tree/1c811262e6acdbdc58a2ee862b54e0b8d3478eaa/docs/research/2026-08-27).
 
+## 6.3.1 planning boundaries and review continuation
+
+One private installed Claude Code session on exact 6.3.0 was inspected on 2026-10-07, including subagent briefs,
+returns, actual tool-result text, and owner input delivered inside the running turn. The current package text matched
+the tag. Planning instructions arrived on invocation; the kernel and relevant shared references were loaded. Two
+compactions occurred. This is one uncontrolled session, not multiple independent observations.
+
+A later reviewer was assigned broad fact checking again and returned its first final report about 25.5 minutes after
+dispatch, following an owner intervention. Its findings included material defects, so duration alone does not establish
+waste. Earlier review introduced an incorrect technical suggestion, which the reviewer later retracted. The final
+material corrections were published without targeted independent re-review. An implementation candidate had already
+been created and saved remotely, while the final answer both denied starting implementation and listed that candidate.
+Broad owner permission preceded implementation; it is not evidence of action without any possible execution reading.
+The engineering-approval request conflicted with the existing authority boundary, rather than exposing a missing rule.
+
+The source ambiguity is narrower than these observations: plan did not explain correction coverage of its published
+candidate as explicitly as longrun, and grants made while preparing future execution were insufficiently distinguished
+from a request to switch workflows. The owner selected a clarification and shared-loop consolidation. Existing workload
+assessment now appears during drafting, with independent challenge retained. No causal improvement is claimed.
+
+Five new original synthetic cases use an overlay, leaving earlier fixture identities unchanged. They cover planning
+permission, explicit plan-then-execute with an honest unavailable-review path, lead-owned technical criteria beside a
+missing protected grant, a correction that leaves one defect and introduces another, and partial replacement review.
+The existing corpus validator checks arm semantics and satisfiability. These are instruments, not behavior receipts.
+The owner declined paid behavioral comparisons; behavior, reliability, latency, and savings remain `UNVERIFIED`.
+Private transcript text, identifiers, project details, and raw logs are not published.
+
+The [decision](decisions.md#planning-boundaries-and-shared-review-continuation) records alternatives and surviving
+responsibilities. Package shape, activation, and installation are unchanged. The release matrix reports the deterministic
+gate and each host schema separately; unrun installs, activation, continuity, and behavioral coverage stay `UNVERIFIED`.
+
 ## 6.3.0 whole-scope planning and open interviews
 
 One private installed Codex session on exact 6.2.1 was inspected on 2026-10-05. The complete plan instructions arrived

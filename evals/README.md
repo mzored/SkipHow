@@ -66,6 +66,16 @@ A case is run only when the owner authorizes a paid receipt.
 
 ## The arms
 
+The 6.3.1 planning/review probes remain `UNVERIFIED`. Five cases use the new `planning-review`
+overlay without changing earlier fixture identities. The broad-permission case receives its subsequent
+owner message before preparation finishes, without inventing a product question just to deliver it.
+The explicit plan-then-execute case distinguishes usable independent review from an honest capability
+blocker using actual host evidence; it never treats an imaginary reviewer as available. Its positive
+repair requires independently correct amounts as well as split/whole equivalence. The other three
+cases are read-only decisions about synthetic criteria, correction findings, and interrupted review.
+They establish neither live host continuation nor passing integration evidence. Existing task-sizing
+probes remain unchanged. No paid behavioral run was authorized for this release.
+
 The 6.3.0 planning continuation and launch probes remain `UNVERIFIED`. Five original `planning-readiness`
 scenarios cover an answer that reveals a further product choice, an exhausted preparation waiting on a pending
 answer, consequential effects on existing registrations without converting a recommendation into a constraint,

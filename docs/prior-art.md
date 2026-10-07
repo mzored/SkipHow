@@ -116,6 +116,29 @@ An idea from another project becomes a focused method or a kernel invariant only
 
 The reasoning behind each rule that survived is in [decision history](decisions.md), and what real runs have and have not shown is in [current evidence](evidence.md).
 
+## Planning review continuation in 6.3.1
+
+Read on 2026-10-07. Superpowers' [scoped re-review prompt](https://github.com/obra/superpowers/blob/main/skills/subagent-driven-development/re-review-prompt.md)
+passes previous findings, the reviewed base, the correction candidate, and the fix diff. Its
+[orchestration skill](https://github.com/obra/superpowers/blob/main/skills/subagent-driven-development/SKILL.md)
+continues workers through corrections. SkipHow already had continuity in longrun and targeted re-review in verification;
+this change consolidates them and explicitly connects plan. It does not claim a new invention or copy upstream text.
+
+SkipHow retains inspection of affected consequences beyond edited lines and disposition of material outside findings.
+It does not adopt the upstream fixed role structure, round caps, report files, or progress ledger. Those impose ongoing
+coordination and maintenance costs beyond this text ambiguity. The current
+[writing-plans skill](https://github.com/obra/superpowers/blob/main/skills/writing-plans/SKILL.md)
+uses independently testable units but asks the owner to confirm the plan and choose execution machinery; that owner-operated
+engineering chain remains rejected. Matt Pocock's
+[to-tickets](https://github.com/mattpocock/skills/blob/main/skills/engineering/to-tickets/SKILL.md)
+still offers vertical outcomes and blocking edges, already represented here. No new slicing mechanism is adopted.
+
+[Claude Code's subagent documentation](https://code.claude.com/docs/en/sub-agents#resume-subagents)
+distinguishes fresh invocations from continuation retaining history. It also documents that ordinary subagents do not
+inherit invoked skills or the parent conversation, so assignment-specific constraints must reach the brief. Shared policy
+remains host-neutral: reuse continuation where supported, transfer necessary evidence to replacements, and expose missing
+capabilities. No comparative model performance was measured.
+
 ## Planning interviews and readiness in 6.3.0
 
 Read again on 2026-10-05, after checking the 2.4.2, 2.13.1, 3.0.0, and 5.1.5 decisions and shipped history.
