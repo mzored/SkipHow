@@ -2,6 +2,38 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 6.3.1 (2026-10-07)
+
+Clarify planning boundaries and share independent-review continuation between plan and longrun.
+Interview answers and grants for future actions remain execution-record inputs, not an implicit switch to
+implementation. An explicit request to plan and then execute still permits that transition when preparation
+is ready, within host restrictions and existing grants, without asking again. Planning reports account for
+any implementation candidate already created.
+
+Move actual workload assessment into task drafting and keep independent challenge of every task and the
+whole specification. Preserve cohesive work, automated transformations, engineering authority, and whole-scope
+preparation. Technical criteria do not acquire an owner-approval gate.
+
+Verification now owns reviewer and implementer continuity, replacement evidence, and targeted independent
+review of material corrections and affected consequences. Briefs convey the existing scope, proof, progress,
+and return contract. Reuse valid evidence; incomplete review limits readiness. No fixed timer, role roster,
+new module, tracker, hook, or public interface is added. This PATCH clarifies existing promised behavior.
+
+One private installed session informed the change but proves no wording cause or comparative benefit.
+Five new synthetic cases cover the phase boundary, engineering authority, correction defects, replacement,
+and incomplete review, while existing task-sizing probes remain. The owner declined paid behavioral runs;
+model behavior, reliability, speed, and savings remain `UNVERIFIED`. Package shape and installation are unchanged.
+See [current evidence](docs/evidence.md#631-planning-boundaries-and-review-continuation).
+
+Independent isolated Codex source review identified a package-only review prerequisite incorrectly applied
+to the base-host eval arm and three stale instrument version fields. Both were confirmed and corrected;
+the same reviewer approved the targeted correction review with no remaining qualifying findings. No
+findings were rejected. The full local gate had 384 passes and 22 version-field failures; all 62 affected
+corpus and package/document checks passed after correction. Together these provide the local gate evidence.
+Claude schema validation passed; the pinned Codex schema validator runs in CI. Paid behavioral runs,
+clean-install sessions, and current activation/continuity observations were not run.
+
+
 ## 6.3.0 (2026-10-05)
 
 Plan prepares the whole requested scope and keeps unanswered product interviews open. Useful independent preparation
