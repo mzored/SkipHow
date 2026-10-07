@@ -70,7 +70,8 @@ The 6.3.1 planning/review probes remain `UNVERIFIED`. Five cases use the new `pl
 overlay without changing earlier fixture identities. The broad-permission case receives its subsequent
 owner message before preparation finishes, without inventing a product question just to deliver it.
 The explicit plan-then-execute case distinguishes usable independent review from an honest capability
-blocker using actual host evidence; it never treats an imaginary reviewer as available. Its positive
+blocker using actual host evidence and an applicable review requirement. The base host has no package-only
+review prerequisite; the case never treats an imaginary reviewer as available. Its positive
 repair requires independently correct amounts as well as split/whole equivalence. The other three
 cases are read-only decisions about synthetic criteria, correction findings, and interrupted review.
 They establish neither live host continuation nor passing integration evidence. Existing task-sizing

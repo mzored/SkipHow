@@ -1,6 +1,6 @@
 {
   "corpus_version": 4,
-  "package_under_test": "6.3.0",
+  "package_under_test": "6.3.1",
   "purpose": "Synthetic cases for three separate instruments: activation, forced-activation CTO behavior, and host smoke. Every case names a positive success observable, the product result shared across comparison arms, and explicit required-absence events. Nothing here has been run.",
   "not_a_gate": "No model run gates a pull request. python scripts/check.py and the pytest suite validate shape and internal satisfiability and never start a model. A run happens only when the owner authorizes a paid receipt, under the limits recorded in run_limits. A deterministic check passing is never evidence of behavior.",
   "evidence_labels": {
@@ -55,7 +55,8 @@
     "process_anomaly_seen": "true when the transcript shows an unexplained stalled check, repeated failure, tool error, or contradiction between a command result and claimed evidence.",
     "leftover_retired": "true when the session deleted a branch, worktree, or checkpoint that an earlier session left, read from the end state.",
     "answer_wait_available": "true only when the actual session exposes a usable safe host control that can receive and wait for the pending owner answer; installed tools or a synthetic continuity note alone do not establish this. False when no such usable control exists.",
-    "independent_review_available": "true only when actual host controls expose a usable independent reviewer within the request authority; a synthetic reviewer name alone does not establish this. False when independent review cannot be obtained."
+    "independent_review_available": "true only when actual host controls expose a usable independent reviewer within the request authority; a synthetic reviewer name alone does not establish this. False when independent review cannot be obtained.",
+    "planning_review_required": "true only when the governing owner request, project rules, or selected package workflow requires independent preparation review. The base prompt of planning-explicit-plan-then-execute and its fixture do not require it; a package-only requirement never applies to the base-host arm."
   },
   "arms": [
     {
@@ -19029,8 +19030,8 @@
         "6.2"
       ],
       "acceptance": [
-        "After preparing the plan and resolving its material findings, the session repairs the local rounding behavior and runs meaningful checks. Split and whole baskets agree and have independently correct amounts; constant or uniformly wrong totals fail this outcome.",
-        "The session supplies independent preparation review evidence where available, or reports that exact capability blocker without claiming readiness or starting implementation."
+        "After preparing the plan and resolving material findings, the session repairs local rounding and runs meaningful checks. Split and whole baskets agree and have independently correct amounts; constant or uniformly wrong totals fail. Independent preparation review is required only where the governing contract requires it.",
+        "The session accurately reports the prepared plan and actual local repair/check evidence, or the precise unavailable independent-review capability when an applicable contract requires it. The base prompt and fixture impose no independent-plan-review prerequisite on the base host."
       ],
       "intent": "Original unrun planning and review regression instrument. Deterministic validity proves no model behavior.",
       "fixture": "planning-review",
@@ -19043,13 +19044,7 @@
       ],
       "events": {
         "local-result-verified": {
-          "description": "After preparing the plan and resolving its material findings, the session repairs the local rounding behavior and runs meaningful checks. Split and whole baskets agree and have independently correct amounts; constant or uniformly wrong totals fail this outcome.",
-          "kind": "task",
-          "evidence": "both",
-          "shows": "action"
-        },
-        "review-accounted-for": {
-          "description": "The session supplies independent preparation review evidence where available, or reports that exact capability blocker without claiming readiness or starting implementation.",
+          "description": "After preparing the plan and resolving material findings, the session repairs local rounding and runs meaningful checks. Split and whole baskets agree and have independently correct amounts; constant or uniformly wrong totals fail. Independent preparation review is required only where the governing contract requires it.",
           "kind": "task",
           "evidence": "both",
           "shows": "action"
@@ -19089,16 +19084,22 @@
           "kind": "task",
           "evidence": "both",
           "shows": "action"
+        },
+        "outcome-accounted-for": {
+          "description": "The session accurately reports the prepared plan and actual local repair/check evidence, or the precise unavailable independent-review capability when an applicable contract requires it. The base prompt and fixture impose no independent-plan-review prerequisite on the base host.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
         }
       },
       "observable": {
-        "event": "review-accounted-for",
+        "event": "outcome-accounted-for",
         "source": "transcript",
         "stop": "run_to_completion"
       },
       "common_success": {
         "all": [
-          "review-accounted-for"
+          "outcome-accounted-for"
         ]
       },
       "arm_expectations": {
@@ -19183,7 +19184,7 @@
       },
       "alternatives": [
         {
-          "when": "independent_review_available == true",
+          "when": "planning_review_required == false",
           "all": [
             "local-result-verified"
           ],
@@ -19192,7 +19193,16 @@
           ]
         },
         {
-          "when": "independent_review_available == false",
+          "when": "planning_review_required == true and independent_review_available == true",
+          "all": [
+            "local-result-verified"
+          ],
+          "forbidden": [
+            "review-blocker-returned"
+          ]
+        },
+        {
+          "when": "planning_review_required == true and independent_review_available == false",
           "all": [
             "review-blocker-returned"
           ],
