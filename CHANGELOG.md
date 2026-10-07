@@ -25,6 +25,15 @@ and incomplete review, while existing task-sizing probes remain. The owner decli
 model behavior, reliability, speed, and savings remain `UNVERIFIED`. Package shape and installation are unchanged.
 See [current evidence](docs/evidence.md#631-planning-boundaries-and-review-continuation).
 
+Independent isolated Codex source review identified a package-only review prerequisite incorrectly applied
+to the base-host eval arm and three stale instrument version fields. Both were confirmed and corrected;
+the same reviewer approved the targeted correction review with no remaining qualifying findings. No
+findings were rejected. The full local gate had 384 passes and 22 version-field failures; all 62 affected
+corpus and package/document checks passed after correction. Together these provide the local gate evidence.
+Claude schema validation passed; the pinned Codex schema validator runs in CI. Paid behavioral runs,
+clean-install sessions, and current activation/continuity observations were not run.
+
+
 ## 6.3.0 (2026-10-05)
 
 Plan prepares the whole requested scope and keeps unanswered product interviews open. Useful independent preparation

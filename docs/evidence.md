@@ -33,6 +33,20 @@ The [decision](decisions.md#planning-boundaries-and-shared-review-continuation) 
 responsibilities. Package shape, activation, and installation are unchanged. The release matrix reports the deterministic
 gate and each host schema separately; unrun installs, activation, continuity, and behavioral coverage stay `UNVERIFIED`.
 
+Independent read-only Codex source review used isolated operating-system and host homes, a minimal temporary
+authentication reference rather than copied credentials, and the configured model at high effort. An empty-context
+control and both review turns showed no personal skill or installed-plugin paths. The first review confirmed two
+defects: a package-only review prerequisite imposed on the base-host oracle, and three stale instrument versions.
+Both were fixed. The same reviewer returned APPROVE after examining only the correction diff and its consequences;
+no finding was rejected. Source review is not a behavioral receipt. Its stated limits included private-source and
+external-source verification, which remained the maintainer's inspection responsibility.
+
+The pinned local environment's full gate produced 384 passes and 22 failures on instrument version mismatches.
+After fixing those fields and the oracle, all 62 affected corpus and package/document checks passed, with a clean
+`git diff --check`. The remaining full-run evidence applies to unchanged inputs. Local strict Claude schema validation
+passed. The pinned Codex validator is supplied by CI. No host installation mechanism changed, and no new clean-install
+or behavioral sessions were run. Release-runner results are published in the release validation matrix.
+
 ## 6.3.0 whole-scope planning and open interviews
 
 One private installed Codex session on exact 6.2.1 was inspected on 2026-10-05. The complete plan instructions arrived
