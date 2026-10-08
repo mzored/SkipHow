@@ -2,6 +2,24 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 6.3.2 (2026-10-08)
+
+Contributor checks now use the optional installed `agent-verify` host queue before their subprocess
+execution budgets begin. Both deterministic and host verification reuse a validated inherited grant,
+keep queue output visible, and stop on adapter errors. Hosts without the capability run directly.
+The shared adapter remains outside the shipped plugin and adds no package dependency.
+
+Independent source review of [PR #143](https://github.com/mzored/SkipHow/pull/143) found no material
+integration defects. Deterministic tests cover optional discovery, inherited-grant responses, argument
+preservation, admission before execution budgets, and POSIX queue refusal and cancellation on both
+entrypoints. Real nested-grant lifecycle, adapter watchdog and admitted-descendant cancellation,
+and Windows execution remain `UNVERIFIED`.
+
+This PATCH publishes contributor-tooling changes. Public skills, authority, installation, and runtime
+behavior are unchanged. No paid behavioral experiments or clean-install sessions were run. Current
+activation, continuity, and model behavior remain `UNVERIFIED`.
+See [current evidence](docs/evidence.md#632-optional-contributor-check-admission).
+
 ## 6.3.1 (2026-10-07)
 
 Clarify planning boundaries and share independent-review continuation between plan and longrun.

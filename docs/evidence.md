@@ -2,6 +2,34 @@
 
 This page separates package checks from observed model behavior. The full 2.0 evidence remains in the immutable [`v2.0.1` research snapshot](https://github.com/mzored/SkipHow/tree/1c811262e6acdbdc58a2ee862b54e0b8d3478eaa/docs/research/2026-08-27).
 
+## 6.3.2 optional contributor-check admission
+
+[PR #143](https://github.com/mzored/SkipHow/pull/143) integrated optional host admission into both
+contributor verification entrypoints at `20cbb4461c35f4c0655009ea69400170db649702`. A shared helper
+discovers `agent-verify` on PATH, reuses a grant only when its inherited probe succeeds, and otherwise
+replaces the checker with the adapter before captured child execution budgets begin. Missing adapters
+retain direct execution; probe and startup errors stop the check. The plugin receives no queue code,
+dependency, installation change, or runtime-policy change.
+
+Independent read-only source review on 2026-10-08 compared that revision with the previous release and
+checked the installed adapter's protocol. It found no supported material integration defects. The
+tests cover absent adapters, inherited-probe responses, startup errors, argument preservation, both
+entrypoints' admission boundaries, and real POSIX process replacement, refusal status, and cancellation
+while queued. Queue policy, grant validity, watchdogs, and admitted-descendant cancellation belong to
+the external adapter. Real nested-grant lifecycle, watchdog and admitted-descendant cancellation,
+and Windows execution were not exercised and remain `UNVERIFIED`.
+
+The maintainer's pinned environment passed the full deterministic gate and `git diff --check` on that
+integrated source. Strict Claude schema validation passed; the local Codex validator was unavailable.
+[Main CI](https://github.com/mzored/SkipHow/actions/runs/37721276758) passed the deterministic gate and
+pinned Codex schema validation for the same revision. Those results establish their named source and
+host contracts, not model behavior. The release validation matrix records the final tagged candidate's
+capabilities separately.
+
+Version 6.3.2 aligns release metadata and current-package instruments while preserving the 6.3.1 public
+runtime contract. No paid model sessions or clean-install receipts were run. Current installation,
+activation, continuity, behavioral improvement, and optimal resource sizing remain `UNVERIFIED`.
+
 ## 6.3.1 planning boundaries and review continuation
 
 One private installed Claude Code session on exact 6.3.0 was inspected on 2026-10-07, including subagent briefs,
