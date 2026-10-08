@@ -11,22 +11,27 @@ from unittest.mock import patch
 
 import pytest
 
+import host_admission as admission
+
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location("admitted_check", ROOT / "scripts/check.py")
 check = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(check)
+spec = importlib.util.spec_from_file_location("admitted_hosts", ROOT / "scripts/check_hosts.py")
+hosts = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(hosts)
 
 
 def test_off_host_runs_without_admission():
-    with patch.object(check.shutil, "which", return_value=None), \
+    with patch.object(admission.shutil, "which", return_value=None), \
          patch.object(check.subprocess, "run", side_effect=AssertionError("unexpected subprocess")):
         assert check.host_admission([]) is None
 
 
 @pytest.mark.parametrize("probe, expected", [(0, None), (78, 78), (-15, 78)])
 def test_only_a_validated_live_grant_skips_the_queue(probe, expected):
-    with patch.object(check.shutil, "which", return_value="adapter"), \
+    with patch.object(admission.shutil, "which", return_value="adapter"), \
          patch.object(check.subprocess, "run", return_value=subprocess.CompletedProcess([], probe)) as run, \
          patch.object(check.os, "execv", side_effect=AssertionError("unexpected re-exec")):
         assert check.host_admission([]) == expected
@@ -38,7 +43,7 @@ def test_queue_replaces_the_process_before_execution_budgets_begin():
         pass
 
     arguments = ["--pytest", "tests/test_checks.py", "-k", "two words"]
-    with patch.object(check.shutil, "which", return_value="adapter"), \
+    with patch.object(admission.shutil, "which", return_value="adapter"), \
          patch.object(check.subprocess, "run", return_value=subprocess.CompletedProcess([], 1)) as run, \
          patch.object(check.os, "execv", side_effect=ReplacedProcess) as execute:
         with pytest.raises(ReplacedProcess):
@@ -52,7 +57,7 @@ def test_queue_replaces_the_process_before_execution_budgets_begin():
 
 
 def test_discovered_broken_adapter_does_not_bypass_admission():
-    with patch.object(check.shutil, "which", return_value="adapter"), \
+    with patch.object(admission.shutil, "which", return_value="adapter"), \
          patch.object(check.subprocess, "run", side_effect=OSError("unavailable")):
         assert check.host_admission([]) == 78
 
@@ -64,7 +69,8 @@ def adapter_directory():
 
 
 @pytest.mark.skipif(os.name != "posix", reason="POSIX exec and signal lifecycle")
-def test_queued_adapter_status_and_cancellation_reach_the_caller(adapter_directory):
+@pytest.mark.parametrize("entrypoint", ["check.py", "check_hosts.py"])
+def test_queued_adapter_status_and_cancellation_reach_the_caller(adapter_directory, entrypoint):
     """A real exec has no checker parent left to swallow status or retain a child."""
     adapter = adapter_directory / "agent-verify"
     marker = adapter_directory / "started"
@@ -76,7 +82,8 @@ def test_queued_adapter_status_and_cancellation_reach_the_caller(adapter_directo
                        "time.sleep(60)\nraise AssertionError('queued command started')\n")
     adapter.chmod(0o755)
     environment = dict(os.environ, PATH=str(adapter_directory), REFUSE="1")
-    command = [sys.executable, str(ROOT / "scripts/check.py"), "--pytest", "unused"]
+    arguments = ["--pytest", "unused"] if entrypoint == "check.py" else ["--package-gate", "--skip-install"]
+    command = [sys.executable, str(ROOT / "scripts" / entrypoint), *arguments]
     result = subprocess.run(command, env=environment, capture_output=True, text=True, timeout=10)
     assert result.returncode == 75
     assert "queued" in result.stdout
@@ -93,3 +100,20 @@ def test_queued_adapter_status_and_cancellation_reach_the_caller(adapter_directo
             process.kill()
         process.wait()
         process.stdout.close()
+
+
+def test_host_check_queues_before_its_captured_package_gate_budget():
+    class ReplacedProcess(BaseException):
+        pass
+
+    arguments = ["--package-gate", "--skip-install"]
+    with patch.object(admission.shutil, "which", return_value="adapter"), \
+         patch.object(admission.subprocess, "run", return_value=subprocess.CompletedProcess([], 1)) as run, \
+         patch.object(admission.os, "execv", side_effect=ReplacedProcess) as execute, \
+         patch.object(hosts, "checked", side_effect=AssertionError("captured child started before admission")):
+        with pytest.raises(ReplacedProcess):
+            hosts.main(arguments)
+        assert run.call_count == 1
+        command = execute.call_args.args[1]
+        assert command[8] == "skiphow-host-check"
+        assert command[-3:] == [str(ROOT / "scripts/check_hosts.py"), *arguments]

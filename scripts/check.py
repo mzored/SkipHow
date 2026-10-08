@@ -12,7 +12,6 @@ import os
 from pathlib import Path
 from pathlib import PurePosixPath
 import re
-import shutil
 import stat
 import subprocess
 import sys
@@ -20,6 +19,8 @@ from typing import Iterable
 import unicodedata
 from urllib.parse import unquote, urlsplit
 import xml.etree.ElementTree as ET
+
+from host_admission import enter_host_admission
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -2206,24 +2207,7 @@ def report_missing_requirements() -> None:
 
 def host_admission(raw_args: list[str]) -> int | None:
     """Enter an installed host queue before starting any check execution budget."""
-    adapter = shutil.which("agent-verify")
-    if adapter is None:
-        return None
-    try:
-        inherited = subprocess.run([adapter, "inherited", "--memory", "4", "--cpus", "4"],
-                                   check=False).returncode
-        if inherited == 0:
-            return None
-        if inherited != 1:
-            print("host admission could not validate the inherited grant", file=sys.stderr)
-            return 78
-        os.execv(adapter, [adapter, "--memory", "4", "--cpus", "4", "--timeout", "2700", "--label",
-                           "skiphow-check", "--", sys.executable, str(Path(__file__).resolve()),
-                           *raw_args])
-    except OSError as error:
-        print(f"host admission could not start: {error}", file=sys.stderr)
-        return 78
-    raise AssertionError("host admission exec returned")
+    return enter_host_admission(raw_args, Path(__file__), "skiphow-check")
 
 
 def main(argv: list[str] | None = None) -> int:

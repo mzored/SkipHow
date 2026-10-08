@@ -26,6 +26,13 @@ def load(name: str, relative: str):
 hosts = load("skiphow_check_hosts_isolated", "scripts/check_hosts.py")
 
 
+@pytest.fixture(autouse=True)
+def portable_host_checks():
+    """Schema/install tests do not depend on an optional host queue installation."""
+    with patch.object(hosts, "enter_host_admission", return_value=None):
+        yield
+
+
 def test_skip_install_cannot_satisfy_a_required_install() -> None:
     for required in ("--require-codex-install", "--require-claude-install"):
         with pytest.raises(SystemExit) as raised:

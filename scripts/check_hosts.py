@@ -16,6 +16,8 @@ import sys
 import tempfile
 from typing import Sequence
 
+from host_admission import enter_host_admission
+
 
 ROOT = Path(__file__).resolve().parents[1]
 PLUGIN_ROOT = ROOT / "plugins/skiphow"
@@ -784,6 +786,7 @@ def render_matrix(rows: Sequence[tuple[str, str, str]]) -> str:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
+    raw_args = list(sys.argv[1:] if argv is None else argv)
     parser = argparse.ArgumentParser(
         description=(
             "Report each host capability separately: the deterministic gate, each "
@@ -815,13 +818,17 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="directory that receives one privacy-safe JSON receipt per smoked host",
     )
     parser.add_argument("--matrix-out", help="also write the matrix to this file")
-    args = parser.parse_args(argv)
+    args = parser.parse_args(raw_args)
     if args.skip_install and (args.require_codex_install or args.require_claude_install):
         parser.error("--skip-install cannot satisfy --require-codex-install or --require-claude-install")
     if args.smoke and args.skip_install:
         parser.error("--smoke cannot be combined with --skip-install")
     if args.smoke and not args.receipt_dir:
         parser.error("--smoke requires --receipt-dir")
+
+    admission_result = enter_host_admission(raw_args, Path(__file__), "skiphow-host-check")
+    if admission_result is not None:
+        return admission_result
 
     errors: list[str] = []
     rows: list[tuple[str, str, str]] = []
