@@ -18,7 +18,7 @@ Where the request or the repository's workflow puts this work in a tracker, [tra
 
 ## Verifying the integrated state
 
-Verify the integrated state. Reuse earlier evidence when revision-bound CI tested that result, or when the relevant tree, dependencies, and configuration prove that integration preserved the checked inputs. A merge does not by itself invalidate a check. Rerun only evidence whose inputs changed. Inspect the destination separately, because test equivalence does not prove that delivery happened.
+Establish evidence for the integrated state under [verification record reuse](verification.md#reusing-a-verification-record). Reuse a matching record or obtain evidence for the integrated candidate, including revision-bound CI. A mismatched local fingerprint proves no current-tree pass. Integration as a named stage requires no repeat by itself. Inspect the destination separately, because passing checks do not prove that delivery happened.
 
 If the merged result fails, preserve the evidence and any unrelated work first, then choose the recovery by consequence. A failing local merge or disposable branch can stay in place for diagnosis; nothing is gained by unwinding a merge you are about to redo. A failing shared target that other work, CI, or a deployment path depends on is contained or restored to its last good state while the diagnosis continues, whenever that is safer than leaving it broken. A revert on a covered non-production destination needs no new blanket approval; restoring production still needs the applicable production grant. In either case the failed state is not reported as delivered.
 

@@ -19,6 +19,12 @@ the receipt every future run has to leave behind.
 
 ## What is here
 
+The 6.3.3 `verification-reuse-*` probes use invented read-only records to distinguish matching receipts
+across roles from changed fingerprints, command/environment inputs, inaccessible or incomplete evidence,
+unstable capture, and concrete conflicting results. Scratch inputs may change outside the fingerprint.
+All arms share the decision outcomes; only candidate-package arms require kernel loading. These are
+unrun instruments, not proof that checks executed, models reuse evidence, or verification load fell.
+
 The 6.2.1 supervision probes remain `UNVERIFIED`. The original `project-supervision` fixture tests bounded discovery
 beyond a small passing change, complete export behavior, and legitimate fixed examples. Existing coupling, measured
 setup, and live-continuation probes cover old checks, alternative remedies, and a compacted iteration stream. Their

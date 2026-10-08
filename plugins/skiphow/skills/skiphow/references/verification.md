@@ -4,11 +4,11 @@ Open this for tests, final review, security, privacy, reliability, migration, ro
 
 ## Choosing the test
 
-For a read-only design or coverage request, propose the tests without changing the project. Test observable behavior rather than internal shape such as call order or private state, and follow the repository's existing test layout and vocabulary.
+For read-only design or coverage, propose tests without edits. Test observable behavior, not call order or private state, using the repository's test layout and vocabulary.
 
-For every durable check, name the property it proves and place it at the narrowest stable boundary that provides the required fidelity. Use a broader check when its environment contributes evidence a narrower boundary cannot establish reliably, such as real component integration, browser or runtime behavior, persistence, rendering, infrastructure wiring, an external protocol, or an important cross-boundary product outcome. Preserve that evidence. Do not repeat a business invariant at increasingly expensive boundaries unless each protects a distinct failure mode.
+Name what each durable check proves and use the narrowest stable boundary with the required fidelity. Broader checks earn their cost when real integration, browser or runtime behavior, persistence, rendering, infrastructure, external protocols, or important cross-boundary outcomes provide evidence a narrower check cannot. Preserve that evidence. Repeat a business invariant at costlier boundaries only for distinct failure modes.
 
-Prefer stable product-facing contracts over incidental presentation or implementation details. Widespread unrelated test rewrites after a behavior-preserving change are evidence of coupling; find and repair the responsible boundary instead of mechanically updating every affected test. Introduce mocks or internal seams only where they materially improve isolation, determinism, cost, or safety. External systems, time, and randomness are common cases, and a legacy or tightly coupled system may need more.
+Prefer stable product contracts over incidental presentation or implementation. Unrelated test rewrites after behavior-preserving changes indicate coupling; repair the responsible boundary. Use mocks or internal seams where they materially improve isolation, determinism, cost, or safety, often for external systems, time, randomness, legacy or tightly coupled code.
 
 When setup or an earlier journey is not under test, establish the required state through an existing reliable cheaper path instead of replaying it through an expensive one. Keep direct coverage of a setup journey that is itself important.
 
@@ -24,17 +24,17 @@ A regression test should close the class of bug. Assert the rule the defect brok
 
 ## How much to run
 
-Preserve required behavioral evidence. Within authority, consolidate, replace, or remove pre-existing checks when evidence shows they are redundant, obsolete, or coupled to an incidental implementation; retain or establish equivalent reliable proof of every required property and distinct failure mode. A test's age or cost alone does not justify deletion.
+Preserve proof of every required property and distinct failure mode. Within authority, consolidate, replace, or remove checks shown redundant, obsolete, or coupled to incidental implementation, retaining equivalent reliable coverage. Age or cost alone justifies no deletion.
 
-The CTO owns test selection. During implementation and iteration, use the smallest reliable evidence covering the changed behavior, widening by reachable behavior, crossed boundaries, uncertainty, and consequence. Frequent cheap checks can support safe refactoring. Inspect what a command selects, costs, and changes; repair material friction through [operations](operations.md). Do not rerun an unchanged expensive gate when narrower evidence answers the question.
+The CTO selects the smallest reliable evidence for changed behavior, widening for reachable behavior, crossed boundaries, uncertainty, and consequence. Cheap checks can support refactoring. Inspect command selection, cost, and effects; use [operations](operations.md) for material friction. Satisfy required delivery evidence before integration or release. Prefer reliable native affected-test or dependency selection; improving missing selection is legitimate engineering when verification cost is material. Brittle path heuristics and skipped required gates provide no substitute.
 
-Before integration or release, satisfy the broader evidence the project's delivery contract and risk require. Use reliable native affected-test, dependency, project, tagging, or equivalent selection when available. When repeated verification cost is material and reliable selection is missing, improving it is legitimate engineering work. Do not replace reliable selection with brittle filename or path heuristics, or skip a required integration or release gate to reduce latency.
+### Reusing a verification record
 
-Bind each result to the code, dependencies, configuration, environment, and destination it exercised. Reuse it while those inputs remain equivalent. A commit, rebase, merge, tag, or named stage does not invalidate evidence by itself. Establish equivalence from revision-bound CI, the relevant tree and configuration, or an immutable artifact, and rerun only the checks whose inputs changed.
+Keep the command and arguments, checked tree fingerprint, terminal exit status, completion time, checkout, and accessible evidence location in an existing log or handoff. Include relevant environment context: dependencies, configuration, external or ignored inputs, services, and destination. No new file or ledger is required. The fingerprint must identify the state actually checked; source changes during execution or an uncertain capture leave applicability unverified.
 
-When filtering, redirecting, or summarizing output, preserve the check's own terminal status and relevant failures. A filter's success does not prove the check passed; an unknown status or inaccessible evidence stays `UNVERIFIED` until established.
+Delegates, leads, and reviewers inspect and reuse a recorded pass for the same command and fingerprint while the relevant environment is unchanged. Accepting a return, reviewing, integrating, or reporting requires inspecting that record and current inputs, not another execution. Rerun only for changed inputs, missing or unverifiable evidence, or a concrete named doubt. Scratch files or service state may change without changing the repository fingerprint. A different tree requires evidence for that candidate, including revision-bound CI where available. Role and stage transitions invalidate nothing by themselves. Required coverage, independent review, and destination checks remain necessary.
 
-An intermittent test is a defect or an explicit blocker until it is classified; [diagnosis](diagnosis.md) covers that.
+Preserve the check's own terminal status and relevant failures when filtering or shortening output. A filter's success proves no check passed. Unknown status or inaccessible evidence stays `UNVERIFIED` until established. An intermittent test remains a defect or explicit blocker until classified under [diagnosis](diagnosis.md).
 
 ## Reviewing a change
 
@@ -50,7 +50,7 @@ Check behavior, missing cases, scope, security and data risks, compatibility, er
 
 Read-only review reports defects without edits. Urgency grants no repair authority; sensitive findings stay private unless disclosure is granted. When repair is authorized, the lead confirms findings against evidence and has qualifying in-scope defects repaired. Retain implementer and reviewer through corrections where supported; replacements receive findings, dispositions, candidate identity, and evidence. The lead corrects plans.
 
-After independent review, obtain targeted independent review of material corrections and affected consequences. Supply the prior candidate, changes, and dispositions. Reuse still-applicable evidence; widen for a concrete risk or invalidated evidence, not repeated unchanged investigation. Revalidate affected checks on the final candidate. Stop when no supported material defect remains, or report unresolved work and affected readiness limits. Another broad reviewer needs high-consequence disagreement or contradictory evidence. Incomplete review never establishes reviewed readiness.
+After independent review, obtain targeted independent review of material corrections and affected consequences. Supply the prior candidate, changes, and dispositions. Reuse still-applicable evidence; widen for a concrete risk or invalidated evidence, not repeated unchanged investigation. Establish applicable evidence for affected checks on the final candidate. Stop when no supported material defect remains, or report unresolved work and affected readiness limits. Another broad reviewer needs high-consequence disagreement or contradictory evidence. Incomplete review never establishes reviewed readiness.
 
 ## Security, reliability, and operations
 
