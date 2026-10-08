@@ -2,6 +2,30 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 6.3.3 (2026-10-08)
+
+Delegates, leads, and reviewers reuse a verifiable passing result when the command, tree fingerprint,
+and relevant environment are unchanged. Checking a return, reviewing, integrating, or reporting does
+not require executing it again. Changed inputs, missing or unverifiable evidence, or a concrete named
+doubt justify another run. A different fingerprint never establishes a pass for the current tree.
+
+Verification defines the minimal record in existing logs or handoffs: command and arguments, checked
+fingerprint, terminal exit, completion time, checkout, accessible evidence, and relevant environment.
+Ignored configuration, scratch inputs, service state, and uncertain capture still limit applicability.
+Required coverage, independent review, destination inspection, and `agent-verify inherited` remain intact.
+
+The fixed host-log sample found 28 same-label, same-fingerprint repeats in 116 completed runs, 24.1%
+of runs and 9.6% of execution time. Command identity was absent, so this is a proxy, not a measured
+same-command or avoidable-work share. No wording cause, behavioral improvement, or savings is claimed.
+Five new arm-aware decision probes remain `UNVERIFIED`. No paid behavioral experiment or clean-install
+session was run. Package structure and installation are unchanged; no host configuration was edited.
+See [current evidence](docs/evidence.md#633-verification-receipt-reuse).
+
+Independent isolated Codex source review approved the candidate with no qualifying material findings.
+It inspected runtime responsibilities, the five probes and arm expectations, version metadata, canonical
+documentation, and site evidence. No finding required correction or was rejected. Source review proves
+neither model adherence nor the private measurement records; the maintainer reproduced the aggregate.
+
 ## 6.3.2 (2026-10-08)
 
 Contributor checks now use the optional installed `agent-verify` host queue before their subprocess

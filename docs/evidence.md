@@ -2,6 +2,55 @@
 
 This page separates package checks from observed model behavior. The full 2.0 evidence remains in the immutable [`v2.0.1` research snapshot](https://github.com/mzored/SkipHow/tree/1c811262e6acdbdc58a2ee862b54e0b8d3478eaa/docs/research/2026-08-27).
 
+## 6.3.3 verification receipt reuse
+
+On 2026-10-08, read-only inspection used the host admission events from 10:28:44.019 through
+12:18:20.126 UTC. The fixed cutoff excludes later events from the live append-only journal.
+There were 116 completed runs, with 2,191.686 total execution seconds. Count a repeat when an earlier
+completed run in the same checkout has the same label and non-null tree fingerprint, was admitted
+within the preceding 30 minutes, and completed before the later admission. Count each later run once.
+This gives 28 repeats, 24.1% of completed runs, consuming 209.539 seconds, 9.6% of execution time.
+These are same-label, same-fingerprint candidates, not a measured same-command repeat rate.
+
+The host journal has no command arguments or session/role correlation. Private transcript inspection
+confirmed at least two same-command, same-fingerprint repeats: a delegate retrieving truncated failure
+output, and a lead recovering an explicit terminal exit status before reporting. A pre-merge lead also
+repeated checks inside a differently composed batch. Other candidates ran different test selections or
+diagnostics, changed scratch fixtures, or changed environment settings. Those distinctions prevent treating
+the aggregate as redundant passing checks. Reviewer and lead-return duplicate rates, the exact same-command
+share, and avoidable execution time remain `UNVERIFIED`. The owner's earlier 81-hour, label-only estimate
+cannot be retroactively classified by tree. Private transcripts, host identifiers, and raw logs are not published.
+
+Source inspection found an ambiguity rather than a demonstrated cause. The kernel required checking returns
+against current state, fresh review, and final verification after the last edit, while verification and integration
+already permitted input-bound evidence reuse. None defined a minimal reusable check record in the kernel's
+execution path. No controlled before/after model receipt connects those sentences to the measured executions.
+
+The owner requested a clarification. Delegates, leads, and reviewers inspect existing passing records for the
+same command, tree fingerprint, and relevant environment. Changed inputs, missing or unverifiable evidence,
+or a concrete named doubt justify another execution. A different fingerprint requires current-candidate evidence,
+including revision-bound CI where available. Verification owns the record fields; delegation carries references
+and integration applies that rule. Required coverage, independent review, destination checks, and contributor
+admission remain intact. The asynchronous host fingerprint alone cannot establish that source inputs stayed
+stable throughout a check. Relevant ignored and external inputs remain part of applicability.
+
+Five original synthetic decision probes cover role transitions, tracked/untracked/history changes, changed
+commands and environments, scratch inputs outside the fingerprint, incomplete or failed records, uncertain
+capture, and conflicting results. They remain `UNVERIFIED`; deterministic corpus checks validate their shape
+and arm satisfiability only. No behavioral experiment or savings claim is attached to this release.
+The [decision](decisions.md#verification-receipts-across-roles) records alternatives and surviving responsibilities.
+
+Exact future telemetry would need command identity and session/role correlation. Reusable host receipts would
+also need an inspectable fingerprint query and evidence of the state actually exercised. These are external
+host requirements, not package dependencies. No host configuration or admission implementation was changed.
+
+Independent read-only Codex source review approved the runtime, corpus, metadata, canonical documentation,
+and site changes with no qualifying material findings. Isolated operating-system and host homes used a
+temporary minimal authentication reference. Control and review transcripts showed no personal skill or
+installed-plugin paths. The reviewer ran no verification commands or behavioral experiments and did not
+inspect private measurement records. The maintainer reproduced the fixed aggregate separately. Owned
+review resources and the authentication reference were removed after completion.
+
 ## 6.3.2 optional contributor-check admission
 
 [PR #143](https://github.com/mzored/SkipHow/pull/143) integrated optional host admission into both

@@ -1,6 +1,6 @@
 {
   "corpus_version": 4,
-  "package_under_test": "6.3.2",
+  "package_under_test": "6.3.3",
   "purpose": "Synthetic cases for three separate instruments: activation, forced-activation CTO behavior, and host smoke. Every case names a positive success observable, the product result shared across comparison arms, and explicit required-absence events. Nothing here has been run.",
   "not_a_gate": "No model run gates a pull request. python scripts/check.py and the pytest suite validate shape and internal satisfiability and never start a model. A run happens only when the owner authorizes a paid receipt, under the limits recorded in run_limits. A deterministic check passing is never evidence of behavior.",
   "evidence_labels": {
@@ -19674,6 +19674,681 @@
             "synthetic-execution-claimed",
             "interruption-counted-as-pass",
             "settled-work-reopened"
+          ],
+          "permitted": [
+            "kernel-before-action"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "verification-reuse-across-roles",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The response explicitly reuses P at delegate self-check, lead return acceptance, independent review, pre-merge preparation, and pre-report, because command, fingerprint, environment, and inspectable passing evidence match.",
+        "The response preserves independent candidate and expectation review and separate destination inspection, and names command with arguments, fingerprint, terminal exit, completion time, checkout, evidence location, and relevant environment as the minimal record."
+      ],
+      "intent": "Original unrun receipt-applicability decision probe. Deterministic corpus validity proves no model behavior or savings.",
+      "fixture": "verification-reuse",
+      "owner_prompt": "Decide which verification evidence applies and what further checking, if any, is justified for Matching receipt across roles in evidence.md. These are synthetic records. Read only; do not execute commands, dispatch, or change state.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#verification-and-reporting",
+        "references/verification.md#reusing-a-verification-record",
+        "references/delegation.md#what-comes-back",
+        "references/integration.md#verifying-the-integrated-state"
+      ],
+      "events": {
+        "applicability-decided": {
+          "description": "The response explicitly reuses P at delegate self-check, lead return acceptance, independent review, pre-merge preparation, and pre-report, because command, fingerprint, environment, and inspectable passing evidence match.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "evidence-boundaries-preserved": {
+          "description": "The response preserves independent candidate and expectation review and separate destination inspection, and names command with arguments, fingerprint, terminal exit, completion time, checkout, evidence location, and relevant environment as the minimal record.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session executes synthetic commands, dispatches, or writes project or external state despite the read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "synthetic-execution-claimed": {
+          "description": "The response claims these invented records prove actual host execution, live passing checks, or measured savings.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel before the consequential decision or action; explicit workflow invocation does not separately inject the kernel.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "applicability-decided",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "applicability-decided",
+          "evidence-boundaries-preserved"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed",
+            "kernel-before-action"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed"
+          ],
+          "permitted": [
+            "kernel-before-action"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "verification-reuse-different-tree",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The response rejects P as current-tree evidence for T, U, H, and M, including unchanged HEAD with a changed tracked file and identical file content with a changed HEAD-inclusive fingerprint.",
+        "The response requires evidence for each current candidate, allowing revision-bound CI for the integrated candidate, without inventing such a result or bypassing required coverage."
+      ],
+      "intent": "Original unrun receipt-applicability decision probe. Deterministic corpus validity proves no model behavior or savings.",
+      "fixture": "verification-reuse",
+      "owner_prompt": "Decide which verification evidence applies and what further checking, if any, is justified for Different trees in evidence.md. These are synthetic records. Read only; do not execute commands, dispatch, or change state.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#verification-and-reporting",
+        "references/verification.md#reusing-a-verification-record",
+        "references/delegation.md#what-comes-back",
+        "references/integration.md#verifying-the-integrated-state"
+      ],
+      "events": {
+        "applicability-decided": {
+          "description": "The response rejects P as current-tree evidence for T, U, H, and M, including unchanged HEAD with a changed tracked file and identical file content with a changed HEAD-inclusive fingerprint.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "evidence-boundaries-preserved": {
+          "description": "The response requires evidence for each current candidate, allowing revision-bound CI for the integrated candidate, without inventing such a result or bypassing required coverage.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session executes synthetic commands, dispatches, or writes project or external state despite the read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "synthetic-execution-claimed": {
+          "description": "The response claims these invented records prove actual host execution, live passing checks, or measured savings.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel before the consequential decision or action; explicit workflow invocation does not separately inject the kernel.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "applicability-decided",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "applicability-decided",
+          "evidence-boundaries-preserved"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed",
+            "kernel-before-action"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed"
+          ],
+          "permitted": [
+            "kernel-before-action"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "verification-reuse-command-and-environment",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The response identifies the invalidating input in each of C, E, I, S, D, and L and does not accept P for the changed command, dependency, ignored configuration, external scratch input, database state, or service destination.",
+        "The response selects verification appropriate to the changed inputs while retaining required coverage and explains why a matching repository fingerprint alone cannot settle these rows."
+      ],
+      "intent": "Original unrun receipt-applicability decision probe. Deterministic corpus validity proves no model behavior or savings.",
+      "fixture": "verification-reuse",
+      "owner_prompt": "Decide which verification evidence applies and what further checking, if any, is justified for Changed command or environment in evidence.md. These are synthetic records. Read only; do not execute commands, dispatch, or change state.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#verification-and-reporting",
+        "references/verification.md#reusing-a-verification-record",
+        "references/delegation.md#what-comes-back",
+        "references/integration.md#verifying-the-integrated-state"
+      ],
+      "events": {
+        "applicability-decided": {
+          "description": "The response identifies the invalidating input in each of C, E, I, S, D, and L and does not accept P for the changed command, dependency, ignored configuration, external scratch input, database state, or service destination.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "evidence-boundaries-preserved": {
+          "description": "The response selects verification appropriate to the changed inputs while retaining required coverage and explains why a matching repository fingerprint alone cannot settle these rows.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session executes synthetic commands, dispatches, or writes project or external state despite the read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "synthetic-execution-claimed": {
+          "description": "The response claims these invented records prove actual host execution, live passing checks, or measured savings.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel before the consequential decision or action; explicit workflow invocation does not separately inject the kernel.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "applicability-decided",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "applicability-decided",
+          "evidence-boundaries-preserved"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed",
+            "kernel-before-action"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed"
+          ],
+          "permitted": [
+            "kernel-before-action"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "verification-reuse-missing-record",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The response distinguishes N, A, X, F, Q, and O, rejecting unsupported or failed pass claims and an asynchronous capture that cannot identify the state actually checked.",
+        "The response names the missing or contradictory evidence to recover or obtain for each candidate, preserves the check's terminal status, and reports a blocker if that evidence cannot be established."
+      ],
+      "intent": "Original unrun receipt-applicability decision probe. Deterministic corpus validity proves no model behavior or savings.",
+      "fixture": "verification-reuse",
+      "owner_prompt": "Decide which verification evidence applies and what further checking, if any, is justified for Missing or unverifiable records in evidence.md. These are synthetic records. Read only; do not execute commands, dispatch, or change state.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#verification-and-reporting",
+        "references/verification.md#reusing-a-verification-record",
+        "references/delegation.md#what-comes-back",
+        "references/integration.md#verifying-the-integrated-state"
+      ],
+      "events": {
+        "applicability-decided": {
+          "description": "The response distinguishes N, A, X, F, Q, and O, rejecting unsupported or failed pass claims and an asynchronous capture that cannot identify the state actually checked.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "evidence-boundaries-preserved": {
+          "description": "The response names the missing or contradictory evidence to recover or obtain for each candidate, preserves the check's terminal status, and reports a blocker if that evidence cannot be established.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session executes synthetic commands, dispatches, or writes project or external state despite the read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "synthetic-execution-claimed": {
+          "description": "The response claims these invented records prove actual host execution, live passing checks, or measured savings.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel before the consequential decision or action; explicit workflow invocation does not separately inject the kernel.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "applicability-decided",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "applicability-decided",
+          "evidence-boundaries-preserved"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed",
+            "kernel-before-action"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed"
+          ],
+          "permitted": [
+            "kernel-before-action"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "verification-reuse-named-doubt",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The response names intermittent order dependence for J, retains both conflicting records, and proposes focused investigation and evidence without treating a later green run as a repair.",
+        "The response reuses K's matching pass because changing reviewer or writing a report supplies no concrete doubt, while preserving independent review and destination verification."
+      ],
+      "intent": "Original unrun receipt-applicability decision probe. Deterministic corpus validity proves no model behavior or savings.",
+      "fixture": "verification-reuse",
+      "owner_prompt": "Decide which verification evidence applies and what further checking, if any, is justified for Concrete doubt and unchanged transitions in evidence.md. These are synthetic records. Read only; do not execute commands, dispatch, or change state.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#verification-and-reporting",
+        "references/verification.md#reusing-a-verification-record",
+        "references/delegation.md#what-comes-back",
+        "references/integration.md#verifying-the-integrated-state"
+      ],
+      "events": {
+        "applicability-decided": {
+          "description": "The response names intermittent order dependence for J, retains both conflicting records, and proposes focused investigation and evidence without treating a later green run as a repair.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "evidence-boundaries-preserved": {
+          "description": "The response reuses K's matching pass because changing reviewer or writing a report supplies no concrete doubt, while preserving independent review and destination verification.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session executes synthetic commands, dispatches, or writes project or external state despite the read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "synthetic-execution-claimed": {
+          "description": "The response claims these invented records prove actual host execution, live passing checks, or measured savings.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel before the consequential decision or action; explicit workflow invocation does not separately inject the kernel.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "applicability-decided",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "applicability-decided",
+          "evidence-boundaries-preserved"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed",
+            "kernel-before-action"
+          ],
+          "permitted": []
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action"
+          ],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "synthetic-execution-claimed"
           ],
           "permitted": [
             "kernel-before-action"
