@@ -20,6 +20,8 @@ import unicodedata
 from urllib.parse import unquote, urlsplit
 import xml.etree.ElementTree as ET
 
+from host_admission import enter_host_admission
+
 
 ROOT = Path(__file__).resolve().parents[1]
 PLUGIN_ROOT = ROOT / "plugins/skiphow"
@@ -2203,6 +2205,11 @@ def report_missing_requirements() -> None:
     )
 
 
+def host_admission(raw_args: list[str]) -> int | None:
+    """Enter an installed host queue before starting any check execution budget."""
+    return enter_host_admission(raw_args, Path(__file__), "skiphow-check")
+
+
 def main(argv: list[str] | None = None) -> int:
     raw_args = list(sys.argv[1:] if argv is None else argv)
     if not requirements_satisfied():
@@ -2217,6 +2224,9 @@ def main(argv: list[str] | None = None) -> int:
         help="run pytest with the remaining arguments",
     )
     args = parser.parse_args(raw_args)
+    admission_result = host_admission(raw_args)
+    if admission_result is not None:
+        return admission_result
     if args.pytest is not None:
         environment = os.environ.copy()
         environment["PYTHONDONTWRITEBYTECODE"] = "1"

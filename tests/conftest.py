@@ -12,8 +12,10 @@ module. `scripts/check.py` already sets the variable for the runs it starts.
 from __future__ import annotations
 
 import os
+from pathlib import Path
 import sys
 
 
 sys.dont_write_bytecode = True
 os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
