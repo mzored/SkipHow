@@ -26,6 +26,11 @@ It inspected runtime responsibilities, the five probes and arm expectations, ver
 documentation, and site evidence. No finding required correction or was rejected. Source review proves
 neither model adherence nor the private measurement records; the maintainer reproduced the aggregate.
 
+The local deterministic gate passed on the reviewed source. Its non-blocking headroom lint required
+a bounded editorial tightening of delegation; focused package/document validation covers that correction.
+Revision-bound CI supplies full evidence for the integrated candidate. Clean installs and behavioral
+sessions stay `UNVERIFIED` in the release validation matrix.
+
 ## 6.3.2 (2026-10-08)
 
 Contributor checks now use the optional installed `agent-verify` host queue before their subprocess

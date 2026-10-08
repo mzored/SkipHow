@@ -60,9 +60,9 @@ Prefer host-managed worktrees and cleanup. Otherwise verify an ignored in-projec
 
 ## What comes back
 
-Convey the handoff contract in the brief: status, checked result identity, acceptance-evidence summary with [verification records](verification.md#reusing-a-verification-record), every finding and blocker, and accessible detail references. Keep decision-relevant facts inline and bulky reports, logs, inventories, and attempt histories in the host's working area. Reuse artifacts; small results need no report file. Preserve every finding and uncertainty.
+Convey status, checked result identity, acceptance summary with [verification records](verification.md#reusing-a-verification-record), every finding and blocker, and accessible detail references in the brief. Keep decision facts inline and bulk reports, logs, inventories, and histories in the host's working area. Reuse artifacts; small results need no report file. Preserve all findings and uncertainty.
 
-Carry this boundary through briefs, review inputs, and return checks, passing bulk directly by reference to whoever needs it. The lead inspects reusable verification records, widening for risk, contradiction, or missing proof; a verdict or pointer alone is not acceptance. Corrections return changes, current evidence, and all unresolved findings and blockers rather than the whole history.
+Carry this boundary through briefs, review inputs, and return checks; pass bulk directly by reference. The lead inspects reusable verification records, widening for risk, contradiction, or missing proof; a verdict or pointer alone is not acceptance. Corrections return changes, current evidence, and all unresolved findings and blockers rather than the whole history.
 
 Settle returned technical questions from project evidence and your judgment, without passing them to the owner. A problem a delegate returns is one you found.
 
