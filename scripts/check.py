@@ -12,6 +12,7 @@ import os
 from pathlib import Path
 from pathlib import PurePosixPath
 import re
+import shutil
 import stat
 import subprocess
 import sys
@@ -2203,6 +2204,28 @@ def report_missing_requirements() -> None:
     )
 
 
+def host_admission(raw_args: list[str]) -> int | None:
+    """Enter an installed host queue before starting any check execution budget."""
+    adapter = shutil.which("agent-verify")
+    if adapter is None:
+        return None
+    try:
+        inherited = subprocess.run([adapter, "inherited", "--memory", "4", "--cpus", "4"],
+                                   check=False).returncode
+        if inherited == 0:
+            return None
+        if inherited != 1:
+            print("host admission could not validate the inherited grant", file=sys.stderr)
+            return 78
+        os.execv(adapter, [adapter, "--memory", "4", "--cpus", "4", "--timeout", "2700", "--label",
+                           "skiphow-check", "--", sys.executable, str(Path(__file__).resolve()),
+                           *raw_args])
+    except OSError as error:
+        print(f"host admission could not start: {error}", file=sys.stderr)
+        return 78
+    raise AssertionError("host admission exec returned")
+
+
 def main(argv: list[str] | None = None) -> int:
     raw_args = list(sys.argv[1:] if argv is None else argv)
     if not requirements_satisfied():
@@ -2217,6 +2240,9 @@ def main(argv: list[str] | None = None) -> int:
         help="run pytest with the remaining arguments",
     )
     args = parser.parse_args(raw_args)
+    admission_result = host_admission(raw_args)
+    if admission_result is not None:
+        return admission_result
     if args.pytest is not None:
         environment = os.environ.copy()
         environment["PYTHONDONTWRITEBYTECODE"] = "1"

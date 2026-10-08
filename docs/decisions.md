@@ -4,6 +4,8 @@ This page records the choices that still matter when SkipHow changes. Read it be
 
 ## Current decisions
 
+Contributor verification optionally discovers `agent-verify` on PATH and enters its host queue before starting check subprocesses. A live inherited grant avoids a second reservation; a stale environment does not. Hosts without the capability retain direct execution. The adapter owns queue policy, process cancellation and the whole-run watchdog, while the checker retains its existing subprocess budgets. No host path, dependency, queue implementation or admission requirement is shipped in the plugin. Deterministic adapter tests cover this repository integration; they do not prove model behavior.
+
 The live decisions, their premises, and what would reopen each. "Evidence" says what stands behind the decision today: `Observed` means a retained run showed it on the package that carried it, `Contract` means the shipped text encodes it and no run has tested that text, `Deterministic` means a check proves it on every run. Last reviewed 2026-10-07 against the 6.3.1 candidate. The [owner-outcome contract](outcome-contract.md) governs implementation choices.
 
 | Decision | Active rationale | Premises | Evidence | Reopens when |
