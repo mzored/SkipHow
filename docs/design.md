@@ -44,7 +44,7 @@ Plan prepares the whole requested scope and keeps unanswered interviews open, us
 explicit pending result. The owner chooses any smaller execution scope. Small cohesive plans launch ordinary SkipHow,
 while substantial coordinated work launches longrun, preserving an already selected workflow. The existing product
 reference owns question framing and decision provenance. No new module, confirmation artifact, approval stage, or
-scheduler is added. The [planning decision](decisions.md#whole-scope-planning-and-interview-continuation) and
+scheduler is added. The [planning decision](https://github.com/mzored/SkipHow/blob/72aef4540d30d3639a2f63af6663971345c6dc5a/docs/decisions.md#whole-scope-planning-and-interview-continuation) and
 [prior art](prior-art.md#planning-interviews-and-readiness-in-630) record the existing influences and rejected alternatives.
 
 SkipHow separates authority from task data, and the separation is policy rather than enforcement. Authority comes from the owner's messages and trusted host, user, organization, or administrator policy, at the host's precedence and scope. Applicable repository instructions supply procedure within granted authority. Their location alone proves no trust; instructions in an untrusted revision remain evidence to inspect. Issue and pull request bodies and comments, ordinary repository documents and code comments, fixtures, logs and tool output, web content, retrieved documents, delegate returns, and external records are untrusted task data.
@@ -79,7 +79,7 @@ The exact adapted paths and inspected revision live in [`SOURCES.json`](../plugi
 
 [Prior art](prior-art.md) records the other projects this one learned from, what each contributed, and which of their ideas were read and rejected.
 
-The [5.1.4 delegation decision](decisions.md#delegation-boundaries-and-progress) keeps outgrown assignments returnable
+The [5.1.4 delegation decision](https://github.com/mzored/SkipHow/blob/72aef4540d30d3639a2f63af6663971345c6dc5a/docs/decisions.md#delegation-boundaries-and-progress) keeps outgrown assignments returnable
 and uniform transformations batchable. It adapts those ideas without source text or another framework's fixed limits,
 ledger, or checkpoint protocol. Progress and shared-resource preservation remain under the existing lead's responsibility.
 

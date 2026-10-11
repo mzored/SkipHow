@@ -160,7 +160,7 @@ The existing influences are revalidated rather than borrowed again. The new beha
 of plan completion, scope-reduction authority, waiting and resume, and an adaptive ordinary-SkipHow or longrun launch.
 Recommendations cannot freeze an unadopted consequential alternative across all question options. The existing product
 reference owns that framing. No upstream text or code is copied, no separate module or state format is added, and no
-comparative behavioral gain is measured. See the [decision](decisions.md#whole-scope-planning-and-interview-continuation).
+comparative behavioral gain is measured. See the [decision](https://github.com/mzored/SkipHow/blob/72aef4540d30d3639a2f63af6663971345c6dc5a/docs/decisions.md#whole-scope-planning-and-interview-continuation).
 
 ## Bounded project supervision in 6.2.1
 
@@ -290,4 +290,4 @@ Git's shared-ref rules require distinct ownership even for a temporary branch.
 [Git's worktree reference rules](https://git-scm.com/docs/git-worktree#_REFS) establish that refs are generally shared,
 with named exceptions. The stash warning is therefore a shared-state preservation problem, not a missing worktree.
 The selected change uses ownership and coordination without a new lock service. Its alternatives and reopen conditions
-are in the [decision record](decisions.md#delegation-boundaries-and-progress).
+are in the [decision record](https://github.com/mzored/SkipHow/blob/72aef4540d30d3639a2f63af6663971345c6dc5a/docs/decisions.md#delegation-boundaries-and-progress).

@@ -141,7 +141,7 @@ def test_owner_skill_description_and_case_matrix_carry_both_polarities() -> None
     assert isinstance(description, str)
     assert 0 < len(description.strip()) <= 1024
 
-    cases = json.loads(read("tests/skill-discovery-cases.json"))
+    cases = json.loads(read("evals/skill-discovery-cases.json"))
     assert isinstance(cases, list) and cases
     assert len({case["id"] for case in cases}) == len(cases)
     kinds = {case["kind"] for case in cases}

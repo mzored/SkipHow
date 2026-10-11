@@ -475,7 +475,7 @@ bare `pytest` run in this repository never collects a fixture.
 
 ## Related
 
-- [`../tests/skill-discovery-cases.json`](../tests/skill-discovery-cases.json)
+- [`skill-discovery-cases.json`](skill-discovery-cases.json)
   is the older sibling of this corpus: prompts that test whether the skill is
   selected at all, with the runs behind them recorded in `../docs/evidence.md`.
 - [`../tests/test_evals_corpus.py`](../tests/test_evals_corpus.py) is the

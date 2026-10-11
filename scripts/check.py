@@ -1019,7 +1019,7 @@ def portability_scan() -> list[str]:
         ROOT / "docs",
         ROOT / "README.md",
         ROOT / "CHANGELOG.md",
-        ROOT / "CONTRIBUTING.md",
+        ROOT / ".github/CONTRIBUTING.md",
         ROOT / "SECURITY.md",
         SITE_ROOT,
     )
