@@ -61,6 +61,62 @@ claude plugin update skiphow@skiphow
 
 Before uninstalling, ask SkipHow to disable itself, or run the helper's `remove --host <host> --apply` yourself. If you added the README line manually, remove that exact line instead. Then uninstall with `codex plugin remove skiphow@skiphow` or `claude plugin uninstall skiphow@skiphow`. Plugin removal alone does not edit your trusted instructions and would leave a request to load an unavailable skill.
 
+## Manual activation fallback
+
+If you prefer to edit trusted instructions yourself, append this line to the effective
+file your host reads without replacing existing content. Remove only this line to
+undo it. The host-resolution details are in [Activate it](#activate-it).
+
+```text
+For current-project requests, load the installed SkipHow skill before consequential action and use it as the adaptive virtual CTO policy. Do not load it for unrelated conversation or for a request that only discusses SkipHow without adopting it.
+```
+
+A manual line and a managed activation block are alternatives. Remove the manual line
+before installing a managed block; the helper does not take ownership of your prose.
+
+## Recurring workflows
+
+Use these when you know the work pattern you want. Ordinary requests still need no mode name. In Codex, invoke `$skiphow-plan`; in Claude Code, invoke `/skiphow:skiphow-plan`, with the same naming pattern for the other workflows.
+
+| Workflow | Example request | Completion |
+| --- | --- | --- |
+| `skiphow-bug` | `$skiphow-bug Discounts sometimes change when an order is retried. Find and repair the general cause.` | Verified repair at the authorized destination, with original and general-case evidence. |
+| `skiphow-plan` | `$skiphow-plan Prepare team invitations for implementation in this project's GitHub issues.` | Whole-scope preparation with a completed product interview, reviewed specification, executable tasks, and a launch suited to the work. Unanswered decisions keep preparation open. No implementation. |
+| `skiphow-longrun` | `$skiphow-longrun Deliver the accepted implementation children of this epic to our development branch.` | Verified delivery or recorded unfinished blockers, with delegated implementation and independent fix/review loops. |
+| `skiphow-deploy-ready` | `$skiphow-deploy-ready Prepare our agreed changes for delivery.` | Deferred checks, review, coherent commits, and any authorized non-production integration. |
+| `skiphow-fast-fixes` | `$skiphow-fast-fixes Fix the search and export bugs locally. I will add feedback while you work.` | Checked local results as they become ready; independent work continues while feedback is pending. |
+
+Explicit `skiphow-plan` invocation requests durable planning records within the authorized audience. A read-only constraint overrides that default. Automatic selection for an ordinary planning question does not grant tracker writes. Unavailable tracking leaves complete issue drafts and a blocker.
+
+Plan reviews each assignment's actual context, implementation, verification, review, and integration load. It prepares
+the whole accepted scope as bounded vertical slices with real dependencies and parallel work. A new component path
+starts with a thin working slice; a mature project reuses its established path. The planner keeps large checkable
+automated changes whole and avoids steps that have no independently verifiable result.
+
+Planning continues through product questions revealed by your answers. Recommendations and assumptions stay separate
+from your decisions, including consequences for existing records and dependent behavior. A pending answer keeps the
+interview open. The agent prepares useful independent work, then waits through available host controls or returns the
+question and what resumes preparation. Saving drafts does not finish planning or substitute a partial launch for the
+requested scope. You can explicitly choose a narrower scope.
+
+Ready plans end with a short launch using the target host's explicit invocation syntax. Small cohesive work uses
+ordinary SkipHow; substantial coordinated work uses longrun. A workflow you already selected takes precedence.
+For substantial work with a concrete accepted plan and destination:
+
+```text
+$skiphow-longrun
+Deliver the accepted implementation scope in issue #42 to the development branch.
+```
+
+Tasks carry requirements and dependencies, so the launch adds only otherwise-missing project, owner-selected subset, or run constraints.
+Preparation and inaccessible sources remain explicit blockers, and the prompt creates no new authorization.
+
+Fast-fixes accepts new changes, revisions, and cancellations while accepted work continues. The lead handles tiny fixes directly and delegates independent work when that pays, with verified writer isolation and coordination of shared resources. It shows an inspected preview, demonstrated behavior, or an artifact as appropriate to the project; a browser and Git are not prerequisites. Before replacing a shown state, it preserves a recoverable checkpoint, using local commits in Git projects. Focused tests may run, including pytest or browser tests, while full delivery gates wait. Explicit requests to wait or restrict tests still govern.
+
+Acceptance keeps fast-fixes in local iteration. Say `deploy-ready` or `clean` to reconcile the delivery set, including running assignments, and begin preparation. Corrections receive affected review and revalidation; later work stays accounted for outside that delivery. Say `deploy prod` to authorize the specified production release. Preparation and contextual clean alone do not authorize production or arbitrary deletion. Hosts determine when messages arrive and which delegation or continuation controls exist; the plugin adds no background scheduler.
+
+Workflow selection and loading the shared kernel remain model behavior, currently `UNVERIFIED`. See the [workflow evidence](evidence.md#optional-workflow-contract).
+
 ## Ask for the outcome
 
 A useful request names the visible result and any limit you care about:
@@ -75,7 +131,7 @@ Save these observations so we can prioritize them tomorrow.
 Make the hero headline shorter. I will take a look before we ship.
 ```
 
-The last one is an iteration: a change you will inspect before deciding what comes next. The agent reviews, checks, and shows it, then continues other accepted work independent of your feedback. It waits when no work can safely advance or you ask it to wait. While changes keep coming, the work stays in iteration. Delivery and its wider checks and integration start when you ask for it, name a destination, or accept with nothing further to send. In fast-fixes, acceptance alone keeps the session local. You can add, revise, or cancel fixes while it works; checked results and recoverable checkpoints follow the project, including projects without Git or a browser preview. Focused tests are allowed unless you restrict them, and shared resources still constrain parallelism. A blocked outcome remains visible while independent work continues. These are contracts, not observed behavior on the current package. The [workflow examples](../README.md#recurring-workflows) describe each optional mode and its stopping condition.
+The last one is an iteration: a change you will inspect before deciding what comes next. The agent reviews, checks, and shows it, then continues other accepted work independent of your feedback. It waits when no work can safely advance or you ask it to wait. While changes keep coming, the work stays in iteration. Delivery and its wider checks and integration start when you ask for it, name a destination, or accept with nothing further to send. In fast-fixes, acceptance alone keeps the session local. You can add, revise, or cancel fixes while it works; checked results and recoverable checkpoints follow the project, including projects without Git or a browser preview. Focused tests are allowed unless you restrict them, and shared resources still constrain parallelism. A blocked outcome remains visible while independent work continues. These are contracts, not observed behavior on the current package. The [workflow examples](#recurring-workflows) describe each optional mode and its stopping condition.
 
 Rough requests are fine. SkipHow reads the project before it asks you for anything. It brings a question back only when the answer changes product behavior, scope, priority, cost, risk, privacy, or rollout. It also asks when an action needs your explicit grant or only a person can complete it.
 

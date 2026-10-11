@@ -40,7 +40,7 @@ package identity and scope. Clean installation does not establish model loading.
 An isolated Codex profile authenticated natively on 2026-09-05; an isolated Claude Code
 profile still cannot. Ordinary-language loading, delivery to a synthetic remote, and
 native resume were observed once each on the exact 4.1.0 package in the
-[isolated Codex diagnostics](docs/evidence.md#later-isolated-codex-diagnostics); nothing
+[isolated Codex diagnostics](https://github.com/mzored/SkipHow/blob/72aef4540d30d3639a2f63af6663971345c6dc5a/docs/evidence.md#later-isolated-codex-diagnostics); nothing
 comparable exists for Claude Code, and no activation mode has a measured reliability on
 either host. Claude's documented plugin subagents
 ignore `permissionMode`; a declared field alone must not be described as an

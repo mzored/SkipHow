@@ -1,62 +1,26 @@
 # SkipHow
 
-**An adaptive virtual CTO for founders and product owners using Claude Code or Codex.**
+An adaptive virtual CTO for founders and product owners using Claude Code or Codex.
 
-Describe the product outcome in ordinary language. You keep product decisions. SkipHow owns technical research, architecture, planning, task management, model and subagent selection, implementation, review, integration, and verification. It uses the host's native capabilities and remains an instruction layer, not a standalone runtime or security boundary.
-
-The `skiphow` skill covers ordinary project requests. Optional workflow skills make recurring bug repair, planning, long-running delivery, release preparation, and live local fixes available by name or by request. They share the CTO kernel and its internal references. You can choose a work pattern while SkipHow keeps technical supervision. The [owner-outcome contract](docs/outcome-contract.md) defines the responsibilities that future implementation changes must preserve.
+Describe the product outcome in ordinary language. You keep product decisions;
+SkipHow owns research, architecture, planning, implementation, review, integration,
+and verification. Work stays proportional to the request. The host supplies the
+model, tools, permissions, sessions, and subagents.
 
 [![CI status](https://github.com/mzored/SkipHow/actions/workflows/ci.yml/badge.svg)](https://github.com/mzored/SkipHow/actions/workflows/ci.yml)
 [![Latest release](https://img.shields.io/github/v/release/mzored/SkipHow?label=release)](https://github.com/mzored/SkipHow/releases)
 [![MIT license](https://img.shields.io/github/license/mzored/SkipHow)](LICENSE)
 
-Host support is a dated, per-capability matrix in the [security policy](SECURITY.md#host-support-as-of-2026-09-06), not a badge. Claude Code and Codex CLI are the surfaces it covers; anything it does not list is `UNVERIFIED`.
-
-```text
-Your outcome and constraints
-            |
-            v
-SkipHow
-adaptive technical leadership and completion contract
-            |
-            v
-Claude Code or Codex
-reasoning, tools, subagents, execution
-            |
-            v
-Verified result and visible uncertainty
-```
-
-This is a responsibility handoff, not a fixed development pipeline. A small request stays direct. Larger work gets research, design, durable Issues, delegation, worktrees, and independent review when its shape warrants them. The owner never has to operate those mechanics.
-
-## What changes
-
-| Problem | SkipHow's contract |
-| --- | --- |
-| You have to manage the agent's process | The agent chooses the technical method, tools, tests, branches, and decomposition. |
-| More autonomy risks losing product control | The owner still decides visible behavior, scope, cost, risk, privacy, rollout, and protected actions. |
-| Every request becomes a ceremony | Process scales with the work. Specs, tickets, TDD, worktrees, subagents, and review appear only when the request or project needs them. |
-| "Done" means the agent stopped | Completion needs fresh evidence. Anything blocked or unverified stays visible. |
-| Important engineering problems wait for you to notice them | The lead looks for material risks and recurring costs across the authorized project, questions whether current solutions still fit, and repairs engineering findings at safe boundaries, including during iteration. Your outcome stays first; further improvement must justify its cost. The rest receives explicit disposition in your project's work records. |
-| You need a different command for every kind of work | One entry covers questions, decisions, research, bugs, changes, iterations you want to look at first, project status, reconciliation, cleanup, delivery, pause, and resume. |
-| Long or delegated work becomes your coordination job | Continuity, reconciliation, integration, and any tracking your project calls for remain engineering work for the agent. |
-| Autonomy widens side effects | Production, releases, credentials, access, material deletion, and other protected actions require an explicit grant. |
-
-The promise is less manual supervision, not infallibility. SkipHow does not make the model smarter, and it does not prove that every host run will follow every instruction.
-
 ## Is it for you?
 
-| Your situation | Better fit |
-| --- | --- |
-| You own a product outcome and want a coding agent to own the engineering method through a verified result | **Use SkipHow** |
-| Claude Code or Codex already keeps this boundary and verifies completion reliably for you | **Use the base agent**; another instruction layer adds little |
-| You know the recurring work pattern you want and still want the agent to own engineering | **Use SkipHow's optional workflows** |
-| You want to inspect and approve specifications, phases, tickets, or the development method | **Use a spec or workflow framework** |
-| You need persistent agent teams, queues, budgets, leases, scheduling, or a control plane | **Use a runtime orchestrator** |
+Use SkipHow when you want the agent to own engineering through a verified result
+while you decide product behavior, scope, cost, risk, privacy, and rollout. Technical
+fluency does not matter; ownership of the outcome does.
 
-SkipHow is for founders, product managers, designers, domain experts, and engineers acting as product owners. Technical fluency is irrelevant. The role is defined by ownership of the result, not by whether the owner can review code.
-
-The owner does not need to perform technical review. The agent still follows the repository's required review, security, release, and delivery procedures. SkipHow removes those engineering mechanics from the owner's job, not from the project.
+If your base agent already does this reliably, another instruction layer adds little.
+A specification framework fits an owner who wants to approve the development method.
+A runtime orchestrator fits persistent teams, queues, scheduling, and budget enforcement.
+SkipHow is an instruction layer and provides none of those runtime services.
 
 ## Install
 
@@ -74,148 +38,68 @@ claude plugin marketplace add https://github.com/mzored/SkipHow.git
 claude plugin install skiphow@skiphow
 ```
 
-Start a new session after installing. The [owner guide](docs/guide.md) covers updates and uninstall.
+Start a new session after installation. The [owner guide](docs/guide.md) covers
+updates and uninstall.
 
-### Activate it for ordinary language
+## Activate it for ordinary language
 
-Plugin installation makes the skill available, but skill selection remains model-driven. To have SkipHow govern ordinary requests by default, ask the installed skill to enable itself once:
+Ask the installed skill to enable itself once:
 
 ```text
 $skiphow Enable SkipHow as my default virtual CTO on this machine.
 ```
 
-In Codex the name is `$skiphow`; in Claude Code it is `/skiphow:skiphow`. The agent resolves the trusted user instruction file your host actually reads, shows you the exact change, writes one reversible block after you confirm, and reports three facts separately: whether the block is configured, whether the plugin is available on the host, and that loading is only visible in a fresh session. Codex reads a non-empty `AGENTS.override.md` in its home instead of `AGENTS.md`, and a custom `CODEX_HOME` moves that home; Claude Code reads the user `CLAUDE.md` and unconditional user rules under its configuration directory. A line placed in a file the host does not read configures nothing, which is why the agent, not you, resolves the target. Ask it to check or disable itself the same way. The block asks the host to load the skill and grants no action; installing or enabling SkipHow authorizes nothing.
+In Claude Code, use `/skiphow:skiphow` instead of `$skiphow`. The agent resolves
+the trusted instruction file your host reads, previews one reversible block, and
+writes it after confirmation. Configured, available, and loaded are separate facts;
+loading is only visible in a fresh session. Installation and activation grant no
+actions. The [activation guide](docs/guide.md#activate-it) explains the lifecycle
+and manual fallback.
 
-If you prefer to edit the file yourself, append this line to that file without replacing anything already there, and remove only this line to disable default governance:
-
-```text
-For current-project requests, load the installed SkipHow skill before consequential action and use it as the adaptive virtual CTO policy. Do not load it for unrelated conversation or for a request that only discusses SkipHow without adopting it.
-```
-
-Explicit invocation remains the fallback and diagnostic path:
+Explicit invocation remains available:
 
 ```text
 $skiphow The totals overlap on small screens. Find the cause and fix it.
 ```
 
-What each host has actually shown is in the [dated support summary](docs/evidence.md#support-summary-as-of-2026-09-06). In short: on Codex, the 4.2.0 package enabled and disabled itself through the skill once each, and one request that did not name SkipHow, though it named the destination branch and asked for verification, loaded the kernel from the written block and delivered four correct repairs to a synthetic remote; 4.1.0 showed loading, delivery, and native resume once each before that. On Claude Code no persistent-setup run exists and one earlier bare-prompt pilot did not select the skill. No activation mode has a measured reliability, and the package ships no session hook.
+## Recurring workflows
 
-## Use it
+Ordinary project requests need no mode. Optional workflows share the same CTO
+kernel, authority boundaries, and internal references.
 
-Ask for the outcome in ordinary language and include any limit that matters to you.
-
-```text
-The totals overlap on small screens. Find the cause and fix it.
-
-Compare our caching options and recommend one. Do not change code.
-
-Here are today's bugs and ideas. Triage and save them.
-
-Tell me where the project actually stands. Do not change anything.
-
-Reconcile the tracked work with what landed and clean up anything safely finished.
-```
-
-SkipHow reads the project before asking anything. If a product choice is genuinely open, it asks in plain language, recommends an option, and waits before building behavior that depends on the answer. Then it decides the engineering, does the authorized work, verifies the result, and reports what the evidence shows and what remains uncertain.
-
-### Recurring workflows
-
-Use these when you know the work pattern you want. Ordinary requests still need no mode name. In Codex, invoke `$skiphow-plan`; in Claude Code, invoke `/skiphow:skiphow-plan`, with the same naming pattern for the other workflows.
-
-| Workflow | Example request | Completion |
-| --- | --- | --- |
-| `skiphow-bug` | `$skiphow-bug Discounts sometimes change when an order is retried. Find and repair the general cause.` | Verified repair at the authorized destination, with original and general-case evidence. |
-| `skiphow-plan` | `$skiphow-plan Prepare team invitations for implementation in this project's GitHub issues.` | Whole-scope preparation with a completed product interview, reviewed specification, executable tasks, and a launch suited to the work. Unanswered decisions keep preparation open. No implementation. |
-| `skiphow-longrun` | `$skiphow-longrun Deliver the accepted implementation children of this epic to our development branch.` | Verified delivery or recorded unfinished blockers, with delegated implementation and independent fix/review loops. |
-| `skiphow-deploy-ready` | `$skiphow-deploy-ready Prepare our agreed changes for delivery.` | Deferred checks, review, coherent commits, and any authorized non-production integration. |
-| `skiphow-fast-fixes` | `$skiphow-fast-fixes Fix the search and export bugs locally. I will add feedback while you work.` | Checked local results as they become ready; independent work continues while feedback is pending. |
-
-Explicit `skiphow-plan` invocation requests durable planning records within the authorized audience. A read-only constraint overrides that default. Automatic selection for an ordinary planning question does not grant tracker writes. Unavailable tracking leaves complete issue drafts and a blocker.
-
-Plan reviews each assignment's actual context, implementation, verification, review, and integration load. It prepares
-the whole accepted scope as bounded vertical slices with real dependencies and parallel work. A new component path
-starts with a thin working slice; a mature project reuses its established path. The planner keeps large checkable
-automated changes whole and avoids steps that have no independently verifiable result.
-
-Planning continues through product questions revealed by your answers. Recommendations and assumptions stay separate
-from your decisions, including consequences for existing records and dependent behavior. A pending answer keeps the
-interview open. The agent prepares useful independent work, then waits through available host controls or returns the
-question and what resumes preparation. Saving drafts does not finish planning or substitute a partial launch for the
-requested scope. You can explicitly choose a narrower scope.
-
-Ready plans end with a short launch using the target host's explicit invocation syntax. Small cohesive work uses
-ordinary SkipHow; substantial coordinated work uses longrun. A workflow you already selected takes precedence.
-For substantial work with a concrete accepted plan and destination:
-
-```text
-$skiphow-longrun
-Deliver the accepted implementation scope in issue #42 to the development branch.
-```
-
-Tasks carry requirements and dependencies, so the launch adds only otherwise-missing project, owner-selected subset, or run constraints.
-Preparation and inaccessible sources remain explicit blockers, and the prompt creates no new authorization.
-
-Fast-fixes accepts new changes, revisions, and cancellations while accepted work continues. The lead handles tiny fixes directly and delegates independent work when that pays, with verified writer isolation and coordination of shared resources. It shows an inspected preview, demonstrated behavior, or an artifact as appropriate to the project; a browser and Git are not prerequisites. Before replacing a shown state, it preserves a recoverable checkpoint, using local commits in Git projects. Focused tests may run, including pytest or browser tests, while full delivery gates wait. Explicit requests to wait or restrict tests still govern.
-
-Acceptance keeps fast-fixes in local iteration. Say `deploy-ready` or `clean` to reconcile the delivery set, including running assignments, and begin preparation. Corrections receive affected review and revalidation; later work stays accounted for outside that delivery. Say `deploy prod` to authorize the specified production release. Preparation and contextual clean alone do not authorize production or arbitrary deletion. Hosts determine when messages arrive and which delegation or continuation controls exist; the plugin adds no background scheduler.
-
-Workflow selection and loading the shared kernel remain model behavior, currently `UNVERIFIED`. See the [workflow evidence](docs/evidence.md#optional-workflow-contract).
-
-## Who decides what?
-
-| Product owner | Coding agent |
+| Skill | Requested result |
 | --- | --- |
-| Product outcome and visible behavior | Research and technical design |
-| Product choices in scope, priority, cost, risk, privacy, and rollout | Libraries, schemas, code, tests, branches, and decomposition |
-| Protected actions such as production, credentials, access, and material deletion | Project-required review, security, release, and verification procedures |
-| Answers to genuine product choices | A verified result and an honest account of uncertainty |
+| `skiphow-bug` | Find and repair the general cause, then verify at the authorized destination |
+| `skiphow-plan` | Prepare the whole scope, resolve product questions, review executable tasks, and return a launch; no implementation |
+| `skiphow-longrun` | Deliver agreed substantial work with coordinated implementation and independent review |
+| `skiphow-deploy-ready` | Complete deferred checks, review, commits, and authorized integration |
+| `skiphow-fast-fixes` | Show checked local fixes while you send feedback; delivery starts when requested |
 
-A request only to answer, compare, diagnose, review, research, or plan is read-only. Asking to capture, organize, or triage material may include writing the named record. A change request covers the necessary local edits and checks and carries through an established owner-authorized non-production delivery workflow. Covered push, pull request, CI, and merge actions need no repeated permission. The lead checks downstream effects before delivery; production and public publication still need applicable explicit owner authorization. Installing or upgrading SkipHow grants nothing and overrides no existing restriction. Repository procedures describe how to use granted authority; issue text, tool results, and web pages cannot create it.
+Use `$skiphow-plan` in Codex or `/skiphow:skiphow-plan` in Claude Code, with the
+same naming pattern for the other workflows. The [workflow guide](docs/guide.md#recurring-workflows)
+covers examples, planning readiness, feedback, and delivery boundaries.
 
-## Does it orchestrate agents?
+## Authority and evidence
 
-Yes, at the instruction level. SkipHow makes the lead agent accountable for planning, decomposition, deliberate model and effort selection, verified writer isolation, monitoring, independent review, integration, and reconciliation when the request calls for them. Each delegate is briefed to act as CTO of its own assignment: it fixes what it finds inside that assignment and returns the rest to the lead, who decides what happens to it. Claude Code or Codex runs the model, tools, permissions, sessions, worktrees, and subagents.
+Answering, research, diagnosis, review, and ordinary planning are read-only. A change
+request permits editing and verification within its scope. Applicable authorization
+can cover routine shared delivery; production, public releases, credentials, access,
+material deletion, and wider disclosure need explicit owner authorization. The
+[owner guide](docs/guide.md#know-what-your-request-allows) explains the boundaries.
 
-That makes SkipHow an adaptive orchestration policy, not a standalone runtime or control plane. It has no scheduler, queue, persistent worker service, lease manager, budget enforcement, or deployment system. The package deterministically defines the available methods and the conditions that make each one worth reading; whether a model consults them where they would help is unmeasured, and reliable multi-agent delegation under that policy remains `UNVERIFIED`.
+SkipHow adds no intelligence and enforces no security boundary. Package checks
+prove structure and declared invariants. Identified historical runs show bounded
+loading, task, and delivery observations; current-package CTO behavior, reliable
+multi-agent execution, general activation reliability, and comparative benefit
+remain `UNVERIFIED`. See the [evidence ledger](docs/evidence.md) and the
+[dated host-support matrix](SECURITY.md#host-support-as-of-2026-09-06).
 
-## Why I built it
+## Documentation
 
-Before SkipHow, I used GSD, OpenSpec, Superpowers, Matt Pocock's skills, BMAD, Paperclip, Mesa, and other agent systems on my own work. Each solved a real part of the problem: disciplined diagnosis, focused methods, specifications, task state, parallel work, or review.
+Start with the [documentation index and repository map](docs/README.md).
+It links the owner guide, FAQ, product contract, design, current decisions, prior
+art, evaluation corpus, and historical archives.
 
-I kept running into the same mismatch. To use them well, I often had to operate the development method myself. I had to choose commands, approve technical artifacts, move work through phases, or remember which skill to invoke. I wanted to describe the product result, keep the decisions only I could make, and let a capable agent choose and run the engineering method.
-
-SkipHow is the layer I built for that relationship. The [prior-art record](docs/prior-art.md) explains what it adopted, changed, and deliberately left out. It is a design history, not a benchmark.
-
-## One CTO, optional workflows
-
-The same CTO owns every workflow. Shared authority and completion rules live in `skiphow`, and each workflow requires that kernel in context before consequential work. Detailed methods stay in one reference library and load when needed.
-
-This dependency is an instruction, not a host-enforced guarantee. Package checks verify the links; retained runs must establish actual loading and behavior. Choosing a workflow is optional and never makes you responsible for technical sequencing, model routing, or review supervision.
-
-## What the evidence shows
-
-Deterministic checks prove package structure; controlled runs are required for behavior claims. The behavioral observations on record were made on 2.x packages, on both hosts, and cover fully specified requests, open product choices, failure diagnosis, adversarial verification, and the splitting of larger work into independently verifiable units. On the 4.x virtual-CTO contract, retained isolated Codex diagnostics on the exact 4.1.0 package show ordinary-language loading, four correct repairs delivered to a synthetic remote with foreign work preserved, read-only behavior on analysis and unrelated requests, and native resume and compaction. A separate Claude coordination diagnostic left its synthetic remote unchanged and accepted an incorrect shipping calculation despite independent review. On the 4.2.0 package, three isolated Codex sessions show the agent-operated enable and disable paths and one ordinary-language delivery loaded through the override file, each once. Coordinated cross-host delivery, failed-delegate recovery, and real GitHub tracking remain `UNVERIFIED` until retained receipts show them.
-
-These are observations, not a reliability rate. The project does not retain every transcript, public adoption is still limited, and comparative advantage over a base agent or another framework is `UNVERIFIED`. The [dated support summary](docs/evidence.md#support-summary-as-of-2026-09-06) says what was demonstrated on which package, host, and configuration; the rest of the [evidence ledger](docs/evidence.md) is the single home for the method, the claims each run supports, and the failures.
-
-## Limits
-
-SkipHow provides orchestration policy as Markdown instructions. It does not execute, enforce permissions, supply subagents, or prove a result; it requires the agent to show fresh evidence, which the host and the model may still fail to produce. It does not provide execution infrastructure. Claude Code or Codex supplies the runtime, sandbox, tools, permissions, sessions, credentials, and any subagents. SkipHow cannot create capabilities the host does not provide.
-
-Controlled runs do spawn delegates. What no controlled run has demonstrated is the rest of it: a lane running concurrently in a verified isolated checkout, a worktree created for one, or a unit integrated separately as it landed. Those stay `UNVERIFIED`, and the [evidence matrix](docs/evidence.md) holds the detail. General automatic skill-selection reliability is also unmeasured.
-
-Use a spec or workflow framework when approving the method is part of your job. Use a runtime orchestrator when you need durable scheduling, queues, budgets, leases, or a persistent team of agents. Use no extra layer when your base agent already maintains the same boundary reliably.
-
-## Read more
-
-- [Product site](https://mzored.github.io/SkipHow/)
-- [Owner guide](docs/guide.md), for installation, authority, and report behavior
-- [FAQ](docs/faq.md)
-- [Comparison](https://mzored.github.io/SkipHow/compare/)
-- [Prior art](docs/prior-art.md), for mechanisms kept and rejected
-- [Design](docs/design.md) and [decision history](docs/decisions.md)
-- [Current evidence](docs/evidence.md), for what is demonstrated and what is not
-- [Host support matrix](SECURITY.md#host-support-as-of-2026-09-06), dated per capability
-- [Contributing](CONTRIBUTING.md) and [security policy](SECURITY.md)
-
-SkipHow adapts selected ideas from [Matt Pocock's skills](https://github.com/mattpocock/skills) and keeps the required MIT attribution in [`THIRD_PARTY_NOTICES.md`](plugins/skiphow/THIRD_PARTY_NOTICES.md). SkipHow itself is [MIT licensed](LICENSE).
+For development, read [Contributing](.github/CONTRIBUTING.md). Report vulnerabilities
+through the [private security process](SECURITY.md). Release notes are in the
+[changelog](CHANGELOG.md).

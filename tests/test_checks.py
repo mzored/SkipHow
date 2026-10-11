@@ -1158,6 +1158,18 @@ def test_portability_scan_flags_a_personal_path_in_a_package_file(tmp_path: Path
     assert any("personal-path.txt" in error for error in errors)
 
 
+def test_portability_scan_covers_the_relocated_contribution_guide(tmp_path: Path) -> None:
+    candidate = tmp_path / ".github/CONTRIBUTING.md"
+    candidate.parent.mkdir()
+    candidate.write_text("Run from /" + "Users/person/project.\n", encoding="utf-8")
+    with (
+        patch.object(check, "ROOT", tmp_path),
+        patch.object(check, "repository_files", return_value=[candidate]),
+    ):
+        errors = check.portability_scan()
+    assert any(".github/CONTRIBUTING.md" in error for error in errors)
+
+
 def test_portability_scan_catches_a_home_path_with_no_trailing_separator(tmp_path: Path) -> None:
     """`/Users/person` at the end of a sentence used to pass the scan."""
     plugin = tmp_path / "plugins/skiphow"
