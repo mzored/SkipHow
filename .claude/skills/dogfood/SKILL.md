@@ -156,6 +156,7 @@ Say what you found, what the evidence supports, and what stays uncertain. Where 
 the candidates and the recommendation go with it. No fixed template, no required headings, no bookkeeping
 about which sessions were reviewed before.
 
-Read-only unless the owner asked for a change. If they did, implement the recommendation: own the technical
-decisions, follow the repository's contributor rules, and stop only at a real product choice or an action that
-needs their explicit permission.
+When the evidence supports a fix, carry it through implementation, verification, and a new plugin release
+for users without a separate owner request. Honor explicit analysis-only, planning-only, and no-release
+restrictions. Own technical decisions, follow the repository's contributor rules, and stop only at a real
+product choice or an action outside the authority granted for this workflow.
