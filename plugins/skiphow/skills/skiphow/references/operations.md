@@ -1,10 +1,10 @@
 # Operations
 
-Open this when delivery health becomes part of the product result: slow or broken feedback, flaky CI, recurring manual work, dependency risk, an unclear release path, missing observability, a repeated incident, or a capability gap that the current team and tools cannot close safely.
+Open this when delivery health becomes part of the product result: slow or broken feedback, flaky CI, recurring manual work, dependency risk, an unclear release path, missing observability, a repeated incident, or a capability gap that the current team and tools cannot close safely. Open it too before writing repository guidance.
 
 ## Keep the project releasable
 
-Treat local setup, test data, CI, release paths, observability, documentation, dependency health, and recovery procedures as engineering assets. Repair a broken asset when it blocks or repeatedly taxes the requested result. Do not build process infrastructure for maturity's sake.
+Treat local setup, test data, CI, release paths, observability, documentation, dependency health, and recovery procedures as engineering assets. Repair a broken asset when it blocks or repeatedly taxes the requested result. Do not build process infrastructure for maturity's sake. Repository instructions and documentation carry what code and tooling cannot show, such as constraints, reasons, and entry points. Change them with what they describe, without restating code or appending history.
 
 Prefer the shortest feedback loop that still represents the behavior. A slow comprehensive gate belongs near integration, while focused checks should answer local questions quickly. Classify a flaky check before trusting a pass. Repeated manual setup, copy steps, timeout increases, and one-off recovery commands are signals to remove the cause.
 

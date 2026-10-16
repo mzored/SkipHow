@@ -128,3 +128,78 @@ def {name}(invoices):
     assert result.returncode == (0 if variant in {"shared_csv", "public_csv"} else 1), result.stdout + result.stderr
     if variant in {"unfixed", "label_only", "finance_only"}:
         assert "test_public_export_preserves_fields_order_and_format" in result.stdout
+
+
+def run_oracle(fixture: Path, *files: str, select: str) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        [sys.executable, "-B", "-m", "pytest", "-q", "-p", "no:cacheprovider", *files, "-k", select],
+        cwd=fixture, capture_output=True, text=True, check=False, timeout=60,
+    )
+
+
+@pytest.mark.parametrize("variant,behavior,structure", [
+    ("unfixed", False, False),
+    ("status_only_copy", False, False),
+    ("complete_copy", True, False),
+    ("owned_rule", True, True),
+])
+def test_owned_rule_oracle_separates_reuse_from_a_copy(tmp_path, variant, behavior, structure):
+    fixture = tmp_path / "owned"
+    materialize("owned-behavior", fixture)
+    guards = {
+        "status_only_copy": "    if account['status'] == 'terminated':\n",
+        "complete_copy": "    if account['status'] in {'terminated', 'closed'} or account.get('closed_at') is not None:\n",
+        "owned_rule": "    if is_terminated(account):\n",
+    }
+    if variant != "unfixed":
+        source = fixture / "comments.py"
+        header = "from accounts import is_terminated\n\n" if variant == "owned_rule" else ""
+        text = source.read_text().replace('"""Synthetic comment posting."""\n', '"""Synthetic comment posting."""\n' + header)
+        source.write_text(text.replace(
+            "    if not text.strip():\n",
+            guards[variant] + "        raise PermissionError('account is terminated')\n    if not text.strip():\n",
+        ))
+    files = ("tests/project_checks.py", "grading/comment_checks.py")
+    assert (run_oracle(fixture, *files, select="not structure").returncode == 0) is behavior
+    assert (run_oracle(fixture, "grading/comment_checks.py", select="structure").returncode == 0) is structure
+
+
+CLOCK_IMPORTERS = {
+    "invoices.py": ("from helpers import format_invoice_date, parse_iso", "from clock import format_invoice_date, parse_iso"),
+    "reports.py": ("import helpers\n", "import clock as helpers\n"),
+}
+
+
+@pytest.mark.parametrize("variant,behavior,structure", [
+    ("unfixed", False, False),
+    ("reexport_shim", True, False),
+    ("stale_pointer", True, False),
+    ("partner_removed", False, True),
+    ("partner_copy_kept", True, False),
+    ("complete", True, True),
+])
+def test_old_path_oracle_requires_retirement_and_the_partner_entry(tmp_path, variant, behavior, structure):
+    fixture = tmp_path / "owned"
+    materialize("owned-behavior", fixture)
+    if variant != "unfixed":
+        old = fixture / "helpers.py"
+        (fixture / "clock.py").write_text(old.read_text().replace("Date and time helpers.", "Time helpers."))
+        partner = "*\n" if variant == "reexport_shim" else "format_invoice_date\n"
+        if variant == "partner_copy_kept":
+            partner = ("date\n\n\ndef format_invoice_date(value: date) -> str:\n"
+                       "    return value.strftime(\"%d %b %Y\")\n")
+        old.write_text('"""Partner entry point; see PUBLIC_API.md."""\n\n'
+                       + ("from datetime import " if variant == "partner_copy_kept" else "from clock import ")
+                       + partner)
+        if variant == "partner_removed":
+            old.unlink()
+        if variant != "reexport_shim":
+            for name, (before, after) in CLOCK_IMPORTERS.items():
+                path = fixture / name
+                path.write_text(path.read_text().replace(before, after))
+        if variant != "stale_pointer":
+            guide = fixture / "AGENTS.md"
+            guide.write_text(guide.read_text().replace("live in `helpers.py`", "live in `clock.py`"))
+    files = ("tests/project_checks.py", "grading/clock_checks.py")
+    assert (run_oracle(fixture, *files, select="not structure").returncode == 0) is behavior
+    assert (run_oracle(fixture, "grading/clock_checks.py", select="structure").returncode == 0) is structure

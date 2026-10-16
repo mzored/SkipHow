@@ -2,6 +2,21 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 6.3.5 (2026-10-16)
+
+### Ownership at the change
+
+- The kernel now asks every change to extend the code that owns a behavior instead of copying it. A replacement migrates in-repository callers and removes the old path and shims no outside consumer needs, and the guidance it makes stale.
+- Technical design limits compatibility to consumers a change cannot update, such as published interfaces, deployed clients, and stored data. A compatible form kept for a staged migration goes when its callers finish. Where one implementation must keep owning a behavior and a new copy or use of a retired path would pass unnoticed, the playbook prefers a failing check to a comment or instruction.
+- Operations keeps repository instructions and documentation to what code and tooling cannot show, and changes them with what they describe. The kernel opens it before writing repository guidance.
+- The change follows a trace of two governed projects whose simplification audits returned 29 and 43 findings. Most consequential findings came from replacements that kept in-repository shims, new copies of rules an existing module owned, and guidance left stale. The method had lived only in a playbook that rarely loaded at those edits.
+
+### Checks and evidence
+
+- The runtime size gate counts raw characters against 9,900 instead of adding seven per line for a numbered view. Read showed a 36.7 KB file whole, and agents' shell reads of the kernel were almost all unnumbered. A failing shell command's output is still cut near 10,000 characters, so the gate keeps that bound with room for a short error line. Longer failure output still cuts, with a visible marker.
+- Two unrun corpus scenarios use a new `owned-behavior` fixture whose grader-only oracles separate reuse from a copy of the rule and a retired path from a re-export shim. Deterministic tests show each oracle accepts a complete change and rejects the incomplete shapes.
+- No paid model sessions or clean-install runs are required. The new behavior and comparative benefit remain `UNVERIFIED`.
+
 ## 6.3.4 (2026-10-11)
 
 ### Repository organization

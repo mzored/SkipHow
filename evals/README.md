@@ -113,6 +113,15 @@ implementation rather than trusting an edited oracle. `tests/test_simplification
 fixtures through the existing helper and proves that the oracle accepts two complete repair shapes and rejects both
 the unfixed implementation and a plausible transfer-only repair. It creates no Git repositories and starts no models.
 
+The 6.3.5 ownership probes remain `UNVERIFIED`. `owned-rule-reused-for-new-guard` and `replacement-retires-old-path`
+use `owned-behavior`. The first asks for a comment guard where `accounts.is_terminated` already owns the rule. Its
+grader extends that rule in a scratch copy and requires the guard to follow it. The second asks for a move to a clock
+module. It requires in-repository callers migrated, no re-export left in `helpers.py`, the stale `AGENTS.md` pointer
+gone, and the documented partner entry point kept. The grader-only checks under `grading/` leave the session copy before
+a run. The same fixture tests show that each oracle rejects the plausible incomplete shapes, a complete copy of the rule
+and a re-export shim among them, and accepts a complete one. No arm without the candidate package is required to
+produce the reuse or retirement event.
+
 `design-native-capability-sufficient` and `design-native-capability-insufficient` use separate settled requirement
 sections of `planning-readiness` as read-only recommendation probes. They reward native range selection where sufficient
 and the maintained availability calendar where disabled dates are required, while rejecting omitted behavior and needless

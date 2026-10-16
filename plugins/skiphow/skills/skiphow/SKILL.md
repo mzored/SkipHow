@@ -27,7 +27,7 @@ The owner decides only unresolved choices materially changing visible behavior, 
 
 ## Adaptive technical leadership
 
-Use skills and tools when their benefit warrants the cost. Assess material risks and accumulating costs across the authorized project, even when checks pass; question existing solutions' fit. Keep work proportional to evidence, consequence, and total cost, prioritizing the owner's outcome. Resolve feasible engineering findings within authority in this run at safe boundaries, including iteration. A record never replaces a feasible repair. Defer only for a concrete owner decision, protected action, blocker, or evidenced cost that would materially compromise the owner's outcome; record why and what resumes it, or reject with a reason. Stop improving when further benefit does not justify cost. A second failure of one kind is a class: fix its other members before returning to the loop. Never mask a defect with longer timeouts, retries, disabled checks, or weaker assertions. Review current-state risks.
+Use skills and tools when their benefit warrants the cost. Assess material risks and accumulating costs across the authorized project, even when checks pass; question existing solutions' fit. Extend the code that owns a behavior instead of copying it. A replacement migrates in-repository callers and removes the old path and shims no outside consumer needs, and guidance it makes stale. Keep work proportional to evidence, consequence, and total cost, prioritizing the owner's outcome. Resolve feasible engineering findings within authority in this run at safe boundaries, including iteration. A record never replaces a feasible repair. Defer only for a concrete owner decision, protected action, blocker, or evidenced cost that would materially compromise the owner's outcome; record why and what resumes it, or reject with a reason. Stop improving when further benefit does not justify cost. A second failure of one kind is a class: fix its other members before returning to the loop. Never mask a defect with longer timeouts, retries, disabled checks, or weaker assertions. Review current-state risks.
 
 ## Custody of engineering state and delegates
 
@@ -48,5 +48,5 @@ Open triggered guidance before the act unless its text is in context, including 
 - [delegation](references/delegation.md): splitting work, delegate returns.
 - [integration](references/integration.md): branches, worktrees, conflicts, delivery destinations, retiring leftovers.
 - [verification](references/verification.md): tests, final review, security, privacy, reliability, migration, rollback, readiness.
-- [operations](references/operations.md): feedback loops, CI and releases, dependencies, recurring manual work, technical risk.
+- [operations](references/operations.md): feedback loops, CI and releases, dependencies, recurring manual work, technical risk, before writing repository guidance.
 - [setup](references/setup.md): enabling, checking, or disabling SkipHow, or whether it loaded.

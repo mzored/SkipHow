@@ -92,10 +92,11 @@ AGENT_SKILL_FIELDS = frozenset(
     {"name", "description", "license", "compatibility", "metadata", "allowed-tools"}
 )
 # Claude Code cuts a failing command's output to about 10,000 characters of head
-# and tail, agents often read a skill file in a chained command that fails, and a
-# numbered view adds seven characters per line, so a larger file loses its middle.
-SKILL_MARKDOWN_VIEW_LIMIT = 10_000
-SKILL_MARKDOWN_LINE_PREFIX = 7
+# and tail, and agents often read a skill file with a plain shell command chained
+# into one that fails, so a larger file loses its middle. The Read tool and a
+# successful command show far more, so that failure path binds; the limit leaves
+# room for a short error line, and longer failure output still cuts, with a marker.
+SKILL_MARKDOWN_VIEW_LIMIT = 9_900
 # Room a playbook keeps below that limit, so a method addition does not first
 # have to shorten unrelated guidance. The kernel is budgeted by displacement.
 SKILL_MARKDOWN_VIEW_RESERVE = 500
@@ -1554,11 +1555,6 @@ def validate_skill_directory(skill_dir: Path) -> list[str]:
     return errors
 
 
-def numbered_view_size(text: str) -> int:
-    """Return the characters a line-numbered host view of this text occupies."""
-    return len(text) + SKILL_MARKDOWN_LINE_PREFIX * len(text.splitlines())
-
-
 def lint_reference_view_headroom(plugin_root: Path | None = None) -> list[str]:
     """Name playbooks inside the reserve below the one-view limit; never fails a run."""
     root = PLUGIN_ROOT if plugin_root is None else plugin_root
@@ -1568,7 +1564,7 @@ def lint_reference_view_headroom(plugin_root: Path | None = None) -> list[str]:
             if path.is_symlink():
                 continue
             try:
-                size = numbered_view_size(path.read_text(encoding="utf-8"))
+                size = len(path.read_text(encoding="utf-8"))
             except (OSError, UnicodeError):
                 continue
             headroom = SKILL_MARKDOWN_VIEW_LIMIT - size
@@ -1591,11 +1587,11 @@ def validate_skill_markdown_view_size(skill_dir: Path) -> list[str]:
         except (OSError, UnicodeError) as exc:
             errors.append(f"cannot measure {display_path(path)}: {exc}")
             continue
-        size = numbered_view_size(text)
+        size = len(text)
         if size > SKILL_MARKDOWN_VIEW_LIMIT:
             errors.append(
-                f"{display_path(path)} numbered view is {size} characters; keep it at most "
-                f"{SKILL_MARKDOWN_VIEW_LIMIT} so a host tool output shows it whole "
+                f"{display_path(path)} is {size} characters; keep it at most "
+                f"{SKILL_MARKDOWN_VIEW_LIMIT} so a failing shell read with a short error shows it whole "
                 "instead of dropping its middle"
             )
     return errors

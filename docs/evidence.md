@@ -5,9 +5,25 @@ Current package behavior remains `UNVERIFIED` unless a qualifying receipt names 
 
 ## Current package
 
-The 6.3.4 cleanup changes repository organization and documentation, with only version
-metadata changed in the installable package. It adds no model-behavior claim. Retained
-current-package CTO scenarios with Observed receipts remain 0 of 12. The corpus and
+6.3.5 adds one kernel obligation at the act of changing code: extend the code that owns a
+behavior instead of copying it, and let a replacement migrate in-repository callers and
+remove the old path and shims no outside consumer needs, and the guidance it makes stale. Technical design and
+operations carry the method. A maintainer trace of two owner projects run under 6.3.4
+motivated it. Their broad simplification audits returned 29 and 43 findings, and most
+consequential findings traced to three mechanisms: a replacement that kept in-repository
+shims or re-exports, a new copy of a rule an existing module owned, and guidance not
+updated with the code it described. Both audits stopped recurrence with failing checks
+rather than instructions. Over the same weeks the kernel reached nearly every
+source-editing Claude session, while the technical-design playbook loaded in 17 of 88
+root sessions and 3 of 156 delegates. The trace is field evidence about where the debt
+came from, not a receipt. The new behavior is `UNVERIFIED`, and its two corpus scenarios
+are unrun.
+
+The runtime size gate counts raw characters against 9,900 since 6.3.5. Measured on
+2026-10-16, the Read tool showed a 36.7 KB file whole, 545 of 569 recorded shell reads
+of the kernel were unnumbered, and a failing shell command's output was still cut near
+10,000 characters. The 6.3.4 cleanup changed repository organization and documentation
+only. Retained current-package CTO scenarios with Observed receipts remain 0 of 12. The corpus and
 host ledger identify their candidate explicitly; historical receipts keep their
 original package identities, outcomes, and hashes.
 

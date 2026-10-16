@@ -475,8 +475,7 @@ def test_skill_markdown_must_fit_one_host_view(tmp_path: Path) -> None:
     references = skill / "references"
     references.mkdir()
     limit = check.SKILL_MARKDOWN_VIEW_LIMIT
-    prefix = check.SKILL_MARKDOWN_LINE_PREFIX
-    fits = "x" * (limit - prefix - 1) + "\n"
+    fits = "x" * (limit - 1) + "\n"
     (references / "fits.md").write_text(fits, encoding="utf-8")
     (references / "long.md").write_text(fits + "y\n", encoding="utf-8")
 
@@ -493,11 +492,10 @@ def test_playbook_near_the_view_limit_is_non_blocking_lint(tmp_path: Path) -> No
     references = skill / "references"
     references.mkdir()
     limit = check.SKILL_MARKDOWN_VIEW_LIMIT
-    prefix = check.SKILL_MARKDOWN_LINE_PREFIX
     reserve = check.SKILL_MARKDOWN_VIEW_RESERVE
-    (references / "tight.md").write_text("x" * (limit - reserve - prefix) + "\n", encoding="utf-8")
-    (references / "roomy.md").write_text("x" * (limit - reserve - prefix - 1) + "\n", encoding="utf-8")
-    (skill / "SKILL.md").write_text("x" * (limit - prefix - 1) + "\n", encoding="utf-8")
+    (references / "tight.md").write_text("x" * (limit - reserve) + "\n", encoding="utf-8")
+    (references / "roomy.md").write_text("x" * (limit - reserve - 1) + "\n", encoding="utf-8")
+    (skill / "SKILL.md").write_text("x" * (limit - 1) + "\n", encoding="utf-8")
 
     warnings = check.lint_reference_view_headroom(plugin)
 
