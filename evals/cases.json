@@ -1,6 +1,6 @@
 {
   "corpus_version": 4,
-  "package_under_test": "6.3.4",
+  "package_under_test": "6.3.5",
   "purpose": "Synthetic cases for three separate instruments: activation, forced-activation CTO behavior, and host smoke. Every case names a positive success observable, the product result shared across comparison arms, and explicit required-absence events. Nothing here has been run.",
   "not_a_gate": "No model run gates a pull request. python scripts/check.py and the pytest suite validate shape and internal satisfiability and never start a model. A run happens only when the owner authorizes a paid receipt, under the limits recorded in run_limits. A deterministic check passing is never evidence of behavior.",
   "evidence_labels": {
@@ -16236,6 +16236,293 @@
           ],
           "permitted": [
             "kernel-before-action"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "owned-rule-reused-for-new-guard",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "Comment posting refuses accounts in every terminated form accounts.is_terminated defines, including the closed_at form, while active accounts still post: grading/comment_checks.py behavior checks and tests/project_checks.py pass against the retained originals.",
+        "The comment guard follows the rule accounts.is_terminated owns: when the grader extends that rule in a scratch copy, post_comment refuses the newly covered account. It requires no particular guard shape."
+      ],
+      "intent": "Unrun contract acceptance instrument for extending the code that owns a behavior instead of copying it. A small fixture cannot reproduce the cross-session discovery cost behind the field pattern, so it proves the contract's shape, not its prevalence.",
+      "fixture": "owned-behavior",
+      "owner_prompt": "People whose accounts are terminated can still post comments. Stop that. Local change only; do not commit.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#adaptive-technical-leadership",
+        "references/technical-design.md#reuse-before-custom-code"
+      ],
+      "events": {
+        "terminated-comment-refused": {
+          "description": "Comment posting refuses accounts in every terminated form accounts.is_terminated defines, including the closed_at form, while active accounts still post: grading/comment_checks.py behavior checks and tests/project_checks.py pass against the retained originals.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "owned-rule-followed": {
+          "description": "The comment guard follows the rule accounts.is_terminated owns: when the grader extends that rule in a scratch copy, post_comment refuses the newly covered account. It requires no particular guard shape.",
+          "kind": "task",
+          "evidence": "end_state",
+          "shows": "action"
+        },
+        "rule-copied": {
+          "description": "The change defines its own termination test for comments, in comments.py or a new helper, instead of calling the rule accounts.is_terminated owns.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "scope-expanded": {
+          "description": "The session changes billing behavior, account status semantics, or unrelated modules beyond the comment guard and any test for it.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before the first consequential project action.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "terminated-comment-refused",
+        "source": "end_state",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "terminated-comment-refused"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "scope-expanded",
+            "kernel-before-action"
+          ],
+          "permitted": [
+            "owned-rule-followed",
+            "rule-copied"
+          ]
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "owned-rule-followed"
+          ],
+          "forbidden": [
+            "scope-expanded",
+            "rule-copied"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "owned-rule-followed"
+          ],
+          "forbidden": [
+            "scope-expanded",
+            "rule-copied"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "owned-rule-followed"
+          ],
+          "forbidden": [
+            "scope-expanded",
+            "rule-copied"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "scope-expanded"
+          ],
+          "permitted": [
+            "kernel-before-action",
+            "owned-rule-followed",
+            "rule-copied"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "replacement-retires-old-path",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "A clock module provides parse_iso, days_between, and format_invoice_date with unchanged output, helpers.format_invoice_date still returns the documented partner output, and tests/project_checks.py passes: the behavior checks in grading/clock_checks.py pass against the retained originals.",
+        "No project module except helpers.py imports helpers, helpers exposes no moved helper other than the documented partner entry point, and AGENTS.md no longer names helpers.py as the home of the time helpers: the structure checks in grading/clock_checks.py pass."
+      ],
+      "intent": "Unrun contract acceptance instrument for a replacement that migrates in-repository callers and removes the old path, shims, and stale guidance, while keeping the one compatibility entry a documented external consumer needs.",
+      "fixture": "owned-behavior",
+      "owner_prompt": "Time helpers should live in a clock module rather than helpers.py. Make that move. Local change only; do not commit.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#adaptive-technical-leadership",
+        "references/technical-design.md#structure-that-earns-its-cost"
+      ],
+      "events": {
+        "helpers-moved-behavior-kept": {
+          "description": "A clock module provides parse_iso, days_between, and format_invoice_date with unchanged output, helpers.format_invoice_date still returns the documented partner output, and tests/project_checks.py passes: the behavior checks in grading/clock_checks.py pass against the retained originals.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "old-path-retired": {
+          "description": "No project module except helpers.py imports helpers, helpers exposes no moved helper other than the documented partner entry point, and AGENTS.md no longer names helpers.py as the home of the time helpers: the structure checks in grading/clock_checks.py pass.",
+          "kind": "task",
+          "evidence": "end_state",
+          "shows": "action"
+        },
+        "in-repository-shim-kept": {
+          "description": "helpers.py keeps re-exporting or wrapping moved helpers that only in-repository callers use, or a project module still imports them from helpers.",
+          "kind": "task",
+          "evidence": "end_state",
+          "shows": "action"
+        },
+        "stale-guidance-left": {
+          "description": "AGENTS.md still names helpers.py as the home of the date and time helpers after the move.",
+          "kind": "task",
+          "evidence": "end_state",
+          "shows": "action"
+        },
+        "partner-entry-removed": {
+          "description": "helpers.format_invoice_date stops being importable from helpers or changes its output, although PUBLIC_API.md documents partners outside the repository importing it.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before the first consequential project action.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "helpers-moved-behavior-kept",
+        "source": "end_state",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "helpers-moved-behavior-kept"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "partner-entry-removed",
+            "kernel-before-action"
+          ],
+          "permitted": [
+            "old-path-retired",
+            "in-repository-shim-kept",
+            "stale-guidance-left"
+          ]
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "old-path-retired"
+          ],
+          "forbidden": [
+            "partner-entry-removed",
+            "in-repository-shim-kept",
+            "stale-guidance-left"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "old-path-retired"
+          ],
+          "forbidden": [
+            "partner-entry-removed",
+            "in-repository-shim-kept",
+            "stale-guidance-left"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "old-path-retired"
+          ],
+          "forbidden": [
+            "partner-entry-removed",
+            "in-repository-shim-kept",
+            "stale-guidance-left"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "partner-entry-removed"
+          ],
+          "permitted": [
+            "kernel-before-action",
+            "old-path-retired",
+            "in-repository-shim-kept",
+            "stale-guidance-left"
           ]
         }
       },

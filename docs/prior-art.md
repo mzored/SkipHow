@@ -116,6 +116,22 @@ An idea from another project becomes a focused method or a kernel invariant only
 
 The reasoning behind each rule that survived is in [decision history](decisions.md), and what real runs have and have not shown is in [current evidence](evidence.md).
 
+## Ownership at the change in 6.3.5
+
+Read on 2026-10-16 at Ponytail revision `84740e3d344b69b4a133201fa519eb37a62a2b2a`. Its
+[implementation skill](https://github.com/dietrichgebert/ponytail/blob/84740e3d344b69b4a133201fa519eb37a62a2b2a/skills/ponytail/SKILL.md)
+asks a change to list every caller, test, fixture, config, and export it must reach and to finish the callers it breaks,
+and it fixes a bug once in the shared code. SkipHow's new kernel obligation agrees: a replacement migrates in-repository
+callers. It goes further by removing the old path and the guidance it makes stale, and it limits compatibility to
+consumers the change cannot update. The
+[debt skill](https://github.com/dietrichgebert/ponytail/blob/84740e3d344b69b4a133201fa519eb37a62a2b2a/skills/ponytail-debt/SKILL.md)
+collects `shortcut:` comments into a ledger. It is not adopted. The field trace behind this release found comments and
+instructions did not stop recurrence, while failing checks did, and a persistent debt registry was already rejected.
+
+The [architecture-improvement skill at `49dd158`](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/improve-codebase-architecture/SKILL.md)
+remains a user-invoked scan with an owner-chosen candidate report. It adds no rule for retiring an old path, and its
+owner-operated menu stays rejected as in 6.2.1. No source text or code is copied or adapted. Ponytail is MIT licensed.
+
 ## Planning review continuation in 6.3.1
 
 Read on 2026-10-07. Superpowers' [scoped re-review prompt](https://github.com/obra/superpowers/blob/main/skills/subagent-driven-development/re-review-prompt.md)

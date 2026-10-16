@@ -1,0 +1,26 @@
+{
+  "id": "owned-behavior",
+  "summary": "A small project where one module owns a status rule and another owns time helpers, with a documented external entry point on the old time path.",
+  "kind": "checked-in Python project, visible project tests, and grader-only offline oracles",
+  "synthetic": true,
+  "planted": [
+    "accounts.is_terminated owns a three-part rule that billing already calls; comment posting has no guard, and a guard checking only the status text misses the closed_at form.",
+    "invoices.py and reports.py import the time helpers from helpers.py, and AGENTS.md names helpers.py as their home.",
+    "PUBLIC_API.md documents helpers.format_invoice_date as an entry point that partners outside the repository import, so that one name must stay importable from helpers with the same output."
+  ],
+  "absent_on_purpose": [
+    "No Git history, remote, tracker, network, dependency installation, or model receipt.",
+    "No prescribed module layout beyond the clock module the owner prompt names, and no prescribed guard shape."
+  ],
+  "setup": [
+    "Use scripts/capture_eval.py materialize to copy this fixture into a new owned scratch directory, then move grading/ out of the session copy and keep it with the grader.",
+    "Keep the owner prompt unchanged across arms. Local change only; no Git setup is needed.",
+    "Grade the end state by restoring the retained grading/ and tests/ files beside it and running them from the session copy's root; edits to acceptance checks do not establish success."
+  ],
+  "run_checks": "python -B -m pytest -q -p no:cacheprovider tests/project_checks.py",
+  "end_state_signals": [
+    "owned-rule-reused-for-new-guard: grading/comment_checks.py passes its behavior checks in every arm and its structure check where the arm requires the owned rule to be reused.",
+    "replacement-retires-old-path: grading/clock_checks.py passes its behavior checks in every arm and its structure checks where the arm requires the old path retired; tests/project_checks.py passes in both scenarios."
+  ],
+  "privacy": "Every account, comment, invoice, date, and partner is invented."
+}
