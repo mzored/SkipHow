@@ -95,7 +95,7 @@ AGENT_SKILL_FIELDS = frozenset(
 # and tail, and agents often read a skill file with a plain shell command chained
 # into one that fails, so a larger file loses its middle. The Read tool and a
 # successful command show far more, so that failure path binds; the limit leaves
-# room for the failing command's own error text.
+# room for a short error line, and longer failure output still cuts, with a marker.
 SKILL_MARKDOWN_VIEW_LIMIT = 9_900
 # Room a playbook keeps below that limit, so a method addition does not first
 # have to shorten unrelated guidance. The kernel is budgeted by displacement.
@@ -1591,7 +1591,7 @@ def validate_skill_markdown_view_size(skill_dir: Path) -> list[str]:
         if size > SKILL_MARKDOWN_VIEW_LIMIT:
             errors.append(
                 f"{display_path(path)} is {size} characters; keep it at most "
-                f"{SKILL_MARKDOWN_VIEW_LIMIT} so a failing shell read shows it whole "
+                f"{SKILL_MARKDOWN_VIEW_LIMIT} so a failing shell read with a short error shows it whole "
                 "instead of dropping its middle"
             )
     return errors

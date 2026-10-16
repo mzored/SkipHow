@@ -4,6 +4,9 @@ import ast
 from datetime import date
 import importlib.util
 from pathlib import Path
+import shutil
+import subprocess
+import sys
 
 ROOT = Path.cwd()
 MOVED = ("parse_iso", "days_between", "format_invoice_date")
@@ -45,6 +48,24 @@ def test_structure_old_path_keeps_only_the_partner_entry():
 
     left = [name for name in MOVED if name != "format_invoice_date" and hasattr(helpers, name)]
     assert left == [], f"helpers still exposes moved helpers: {left}"
+
+
+def test_structure_partner_entry_follows_the_clock_module(tmp_path):
+    # Change the clock module's formatting in a scratch copy; a delegating entry follows, a second copy does not.
+    if importlib.util.find_spec("helpers") is None:
+        return
+    copy = tmp_path / "project"
+    shutil.copytree(ROOT, copy, ignore=shutil.ignore_patterns("grading", "tests", "__pycache__"))
+    with (copy / "clock.py").open("a", encoding="utf-8") as stream:
+        stream.write("\n\ndef format_invoice_date(value):\n    return 'changed in clock'\n")
+    probe = (
+        "from datetime import date\n"
+        "from helpers import format_invoice_date\n"
+        "raise SystemExit(0 if format_invoice_date(date(2026, 3, 5)) == 'changed in clock' else 1)\n"
+    )
+    result = subprocess.run([sys.executable, "-B", "-c", probe], cwd=copy, capture_output=True,
+                            text=True, check=False, timeout=20)
+    assert result.returncode == 0, "helpers.format_invoice_date keeps its own implementation"
 
 
 def test_structure_stale_pointer_removed():

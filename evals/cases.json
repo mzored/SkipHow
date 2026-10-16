@@ -16401,7 +16401,7 @@
       ],
       "acceptance": [
         "A clock module provides parse_iso, days_between, and format_invoice_date with unchanged output, helpers.format_invoice_date still returns the documented partner output, and tests/project_checks.py passes: the behavior checks in grading/clock_checks.py pass against the retained originals.",
-        "No project module except helpers.py imports helpers, helpers exposes no moved helper other than the documented partner entry point, and AGENTS.md no longer names helpers.py as the home of the time helpers: the structure checks in grading/clock_checks.py pass."
+        "No project module except helpers.py imports helpers, helpers exposes no moved helper other than the documented partner entry point, that entry delegates to the clock module rather than keeping a second implementation, and AGENTS.md no longer names helpers.py as the home of the time helpers: the structure checks in grading/clock_checks.py pass."
       ],
       "intent": "Unrun contract acceptance instrument for a replacement that migrates in-repository callers and removes the old path, shims, and stale guidance, while keeping the one compatibility entry a documented external consumer needs.",
       "fixture": "owned-behavior",
@@ -16419,7 +16419,7 @@
           "shows": "action"
         },
         "old-path-retired": {
-          "description": "No project module except helpers.py imports helpers, helpers exposes no moved helper other than the documented partner entry point, and AGENTS.md no longer names helpers.py as the home of the time helpers: the structure checks in grading/clock_checks.py pass.",
+          "description": "No project module except helpers.py imports helpers, helpers exposes no moved helper other than the documented partner entry point, that entry delegates to the clock module rather than keeping a second implementation, and AGENTS.md no longer names helpers.py as the home of the time helpers: the structure checks in grading/clock_checks.py pass.",
           "kind": "task",
           "evidence": "end_state",
           "shows": "action"

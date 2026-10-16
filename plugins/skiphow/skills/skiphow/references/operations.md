@@ -1,6 +1,6 @@
 # Operations
 
-Open this when delivery health becomes part of the product result: slow or broken feedback, flaky CI, recurring manual work, dependency risk, an unclear release path, missing observability, a repeated incident, or a capability gap that the current team and tools cannot close safely.
+Open this when delivery health becomes part of the product result: slow or broken feedback, flaky CI, recurring manual work, dependency risk, an unclear release path, missing observability, a repeated incident, or a capability gap that the current team and tools cannot close safely. Open it too before writing repository guidance.
 
 ## Keep the project releasable
 

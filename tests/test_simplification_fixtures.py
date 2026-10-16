@@ -175,6 +175,7 @@ CLOCK_IMPORTERS = {
     ("reexport_shim", True, False),
     ("stale_pointer", True, False),
     ("partner_removed", False, True),
+    ("partner_copy_kept", True, False),
     ("complete", True, True),
 ])
 def test_old_path_oracle_requires_retirement_and_the_partner_entry(tmp_path, variant, behavior, structure):
@@ -183,8 +184,13 @@ def test_old_path_oracle_requires_retirement_and_the_partner_entry(tmp_path, var
     if variant != "unfixed":
         old = fixture / "helpers.py"
         (fixture / "clock.py").write_text(old.read_text().replace("Date and time helpers.", "Time helpers."))
-        old.write_text('"""Partner entry point; see PUBLIC_API.md."""\n\nfrom clock import '
-                       + ("*\n" if variant == "reexport_shim" else "format_invoice_date\n"))
+        partner = "*\n" if variant == "reexport_shim" else "format_invoice_date\n"
+        if variant == "partner_copy_kept":
+            partner = ("date\n\n\ndef format_invoice_date(value: date) -> str:\n"
+                       "    return value.strftime(\"%d %b %Y\")\n")
+        old.write_text('"""Partner entry point; see PUBLIC_API.md."""\n\n'
+                       + ("from datetime import " if variant == "partner_copy_kept" else "from clock import ")
+                       + partner)
         if variant == "partner_removed":
             old.unlink()
         if variant != "reexport_shim":

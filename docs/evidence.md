@@ -7,7 +7,7 @@ Current package behavior remains `UNVERIFIED` unless a qualifying receipt names 
 
 6.3.5 adds one kernel obligation at the act of changing code: extend the code that owns a
 behavior instead of copying it, and let a replacement migrate in-repository callers and
-remove the old path, shims, and the guidance it makes stale. Technical design and
+remove the old path and shims no outside consumer needs, and the guidance it makes stale. Technical design and
 operations carry the method. A maintainer trace of two owner projects run under 6.3.4
 motivated it. Their broad simplification audits returned 29 and 43 findings, and most
 consequential findings traced to three mechanisms: a replacement that kept in-repository
