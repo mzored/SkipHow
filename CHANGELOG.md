@@ -29,7 +29,7 @@ A trace of two owner projects governed by 4.3.0 through 6.3.5 found test and too
 ### Checks and evidence
 
 - This is a major release because default side effects change: agents now delete tests and tooling that do not pay, revise agent-written project rules, and stop review rounds earlier. Authority and protected-action boundaries are unchanged.
-- REVIEW_PLACEHOLDER
+- An isolated read-only Codex review ran three rounds. Round 1 found seven issues; six were fixed: credential handling regained "secure destination" and "command history", the kernel's reuse rule names the same command, tree, and environment, capability use and project-wide risk returned to the kernel, plan review re-reviews consequential fixes and lets small low-risk plans self-review, `review.md` no longer lets a small confirmed break drop, and `delegation.md` allows for hosts that fork the whole conversation. Refused: the argument that pasting the Engineering standard into a forked delegate duplicates context, because the pasted copy is the only channel known to reach delegates and costs about 2,500 characters. Round 2 found four, all fixed: deploy-ready's reuse rule, a fixed three-fix count and a three-to-five hypothesis quota in `diagnosis.md` that contradicted the 3.0.0 removal of fixed counts, and a missing trigger for long steps. Round 3 found nothing that qualified. The isolated Codex home received a cached SkipHow 6.3.5 plugin at startup; the transcripts show no read of it.
 - No paid model sessions or clean-install runs were made. The new behavior and comparative benefit remain `UNVERIFIED`.
 
 ## Earlier releases
