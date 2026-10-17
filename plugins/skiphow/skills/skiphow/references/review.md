@@ -38,7 +38,7 @@ When you dispatch a reviewer, the brief carries the request, the candidate, the 
 
 Treat each finding as a claim. Read the code it points at and confirm the break yourself. Before building something a reviewer says is needed, grep for the callers or the case it would serve; if nothing uses it, say so. Push back with the reason when a finding is wrong, and do not perform agreement with one you have not confirmed.
 
-Fix confirmed qualifying findings in this run, within authority, as the kernel says. Minor findings and preferences do not enter a fix loop; note them or drop them. When a confirmed finding points at a repeated failure, fix the shared cause.
+Fix confirmed qualifying findings in this run, within authority, as the kernel says. Preferences and findings that do not qualify do not enter a fix loop; note them or drop them. A confirmed break qualifies however small it is. When a confirmed finding points at a repeated failure, fix the shared cause.
 
 Where the work is delegated, keep the same implementer and reviewer through corrections when the host supports it. A replacement gets the findings, what you did with each, the candidate it is reviewing, and the checks that already passed. The lead corrects plans.
 

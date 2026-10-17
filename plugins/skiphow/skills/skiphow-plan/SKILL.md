@@ -37,7 +37,7 @@ Write tasks to the [task contract](../skiphow/references/tracked-work.md#writing
 
 ## Review
 
-Get one independent review of the specification and task set against the request and source evidence, by the bar in [review](../skiphow/references/review.md). Ask it to look for:
+Get one independent review of the specification and task set against the request and source evidence, by the bar in [review](../skiphow/references/review.md), unless the plan is small and low risk, where a cold self-review against the same list is enough. Ask it to look for:
 
 - Missing or uncovered outcomes, conflicting decisions, and acceptance that cannot be checked.
 - Consequential choices taken without the owner, and changes to existing behavior or dependent state.
@@ -45,7 +45,7 @@ Get one independent review of the specification and task set against the request
 - Tasks too large for one agent, where the finding names the load and a smaller independently verifiable cut.
 - Tests, tooling, or records the outcome does not need.
 
-Technical slicing cannot shrink the execution scope. Fix what qualifies and do not send the plan through another round. If independent review was unavailable, report it as `UNVERIFIED` with the plan's readiness.
+Technical slicing cannot shrink the execution scope. Fix what qualifies. Re-review only the fixes that change a consequential decision or task boundary, never the whole plan again, and stop when a round returns nothing that qualifies. If independent review was unavailable, report it as `UNVERIFIED` with the plan's readiness.
 
 ## Records and handoff
 

@@ -30,7 +30,7 @@ As messages arrive, tell additions, revisions, cancellations, and a session-wide
 
 ## The brief
 
-A delegate starts with none of your context and does not inherit any skill, so the brief is everything it knows. Write it in this order:
+Unless the host forks your whole conversation into it, a delegate starts without your context or your skills, so the brief is everything it knows. Write it in this order:
 
 - One outcome, and how the delegate shows it was achieved.
 - The starting revision and the files or area it may change.
