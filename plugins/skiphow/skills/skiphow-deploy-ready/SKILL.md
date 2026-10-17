@@ -17,7 +17,7 @@ Recover the requested set, this session's state, what other sessions left, exist
 
 ## Preparing the candidate
 
-Run the checks deferred during iteration and those this change and destination need, reusing passing results for an unchanged tree, as [testing](../skiphow/references/testing.md) describes. Review at the depth the change warrants under [review](../skiphow/references/review.md) and fix what qualifies. Remove plan, report, and analysis files the work left in the repository. Make coherent commits of owned changes through the permitted commit path.
+Run the checks deferred during iteration and those this change and destination need, reusing passing results for the same command, tree, and environment, as [testing](../skiphow/references/testing.md) describes. Review at the depth the change warrants under [review](../skiphow/references/review.md) and fix what qualifies. Remove plan, report, and analysis files the work left in the repository. Make coherent commits of owned changes through the permitted commit path.
 
 Bind acceptance and publication to the actual candidate. A late return or correction enters it only after review and a recheck of what it affects. Unrelated additions do not enlarge the candidate, and they keep their place in accepted work.
 

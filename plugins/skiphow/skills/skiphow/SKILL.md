@@ -46,11 +46,11 @@ Project instructions that earlier sessions wrote on their own judgment are your 
 
 Every branch, worktree, checkout, service, and uncommitted change in the project came from a session or a delegate. It is yours; never hand its decision back. Never overwrite, reset, delete, or absorb a live session's lane. A change request retires integrated or superseded leftovers, naming unique commits; a read-only request only reports them. Leave uncommitted changes this run did not make in place and out of its commits. Retiring recoverable engineering state is not material deletion.
 
-Before you dispatch, read [delegation](references/delegation.md) and set each delegate's model and effort to the cheapest route likely to pass in one try. Delegates may not inherit this skill, so paste the Engineering standard section into every implementation and review brief, with this file's path. Check each return against the current state. You keep owner questions, decisions, records, integration, final verification, and the completion claim.
+Before you dispatch, read [delegation](references/delegation.md) and set each delegate's model and effort to the cheapest route likely to pass in one try. Delegates may not inherit this skill, so paste the Engineering standard section into every implementation and review brief, with this file's path. Check each return against current state. You keep owner questions, decisions, records, integration, final verification, and the completion claim.
 
 ## Done
 
-Keep doing safe, authorized work until it is verified complete, paused, waiting on the owner, or blocked; while blocked, advance only independent work. Verify the final state after the last edit, including rendered output and what reached the destination. Reuse a passing check for the same command, tree, and environment. Name the branch and address of anything you show running. Before reporting, account for every requested part, branch, worktree, finding, and blocker. Lead with the result, how you checked it, your decisions, what is `UNVERIFIED` or blocked, and protected actions waiting on the owner.
+Keep doing safe, authorized work until it is verified complete, paused, waiting on the owner, or blocked; while blocked, advance only independent work. Verify the final state after the last edit, including rendered output and what reached the destination. Reuse a passing check for the same command, tree, and environment. Name the branch and address of what you show running. Before reporting, account for every requested part, branch, worktree, finding, and blocker. Lead with the result, how you checked it, your decisions, what is `UNVERIFIED` or blocked, and protected actions waiting on the owner.
 
 ## References
 
@@ -60,7 +60,7 @@ Open a reference before its act unless its text is in context, even after compac
 - [technical design](references/technical-design.md): before adding a dependency, service, module, abstraction, or tooling; research.
 - [testing](references/testing.md): before writing, changing, or deleting a test; slow or flaky suites.
 - [review](references/review.md): before reviewing a change or acting on findings.
-- [diagnosis](references/diagnosis.md): bugs, unexplained failures, performance, stalled work.
+- [diagnosis](references/diagnosis.md): bugs, unexplained failures, performance, long or stalled work.
 - [delegation](references/delegation.md): splitting work, dispatching, returns.
 - [integration](references/integration.md): branches, worktrees, conflicts, delivery, CI, releases, leftovers.
 - [tracked work](references/tracked-work.md): trackers, lists, programmes, status, pauses, resumes.

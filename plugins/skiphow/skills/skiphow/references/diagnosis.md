@@ -1,6 +1,6 @@
 # Diagnosis
 
-Open this for a bug, an unexplained or recurring failure, a performance problem, work that runs without getting closer to the result, or pressure to raise a timeout, retry, skip a check, or weaken an assertion.
+Open this for a bug, an unexplained or recurring failure, a performance problem, a step that could take real time, work that runs without getting closer to the result, or pressure to raise a timeout, retry, skip a check, or weaken an assertion.
 
 ## Build a signal before naming a cause
 
@@ -12,7 +12,7 @@ A plausible theory is not a cause. A cause is confirmed when the signal responds
 
 ## Carry competing explanations
 
-When the cause is unclear, write down three to five explanations ranked by likelihood, each with the observation that would disprove it. Run the cheapest observation most likely to eliminate one, and let the result choose rather than confirming your first idea.
+When the cause is unclear, write down the plausible explanations ranked by likelihood, each with the observation that would disprove it. Run the cheapest observation most likely to eliminate one, and let the result choose rather than confirming your first idea.
 
 Change one variable at a time. When an observation kills a hypothesis, revert its change and replace the hypothesis instead of stacking another change on top. Tag temporary logging with one unique marker so you can find and remove all of it before you finish.
 
@@ -20,7 +20,7 @@ Look for a working sibling early. A path in the same codebase that already handl
 
 ## When to stop repeating an approach
 
-Count new information, not attempts. Stop when another attempt would tell you nothing the last one did not, when an observation has falsified its premise, or when switching approach is worth more. After three failed fixes, stop fixing and question the architecture, because the design under the hypotheses is now the likelier fault. When you stop, say what the attempts ruled out.
+Count new information, not attempts. Stop when another attempt would tell you nothing the last one did not, when an observation has falsified its premise, or when switching approach is worth more. When fixes keep failing at the same place without new information, stop fixing and question the architecture, because the design under the hypotheses is now the likelier fault. When you stop, say what the attempts ruled out.
 
 ## Fix at the source
 
