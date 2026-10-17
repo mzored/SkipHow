@@ -1,59 +1,57 @@
 # Product
 
-Use this when the outcome itself is in question: a new or broadly stated result, a user-visible choice the project cannot settle on its own, an interaction to design, settling what the owner wants before work starts, or more work on record than can be done soon.
+Open this when the outcome itself is in question: a new or broadly stated result, a user-visible choice the project cannot settle, an interaction to design, acceptance to pin down before work starts, or more work on record than can be done soon. The kernel's Decisions section sets what the owner decides. This file is about finding those choices and putting them well.
 
 ## What the evidence settles
 
-A request to audit, organize, plan, or carry material forward does not adopt the proposals that material contains. A finding, an issue, an audit, or a plan becomes product intent only where the current request chooses that outcome, an authoritative product brief carries it, or a recorded owner decision explicitly adopts it. A product brief is authoritative only where the owner supplied or explicitly adopted the relevant outcome, or trusted host, user, or organization policy designates it as product policy; a document's title, age, location, confidence, or the fact that the host loaded it establishes nothing, and even an authoritative brief settles intent without granting a protected action. Everything else in those sources stays a proposal, however confidently it is written and however long it has sat there. Carrying one forward intact, into a summary or a roadmap position or a tracked item, preserves it rather than accepts it.
+A request to audit, organize, plan, or carry material forward does not adopt the proposals in that material. A finding, issue, audit, or plan becomes product intent only when the current request chooses it, an authoritative product brief carries it, or a recorded owner decision adopts it. A brief is authoritative only where the owner wrote or adopted that outcome, or trusted host, user, or organization policy names it product policy. Its title, age, location, tone, or the fact that the host loaded it proves nothing. Even an authoritative brief settles intent and grants no protected action. Everything else stays a proposal. Carrying one forward into a summary, roadmap, or tracker item keeps it without accepting it.
 
 ## Designing the interaction
 
-Design the affected user journey in its application context. Establish what the person is trying to accomplish, where they enter, how they reach the result, and which later changes or failures materially affect that experience. Use the existing product and accepted decisions as evidence. Explore only the states and transitions the request makes consequential.
+Design the affected user journey inside the product it lives in. Work out what the person is trying to do, where they enter, how they reach the result, and which later changes or failures they would feel. Use the existing product and accepted decisions as evidence. Explore only the states and transitions this request makes consequential.
 
-Settle interaction details from that intent and the project's conventions. Take an unresolved choice to the owner when plausible alternatives materially change the experience or commitment, even when the choice first appears as an algorithm, data rule, or implementation detail. Explain it through a concrete situation and recommend an outcome.
+Settle interaction details from that intent and the project's conventions. When plausible alternatives would change what people experience or what the product commits to, the choice is the owner's, even when it first looks like an algorithm, a data rule, or an implementation detail. Explain it through a concrete situation and recommend an outcome.
 
-Where design is incomplete or absent, establish a coherent interaction and visual direction from the audience, purpose, content, platform, and accepted constraints. Ask about missing product or positioning choices only when their answers would change that direction. Build the design foundations the requested scope needs.
+Where design is thin or missing, set a coherent interaction and visual direction from the audience, purpose, content, platform, and accepted constraints. Ask about a missing product or positioning choice only when its answer would change that direction. Build only the design foundations this scope needs.
 
 ## Naming the choice
 
-Name a choice in terms of what a person will see, understand, or be able to do, reading the current product, the language around it, and the owner's stated goal first.
+Name a choice by what a person will see, understand, or be able to do. Read the current product, its language, and the owner's stated goal first.
 
-A question is askable now when nothing you would need to put it correctly is still open. One whose options only exist under a particular answer is not askable now; it belongs to the round after that answer arrives.
+A question is askable now when nothing needed to put it correctly is still open. A question whose options exist only under a particular answer waits for the round after that answer.
 
-When current code or a proposal carries a capability that the accepted product intent does not, ask whether the capability belongs in the product, not how to implement or consolidate it.
+When code or a proposal carries a capability the accepted intent does not, ask whether the capability belongs in the product. How to build or consolidate it is yours.
 
-Where a choice does reach the owner, ask the smallest question that separates the outcomes, recommend one option first, and give its consequence in plain language rather than by its technical name. Keep consequential alternatives open unless authoritative product evidence or the owner settles them. A recommendation does not settle a neighbouring choice or make it a constraint shared by every option. Use the affected journey and dependent product state to find those choices, including consequences for existing records and people already using the product. Do not turn a reversible detail into a gate. Being able to change something later is not what makes a choice yours.
+Ask the smallest question that separates the outcomes. Put your recommendation first and give each option's consequence in plain language, never by its technical name. Never hand the owner a menu of technical options. An engineering choice is yours, and you explain its consequence instead. Keep consequential alternatives open until the owner or authoritative product evidence settles them. A recommendation does not settle a neighboring choice or bind every option. Use the affected journey and dependent product state to find those choices, including what happens to existing records and to people already using the product. Do not turn a reversible detail into a gate. That a choice can be changed later does not make it yours.
 
 ## After the answer
 
-Translate the answer into acceptance conditions observable in the product. Read it for what it opened as well as what it closed: where it makes material a choice that could not have been put earlier, that one goes back with its own recommendation. Where it does not, build.
+Turn the answer into acceptance conditions a person could observe in the product. Read it for what it opened as well as what it closed. A choice that could not have been put before this answer goes back with its own recommendation. Otherwise, build.
 
 ## When a durable record is warranted
 
-Write a durable product specification when the owner asked for one, trusted project workflow requires one, or product decisions and acceptance conditions must survive several sessions or workers inside an authorized delivery. Otherwise the settled outcome lives in the work itself. [Tracked work](tracked-work.md) decides the safe destination and whether a tracker item is warranted. A specification is a document the owner can read back; it need not become a parent item or a gate before implementation.
+Most settled outcomes need no document. They live in the work itself. Write a specification when the owner asks for one, when trusted project workflow requires one, or when its reasoning will matter after the work lands. A spec that only carries decisions across sessions or workers during one delivery is working material. [Tracked work](tracked-work.md) picks where it goes, and a copy in the repository is deleted when the work lands. A spec is something the owner can read back, not a parent item or a gate before building.
 
-What the record captures:
+A spec holds:
 
-- The owner-visible outcome: what a person using the product will be able to do.
-- The conditions that would show it met, observable in the product rather than in the code.
-- The decisions the owner settled, each with the meaningful alternative turned down. A decision written without its alternative reads later as a fact about the product rather than a choice somebody made.
-- The decisions still open, and who has to settle them.
-- What is deliberately excluded. The thing most likely to be built by mistake later is the thing nobody wrote down as absent on purpose.
+- The outcome: what a person using the product will be able to do.
+- The conditions that show it met, observable in the product rather than in the code.
+- Each settled decision with the alternative turned down, so it reads later as a choice and not a fact.
+- The decisions still open and who settles them.
+- What is deliberately left out, because what nobody wrote down as absent is what gets built by mistake.
 
-Engineering mechanics stay out of the owner-facing record unless one of them carries an owner-facing commitment of its own, such as a limit, a cost, or a behavior a person will meet. [Technical design](technical-design.md) settles and records the rest.
+Engineering mechanics stay out unless one carries a commitment the owner or a user will meet, such as a limit, a cost, or a visible behavior. [Technical design](technical-design.md) covers the rest.
 
-A glossary is worth writing only where terminology is materially ambiguous or inconsistent across the people or documents involved: one word covering two things, two words covering one, or the owner's term and the code's term diverging where both appear. Then give one entry each, in the owner's term, with the code's named once beside it. A glossary is not a precondition for stating outcomes, and most outcomes need none.
+Write a glossary only when terms are genuinely ambiguous: one word for two things, two words for one, or the owner's word and the code's word diverging where both appear. Give one entry per term in the owner's word, with the code's word beside it once.
 
 ## Ordering work that competes
 
-Order comes from explicit owner priority; then from authoritative product priority or the ordering the repository already keeps; then from true dependencies; then from impact on the result currently being requested; then from risk and unblock value. Tracker age is not priority: how long an item has sat says nothing about what it is worth.
+Order comes from explicit owner priority first. Then from authoritative product priority or the order the repository already keeps, then true dependencies, then impact on the result being requested now, then risk and unblock value. How long an item has waited says nothing about its worth.
 
-Some positions are not argued at all. An item that blocks others inherits their position rather than earning its own. A defect that loses data, exposes it, or leaves the project unable to ship goes next whatever the argument says. An idea the owner already refused is reported as refused, with the reason, rather than scored back onto the list.
+Some positions need no argument. An item that blocks others takes their position. A defect that loses or exposes data, or leaves the project unable to ship, goes next. An idea the owner refused is reported as refused, with the reason, and not scored back onto the list.
 
-Where positions do have to be argued, argue reach, impact, confidence, and effort in sentences. Reach and impact are judgments about the people using the product, usually answerable from the record's own text, the specification the work came from, or whatever usage evidence the project keeps. Effort comes from reading the code the change would touch. Confidence measures the evidence behind reach and impact, not whether the repair will work: a well-understood fix nobody has established the value of ranks low on confidence, and saying so is the point of the factor. State the basis of an estimate beside it and keep one scale across a pass; items ordered in separate passes are not comparable. A ranked table of scores presents arithmetic over guesses as measurement, and it is harder to correct than a sentence.
+Where order must be argued, argue reach, impact, confidence, and effort in sentences. Reach and impact are judgments about the people using the product, usually answerable from the record, the spec it came from, or the usage data the project keeps. Effort comes from reading the code the change would touch. Confidence measures the evidence for reach and impact, not whether the fix will work. State the basis beside each estimate and keep one scale within a pass; orders from separate passes do not compare. Do not present a table of scores, which makes guesses look like measurement and is harder to correct than a sentence.
 
-Before taking an uncertainty to the owner, sweep that factor across the range their answer could plausibly take. Where the order holds across that range, the question is not material and is not asked. Where it flips, that is the one worth their attention. When genuinely competing outcomes remain and evidence cannot settle the order, recommend an order and say what it rests on, asking only where the difference is material. What comes back is a list they can reorder: their order stands over any argument, and no reason is owed for it.
+Before asking the owner about an uncertainty, try the order across the answers they might plausibly give. If the order holds, do not ask. If it flips, that is the question worth their time. When outcomes still compete and evidence cannot settle them, recommend an order and say what it rests on. The owner can reorder it freely and owes no reason.
 
-## What ordering does not apply to
-
-Ordering by value never runs inside one outcome. The parts of a single decomposition are sequenced by what blocks what, and whichever is more valuable, the one that unblocks the other still goes first. Where a project holds both shapes, the competing things are the outcomes, and one outcome's internal parts are never ranked against another's. Putting an order on record belongs to [tracked work](tracked-work.md).
+Value ordering applies between outcomes, never inside one. The parts of one outcome go in the order that unblocks the rest, whatever their value, and are never ranked against another outcome's parts. Putting an order on record belongs to [tracked work](tracked-work.md).

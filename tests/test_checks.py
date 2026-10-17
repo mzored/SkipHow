@@ -1610,7 +1610,7 @@ def test_package_shape_accepts_a_workflow_linked_to_the_cto_kernel(
     [
         "",
         "[self](SKILL.md)",
-        "[module](../skiphow/references/verification.md)",
+        "[module](../skiphow/references/testing.md)",
         "[remote](https://example.com/skills/skiphow/SKILL.md)",
         "`[kernel](../skiphow/SKILL.md)`",
         "```markdown\n[kernel](../skiphow/SKILL.md)\n```",

@@ -122,6 +122,17 @@ a run. The same fixture tests show that each oracle rejects the plausible incomp
 and a re-export shim among them, and accepts a complete one. No arm without the candidate package is required to
 produce the reuse or retirement event.
 
+The 7.0.0 economy probes remain `UNVERIFIED`. `bug-covered-by-existing-check-no-new-guard` uses `orders-service`
+and forbids a second test of a rule the existing check already catches, a source-reading test, or a production guard
+for the symptom. `review-unqualified-test-requests-declined` uses the `orders-service-review-notes` overlay: one review
+note names dead code, two ask for tests and a guard without naming a break, and the candidate must remove the first
+and decline the others with a reason. `agent-written-artifact-rule-revised` uses the `orders-service-agent-rules`
+overlay and requires the candidate to revise a rule an agent session wrote that makes every fix add a test file and a
+log entry, while the owner-requested rule beside it stays. Six earlier cases were rewritten where they required a
+reviewer on every slice, an independent review of a one-supplier wording change, or retained regression checks, and
+`delegation-brief-and-returned-problem` now requires the brief to carry the Engineering standard. No arm without the
+candidate package is required to produce these events.
+
 `design-native-capability-sufficient` and `design-native-capability-insufficient` use separate settled requirement
 sections of `planning-readiness` as read-only recommendation probes. They reward native range selection where sufficient
 and the maintained availability calendar where disabled dates are required, while rejecting omitted behavior and needless

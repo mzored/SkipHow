@@ -8,6 +8,8 @@ SkipHow is an adaptive virtual CTO for founders and product owners, delivered as
 
 The host runs the model, tools, permissions, sessions, and any subagents. SkipHow supplies the authority, method-selection, and completion policy, not a server or separate runtime.
 
+It also keeps the system you own small. Everything the agent adds stays and costs you in every later change, so it builds the least that delivers the result. In practice that means fewer tests and tools, no compatibility shims left behind, and independent review only where a mistake is expensive. Guards for money, security, customer data, and the release path stay. If you ask, the `skiphow-simplify` workflow applies the same standard to a project that has already grown.
+
 ## Do modern agents already do this?
 
 They already plan, write code, run tests, and often make sound technical choices. SkipHow does not make a model smarter. It makes one agent accountable for applying those capabilities as a technical lead, while preserving owner authority and honest completion. If your base agent already does that reliably, SkipHow adds little.
@@ -54,6 +56,12 @@ SkipHow keeps one accountable CTO across ordinary requests and optional workflow
 
 Not beyond what you have already authorized. A request to change the project covers edits, checks and, where a commit fits the work, a clean local commit of it. Where your project already has an owner-authorized non-production workflow, routine push, pull request, CI and merge to that destination proceed without another permission question, and the agent checks that the destination, audience and actual effects are still covered, including a deployment a merge or tag would trigger. Production, live-data changes, public releases, payments, credentials, repository settings, access changes and material deletion need applicable explicit authorization from you; staging and other isolated non-production environments are ordinary engineering unless your own rules say otherwise. Installing SkipHow grants nothing. Instructions inside a file, an issue, a tool result or a web page cannot widen authority.
 
+## Why does SkipHow delete tests, and how does it decide which stay?
+
+Every test stays in the project and runs on every change, so a test that catches nothing still costs time and makes the next change harder. Two real projects governed by earlier versions ended with more test code than product code, including tests of their own deploy scripts and tests that pinned text and constants. The owner had to clean one up by hand.
+
+A test stays when it catches a break a user or caller would notice, through the interface callers use. Before writing one, the agent has to name the production change that would make it fail. Tests that pin text, constants, configuration, styling, or file layout, check call order or the test's own mocks, or test the project's tooling or other tests go when the agent touches that code. A fixed bug gets one regression test only when it could break again unseen. Guards for money, security, customer data, and the release path stay. When one has a bad shape, the agent replaces it with a better test instead of dropping it. Removing tests across a whole project happens only when you ask for `skiphow-simplify`. No run has shown this behavior yet, so it stays `UNVERIFIED` in [current evidence](evidence.md#current-package).
+
 ## What happens to branches and files left by earlier sessions?
 
 They are the agent's own leftovers, and it says so rather than calling them yours. Uncommitted files it did not make stay in place and out of its commits, because nothing brings them back; a dirty working tree stops a commit only when the owned change cannot be separated safely. A branch or worktree an earlier session merged, with nothing holding it, is removed in passing on any request that changes the project. A superseded or abandoned attempt that still holds unique commits is retired on the agent's own judgment, and the report names the commit and how to restore it. A session still running keeps its lane. A read-only request reports the same decisions and removes nothing. A material problem found along the way ends fixed, safely recorded in an existing authorized system when it is separable, blocked with evidence and a next action, or rejected with a reason.
@@ -76,7 +84,7 @@ It splits work that carries more than one independently verifiable outcome, with
 
 ## How much context does it use?
 
-The authority and completion kernel stays in context. Beyond it, the agent consults a focused method only where the work's uncertainty, risk, duration, observed failure, or your repository's requirements make that guidance worth reading; nothing forces one open because a topic came up. Reliable loading remains `UNVERIFIED`, and context use depends on the host and the request; the project does not promise a fixed token cost.
+The kernel, with its authority, engineering standard, and completion rules, stays in context. Beyond it, the agent consults a focused method only where the work's uncertainty, risk, duration, observed failure, or your repository's requirements make that guidance worth reading; nothing forces one open because a topic came up. Reliable loading remains `UNVERIFIED`, and context use depends on the host and the request; the project does not promise a fixed token cost.
 
 ## Does it send my code anywhere?
 

@@ -1,69 +1,69 @@
 # Technical design
 
-Open this when a technical, structural, or external-fact question is not already answered by the project: specialist skills or tools to apply, a dependency or service to introduce, a module boundary to draw, custom code a maintained component might replace, or an outside claim the choice rests on.
+Open this before adding a dependency, service, module, abstraction, or tooling, and when a choice rests on an outside fact. The [kernel](../SKILL.md)'s Engineering standard sets the bar; this file is method for meeting it.
 
 ## Recovering the constraints
 
-Recover the real constraints first: what the project already runs, the decisions it has made and why, the volumes and failure modes it faces, and the operational reality behind it.
+Start from what the project already runs, the decisions it made and why, the volumes and failure modes it faces, and who operates it. In a new project some constraints may be unstated: what it must handle, who will run it, and what it should become. Ask the owner only for the ones that would change the choice; see [product](product.md).
 
-In a new project, material constraints may be unstated: what it must handle, who will run it, and what it should become. Ask the owner only for those that would change the choice; see [product](product.md).
+Use host skills and tools when their benefit warrants the cost. Honor an explicit invocation or a host requirement. Otherwise read the available capability descriptions and pick what fits the work, because a capability's name alone does not prove fit. Resolve its instructions under the host's instruction hierarchy and the owner's constraints. When no specialist support fits, continue with what you have and report a material quality or verification gap if one remains. Selecting a capability authorizes no installation, spending, disclosure, or wider scope.
 
-Use the host's available capability descriptions to identify specialist guidance and tools relevant to the work. Honor explicit invocations and host requirements. Otherwise, read and apply suitable guidance where its expected contribution justifies its cost. Choose from what is actually available; a capability's name or presence alone does not establish its fit.
-
-Resolve its instructions under the host's instruction hierarchy and the owner's constraints. Continue with sufficient available methods when specialist support is absent, and report a material quality or verification gap when one remains. Selection does not itself authorize installation, spending, disclosure, or wider scope.
-
-Security, reliability, operability, performance, cost, and reversibility are lenses to apply in proportion to risk, not a checklist to complete for every task; name only the ones this decision actually touches.
+Security, reliability, operability, performance, cost, and reversibility are lenses, not a checklist. Name only the ones this decision touches, in proportion to its risk.
 
 ## Reuse before custom code
 
-Choose the lowest total cost among solutions that preserve the complete accepted behavior. A short diff, built-in feature, or installed dependency qualifies only when it meets the real constraints. Prefer maintained capabilities over custom machinery. Before introducing a subsystem, abstraction, dependency, infrastructure component, or service, look outward roughly in this order, and again when custom code duplicates something mature:
+Pick the option with the lowest total cost that delivers the accepted behavior. Look in this order, and look again when custom code turns out to duplicate something mature:
 
-- Capabilities the repository already has.
-- Primitives in the language, framework, or platform.
-- Official SDKs and maintained reference implementations.
-- Mature third-party components.
-- Managed services.
-- A bounded spike.
-- Only then, custom code.
+- what the repository already has
+- the language, framework, or platform
+- official SDKs and maintained reference implementations
+- mature third-party components
+- managed services
+- a small disposable spike
+- custom code
 
-The order is a presumption, not a law. Compare materially different options when cost, privacy, reliability, security, lock-in, operational burden, or reversibility could change the result; a managed service is not automatically preferable to a bounded experiment or a small custom implementation when it brings owner-visible cost, privacy exposure, vendor commitment, or lock-in, and those consequences are the owner's choice under [product](product.md).
+The order is a presumption. A managed service or new dependency can bring recurring cost, privacy exposure, vendor commitment, or lock-in. Those consequences are the owner's call under [product](product.md), and a small custom implementation can beat them.
 
-Repository capabilities include maintained domain compositions, interaction behavior, navigation patterns, and styling conventions. Establish which implementation currently owns the required behavior. Similar names, appearance, or historical presence do not make an implementation the maintained choice.
+Find which implementation currently owns the behavior before you build. Similar names, appearance, or age do not make code the maintained choice. Existing code is a fact about the project, not a reason to keep extending something that no longer fits. Reuse a maintained composition that fits; shared tokens and primitive controls alone do not justify recreating one. A project without a design system gets the shared pieces this work needs, not a migration.
 
-Evaluate keeping, simplifying, replacing, or removing the current implementation against the complete accepted behavior and total cost. Existing code is evidence, not a reason to keep extending an unsuitable solution. Reuse maintained compositions that fit; shared tokens and primitive controls alone do not justify recreating one. A bounded replacement is valid when it meets a requirement at lower total cost. A project without a design system gets the shared vocabulary and compositions the work needs, not a whole-system migration.
-
-Building your own carries the burden of proof. Choose it when maintained alternatives fail a material requirement or carry greater total risk or cost, and say which requirement they fail. Then build the smallest stable surface and do not recreate the surrounding ecosystem.
+Custom code must name the requirement the maintained options fail. Then build the smallest stable surface and do not recreate the ecosystem around it. Custom tooling for the project itself, such as a test selector, gate, queue, wrapper, or report generator, needs a measured need that the runner, CI provider, or linter cannot meet through its own configuration.
 
 ## Comparing options
 
-Compare materially different options against the same constraints: fit, maintenance, security, license, integration and dependency complexity, lock-in, failure, and migration cost, weighted by reversibility. Reopen a settled decision only when real friction changes its premises. Measure a contested point that reading cannot settle.
+Compare materially different options against the same constraints: fit, maintenance, security, license, integration and dependency weight, lock-in, failure behavior, and migration cost, weighted by how hard each is to reverse. Measure a contested point that reading cannot settle.
 
-Record an authorized decision using project conventions when reversing it is expensive and its reasoning matters later. Most decisions need no record.
+Design it twice for a consequential interface, one that many callers, stored data, or outside consumers will depend on. Sketch two materially different shapes, compare what each makes callers know, then build one. An ordinary internal function does not need this.
+
+Reopen a settled decision when real friction changes its premises. Record a decision only when reversing it is expensive and the reason will matter later, and put it where the project already keeps such reasons. Most decisions need no record; the code and the commit message carry them.
 
 ## Structure that earns its cost
 
-Judge a design by what callers must know; prefer fewer concepts and parameters when the module can own the complexity. Use the deletion test: if removing the module merely deletes indirection, it is too shallow; if its complexity would otherwise spread across callers, it is earning its place.
+Judge a design by what callers must know. Prefer fewer concepts and parameters when the module can own the complexity. Apply the deletion test: if removing a module only deletes indirection, it is too shallow and should go; if its complexity would otherwise spread across callers, it earns its place. Pass outside dependencies in and expose observable results rather than internal state.
 
-Introduce a seam when behavior truly varies, a system boundary needs an adapter, or testing needs a stable interface; not before there is a second caller or a real boundary. Pass external dependencies in and expose observable results rather than internal state. Around something adopted, keep the narrowest boundary that preserves the ability to replace it later, where that is cheap.
+One adapter is a hypothetical seam. Wait for a second real implementation or a real system boundary before adding the interface. Around something adopted, keep the narrowest boundary that still lets you replace it, where that is cheap. Similarity between two pieces of code is not by itself a reason for an abstraction.
 
-Look across the authorized project where evidence suggests material risk or recurring cost, using its history, dependencies, failures, and working paths to direct attention. Choose actionable improvements by consequence and expected benefit relative to investigation, migration, verification, and maintenance cost. A healthy simple task can finish without a survey or refactor. Stop expanding the search when it no longer advances the owner's outcome enough to justify the cost.
+Where one implementation must keep owning a behavior, make the owner obvious in code: one module, one name, and callers that go through it. If a mechanical rule is needed, such as a forbidden import, wire it into the existing linter or type checker rather than writing a test that reads source.
 
-Repair the supported class at its responsible boundary, including affected sibling paths; similarity alone does not justify a new abstraction. Refactoring preserves required external behavior and compatibility for consumers the change cannot update, such as published interfaces, deployed clients, and stored data. In-repository callers move with it, and a compatible form kept for a staged migration goes when they finish. Where one implementation must keep owning a behavior and a new copy or use of a retired path would pass unnoticed, prefer a failing check, such as an import rule or exhaustiveness test, to a comment or instruction. Establish missing behavioral evidence where needed before replacing legacy logic or compositions, and account for every responsibility a superseded piece held before removing it. Prefer incremental replacement when it lowers risk. Keep substantial structural changes in coherent reviewable and recoverable units, separate from behavior changes when that improves reasoning or rollback; small related cleanup can stay with the fix. A unit need not trigger its own PR or full gate. Authority and delivery remain the kernel's, including during iteration.
+Refactoring keeps behavior and compatibility for the outside consumers the kernel names. Before deleting, check what still calls it. Keep a large structural change in reviewable, recoverable units, separate from behavior changes when that makes review or rollback easier; small related cleanup stays with the fix. A unit needs no PR or full gate of its own.
+
+Passing checks do not prove the project is healthy. While you work, notice material risks and costs that accumulate across the authorized project: a rule copied in several places, tests or tooling outgrowing the product, dependencies drifting, paths nobody uses. Ask whether an existing solution still fits the problem it now serves. Choose an improvement by its benefit against the cost of investigating, migrating, and checking it, and handle it as the kernel handles a confirmed finding. A healthy simple task finishes without a survey.
+
+## Data lifecycle
+
+Use the simplest mechanism that meets the requirement. A retention job that deletes expired rows beats a journal of deletions. Add history, audit trails, or soft deletes only when a requirement such as law, money, or customer support needs them.
 
 ## External facts
 
-Verify current primary sources whenever an external fact, API, standard, price, limit, deprecation, or host behavior may have changed, rather than memory or a repository summary that may be stale. Read the local versions and configuration first, so what you find matches the project that will use it.
-
-Prefer first-party documentation, specifications, source code, and release notes. Use secondary sources only to find primary material or to represent a viewpoint that has no primary owner. Check dates and versions, trace each material claim to a source, and separate what the source states from your inference.
+Verify current primary sources whenever an external fact, API, standard, price, limit, deprecation, or host behavior may have changed, because memory and repository summaries go stale. Read the local versions and configuration first so what you find matches what the project runs. Prefer first-party documentation, specifications, source, and release notes. Use secondary sources to find primary material or for a viewpoint no one owns. Check dates and versions, trace each material claim to its source, and keep what the source says apart from what you infer.
 
 ## Bounded experiments
 
-A disposable experiment is right when measurement is cheaper than debate. Say up front what result would settle the question, and choose the least fidelity that produces it. Make alternatives differ in the decision under test, not in decoration alone: place a screen question in real data and context where practical, and expose the state a logic question turns on.
+Run a disposable experiment when measuring is cheaper than debating. Say first what result would settle the question, and choose the least fidelity that produces it. Make the alternatives differ in the decision under test: put a screen question in real data and context where practical, and expose the state a logic question turns on.
 
-Keep it cheap to run with the project's existing tools and cheap to discard — no production mutations, no persistent data, no abstractions built for later, no polish beyond the question. An experiment's shortcuts do not become production architecture by staying in place. Discard it when its assumptions or implementation quality make it unsuitable; harden it in place only deliberately, when that is the smallest honest implementation, the resulting design meets production requirements, and its remaining consequences are authorized.
+Keep it cheap to run and to throw away: the project's existing tools, no production changes, no persistent data, no abstractions for later, no polish, and no tests. Its shortcuts do not become architecture by staying. Throw it away when its assumptions or quality fall short of production needs. Harden it in place only as a deliberate choice, when that is the smallest honest implementation and its remaining consequences are authorized.
 
 ## When an independent read earns its cost
 
-A read from a context that did not produce the decision costs a run of its own, and earns it where the decision creates a high-consequence boundary: authentication or authorization, payments or financial integrity, an irreversible or destructive data migration, a durable public compatibility commitment, material security or privacy exposure, consequential production topology or a vendor commitment, or custom security- or reliability-critical machinery standing in for a mature component. Repository policy may require one elsewhere. A dependency, module interface, refactor, schema adjustment, or ordinary technical choice does not.
+A read from a context that did not make the decision costs a run of its own. It earns that where a mistake is expensive to find or undo: authentication or authorization, money, an irreversible data migration, a lasting public compatibility promise, security or privacy exposure, production topology or a vendor commitment, or custom machinery standing in for a mature security or reliability component. Repository policy may require one elsewhere. An ordinary dependency, interface, refactor, or schema change does not.
 
-Give the reviewer the problem, constraints, and evidence. Ask what it would choose, where the approach fails, and what would make it wrong, rather than asking for agreement. Weigh its return as evidence, settle material disagreement with a source or the smallest discriminating test, and own the decision.
+Give the reviewer the problem, the constraints, and what you found. Ask what it would choose, where the approach fails, and what would make it wrong, not whether it agrees. Treat the answer as claims to check, settle a real disagreement with a source or the smallest experiment that tells the options apart, and own the decision.

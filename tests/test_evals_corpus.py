@@ -700,8 +700,7 @@ def test_verification_health_cases_cover_distinct_cost_and_fidelity_failures() -
 
     package_events = {
         "kernel-before-action",
-        "verification-guidance-loaded",
-        "operations-guidance-loaded",
+        "testing-guidance-loaded",
     }
     for case_id, contract in expected.items():
         case = by_id[case_id]
@@ -712,7 +711,6 @@ def test_verification_health_cases_cover_distinct_cost_and_fidelity_failures() -
             assert contract["forbidden"] <= set(expectation["forbidden"])
         candidate_events = package_events
         if case_id == "verification-health-iterative-development":
-            candidate_events = package_events - {"operations-guidance-loaded"}
             assert len(case["subsequent_answers"]) >= 3
             assert "explicit_skill" not in case
         assert package_events <= set(case["arm_expectations"]["m0-base-host"]["forbidden"])
