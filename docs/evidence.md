@@ -124,7 +124,7 @@ A small run set is never converted into a percentage reliability claim. Two sess
 - reachable internal Markdown references;
 - valid JSON, YAML, Markdown links, manifests, and marketplace catalogs;
 - aligned package versions and required release metadata;
-- the absence of an executable package hook and the integrity of the declared activation surfaces;
+- the safety shape of any shipped hook (none ships today) and the integrity of the declared activation surfaces;
 - third-party source attribution;
 - package portability boundaries for personal paths and versioned model IDs;
 - runtime portability boundaries for dated host snapshots and version-qualified host products.
