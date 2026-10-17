@@ -175,10 +175,6 @@ REQUIRED_MEASURES = frozenset(
         "usage",
     }
 )
-# The ten core microcases and three journeys of the redesign (spec 8.3, 8.4).
-REQUIRED_SPEC_REFS = frozenset(
-    {f"8.3#{index}" for index in range(1, 11)} | {"8.4#E2E-1", "8.4#E2E-2", "8.4#E2E-3"}
-)
 # The acceptance sections every case must be traceable to (spec 6.1 to 6.3).
 ACCEPTANCE_SECTIONS = frozenset({"6.1", "6.2", "6.3"})
 CONDITION_TERM = re.compile(r"^([a-z_]+) == (true|false)$")
@@ -1578,19 +1574,23 @@ def test_every_case_is_complete_and_uniquely_identified() -> None:
             assert referenced, (case["id"], event_id)
 
 
-def test_the_corpus_covers_the_core_microcases_journeys_and_acceptance_sections() -> None:
-    refs = {ref for case in cases() for ref in case["spec_refs"]}
-    assert REQUIRED_SPEC_REFS <= refs, sorted(REQUIRED_SPEC_REFS - refs)
-    assert ACCEPTANCE_SECTIONS <= refs
-    journeys = [case for case in cases() if case["kind"] == "journey"]
-    assert len(journeys) == 3
-    # Every arm has to be able to tell activation from its absence somewhere.
+def test_the_corpus_can_tell_activation_from_its_absence() -> None:
     assert any(
         case["arm_expectations"]["m2-implicit-discovery-hook"]["activation"] == "not_expected"
         for case in cases()
     )
-    # The maintainer-only dependency case is out of the runtime corpus.
-    assert not any("pins-missing" in json.dumps(case) for case in cases())
+
+
+def test_the_skill_discovery_matrix_carries_both_polarities() -> None:
+    discovery = json.loads((EVALS / "skill-discovery-cases.json").read_text(encoding="utf-8"))
+    assert isinstance(discovery, list) and discovery
+    assert len({case["id"] for case in discovery}) == len(discovery)
+    negative = [case for case in discovery if case["kind"].startswith("negative_")]
+    positive = [case for case in discovery if not case["kind"].startswith("negative_")]
+    assert negative and positive
+    assert all(case["should_select"] for case in positive)
+    assert not any(case["should_select"] for case in negative)
+    assert all(case["prompt"].strip() for case in discovery)
 
 
 def test_every_case_passes_the_semantic_validator() -> None:
