@@ -5,10 +5,29 @@ Current package behavior remains `UNVERIFIED` unless a qualifying receipt names 
 
 ## Current package
 
-6.3.5 adds one kernel obligation at the act of changing code: extend the code that owns a
+7.0.0 rewrites the package so the CTO keeps the owner's system small. A maintainer trace
+of the same two owner projects, run under 4.3.0 through 6.3.5 across about 265 root
+sessions and 1,900 delegates, found test and tooling code that grew several times faster
+than product code and ended larger than it, tests of the projects' own deploy and CI
+scripts, tests that pinned text and constants, custom test-selection and gate tooling,
+production branches that existed for mocks, and review loops of up to six rounds in which
+reviewers mostly asked for more tests. The owner cleaned one project by hand; that cleanup
+removed far more test and tooling code than product code and then had to restore money,
+security, and release guards it had cut. The trace located the cause in the package text,
+which made every addition a gain and every removal a risk, and in where the guidance sat:
+the kernel reached nearly every root session but the test guidance reached about one in
+twenty test-writing delegates, because it lived in a reference and briefs did not carry it.
+Several earlier fixes, including 6.3.5's preference for a failing check over a comment,
+pointed agents at more guard tests. 7.0.0 moves an engineering standard into the kernel,
+requires every implementation and review brief to carry it, replaces the verification and
+operations playbooks with testing and review, and adds an owner-invoked simplify workflow.
+The trace is field evidence about the cause, not a receipt. The new behavior is
+`UNVERIFIED`, and its corpus scenarios are unrun.
+
+Before it, 6.3.5 added one kernel obligation at the act of changing code: extend the code that owns a
 behavior instead of copying it, and let a replacement migrate in-repository callers and
 remove the old path and shims no outside consumer needs, and the guidance it makes stale. Technical design and
-operations carry the method. A maintainer trace of two owner projects run under 6.3.4
+operations carried the method. A maintainer trace of two owner projects run under 6.3.4
 motivated it. Their broad simplification audits returned 29 and 43 findings, and most
 consequential findings traced to three mechanisms: a replacement that kept in-repository
 shims or re-exports, a new copy of a rule an existing module owned, and guidance not
@@ -127,8 +146,9 @@ marketplace-source policy before installation, so Codex clean install remains
 
 ## Optional workflow contract
 
-Bug, plan, longrun, deploy-ready, and fast-fixes are optional owner-selected workflows
-sharing one CTO kernel and reference library. Explicit plan invocation requests durable
+Bug, plan, longrun, deploy-ready, fast-fixes, and simplify are optional owner-selected
+workflows sharing one CTO kernel and reference library. Simplify is selected only when the
+owner asks to simplify or shrink the project. Explicit plan invocation requests durable
 planning records within authority; automatic selection creates no write grant. Fast-fixes
 acceptance keeps local iteration open until delivery is requested. The
 [owner guide](guide.md#recurring-workflows) explains their current stopping conditions.

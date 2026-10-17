@@ -2,7 +2,7 @@
 
 ## Use SkipHow
 
-- [Owner guide](guide.md): installation, activation, updates, requests, optional workflows, and reports.
+- [Owner guide](guide.md): installation, activation, updates, requests, optional workflows, what the agent leaves in your project, and reports.
 - [FAQ](faq.md): fit, limits, and common questions.
 - [Evidence](evidence.md): supported claims, receipt requirements, dated observations, and unverified behavior.
 - [Security and host support](../SECURITY.md): private reporting and the dated capability matrix.
@@ -10,7 +10,7 @@
 ## Understand or contribute
 
 - [Owner-outcome contract](outcome-contract.md): the product responsibilities implementations must preserve.
-- [Design](design.md): the current package, kernel, workflows, and host boundary.
+- [Design](design.md): the current package, kernel, workflows, how it keeps the system small, and the host boundary.
 - [Decisions](decisions.md): current rationale, premises, and conditions for reopening a choice.
 - [Prior art](prior-art.md): adopted ideas and rejected alternatives.
 - [Contributing](../.github/CONTRIBUTING.md) and [repository instructions](../AGENTS.md): development and delivery rules.

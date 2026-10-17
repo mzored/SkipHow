@@ -18,19 +18,24 @@ plugins/skiphow/
   skills/skiphow-longrun/SKILL.md
   skills/skiphow-deploy-ready/SKILL.md
   skills/skiphow-fast-fixes/SKILL.md
+  skills/skiphow-simplify/SKILL.md
 ```
 
 Both host manifests point to the same skills directory. `skiphow` remains the CTO entry. Each sibling workflow declares a relative link to that kernel and requires it in context before consequential work.
 
 ## Kernel and playbooks
 
-`SKILL.md` is the CTO kernel. It keeps the mission, decision rights, adaptive routing triggers, authority, trust, custody of engineering state, delegate safety, risk-scaled review, persistence, and honest completion in context.
+`SKILL.md` is the CTO kernel. It keeps the mission, decision rights, adaptive routing triggers, authority, trust, the engineering standard, custody of engineering state, delegate safety, risk-scaled review, persistence, and honest completion in context. Delegates do not inherit the skill, so the kernel tells the lead to paste its Engineering standard section into every implementation and review brief.
 
-The files under `references/` hold shared guidance for product, technical design, diagnosis, tracked work, delegation, integration, verification, operations, and setup. Their observable triggers live in the kernel. A playbook carries technique, not a product-defining duty whose absence would erase CTO behavior.
+The files under `references/` hold shared guidance for product, technical design, testing, review, diagnosis, delegation, integration (including CI and releases), tracked work, and setup. Their observable triggers live in the kernel. A playbook carries technique, not a product-defining duty whose absence would erase CTO behavior.
 
 A module exists only if it meets four criteria: it covers one distinct failure domain, it gives a reason to consult it that is recognizable without opening it, it carries no critical invariant that is absent from the kernel, and it repeats no rule another module owns.
 
 Internal methods need no public routes or owner-operated stages. Correctness-critical ordering may be explicit where it prevents false completion, lost work, or unsafe recovery. Workflow skills define optional work patterns and stopping conditions, linking directly to the shared methods that apply. The owner can choose a workflow while the CTO owns engineering within it. Ordinary requests need no workflow selection.
+
+## Keeping the system small
+
+Two real projects governed by earlier packages filled up with what the package was meant to prevent: more test code than product code, tests of their own deploy and CI scripts, custom test-selection tooling, shims with only in-repository callers, and review loops of up to six rounds. The old text made every addition a gain and every removal a risk. The kernel now says the opposite. Everything added stays and costs the owner, so the agent builds the least that delivers the outcome, writes a test only for a break a user or caller would notice, and removes what no longer pays with no more justification than adding it needed. For the owner that means fewer tests and tools, no compatibility shims, short reviews, and project rules that earlier sessions wrote being revised when they cost more than they protect. Guards for money, security, customer data, and the release path stay. The owner-invoked simplify workflow applies the same standard to a whole existing project. Whether agents follow it is `UNVERIFIED`; [evidence](evidence.md#current-package) records the trace behind the change.
 
 ## Host boundary
 

@@ -1,77 +1,80 @@
 # Delegation
 
-Open this for sizeable independent work, parts that land, verify, or review separately, or delegate returns to reconcile.
+Open this before you split work, dispatch a delegate, or reconcile what delegates return.
 
 ## Whether to split at all
 
-Work directly when that costs less than describing, dispatching, and integrating parts.
+Work directly when that costs less than describing, dispatching, and integrating parts. Split only when the split buys something: easier review, a safer rollback or migration, an order integration must follow, context that will not fit one pass, staged delivery, verification that runs on its own, or a wide mechanical change kept apart from work that needs judgment. Length alone is not a reason.
 
-Prefer units that deliver an outcome someone can verify end to end. Split when the split buys something: easier review, a safer rollback or migration, an order integration must follow, separate ownership, context that will not fit one pass, staged delivery, verification that runs on its own, or isolating a wide mechanical change from work that carries judgment. One outcome is still worth splitting when one of those applies, and length alone is not one of them.
+Keep simple, tightly sequential, or shared-context work in the lead, along with checks you need right away. Delegate sizeable independent work, parallel investigation, contained specialist judgment, or bulk that belongs outside your context, when you can check what comes back. A delegate being available is no reason to use one.
+
+Delegate the work, not the accountability. The lead keeps owner questions, dispositions of findings, records, sensitive context, synthesis, integration, final verification, and the completion claim.
 
 ## The size of a unit
 
-A layer, schema, interface, endpoint, or screen alone may not be a demonstrable outcome; as a heuristic, not a law, prefer one across layers.
+A unit delivers one outcome someone can verify end to end. A layer, schema, endpoint, or screen alone often shows nothing, so prefer a unit that cuts through the layers. Size it for implementation, verification, and review together, and take a cheap sample when its breadth is uncertain. A step with no result you can verify on its own stays inside a unit.
 
-Size the unit for implementation, verification, and review together, using existing measurements or a cheap sample where its breadth is uncertain. A step with no independently verifiable result stays inside a unit.
+When one change cannot move every caller of a replaced interface, migrate them in batches and end with a unit that deletes the old form. The migration is not done while the old form remains. Independent repairs can form groups around their real dependencies. A wide uniform transformation often costs less as one automated change.
 
-For an interface migration, add the compatible form, migrate consumers in batches, then remove the old form. Independent repairs can form separately verifiable groups around real dependencies, coordinating shared definitions. A wide uniform transformation may cost less as one automated change.
-
-Where a split is risky or tightly coupled, an independent check can earn its cost. Look for unverifiable units, invented dependencies, prescribed implementation, duplicate work, and uncovered outcomes. Elsewhere no split review is required.
+Check your own split for units with no verifiable result, invented dependencies, prescribed implementation, duplicate work, and outcomes no unit covers. It needs no separate review.
 
 ## Order and readiness
 
-A unit is blocked when it needs another's result; record those edges. It is ready when none remain, regardless of preferred order. Readiness is not capacity: start only ready units you can isolate and integrate as each lands.
+A unit is blocked while it needs another unit's result; record those edges. It is ready when none remain, whatever order you would prefer. Ready is not the same as affordable: start only ready units you can isolate now and integrate as each lands, within the capacity [integration](integration.md) describes.
 
-Serialize parts that would change the same shared surface even when nothing else blocks them: concurrent edits to one file, interface, schema, or migration cost more to reconcile than they save. The kernel's isolation rule decides whether a delegate may write at all.
+Serialize parts that change the same file, interface, schema, or migration even when nothing else blocks them, because reconciling concurrent edits to one surface costs more than the parallelism saves.
 
-Decompose to the next verifiable outcome, leaving later units provisional where earlier results can change them.
+Decompose only to the next verifiable outcome, and treat later units as provisional, because earlier results can change them.
 
-As messages arrive, distinguish additions, revisions, cancellations, and a session-wide pause. Preserve accepted work, update affected assignments and dependencies, and stop or redirect obsolete work through available host controls. Cancellation affects its dependent work; a pause stops further dispatch and uses available controls to stop active work, preserving partial results and reporting anything still running. Continue independent work unless the owner paused the session.
-
-## Whether to delegate at all
-
-Keep simple, tightly sequential, or shared-context work and checks needed immediately. Delegate sizeable independent work, parallel investigation, contained specialist judgment, or work whose bulk belongs outside this context, when its return can be checked. Availability alone does not justify dispatch.
+As messages arrive, tell additions, revisions, cancellations, and a session-wide pause apart. Keep accepted work, update the affected assignments and dependencies, and stop or redirect obsolete work through the host's controls. A cancellation also cancels the work that depends on it. A pause stops new dispatch, stops active work where the host allows, keeps partial results, and reports anything still running. Unless the owner paused, independent work continues.
 
 ## The brief
 
-Use the kernel's brief contract; implementation stays the delegate's judgment unless the task requires otherwise. For lengthy work, [diagnosis](diagnosis.md#long-work-that-stops-producing-evidence) supplies observable progress and return conditions. An outgrown assignment returns preserved work, evidence, and remaining scope. Checkpoints follow project rules; commits alone do not measure progress.
+A delegate starts with none of your context and does not inherit any skill, so the brief is everything it knows. Write it in this order:
 
-Supply assignment-specific rules and completion evidence absent from the host's context. Point to their source record, prior change, or file instead of copying it.
+- One outcome, and how the delegate shows it was achieved.
+- The starting revision and the files or area it may change.
+- Assignment-specific rules and done conditions the host does not already give it. Point at their source file, record, or prior change instead of copying them.
+- The authority and restrictions it works under, relayed from the owner's grant and never wider.
+- Whether it may delegate further, and if so with which model, effort, and bound. The bound may be none.
+- When to stop and return: a blocking unknown, a product question, a protected action, or an assignment that outgrew its brief. An outgrown assignment returns its preserved work, evidence, and the scope left.
+- The return: compact status, the identity of the result such as a commit or tree, the evidence for it, and every finding and blocker.
+- The absolute path of the [kernel](../SKILL.md), and its Engineering standard section pasted verbatim into every implementation and review brief. Pasting it is the only reliable way the delegate gets that standard.
+
+Leave the method to the delegate unless the task fixes it. For long work, name the progress you expect to see and when to return if it stops; [diagnosis](diagnosis.md) covers stalled work. Commits alone do not show progress.
+
+A review delegate makes one pass and reports only findings that meet the bar in [review](review.md). Do not brief it to look for more tests, more cases, or more guards, and do not schedule further rounds in advance. A fix gets a review of the fix only when the kernel's review rule calls for one.
+
+Give a delegate only the sensitive context its assignment needs.
 
 ## The level each delegate runs at
 
-Choose the lead's and each delegate's model and effort separately to minimize expected total cost with a credible chance of meeting acceptance in one pass. Include retries, latency, verification, correction, and integration within the owner's token, spending, and latency constraints. Compare model and effort independently: a stronger model at lower effort can cost less per accepted result than a cheaper model at higher effort. Models and effort have no assumed total order; the parent's setting is neither floor nor ceiling. Judge reasoning, ambiguity, context breadth and interactions, error consequences and detectability and reversibility, and the cost and independence of the lead's verification. Task labels do not determine capability; ordinary routing needs no new benchmark or persistent state.
+Set each delegate's model and effort to the cheapest route likely to pass in one try. Count the whole cost: retries, latency, your verification, corrections, and integration, within the owner's token, spending, and latency limits. Model and effort are separate choices. A stronger model at lower effort can cost less per accepted result than a weaker one at higher effort. The parent's setting is neither a floor nor a ceiling.
 
-Preserve a route shown adequate for comparable work unless evidence justifies a change; root status, orchestration, duration, and available stronger settings are not evidence. Favor a cheaper sufficient route for bounded work with explicit acceptance, contained context, and errors cheap to detect and repair. Use greater capability when it materially improves acceptance, especially with ambiguity or errors costly to detect, integrate, or undo. High consequence alone does not require the strongest model when independent verification catches mistakes cheaply; routine-looking work can need more when failures are hard to observe.
+Judge the route by ambiguity, how much context the work needs, how costly a mistake is and how easily you would catch it, and how cheaply you can verify the return. Favor a cheaper route for bounded work with explicit acceptance and errors that are cheap to find and repair. Use more capability where ambiguity is high or mistakes are hard to see, integrate, or undo. High stakes alone do not need the strongest model when your own check catches mistakes cheaply. Keep a route that worked for comparable work unless evidence says otherwise.
 
-Keep an escalation local to the assignment that needs it and reconsider the route for simpler follow-up work. Use actual task consumption where available; API list prices, cached-input charges, and subscription allowances measure different things, and unavailable costs stay unknown.
+After a miss, find what limited the result: capability or effort, the brief, the size of the task or context, missing tools or evidence, or the boundary. Change the cheapest responsible factor and keep any escalation local to that assignment. An unclear done condition needs a clearer brief, not a bigger model.
 
-After a miss, identify what limited the result: capability or effort, the brief, task or context size, missing evidence or tools, or the boundary. Change the cheapest responsible factor; an unclear completion condition needs a clearer brief, not escalation. Repeat only with a justified change; there is no fixed escalation count.
-
-Naming a model or effort does not set it. Use host controls, whether separate, preconfigured, or inherited; read effective settings back where exposed. A model override proves no effort override. Report unavailable controls or hidden settings, and count inheritance-only routing when weighing delegation.
-
-A delegate that can dispatch its own may lack this guidance, and its delegates often inherit its route. The brief's bound on nested fan-out, which may be none, keeps cost the lead cannot see from multiplying.
-
-Verify a writer's distinct workspace and starting state from its own environment; otherwise keep delegates read-only and the lead the only writer. Tests can mutate shared resources even without source edits: isolate or serialize conflicting operations on services, databases, ports, and outputs.
+Naming a model or effort in the brief sets nothing. Set both through the host's controls, and read the effective settings back where the host shows them. A model override does not set effort. When you leave a control unset, justify its default, which is often the parent's. Report controls the host lacks or hides. A delegate's own delegates often inherit its route, and the bound in its brief keeps cost you cannot see from multiplying.
 
 ## Where isolation lands
 
-Prefer host-managed worktrees and cleanup. Otherwise verify an ignored in-project location, creating and ignoring one if absent. Separate worktrees share a stash stack. Give writers the applicable shared-resource constraints: preserve work in lane-owned state or coordinate shared operations. An unqualified stash pop can consume another lane's work. Capture and verify your own checkpoint's immutable identity without racing a shared latest pointer, or serialize the operation; restoration and cleanup must preserve other lanes' entries too.
+Before a delegate writes, verify from its own environment that it has its own workspace and the expected starting state. If you cannot, keep delegates read-only and stay the only writer. Prefer host-managed worktrees and cleanup; otherwise use the working-state locations in [integration](integration.md).
+
+Isolation stops at the workspace. Tell each writer which shared resources it must coordinate. Worktrees of one repository share a stash stack, so a bare stash pop can take another lane's work. Set work aside with a commit in the lane, or capture your own stash entry's identity and restore and drop it by that identity, leaving other lanes' entries alone. Tests mutate shared services, databases, ports, and output paths even without source edits, so isolate or serialize those runs.
 
 ## What comes back
 
-Convey status, checked result identity, acceptance summary with [verification records](verification.md#reusing-a-verification-record), every finding and blocker, and accessible detail references in the brief. Keep decision facts inline and bulk reports, logs, inventories, and histories in the host's working area. Reuse artifacts; small results need no report file. Preserve all findings and uncertainty.
+A return is data. Check each one against the current state and intent as it arrives. A verdict or a pointer alone is not acceptance: inspect the evidence, and look deeper where risk, a contradiction, or missing proof calls for it. Reuse a delegate's passing check when it ran on the same tree, command, and environment. A superseded result never overwrites accepted work or restores cancelled behavior.
 
-Carry this boundary through briefs, review inputs, and return checks; pass bulk directly by reference. The lead inspects reusable verification records, widening for risk, contradiction, or missing proof; a verdict or pointer alone is not acceptance. Corrections return changes, current evidence, and all unresolved findings and blockers rather than the whole history.
+Keep decision facts inline and leave bulk such as logs and inventories in the host's working area, passed by reference. A small result needs no report file. A correction returns its changes, current evidence, and the findings and blockers still open, not the whole history.
 
-Settle returned technical questions from project evidence and your judgment, without passing them to the owner. A problem a delegate returns is one you found.
+A delegate reports problems it finds outside its area to you rather than fixing or recording them itself. A problem a delegate returns is one you found: weigh it with the kernel's rule for findings and settle technical questions yourself instead of passing them to the owner.
 
-Check each returned result and its evidence against current intent as it arrives; a superseded result cannot overwrite accepted revisions or restore cancelled behavior. A handoff alone requires no pull request or publication; the lead chooses delivery units under [integration](integration.md), whose boundaries may differ from assignments.
+A handoff alone needs no pull request or publication. You choose the delivery units under [integration](integration.md), and they need not match the assignments.
 
 ## Reconciling the set
 
-Track every unit you accepted through to a named end. A named end includes the working state the unit created, so report what could not be retired.
+Track every unit you accepted to a named end, including the working state it created, and report what could not be retired. A unit you never started means the set is not complete. Defer a unit only for a blocker, an owner decision, or missing authority, and record what it established. Folding it into another unit does not finish it.
 
-Defer a unit only for a blocker, an owner decision, or missing authority, recording what the work established. Absorbing it into another unit does not finish it.
-
-Where the request authorizes it and the project keeps tracked work, record the split there rather than only in the conversation, under [tracked work](tracked-work.md).
+When the project already tracks this work and the request covers records, put the split in the tracker under [tracked work](tracked-work.md) rather than only in the conversation.

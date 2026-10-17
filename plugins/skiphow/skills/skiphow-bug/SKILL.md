@@ -1,16 +1,24 @@
 ---
 name: skiphow-bug
-description: Investigate and repair a reported defect at its root cause, covering the general case and affected sibling paths. Use for bug fixes and recurring failures; keep diagnosis-only requests read-only. If context was compacted while this workflow governed, reopen this file and the SkipHow CTO skill before the next consequential action.
+description: Find and fix a reported defect at its cause, including the sibling paths that share that cause. Use for bug fixes and recurring failures; a diagnosis-only request stays read-only. If context was compacted while this workflow governed, reopen this file and the SkipHow CTO skill before the next consequential action.
 ---
 
 # SkipHow bug
 
-Resolve the reported defect and the class of failure that caused it. Before consequential work, and again after any context compaction, read the [SkipHow CTO kernel](../skiphow/SKILL.md) unless its full text is already in context; a summary is not its text. It governs authority, scope, delegation, review, and delivery throughout this workflow.
+Fix the reported defect at its cause, together with every other path the same cause breaks. Before consequential work, and again after any context compaction, read the [SkipHow CTO kernel](../skiphow/SKILL.md) unless its full text is already in context; a summary is not its text. It governs authority, scope, delegation, review, and delivery throughout this workflow.
 
-Use [diagnosis](../skiphow/references/diagnosis.md) to establish the original failure signal and test the proposed cause. Identify the rule that failed and inspect the sibling paths governed by it, and the other places the owner would see the same symptom, since a repeat of one symptom can have a second cause. Repair the layer that owns that rule within the authorized scope. A general repair does not require a repository-wide refactor; a separable problem takes the kernel's disposition for a problem you find.
+## Diagnose first
 
-Consult [technical design](../skiphow/references/technical-design.md) when the repair depends on external facts, introduces a dependency or abstraction, or could reuse an existing capability. Research the uncertainty that affects the repair.
+Make no fix until the cause is shown. Use [diagnosis](../skiphow/references/diagnosis.md) to reproduce the original failure signal with the fastest loop you can build and to test the proposed cause against it. A diagnosis-only request ends here with the cause, how you showed it, and the fix you would make.
 
-Use [verification](../skiphow/references/verification.md) to prove the original failure is resolved and the rule holds beyond the reported inputs. Review the final change and complete the authorized delivery. When evidence cannot establish the cause or cover the real failing path, report that limitation rather than calling a theory verified.
+## Fix the cause
 
-Report the cause, the reach of the repair, the evidence for the original and general cases, and the delivered state or remaining blocker.
+Name the rule that failed. Then find the other paths that rely on that rule, and the other places the owner would see the same symptom, because one symptom can have a second cause. Fix the layer that owns the rule, once, so every path that shares the cause is fixed with it. Do not add a guard, check, or special case for each place the symptom showed. A general fix does not need a repository-wide refactor, and a separate problem you find on the way is a finding under the kernel's Engineering standard.
+
+Open [technical design](../skiphow/references/technical-design.md) when the fix depends on outside facts, adds a dependency or abstraction, or could reuse something the project already has.
+
+## Prove it
+
+Show that the original failure is gone on the real failing path and that the fix holds on the sibling paths, not only for the reported inputs. Add a regression test only where [testing](../skiphow/references/testing.md) finds a correct seam at which it would catch a recurrence nobody would otherwise see. When no such seam exists, report that as an architecture finding instead of writing a test at the wrong layer. Then review the change and complete the authorized delivery. If you cannot establish the cause or reach the real failing path, say so rather than calling a theory verified.
+
+Report the cause, the reach of the fix, how you checked the original and sibling cases, and the delivered state or the remaining blocker.

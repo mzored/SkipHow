@@ -40,9 +40,10 @@
             "references/diagnosis.md",
             "references/integration.md",
             "references/product.md",
+            "references/review.md",
             "references/technical-design.md",
-            "references/tracked-work.md",
-            "references/verification.md"
+            "references/testing.md",
+            "references/tracked-work.md"
           ]
         }
       ]

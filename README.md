@@ -7,6 +7,13 @@ SkipHow owns research, architecture, planning, implementation, review, integrati
 and verification. Work stays proportional to the request. The host supplies the
 model, tools, permissions, sessions, and subagents.
 
+SkipHow also keeps the system you own small. Everything the agent adds stays, and
+you pay for it in every later change. So it builds the least that delivers the
+result, writes a test only for a break a user or caller would notice, moves every
+caller instead of leaving a compatibility shim, and asks for independent review only
+where a mistake is expensive. It removes what no longer pays for itself. Guards for
+money, security, customer data, and the release path stay.
+
 [![CI status](https://github.com/mzored/SkipHow/actions/workflows/ci.yml/badge.svg)](https://github.com/mzored/SkipHow/actions/workflows/ci.yml)
 [![Latest release](https://img.shields.io/github/v/release/mzored/SkipHow?label=release)](https://github.com/mzored/SkipHow/releases)
 [![MIT license](https://img.shields.io/github/license/mzored/SkipHow)](LICENSE)
@@ -71,9 +78,10 @@ kernel, authority boundaries, and internal references.
 | --- | --- |
 | `skiphow-bug` | Find and repair the general cause, then verify at the authorized destination |
 | `skiphow-plan` | Prepare the whole scope, resolve product questions, review executable tasks, and return a launch; no implementation |
-| `skiphow-longrun` | Deliver agreed substantial work with coordinated implementation and independent review |
+| `skiphow-longrun` | Deliver agreed substantial work with coordinated implementation and review scaled to consequence |
 | `skiphow-deploy-ready` | Complete deferred checks, review, commits, and authorized integration |
 | `skiphow-fast-fixes` | Show checked local fixes while you send feedback; delivery starts when requested |
+| `skiphow-simplify` | Measure the project, remove tests, tooling, shims, and rules that do not pay, and report what it saved; only when you ask |
 
 Use `$skiphow-plan` in Codex or `/skiphow:skiphow-plan` in Claude Code, with the
 same naming pattern for the other workflows. The [workflow guide](docs/guide.md#recurring-workflows)

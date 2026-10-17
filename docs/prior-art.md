@@ -116,6 +116,41 @@ An idea from another project becomes a focused method or a kernel invariant only
 
 The reasoning behind each rule that survived is in [decision history](decisions.md), and what real runs have and have not shown is in [current evidence](evidence.md).
 
+## Keeping the system small in 7.0.0
+
+Read on 2026-10-17 at the revisions in the links. The question was why two governed projects filled with tests,
+tooling, and shims although SkipHow had read these sources from the start. The answer was in SkipHow's own text, not in
+the sources: it kept their vocabulary, dropped their concrete rules, and added sentences that made each addition safe and
+each removal suspect. 7.0.0 takes the concrete rules back, in its own words, and puts the ones that must hold on every
+request into the kernel.
+
+From Matt Pocock's [tdd](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/tdd/tests.md) and [mocking](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/tdd/mocking.md) notes: test through the interface callers
+use, mock only at system boundaries, and treat a test that bypasses the interface as a defect. From
+[codebase-design](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/codebase-design/SKILL.md): the deletion test, and that one adapter is a hypothetical seam. From
+[diagnosing-bugs](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/diagnosing-bugs/SKILL.md): the feedback loop comes first, hypotheses are ranked and falsifiable,
+and a regression test belongs at a seam that reaches the bug; SkipHow adds that no correct seam is an architecture
+finding rather than a reason to test at a wrong one. From [code-review](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/code-review/SKILL.md): two axes, the request
+and the project's standards, and skipping what tooling enforces. From [prototype](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/prototype/SKILL.md): throwaway
+work carries no tests.
+
+From Superpowers' [writing-good-tests](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/test-driven-development/writing-good-tests.md): name the production change
+that would make a test fail before writing it, and no change detectors. From
+[receiving-code-review](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/receiving-code-review/SKILL.md): verify a finding against the code, grep for real use before
+building what a reviewer calls necessary, and push back with a reason. From
+[systematic-debugging](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/systematic-debugging/SKILL.md): repeated failed fixes mean the architecture is in question.
+
+From Addy Osmani's [code-review-and-quality](https://github.com/addyosmani/agent-skills/blob/aeac41d4d005999432bb7312f7ff06383a91d59d/skills/code-review-and-quality/SKILL.md): prefer deleting an abstraction to
+polishing it. From [deprecation-and-migration](https://github.com/addyosmani/agent-skills/blob/aeac41d4d005999432bb7312f7ff06383a91d59d/skills/deprecation-and-migration/SKILL.md): code is a liability, so removal
+takes its tests and docs with it. From [doubt-driven-development](https://github.com/addyosmani/agent-skills/blob/aeac41d4d005999432bb7312f7ff06383a91d59d/skills/doubt-driven-development/SKILL.md): stop when doubt
+stops producing new information.
+
+Still rejected from the same sources: defense in depth at every layer, coverage floors, a regression test for every
+bug, asking the owner to confirm technical seams, and any report that hands the owner a menu of technical options. The
+owner-invoked simplify workflow takes the purpose of
+[improve-codebase-architecture](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/improve-codebase-architecture/SKILL.md), a scan for what costs more than it
+protects, without its candidate menu: the CTO decides and carries the changes through. No source text or code is copied.
+All three repositories are MIT licensed.
+
 ## Ownership at the change in 6.3.5
 
 Read on 2026-10-16 at Ponytail revision `84740e3d344b69b4a133201fa519eb37a62a2b2a`. Its
