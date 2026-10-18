@@ -22,6 +22,7 @@ A trace of 22 root sessions and their delegates that ran 7.0.0 on three owner pr
 ### Checks and evidence
 
 - This is a patch release. It restores behavior 7.0.0 promised: revising agent-made rules, keeping the system small, and accounting for every finding. Authority and protected-action boundaries are unchanged, and product decisions stay the owner's.
+- An isolated read-only Codex review ran three rounds. Round 1 found that the owner-pick clause in the kernel and simplify did not limit options to technical ones, so an agent could have revised a product choice the owner made from an agent's list. Both now say technical, and the docs match. Round 2 found that the new fixture claimed every direct fix changes the file's length, but a same-length fix exists. The fixture now says only a length-changing fix trips the budget, and the required revision does not depend on it. Round 3 found nothing that qualified.
 - No paid model sessions or clean-install runs were made. The new behavior remains `UNVERIFIED`.
 
 ## 7.0.0 (2026-10-17)
