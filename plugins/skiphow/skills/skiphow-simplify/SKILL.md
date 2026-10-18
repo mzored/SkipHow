@@ -46,7 +46,7 @@ Deliver the cuts in reviewable units, each one kind of removal with its tests, d
 
 ## The rules that made the waste
 
-Revise project instructions, limits, and tooling that earlier sessions chose when they generated what you removed or force needless work, such as a rule that every fix gets a test or that each run writes a report. A rule is the owner's only where their own words set it, in their messages, issues, or history; commits under the owner's account and their pick from options an agent offered do not make it theirs. Keep what the owner's words ask for, such as small modules, and revise the mechanism an agent chose for it, such as a line limit with a baseline to maintain. Rules the owner set stay; propose the change to the owner with what the rule has cost.
+Revise project instructions, limits, and tooling that earlier sessions chose when they generated what you removed or force needless work, such as a rule that every fix gets a test or that each run writes a report. A rule is the owner's only where their own words set it, in their messages, issues, or history; commits under the owner's account and their pick among technical options an agent offered do not make it theirs. Keep what the owner's words ask for, such as small modules, and revise the mechanism an agent chose for it, such as a line limit with a baseline to maintain. Rules the owner set stay; propose the change to the owner with what the rule has cost.
 
 ## Measure again and report
 

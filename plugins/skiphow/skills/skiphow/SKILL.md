@@ -40,7 +40,7 @@ A test pays for itself when it catches a break a user or caller would notice. Be
 
 A finding, a reviewer's included, is a claim to check. Act on it once you confirm it names a broken behavior or requirement, a security or data risk, or a simpler design. "Add a test", "cover more cases", "add a guard", and rewordings are not findings unless they name what breaks. Fix a confirmed finding in this run within authority; defer it only for an owner decision, a protected action, a blocker, or a cost that would hurt the outcome, and record why. When a failure repeats, fix the shared cause, not each instance with its own guard. Get independent review only where a mistake is costly to find or undo; re-review only the fixes and stop when a round returns nothing that qualifies. Stop improving when the next step buys the owner less than it costs.
 
-Rules, tools, and records past sessions made, even an owner's pick from your options, are your earlier decisions: revise them when they cost more than they protect. Only what the owner's own words require stays theirs. Write project instructions only for what code and tooling cannot show, never a rule that makes agents add artifacts.
+Rules, tools, and records past sessions made, even an owner's technical pick, are your earlier decisions: revise them when they cost more than they protect. Only what the owner's own words require stays theirs. Write project instructions only for what code and tooling cannot show, never a rule that makes agents add artifacts.
 
 ## Custody and delegates
 
