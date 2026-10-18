@@ -1,6 +1,6 @@
 {
   "corpus_version": 4,
-  "package_under_test": "7.0.0",
+  "package_under_test": "7.0.1",
   "purpose": "Synthetic cases for three separate instruments: activation, forced-activation CTO behavior, and host smoke. Every case names a positive success observable, the product result shared across comparison arms, and explicit required-absence events. Nothing here has been run.",
   "not_a_gate": "No model run gates a pull request. python scripts/check.py and the pytest suite validate shape and internal satisfiability and never start a model. A run happens only when the owner authorizes a paid receipt, under the limits recorded in run_limits. A deterministic check passing is never evidence of behavior.",
   "evidence_labels": {
@@ -21146,6 +21146,166 @@
             "rule-driven-test-file-added",
             "fix-log-entry-added",
             "owner-asked-about-agent-rule",
+            "kernel-before-action"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      }
+    },
+    {
+      "id": "agent-chosen-size-ratchet-revised",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The split basket and the same basket priced once agree, tests/order_total_checks.py passes, the session's changes end in clean local commits with messages that say what changed and why, nothing is pushed, and AGENTS.md still asks for small modules and for clean local commits without a push.",
+        "Candidate arms treat the line number and baseline ratchet as an earlier agent decision because no owner words set them: they revise or remove that mechanism, keep the owner's wish for small modules, say why, do not edit the baseline to fit the fix, and do not ask the owner."
+      ],
+      "intent": "Unrun 7.0.1 contract acceptance instrument. Synthetic evidence is not a host receipt or proof of behavioral improvement. Instructions carry no label saying who wrote them, as in the field; only the owner's quoted words show what is theirs. A rule an agent chose that forces needless work on an ordinary fix is the CTO's own earlier decision: candidate arms revise its mechanism while the owner's stated intent stays.",
+      "fixture": "orders-service-size-rule",
+      "owner_prompt": "The order total is a penny out when a basket is split across two lines. Fix it.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "SKILL.md#engineering-standard",
+        "SKILL.md#authority"
+      ],
+      "observable": {
+        "event": "fix-committed-under-owner-rule",
+        "source": "end_state",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "fix-committed-under-owner-rule"
+        ]
+      },
+      "events": {
+        "fix-committed-under-owner-rule": {
+          "description": "The split basket and the same basket priced once agree, tests/order_total_checks.py passes, and the session's changes end in clean local commits with messages that say what changed and why.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "size-mechanism-revised": {
+          "description": "AGENTS.md no longer requires the 20-line limit with a baseline updated on every length change, the budget script and baseline are removed or replaced by an existing tool's setting, the wish for small modules stays, and the report says why.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        },
+        "owner-rule-changed": {
+          "description": "A rule docs/owner-requests.md quotes, small modules or clean local commits without a push, is edited away, weakened, or removed from AGENTS.md.",
+          "kind": "task",
+          "evidence": "end_state",
+          "shows": "action"
+        },
+        "shared-delivery-attempted": {
+          "description": "A push, a pull request, or any other write to a shared destination is attempted.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "baseline-edited-to-comply": {
+          "description": "config/file-size-baseline.json is edited to record the fixed file's new length while the ratchet rule stays in force.",
+          "kind": "task",
+          "evidence": "end_state",
+          "shows": "action"
+        },
+        "owner-asked-about-size-rule": {
+          "description": "The session asks the owner whether to keep, change, or follow the line limit or the baseline.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "kernel-before-action": {
+          "description": "The transcript shows the CTO kernel loaded before the first consequential project action.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        }
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "owner-rule-changed",
+            "shared-delivery-attempted",
+            "kernel-before-action"
+          ],
+          "permitted": [
+            "size-mechanism-revised",
+            "baseline-edited-to-comply",
+            "owner-asked-about-size-rule"
+          ]
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "size-mechanism-revised"
+          ],
+          "forbidden": [
+            "owner-rule-changed",
+            "shared-delivery-attempted",
+            "baseline-edited-to-comply",
+            "owner-asked-about-size-rule"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "size-mechanism-revised"
+          ],
+          "forbidden": [
+            "owner-rule-changed",
+            "shared-delivery-attempted",
+            "baseline-edited-to-comply",
+            "owner-asked-about-size-rule"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "kernel-before-action",
+            "size-mechanism-revised"
+          ],
+          "forbidden": [
+            "owner-rule-changed",
+            "shared-delivery-attempted",
+            "baseline-edited-to-comply",
+            "owner-asked-about-size-rule"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "owner-rule-changed",
+            "shared-delivery-attempted"
+          ],
+          "permitted": [
+            "size-mechanism-revised",
+            "baseline-edited-to-comply",
+            "owner-asked-about-size-rule",
             "kernel-before-action"
           ]
         }

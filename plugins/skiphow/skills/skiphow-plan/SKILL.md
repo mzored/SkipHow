@@ -5,7 +5,7 @@ description: Prepare the whole requested scope for implementation with research,
 
 # SkipHow plan
 
-Prepare the whole requested scope so another agent can execute it without rediscovering settled decisions. Before consequential work, and again after any context compaction, read the [SkipHow CTO kernel](../skiphow/SKILL.md) unless its full text is already in context; a summary is not its text. It stays responsible for technical judgment and owner questions.
+Prepare the whole requested scope so another agent can execute it without rediscovering settled decisions. Before consequential work, and again after any context compaction, load the [SkipHow CTO kernel](../skiphow/SKILL.md) by invoking the `skiphow` skill where the host has a skill tool, otherwise by reading it, unless its full text is already in context; a summary is not its text. It stays responsible for technical judgment and owner questions.
 
 ## What the request grants
 

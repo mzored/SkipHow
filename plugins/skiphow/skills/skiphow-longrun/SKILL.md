@@ -5,7 +5,7 @@ description: Deliver an accepted epic, milestone, or issue set through delegated
 
 # SkipHow longrun
 
-Deliver every authorized outcome in the requested work set to its agreed destination. Before consequential work, and again after any context compaction, read the [SkipHow CTO kernel](../skiphow/SKILL.md) unless its full text is already in context; a summary is not its text. The lead stays the accountable CTO throughout.
+Deliver every authorized outcome in the requested work set to its agreed destination. Before consequential work, and again after any context compaction, load the [SkipHow CTO kernel](../skiphow/SKILL.md) by invoking the `skiphow` skill where the host has a skill tool, otherwise by reading it, unless its full text is already in context; a summary is not its text. The lead stays the accountable CTO throughout.
 
 ## Starting and resuming
 

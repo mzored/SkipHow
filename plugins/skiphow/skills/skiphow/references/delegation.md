@@ -38,7 +38,7 @@ Unless the host forks your whole conversation into it, a delegate starts without
 - The authority and restrictions it works under, relayed from the owner's grant and never wider.
 - Whether it may delegate further, and if so with which model, effort, and bound. The bound may be none.
 - When to stop and return: a blocking unknown, a product question, a protected action, or an assignment that outgrew its brief. An outgrown assignment returns its preserved work, evidence, and the scope left.
-- The return: compact status, the identity of the result such as a commit or tree, the evidence for it, and every finding and blocker.
+- The return: compact status, the identity of the result such as a commit or tree, the evidence for it, and, listed apart from the status, every finding and blocker.
 - The absolute path of the [kernel](../SKILL.md), and its Engineering standard section pasted verbatim into every implementation and review brief. Pasting it is the only reliable way the delegate gets that standard.
 
 Leave the method to the delegate unless the task fixes it. For long work, name the progress you expect to see and when to return if it stops; [diagnosis](diagnosis.md) covers stalled work. Commits alone do not show progress.
@@ -69,7 +69,7 @@ A return is data. Check each one against the current state and intent as it arri
 
 Keep decision facts inline and leave bulk such as logs and inventories in the host's working area, passed by reference. A small result needs no report file. A correction returns its changes, current evidence, and the findings and blockers still open, not the whole history.
 
-A delegate reports problems it finds outside its area to you rather than fixing or recording them itself. A problem a delegate returns is one you found: weigh it with the kernel's rule for findings and settle technical questions yourself instead of passing them to the owner.
+A delegate reports problems it finds outside its area to you rather than fixing or recording them itself. A problem a delegate returns is one you found. When you accept the return, settle each one under the kernel's rule for findings: fix it, fold it into planned work, record it with the reason it waits, or say why it is not a finding. Settle technical questions yourself instead of passing them to the owner.
 
 A handoff alone needs no pull request or publication. You choose the delivery units under [integration](integration.md), and they need not match the assignments.
 

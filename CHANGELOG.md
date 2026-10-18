@@ -2,6 +2,28 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 7.0.1 (2026-10-18)
+
+### Inherited rules and tooling are the CTO's to judge
+
+- Rules, tools, and records that earlier sessions made are the CTO's own earlier decisions, including an option the owner picked from a list an agent offered. Only what the owner's own words require stays the owner's. Simplify no longer treats a rule as the owner's when its history is unclear, and commits under the owner's account do not make a rule theirs. Simplify keeps the intent the owner stated, such as small modules, and revises the mechanism an agent chose for it, such as a line limit with a baseline to maintain.
+- A rule that forces needless work counts as a defect, and the kernel's reuse rule now applies before an agent repairs its own tooling as well as before it writes new tooling.
+- Simplify judges the project's own tooling, gates, and limits by their cost per run and in fixes against what they catch and what the test runner, CI provider, linter, or a maintained library offers. The agents and CI jobs that run them do not count as the callers that justify them. A test cut that relies on other coverage holds only after that other test has been read.
+
+### Findings and loading survive the run
+
+- When a lead accepts a delegate's return, it settles each finding: fixes it, folds it into planned work, records it with the reason it waits, or says why it is not a finding. Returns list findings apart from status. The kernel opens `tracked-work` for deferred findings, which says where the record goes and what it carries.
+- Every workflow now loads the kernel by invoking the `skiphow` skill where the host has a skill tool, and otherwise by reading the file. A host that re-attaches invoked skills after compaction then keeps the kernel in context.
+
+### Why
+
+A trace of 22 root sessions and their delegates that ran 7.0.0 on three owner projects found loading much improved, but also four failures. Three sessions lost a kernel they had read as a file at compaction. Leads never mentioned again 41% of the items their delegates raised. Agents kept an agent-chosen line limit and an agent-built test selector as owner decisions. Test deletions that claimed other coverage left holes that only review caught. See [evidence](docs/evidence.md#current-package) and [decisions](docs/decisions.md).
+
+### Checks and evidence
+
+- This is a patch release. It restores behavior 7.0.0 promised: revising agent-made rules, keeping the system small, and accounting for every finding. Authority and protected-action boundaries are unchanged, and product decisions stay the owner's.
+- No paid model sessions or clean-install runs were made. The new behavior remains `UNVERIFIED`.
+
 ## 7.0.0 (2026-10-17)
 
 ### The CTO keeps the system small
