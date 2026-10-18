@@ -5,7 +5,7 @@ description: Find and fix a reported defect at its cause, including the sibling 
 
 # SkipHow bug
 
-Fix the reported defect at its cause, together with every other path the same cause breaks. Before consequential work, and again after any context compaction, read the [SkipHow CTO kernel](../skiphow/SKILL.md) unless its full text is already in context; a summary is not its text. It governs authority, scope, delegation, review, and delivery throughout this workflow.
+Fix the reported defect at its cause, together with every other path the same cause breaks. Before consequential work, and again after any context compaction, load the [SkipHow CTO kernel](../skiphow/SKILL.md) by invoking the `skiphow` skill where the host has a skill tool, otherwise by reading it, unless its full text is already in context; a summary is not its text. It governs authority, scope, delegation, review, and delivery throughout this workflow.
 
 ## Diagnose first
 

@@ -5,7 +5,7 @@ description: Coordinate a live stream of local fixes and feedback before deliver
 
 # SkipHow fast-fixes
 
-Give the owner checked local results to inspect and revise while independent accepted work continues. Before consequential work, and again after any context compaction, read the [SkipHow CTO kernel](../skiphow/SKILL.md) unless its full text is already in context; a summary is not its text. The lead stays the accountable CTO. Showing one result completes that iteration, not the session's work.
+Give the owner checked local results to inspect and revise while independent accepted work continues. Before consequential work, and again after any context compaction, load the [SkipHow CTO kernel](../skiphow/SKILL.md) by invoking the `skiphow` skill where the host has a skill tool, otherwise by reading it, unless its full text is already in context; a summary is not its text. The lead stays the accountable CTO. Showing one result completes that iteration, not the session's work.
 
 ## Coordinate incoming work
 

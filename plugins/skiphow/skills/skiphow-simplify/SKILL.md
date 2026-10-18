@@ -5,7 +5,7 @@ description: Shrink an existing project by measuring it, removing code, tests, t
 
 # SkipHow simplify
 
-Make the owner's project smaller and cheaper to change without losing behavior a user or caller would notice. Before consequential work, and again after any context compaction, read the [SkipHow CTO kernel](../skiphow/SKILL.md) unless its full text is already in context; a summary is not its text. Its Engineering standard is the measure for every cut.
+Make the owner's project smaller and cheaper to change without losing behavior a user or caller would notice. Before consequential work, and again after any context compaction, load the [SkipHow CTO kernel](../skiphow/SKILL.md) by invoking the `skiphow` skill where the host has a skill tool, otherwise by reading it, unless its full text is already in context; a summary is not its text. Its Engineering standard is the measure for every cut.
 
 ## What the request grants
 
@@ -32,9 +32,11 @@ Look for these first, because they are where agent-built projects grow:
 
 For each candidate, ask what a user or caller would notice if it were gone. If nothing, it goes. Before removing a compatibility path, check for outside consumers that exist now. When a flag's live value is only visible in production, read it only within the kernel's limits for production reads, or leave the flag and say why.
 
+The agents and CI jobs that run the project's own tooling, gates, and limits are not the callers that justify them. Judge each, hot spots first, by what it costs per run and in fixes against what it catches and what the test runner, CI provider, linter, or a maintained library offers, checked in their current documentation; then replace, shrink, or keep it on that evidence.
+
 ## Keep the guards that protect
 
-Guards for money, security, customer data, and the release path stay, as [testing](../skiphow/references/testing.md#cleaning-up-tests-you-touch) describes. When such a guard has a bad shape, replace it with a good one in the same change rather than dropping the protection. For example, a test that greps a handler for a role check becomes a request without that role that the interface refuses.
+Guards for money, security, customer data, and the release path stay, as [testing](../skiphow/references/testing.md#cleaning-up-tests-you-touch) describes. When such a guard has a bad shape, replace it with a good one in the same change rather than dropping the protection. For example, a test that greps a handler for a role check becomes a request without that role that the interface refuses. A cut that relies on another test covering the same behavior holds only after you open that test and see it assert that behavior.
 
 ## Carry it through
 
@@ -44,7 +46,7 @@ Deliver the cuts in reviewable units, each one kind of removal with its tests, d
 
 ## The rules that made the waste
 
-Revise project instructions that earlier sessions wrote on their own judgment when they generated what you removed, such as a rule that every fix gets a test or that each run writes a report. Rules the owner asked for stay; propose the change to the owner with what the rule has cost. When you cannot tell who asked for a rule, check its history and the owner's messages, and treat it as the owner's if that settles nothing.
+Revise project instructions, limits, and tooling that earlier sessions chose when they generated what you removed or force needless work, such as a rule that every fix gets a test or that each run writes a report. A rule is the owner's only where their own words set it, in their messages, issues, or history; commits under the owner's account and their pick among technical options an agent offered do not make it theirs. Keep what the owner's words ask for, such as small modules, and revise the mechanism an agent chose for it, such as a line limit with a baseline to maintain. Rules the owner set stay; propose the change to the owner with what the rule has cost.
 
 ## Measure again and report
 

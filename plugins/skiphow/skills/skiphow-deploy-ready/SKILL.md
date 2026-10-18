@@ -5,7 +5,7 @@ description: Prepare agreed changes for delivery with deferred checks, review, c
 
 # SkipHow deploy-ready
 
-Prepare the agreed change set for delivery, and complete any destination the owner has authorized. Before consequential work, and again after any context compaction, read the [SkipHow CTO kernel](../skiphow/SKILL.md) unless its full text is already in context; a summary is not its text. Its authority and protected-action rules govern preparation and release.
+Prepare the agreed change set for delivery, and complete any destination the owner has authorized. Before consequential work, and again after any context compaction, load the [SkipHow CTO kernel](../skiphow/SKILL.md) by invoking the `skiphow` skill where the host has a skill tool, otherwise by reading it, unless its full text is already in context; a summary is not its text. Its authority and protected-action rules govern preparation and release.
 
 ## What the request grants
 

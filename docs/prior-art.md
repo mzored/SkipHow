@@ -116,6 +116,21 @@ An idea from another project becomes a focused method or a kernel invariant only
 
 The reasoning behind each rule that survived is in [decision history](decisions.md), and what real runs have and have not shown is in [current evidence](evidence.md).
 
+## Rules and tooling taken as given in 7.0.1
+
+Read on 2026-10-18 at the revision in the link, because the owner asked whether agents had begun to work like Matt
+Pocock's [retro](https://github.com/mattpocock/skills/blob/a7d038f6bf7f01b516408e95e2fb56e0b338fa6f/skills/engineering/retro/SKILL.md)
+skill. They had not, and SkipHow had never taken it. The field question was narrower: agents kept agent-made rules and
+tooling because nothing marked the moment they paid for them and simplify called unclear rules the owner's. Retro
+shares the view that friction in a session is evidence about the environment, that an existing check left unwired or
+broken is the finding rather than a reason to build another, and that steering text which changes nothing should go.
+SkipHow already held those ideas in the kernel; 7.0.1 makes them apply when an agent repairs its own tooling or does
+work only a rule demands. It does not take the user-invoked retrospective that presents candidates to the user, because
+here those findings are the CTO's to act on and the owner-invoked simplify already covers a periodic pass. It does not
+take "default to building the check over writing the rule" or a separate coding-standards file for reviewers, because
+a custom check and a new standing file are additions that stay and cost the owner; the kernel sends code shape to the
+linter or type checker the project already has.
+
 ## Keeping the system small in 7.0.0
 
 Read on 2026-10-17 at the revisions in the links. The question was why two governed projects filled with tests,

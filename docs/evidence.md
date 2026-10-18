@@ -5,6 +5,24 @@ Current package behavior remains `UNVERIFIED` unless a qualifying receipt names 
 
 ## Current package
 
+7.0.1 follows a maintainer trace of 22 root sessions and their delegates that ran 7.0.0,
+mostly the simplify workflow, on three owner projects on both hosts. Loading had improved:
+every root loaded the kernel, its workflow, and several references, and every Claude
+implementer received the engineering standard. Four failures remained. Three sessions
+read the kernel as a file and lost it at compaction without reading it again, while three
+that invoked the skill had it re-attached after every compaction. Leads never mentioned
+again 51 of the 124 items their delegates raised, although none of the 43 items the leads
+deferred themselves was lost. Agents kept an agent-chosen line limit with its baseline
+ratchet and patched an agent-built test selector, treating both as owner decisions:
+the owner had picked from an agent's menu, every commit carried the owner's account,
+and simplify told agents to treat a rule as the owner's whenever history was unclear.
+Test deletions justified by coverage elsewhere left real holes that only review caught.
+7.0.1 makes workflows invoke the kernel skill where the host can, has leads settle each
+returned finding when they accept a return, counts only the owner's own words as owner
+rules, and makes needless work forced by a rule, and repairs to the project's own
+tooling, the moment to judge them. The trace is field evidence, not a receipt, and the
+new behavior is `UNVERIFIED`.
+
 7.0.0 rewrites the package so the CTO keeps the owner's system small. A maintainer trace
 of the same two owner projects, run under 4.3.0 through 6.3.5 across about 265 root
 sessions and 1,900 delegates, found test and tooling code that grew several times faster
