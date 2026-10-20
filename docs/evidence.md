@@ -105,8 +105,9 @@ Each line asks about behavior the current package ships. None has a qualifying r
 - Whether workflows reload the kernel after compaction, and a genuinely compacted or resumed session reconstructs outcome, authority, live state, and valid evidence.
 - Whether a kernel rule is followed. One installed session breached the worktree-placement rule with it in context.
 - Why playbooks go unread in long installed sessions. Plan mode is refuted as the cause.
+- Whether act-based reference triggers, in place of mandatory method routing, change what a run opens.
 - Whether technical design opens before a run adds a dependency, module, abstraction, or tooling, whether a new project gets the questions about unstated constraints that would change a choice, and what a run does on a request to improve an existing structure.
-- Whether review scales to consequence and stops when a round finds nothing that qualifies. A fixed known-bad reviewer fixture, the one-box two-line shipping case, is designed and not run.
+- Whether review scales to consequence, takes an independent read from a context that did not make the decision, and stops when a round finds nothing that qualifies. A fixed known-bad reviewer fixture, the one-box two-line shipping case, is designed and not run.
 - Whether diagnosis stops when another attempt would add no new information.
 - Whether the asking rule over-asks. Sixteen negative-control sessions are a counterweight, not a bound.
 - Whether the follow-up round after an owner answer is reliable on Codex.
@@ -116,7 +117,7 @@ Each line asks about behavior the current package ships. None has a qualifying r
 - Provenance-aware authority, records as untrusted data, the repository hook boundary, read-only review that never becomes repair, and destination-relative completion.
 - The iteration shape: show a reversible change, then stop without a commit, push, or tracker item until delivery is asked for. Designed, not run.
 - Recovery when a merged result breaks a shared target.
-- Whether status reconciliation reconstructs before it mutates, and a change request retires integrated leftovers nothing holds.
+- Whether status reconciliation reconstructs before it mutates, changes only authorized records, binds CI to its revision and destination, and whether a change request retires integrated leftovers nothing holds.
 - Whether the plan workflow saves its plan in the authorized tracker.
 - The direction rule when the result waits on the owner. A fixture with one owner gate, one independent task, and one planted false prerequisite is designed, not run.
 - Whether delegates stay read-only without verified isolation, and a run leaves a live session's lane alone.
