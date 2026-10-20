@@ -98,12 +98,14 @@ Each line asks about behavior the current package ships. None has a qualifying r
 - Whether a lead revises an agent-made rule or tool that costs more than it protects, and keeps only the owner's own words as owner rules.
 - Whether a lead settles every finding a delegate returns, and compact handoffs keep the lead's context small.
 - Whether waiting on host events instead of repeated status reads reduces root context traffic.
+- Whether a lengthy lane defines healthy progress and treats a breach as a reason to continue, redirect, stop, or report a blocker.
+- Whether a dispatch brief carries the outcome, authority, restrictions, delegation bound, return conditions, and kernel material `delegation` requires.
 - Whether the simplify workflow shrinks a project and keeps its accepted behavior and guards.
 - Workflow selection, cross-skill loading, and execution for bug, plan, longrun, deploy-ready, fast-fixes, and simplify.
 - Whether workflows reload the kernel after compaction, and a genuinely compacted or resumed session reconstructs outcome, authority, live state, and valid evidence.
 - Whether a kernel rule is followed. One installed session breached the worktree-placement rule with it in context.
 - Why playbooks go unread in long installed sessions. Plan mode is refuted as the cause.
-- Whether technical design opens before a run adds a dependency, module, abstraction, or tooling.
+- Whether technical design opens before a run adds a dependency, module, abstraction, or tooling, and whether a new project gets the questions about unstated constraints that would change a choice.
 - Whether review scales to consequence and stops when a round finds nothing that qualifies. A fixed known-bad reviewer fixture, the one-box two-line shipping case, is designed and not run.
 - Whether diagnosis stops when another attempt would add no new information.
 - Whether the asking rule over-asks. Sixteen negative-control sessions are a counterweight, not a bound.

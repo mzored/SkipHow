@@ -324,7 +324,7 @@ The package carries no model IDs, cost tables, host tiers, dated host snapshots,
 
 ### Public receipts carry no private data
 
-Public receipts exclude account and authentication metadata, credential formats, private paths, and raw or encoded host identifiers. Pseudonyms keep per-run usage and correlation.
+Public receipts exclude account and authentication metadata, known credential formats, private paths, raw host identifiers, and encoded home-derived directory names. Pseudonyms keep per-run usage and correlation.
 
 **Why.** Literal path replacement once left account metadata in a retained trace, and no filter can certify arbitrary prose.
 
