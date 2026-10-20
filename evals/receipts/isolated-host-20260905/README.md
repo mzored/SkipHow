@@ -28,6 +28,6 @@ receipt privacy and does not change the runtime behavior tested here.
 
 Account quota and authentication metadata are omitted, host identifiers are
 consistently pseudonymized, and private home prefixes are replaced. Per-run usage
-and fixture evidence remain available. The [privacy remediation record](../../../docs/evidence.md#receipt-privacy-remediation)
+and fixture evidence remain available. The [privacy remediation record](https://github.com/mzored/SkipHow/blob/72aef4540d30d3639a2f63af6663971345c6dc5a/docs/evidence.md#receipt-privacy-remediation)
 states the checked scope and the unresolved GitHub PR-reference/cache purge;
 sanitization is not a guarantee that every historical copy is private-data-free.

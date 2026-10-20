@@ -21,8 +21,8 @@ money, security, customer data, and the release path stay.
 ## Is it for you?
 
 Use SkipHow when you want the agent to own engineering through a verified result
-while you decide product behavior, scope, cost, risk, privacy, and rollout. Technical
-fluency does not matter; ownership of the outcome does.
+while you decide product behavior, scope, cost, risk, privacy, and rollout. You do
+not need to read code. You need to own the outcome.
 
 If your base agent already does this reliably, another instruction layer adds little.
 A specification framework fits an owner who wants to approve the development method.
@@ -104,10 +104,21 @@ remain `UNVERIFIED`. See the [evidence ledger](docs/evidence.md) and the
 
 ## Documentation
 
-Start with the [documentation index and repository map](docs/README.md).
-It links the owner guide, FAQ, product contract, design, current decisions, prior
-art, evaluation corpus, and historical archives.
+For owners:
 
-For development, read [Contributing](.github/CONTRIBUTING.md). Report vulnerabilities
-through the [private security process](SECURITY.md). Release notes are in the
-[changelog](CHANGELOG.md).
+- [Owner guide](docs/guide.md): install, activation, workflows, what a request allows, reports, and common questions.
+- [Evidence](docs/evidence.md): which claims real runs have shown and which stay `UNVERIFIED`.
+- [Security and host support](SECURITY.md): private reporting and the host capability matrix.
+
+For contributors:
+
+- [Owner-outcome contract](docs/outcome-contract.md): what every implementation must deliver.
+- [Decisions](docs/decisions.md): live decisions, why they stand, and what would reopen them.
+- [Prior art](docs/prior-art.md): what SkipHow took from other projects and what it refused.
+- [Contributing](.github/CONTRIBUTING.md) and [repository instructions](AGENTS.md).
+- [Evaluation corpus](evals/README.md): cases, fixtures, and retained receipts.
+- [Changelog](CHANGELOG.md): what changed in each release and why.
+
+Earlier release narratives and documentation live in git history. The snapshot at
+commit [`72aef45`](https://github.com/mzored/SkipHow/tree/72aef4540d30d3639a2f63af6663971345c6dc5a/docs)
+holds the full pre-cleanup ledgers.
