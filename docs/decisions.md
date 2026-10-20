@@ -60,7 +60,7 @@ The `skiphow` kernel governs every request about the current project. Six option
 
 ### Invariants in the kernel, method in playbooks
 
-The always-loaded kernel holds authority, owner decisions, the engineering standard, custody, delegate obligations, and completion. Method lives in the playbook whose trigger names the act. The kernel's one point-of-use duty is to read `delegation` and set each delegate's route before dispatch.
+The always-loaded kernel holds authority, owner decisions, the engineering standard, custody, delegate obligations, direction when the result waits on the owner, and completion. Method lives in the playbook whose trigger names the act. The kernel's one point-of-use duty is to read `delegation` and set each delegate's route before dispatch.
 
 **Why.** Correct behavior must not depend on opening an optional file, and small work should not inherit a fixed workflow. Claude Code cuts a failing command's output to about 10,000 characters, agents read skill files in chained commands that fail, and successful output shows far more, so the failing path binds. 545 of 569 recorded shell reads of the kernel were unnumbered, so [`check.py`](../scripts/check.py) caps raw characters at 9,900.
 
@@ -166,7 +166,7 @@ The simplify workflow measures the project, removes what does not pay through re
 
 The plan workflow prepares the whole requested scope, keeps the product interview open while answers are pending, and returns a short launch for the fitting workflow. Only the owner reduces scope, and an execution workflow the owner chose is kept.
 
-**Why.** A recorded question is not finished preparation, and a ready task does not authorize a smaller scope. One outcome can hide uneven work, so the plan reviews actual one-agent workload. Host controls govern waiting, and a mature path needs no foundation stage.
+**Why.** A recorded question is not finished preparation, and a ready task does not authorize a smaller scope. One outcome can hide uneven work, so the plan reviews actual one-agent workload. Host controls govern waiting. A mature path needs no foundation stage, and file, line, and acceptance counts set no universal limit.
 
 **Status.** `Contract`. Behavioral improvement `UNVERIFIED`.
 
@@ -216,7 +216,7 @@ An assignment's size counts implementation, verification, and review. A long ass
 
 ### Handoffs stay compact and keep every finding
 
-Bulky artifacts travel by reference. A correction carries current evidence and the findings still open. A return lists findings apart from its status, and the lead settles each one on acceptance. Shortened check output keeps the check's own exit status.
+Bulky artifacts travel by reference. A correction carries current evidence and the findings and blockers still open. Every finding, blocker, and uncertainty survives the handoff. A return lists findings apart from its status, and the lead settles each one on acceptance. Shortened check output keeps the check's own exit status.
 
 **Why.** In field sessions leads never mentioned again 51 of 124 items their delegates raised. A lead can read a return-size rule without passing it on, and a filter can succeed while the check fails.
 
@@ -228,7 +228,7 @@ Bulky artifacts travel by reference. A correction carries current evidence and t
 
 ### All project engineering state is the lead's
 
-Every branch, worktree, service, and uncommitted change in the project is the lead's, made by this session, an earlier one, or a delegate, and work is done only when verified at its authorized destination. A change request retires integrated, unheld leftovers and superseded attempts, naming unique commits. Foreign uncommitted changes, live lanes, and anything under a read-only request stay untouched.
+Every branch, worktree, checkout, checkpoint, running service, and uncommitted change in the project is the lead's, made by this session, an earlier one, or a delegate, and work is done only when verified at its authorized destination. A change request retires integrated, unheld leftovers and superseded attempts, naming unique commits. Foreign uncommitted changes, live lanes, and anything under a read-only request stay untouched.
 
 **Why.** The owner writes no code, so state reported as someone else's is false and hands a decision to the one person who cannot make it. Retiring recoverable state is engineering, not material deletion: Git recovers a deleted branch, and nothing recovers an uncommitted file. Liveness shows in moving changes, an open review, a live record, or a host-listed session, never in a name or timestamp.
 

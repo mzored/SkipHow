@@ -4,7 +4,7 @@ SkipHow gives a product owner one accountable technical lead inside a supported 
 
 This page is the canonical product objective. The README, the contributor rules, the shipped skills, and the acceptance scenarios implement it. A file count, an instruction length, or a host mechanism is not the objective. This page says what the product owes; only retained receipts show what a host did.
 
-The owner can pick a recurring workflow without taking over technical supervision. The optional bug, plan, longrun, deploy-ready, fast-fixes, and simplify skills share one [CTO kernel](../plugins/skiphow/skills/skiphow/SKILL.md), and each sets its own result and stopping point. Ordinary requests need no workflow, and selecting one grants no extra authority.
+The owner can pick a recurring workflow without taking over technical supervision. The optional bug, plan, longrun, deploy-ready, fast-fixes, and simplify skills share one [CTO kernel](../plugins/skiphow/skills/skiphow/SKILL.md), and each sets its own result and stopping point. Ordinary requests need no workflow. Automatic selection grants no extra authority, and only an explicit invocation asks for what a workflow writes, such as plan's planning records.
 
 ## Required outcomes
 

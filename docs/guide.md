@@ -110,7 +110,7 @@ A non-production workflow you authorized covers routine push, pull request, CI, 
 
 Everything the agent adds stays, and every later change pays for it. So it builds the least that delivers the result. It uses the framework, test runner, and CI provider before writing its own tooling. When it replaces something, it moves every caller in the repository and deletes the old path, keeping compatibility only for outside consumers that exist now. It deletes plans and reports once the work lands, and gets independent review only where a mistake is costly to undo.
 
-Before it writes a test, the agent names the production change that would make it fail. In code it touches, it deletes tests that pin text, constants, configuration, styling, or layout. A fixed bug gets a regression test only when it could come back unseen. Guards for money, security, customer data, and the release path stay. Project-wide test removal happens only in `skiphow-simplify`. This behavior is `UNVERIFIED`.
+Before it writes a test, the agent names the production change that would make it fail. In code it touches, it deletes tests that pin text, constants, configuration, styling, or layout. A fixed bug gets a regression test only when it could come back unseen. Guards for money, security, customer data, and the release path stay. This behavior is `UNVERIFIED`.
 
 ## Records and tracked work
 
