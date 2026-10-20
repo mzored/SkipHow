@@ -58,7 +58,7 @@ The CTO instrument derives evidence per scenario and reports suite completion on
 
 ## Observed behavior
 
-Each row is one claim about one identified set of records. For a 4.x row, `python scripts/claim_eligibility.py evals/receipts/<directory>` prints the status and evidence. Every other claim in those `claims.json` files stays `UNVERIFIED`, including every `comparative_benefit`. The 2.x transcripts are private and were not retained, so their rows cite the opening words of a section heading in the historical ledger.
+Each row is one claim about one identified set of records. For a 4.x row, `python scripts/claim_eligibility.py evals/receipts/<directory>` prints the status and evidence. Every other claim in those `claims.json` files stays `UNVERIFIED`, including every `comparative_benefit`. The 2.x transcripts are private and were not retained, so their rows cite the opening words of a section heading in the historical ledger. Those rows predate the rules above and cannot be rechecked against them.
 
 | Claim | Package | Host | Label | Receipt |
 | --- | --- | --- | --- | --- |
@@ -77,7 +77,7 @@ Each row is one claim about one identified set of records. For a 4.x row, `pytho
 | Plan mode changed nothing: 3 of 3 opened `delegation` before the first spawn on both arms | 2.16.0 | Claude Code 2.1.259, isolated | `Observed` | "Plan mode does not explain" |
 | Host worktree isolation reported success into the shared checkout; a reset cost a peer session 13 files | 2.1.2 | private installed session | `Observed` | "Two sessions in one checkout" |
 | None of 18 installed 2.x sessions opened a method | 2.x | private installed sessions | `Observed` | "Which methods load" |
-| The follow-up product round after an owner answer held on Claude and in 1 of 3 Codex sessions | 2.4.x | both | `Observed` | "The round does not close" |
+| Restraint while owner answers were pending; the follow-up product round after an answer held on Claude and in 1 of 3 Codex sessions | 2.4.x | both | `Observed` | "The round does not close" |
 | No question when acceptance was fully stated | 2.4.x | both | `Observed` | "Work that must not produce a question" |
 | An intermittent failure fixed at its cause; a passing contractor fix rejected and the real cause fixed | 2.4.x | both | `Observed` | "An intermittent failure is a defect"; "A risky result is confirmed independently" |
 | Six-unit plan with one dependency edge; no delegate when asked to build | 2.4.x | both | `Observed` | "Large work" |
@@ -97,6 +97,7 @@ Each line asks about behavior the current package ships. None has a qualifying r
 - Whether a change extends the code that owns a behavior, and a replacement deletes the old path, shims, and stale guidance.
 - Whether a lead revises an agent-made rule or tool that costs more than it protects, and keeps only the owner's own words as owner rules.
 - Whether a lead settles every finding a delegate returns, and compact handoffs keep the lead's context small.
+- Whether waiting on host events instead of repeated status reads reduces root context traffic.
 - Whether the simplify workflow shrinks a project and keeps its accepted behavior and guards.
 - Workflow selection, cross-skill loading, and execution for bug, plan, longrun, deploy-ready, fast-fixes, and simplify.
 - Whether workflows reload the kernel after compaction, and a genuinely compacted or resumed session reconstructs outcome, authority, live state, and valid evidence.

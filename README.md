@@ -10,7 +10,7 @@ model, tools, permissions, sessions, and subagents.
 SkipHow also keeps the system you own small. Everything the agent adds stays, and
 you pay for it in every later change. So it builds the least that delivers the
 result, writes a test only for a break a user or caller would notice, moves every
-caller instead of leaving a compatibility shim, and asks for independent review only
+caller in the repository instead of leaving a compatibility shim, and asks for independent review only
 where a mistake is expensive. It removes what no longer pays for itself. Guards for
 money, security, customer data, and the release path stay.
 

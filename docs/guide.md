@@ -1,6 +1,6 @@
 # Owner guide
 
-Tell SkipHow what should change for the people who use your product. You do not name a library, design a schema, write tickets, or pick an agent workflow. The agent asks you only about product choices and protected actions.
+Tell SkipHow what should change for the people who use your product. You do not name a library, design a schema, or write tickets. A workflow is optional, and ordinary requests need none. The agent asks you only about product choices and protected actions.
 
 This guide says what the shipped instructions tell the agent to do. [Current evidence](evidence.md) says which of those behaviors real runs have shown.
 
@@ -108,7 +108,7 @@ A non-production workflow you authorized covers routine push, pull request, CI, 
 
 ## What the agent leaves in your project
 
-Everything the agent adds stays, and every later change pays for it. So it builds the least that delivers the result. It uses the framework, test runner, and CI provider before writing its own tooling. When it replaces something, it moves every caller and deletes the old path. It deletes plans and reports once the work lands, and gets independent review only where a mistake is costly to undo.
+Everything the agent adds stays, and every later change pays for it. So it builds the least that delivers the result. It uses the framework, test runner, and CI provider before writing its own tooling. When it replaces something, it moves every caller in the repository and deletes the old path, keeping compatibility only for outside consumers that exist now. It deletes plans and reports once the work lands, and gets independent review only where a mistake is costly to undo.
 
 Before it writes a test, the agent names the production change that would make it fail. In code it touches, it deletes tests that pin text, constants, configuration, styling, or layout. A fixed bug gets a regression test only when it could come back unseen. Guards for money, security, customer data, and the release path stay. Project-wide test removal happens only in `skiphow-simplify`. This behavior is `UNVERIFIED`.
 
@@ -168,7 +168,7 @@ Start a new session. Then call it by name, `$skiphow` in Codex or `/skiphow:skip
 
 ### Does it run work in parallel?
 
-It splits work with more than one checkable result into parts, with only real dependencies between them. Parts that change the same file or schema run one after another. A delegate writes only from its own verified checkout. Without one, delegates only read. Running parts at once is the intent, and no run has shown it, so it stays `UNVERIFIED`.
+It works directly when that is cheaper and splits work only when the split buys something, with only real dependencies between the parts. Parts that change the same file or schema run one after another. A delegate writes only from its own verified checkout. Without one, delegates only read. Running parts at once is the intent, and no run has shown it, so it stays `UNVERIFIED`.
 
 ### How much context does it use?
 

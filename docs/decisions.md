@@ -50,7 +50,7 @@ The lead looks across the authorized project and fixes confirmed findings at saf
 
 ### One CTO kernel with optional workflows
 
-The `skiphow` kernel governs every request. Six optional workflows add owner-chosen patterns: bug, plan, longrun, deploy-ready, fast-fixes, and simplify. Each links the kernel by relative path instead of copying it.
+The `skiphow` kernel governs every request about the current project. Six optional workflows add owner-chosen patterns: bug, plan, longrun, deploy-ready, fast-fixes, and simplify. Each links the kernel by relative path instead of copying it.
 
 **Why.** The owner wants recurring work patterns under one CTO, and ordinary requests need none. A link is not enforced loading, and a linked file reaches context whole only when it fits one tool view.
 
@@ -112,7 +112,7 @@ Every request loads a standard that counts everything added as a permanent cost.
 
 ### Change the owner of a behavior and delete what it replaces
 
-A change extends the code that owns a behavior. A replacement moves every in-repository caller and deletes the old path, shims, and stale guidance, keeping compatibility only for outside consumers that exist now. The linter or type checker enforces ownership, never a test that reads source.
+Simplification keeps the accepted behavior at the lowest total cost. A change extends the code that owns a behavior. A replacement moves every in-repository caller and deletes the old path, shims, and stale guidance, keeping compatibility only for outside consumers that exist now. Where one implementation must keep owning a behavior, the code makes that owner obvious, and the linter or type checker enforces it, never a test that reads source.
 
 **Why.** Debt builds up one locally reasonable change at a time, and audits found it in kept shims, copied rules, and stale guidance. Advice to enforce ownership with failing checks such as import-rule tests produced source-reading tests in the field.
 
@@ -142,7 +142,7 @@ When a failure repeats, the lead fixes its shared cause and the other instances,
 
 ### Design the journey and reuse maintained compositions
 
-The agent uses available skills when they pay, designs the affected journey in its product context, and reuses maintained compositions, not only primitives. Plans record those decisions apart from the capability that produced them.
+The agent uses available skills and tools when they pay, designs the affected journey in its product context, and reuses maintained compositions, not only primitives. Plans record those decisions apart from the capability that produced them.
 
 **Why.** An implementation recreated part of an established composition despite a reuse requirement. An executing host may lack the planner's plugins, and a project with no design system still needs coherent shared pieces.
 
@@ -216,7 +216,7 @@ An assignment's size counts implementation, verification, and review. A long ass
 
 ### Handoffs stay compact and keep every finding
 
-Bulky artifacts travel by reference. A return lists findings apart from its status, and the lead settles each one on acceptance. Shortened check output keeps the check's own exit status.
+Bulky artifacts travel by reference. A correction carries current evidence and the findings still open. A return lists findings apart from its status, and the lead settles each one on acceptance. Shortened check output keeps the check's own exit status.
 
 **Why.** In field sessions leads never mentioned again 51 of 124 items their delegates raised. A lead can read a return-size rule without passing it on, and a filter can succeed while the check fails.
 
@@ -228,7 +228,7 @@ Bulky artifacts travel by reference. A return lists findings apart from its stat
 
 ### All project engineering state is the lead's
 
-Every branch, worktree, service, and uncommitted change in the project is the lead's, whoever made it, and work is done only when verified at its authorized destination. A change request retires integrated, unheld leftovers and superseded attempts, naming unique commits. Foreign uncommitted changes, live lanes, and anything under a read-only request stay untouched.
+Every branch, worktree, service, and uncommitted change in the project is the lead's, made by this session, an earlier one, or a delegate, and work is done only when verified at its authorized destination. A change request retires integrated, unheld leftovers and superseded attempts, naming unique commits. Foreign uncommitted changes, live lanes, and anything under a read-only request stay untouched.
 
 **Why.** The owner writes no code, so state reported as someone else's is false and hands a decision to the one person who cannot make it. Retiring recoverable state is engineering, not material deletion: Git recovers a deleted branch, and nothing recovers an uncommitted file. Liveness shows in moving changes, an open review, a live record, or a host-listed session, never in a name or timestamp.
 
@@ -260,7 +260,7 @@ A disposable failed merge may stay for diagnosis. The lead contains or restores 
 
 ### Verify the final state once and reuse the pass
 
-Verification checks the final state at the interface callers use. Every role reuses a pass for the same command, tree, and environment, and reruns only on changed inputs, an unverifiable result, or a named doubt. Slow or flaky suites get the runner's and CI provider's native features before custom tooling.
+Verification checks the final state at the interface callers use. Every role reuses a pass for the same command, tree, and environment, and reruns only on changed inputs, an unverifiable result, or a named doubt. Slow or flaky suites are measured and fixed at the layer that costs the time, with the runner's and CI provider's native features before custom tooling.
 
 **Why.** Releases repeated equivalent gates, and wording that blessed building test selection preceded custom selectors and queues in both governed projects. A different tree still needs its own evidence, including revision-bound CI.
 
