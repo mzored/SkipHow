@@ -6,354 +6,79 @@ SkipHow exists because I used the popular agent frameworks on my own work first 
 
 | Project | Mechanism kept or studied | Boundary SkipHow chose instead |
 | --- | --- | --- |
-| [Superpowers](https://github.com/obra/superpowers) | Instruction-led orchestration, isolated review, bounded repair, safe worktree and conflict practice | Adaptive method selection instead of mandatory brainstorming, design approval, planning, TDD, and review stages |
-| [Matt Pocock's skills](https://github.com/mattpocock/skills) | Small methods, semantic discovery, diagnosis driven by an observable loop | No setup interview, named-invocation orchestration, or owner-visible spec and ticket chain |
+| [Superpowers](https://github.com/obra/superpowers) | Scoped re-review, worktree practice, naming the break a test would catch, checking a finding before acting on it, compact delegate returns | Adaptive method selection instead of mandatory brainstorming, design approval, planning, TDD, and review stages |
+| [Matt Pocock's skills](https://github.com/mattpocock/skills) | Small methods, the question frontier, diagnosis from a feedback loop, tests through the caller's interface, the deletion test, vertical slices | No setup interview, no owner-operated spec and ticket chain, no candidate menus |
 | [Paperclip](https://github.com/paperclipai/paperclip) | External task state, idempotent reconciliation, dependency semantics | No server, task database, company model, or dashboard |
 | [OpenSpec](https://github.com/Fission-AI/OpenSpec) | Stating intent clearly for a material contract change; thin host packaging | No proposal, specification, design, and task artifacts for every change |
-| [BMAD](https://github.com/bmad-code-org/bmad-method) | One entry point; planning depth chosen from the work | No personas, menus, repeated handoffs, or standing ledgers |
+| [BMAD](https://github.com/bmad-code-org/bmad-method) | One governing entry; planning depth chosen from the work | No personas, menus, repeated handoffs, or standing ledgers |
 | [GSD](https://github.com/open-gsd/gsd-core) | Fresh context per unit, dependency-aware parallelism, proportional depth | No large command tree, mandatory phases, or parallel state files |
 | [Mesa](https://github.com/msoedov/mesa) | Atomic ownership, event-driven wake-up | No fixed roles, embedded tracker, or company simulation |
-| [Autonomous PM](https://github.com/mlobo2012/autonomous-pm-plugin) | Provenance and separation of facts from assumptions | No standing personas or mandatory scoring |
-| [Ponytail](https://github.com/dietrichgebert/ponytail) | Sufficient reuse, concrete complexity findings, and regression probes beyond the reported path | Complete accepted behavior and total cost govern simplification; no line-count objective, mode, hook, or debt ledger |
+| [Autonomous PM](https://github.com/mlobo2012/autonomous-pm-plugin) | Keeping the owner's statements, proposals, and assumptions apart | No standing personas or mandatory scoring |
+| [Ponytail](https://github.com/dietrichgebert/ponytail) | Sufficient reuse, concrete complexity findings, fixes checked beyond the reported path, replacements that finish their callers | Accepted behavior and total cost govern simplification; no line-count objective, mode, hook, or debt ledger |
+| [Addy Osmani's agent skills](https://github.com/addyosmani/agent-skills) | Delete an abstraction before polishing it; a removal takes its tests and docs; stop when doubt stops producing information | No slash-command lifecycle |
+| [claude-flow](https://github.com/ruvnet/ruflo), now Ruflo | Parallel reads are safe and parallel writes are not, so one writer per checkout | No coordination runtime |
+| [Anthropic's skill authoring guidance](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices) | Leave out what a capable model already knows; keep the skill short | A character limit per file, because a shell read cuts long files |
 
 ## What went wrong for me
 
-Every one of these got something right. The problem was consistent and it was not quality.
+Every one of these got something right. The problem was consistent, and it was not quality.
 
 They ask the person who owns the product to operate the software process. I was choosing between `/plan`, `/spec` and `/implement` before I had finished saying what I wanted. I was approving ticket granularity, spec wording and test seams for changes I could describe in one sentence. On a small fix the ceremony cost more than the fix.
 
-Users of the closest project reported the same thing in its tracker. Each of the three is a user report, not a maintainer statement or a project position: on 2026-09-04 the GitHub API gave `author_association: NONE` for all three authors, and all three issues were still open. They show what some users ran into, not a consensus of the project:
+Users of the closest project reported the same thing. These are user reports, not a project position: on 2026-09-04 the GitHub API gave `author_association: NONE` for all three authors, and all three issues were open.
 
-- [issue #962](https://github.com/mattpocock/skills/issues/962) reports enum values and architecture terms shown to nontechnical users, and proposes asking about visible outcomes before recording the technical mapping.
-- [issue #883](https://github.com/mattpocock/skills/issues/883) reports blocking questions from setup, TDD, review and implementation that deadlock when no human is attached.
-- [issue #885](https://github.com/mattpocock/skills/issues/885) reports missing completion and escalation seams when the skills run under an external orchestrator.
+- [Issue #962](https://github.com/mattpocock/skills/issues/962) reports enum values and architecture terms put to nontechnical users. SkipHow adopted its fix: ask about the visible outcome, then map the answer to the technical term.
+- [Issue #883](https://github.com/mattpocock/skills/issues/883) reports blocking questions from setup, TDD, review and implementation that deadlock when no human is attached.
+- [Issue #885](https://github.com/mattpocock/skills/issues/885) reports missing completion and escalation seams when the skills run under an external orchestrator.
 
-So the gap is not that the methods are bad. It is that the owner is expected to drive them.
+So the methods were fine. The owner was the one expected to drive them.
 
 ## What SkipHow does instead
 
-The owner kernel keeps authority, autonomy, preservation of unrelated work and honest completion in context at all times. The same agent consults a focused method where the uncertainty, risk, duration, observed failure or repository requirement in front of it makes that guidance materially useful, and not merely because the topic came up. Methods are not routes, stages, commands or personas, and the owner never picks one.
+One CTO kernel stays in context on every request about the project. It holds authority, owner decisions, an engineering standard that keeps the owner's system small, custody of engineering state, and honest completion. The agent opens a focused playbook when the act in front of it calls for one: a test to write, a change to review, work to split, a branch to integrate. Playbooks are not routes, stages, commands or personas. The owner can pick an optional workflow such as plan, bug, or simplify, and the CTO still owns the engineering inside it.
 
-That is orchestration policy, not an execution runtime. SkipHow shapes how the host agent chooses and coordinates the work. Claude Code or Codex runs the model, tools, sessions and any subagents. A separate control plane, where one exists, owns durable workers, queues, scheduling and budgets.
+That is orchestration policy. Claude Code or Codex runs the model, tools, sessions and subagents.
 
-That leaves a different division of labour. You decide visible behavior, priority, cost, risk, privacy and rollout. SkipHow decides libraries, schemas, tests, branches, decomposition and review, and comes back only when your answer would change one of your six, when an action needs a grant only you can give, when only a person can do it, or when something outside the project blocks the result.
+That leaves a different division of labour. You decide what people will see, scope, priority, cost, risk, privacy and rollout. SkipHow decides libraries, schemas, tests, branches, decomposition and review. It comes back to you only for an open product choice, an action that needs your grant, work only a person can do, or a blocker outside the project.
 
 ## The primary influence, and the licence
 
-The version-by-version paragraphs below are historical: they record what each release read and adapted at the time, and a rule they mention may since have moved or been removed. The shipped text is the authority on what ships now.
+[Matt Pocock's skills](https://github.com/mattpocock/skills) is the main influence. It showed that engineering guidance splits into small disciplines, and SkipHow keeps that modularity inside one portable owner skill without copying the package layout. The repository is MIT licensed. The adapted paths and the inspected revision are in [`SOURCES.json`](../plugins/skiphow/SOURCES.json), and the package carries the licence and copyright in [`THIRD_PARTY_NOTICES.md`](../plugins/skiphow/THIRD_PARTY_NOTICES.md). Every idea taken from the other projects is written in SkipHow's own words, with no source text or code. Outside agent tooling, the plan workflow's thin first slice comes from Hunt and Thomas's [tracer bullets](https://www.artima.com/articles/tracer-bullets-and-prototypes), and refactoring in small reviewable units from [Martin Fowler](https://martinfowler.com/bliki/OpportunisticRefactoring.html) and [Google's review practice](https://google.github.io/eng-practices/review/developer/small-cls.html).
 
-[Matt Pocock's skills](https://github.com/mattpocock/skills) is the main modular-method influence on SkipHow 2.x. It showed that engineering guidance splits into small, adaptable disciplines rather than one framework that owns the whole process. SkipHow adapts that modularity inside one portable owner skill rather than copying the package layout.
-
-Adapted ideas include small single-discipline methods, semantic discovery with progressive disclosure, research from high-trust primary sources, diagnosis driven by an observable feedback loop, vertical slices with proportionate tests, intent-aware conflict resolution, code review as independent judgment, and concise handoffs when work must survive an interruption.
-
-Version 2.6.0 adapts two more from the same repository. The frontier discipline came from the second half of `wayfinder` and from `implement-spec`: take only what is open, unblocked, and unclaimed; claim it before investigating it so a second session cannot start the same work; record the resolution into the item itself; recompute after each close, because closing is what makes the next thing takeable. Two parts of it are still in `tracked-work`: an item another session holds is not available to take, so where concurrent sessions are genuinely possible it is claimed before it is investigated; and what the work established is written into the item as it closes rather than stripped back to its title. The takeability computation is not. Version 3.0.0 deleted the file that carried it and rehomed nothing, so nothing now orders a run's tracked work by what is open and unblocked, and nothing recomputes that order after a close. Ordering by readiness survives only inside a decomposition, where `delegation` still holds that a part is ready when nothing it needs is outstanding. The map, the fog-of-war sections, and the one-ticket-per-session rule are not adapted; they are a planning artifact the owner would have to keep, and SkipHow uses the tracker the project already has. The durability rule, now in `tracked-work`, comes from `triage`'s agent-brief guidance: a record states the behavior the project should have rather than the edit that would produce it, and names types, commands, and observable conditions rather than file paths and line numbers, which go stale while the record waits.
-
-The upstream repository is MIT licensed. The exact adapted paths and the inspected revision are recorded in [`SOURCES.json`](../plugins/skiphow/SOURCES.json), and the distributed package carries the source licence and copyright in [`THIRD_PARTY_NOTICES.md`](../plugins/skiphow/THIRD_PARTY_NOTICES.md). An idea taken without source text is credited here and written in SkipHow's own words.
-
-Version 2.8.0 adapts the claim primitive from `wayfinder` more exactly than 2.6.0 did, and moves it where a single named item reaches it: the assignee is the claim, and it is the session's first write, before any investigation, so a concurrent session skips the item. From Paperclip it takes two things read in that project's own execution semantics: hierarchy and dependency are different relations, and a parent waiting on a child is modelled as a blocker rather than inferred from the nesting; and a claim that loses to another session means that session holds the item, never that the claim is worth retrying. Version 3.0.0 deleted the section carrying the first of those and rehomed nothing, so no module now carries the distinction between a sub-item and a real dependency. The second still ships in `tracked-work`. From `to-tickets` it takes the warning against recording too finely, in the upstream maintainers' own measurements — twelve items for a three-line change, and a stack sliced by layer costing roughly twenty agent runs for each item closed with three quarters of them rework. Superpowers contributes by contrast rather than by adaptation: it keeps no tracker, holding the work in a plan file and a git-ignored ledger that is deleted with the branch it served, so nothing outside the working tree knows the work existed. None of this was taken as source text.
-
-Version 2.9.0 read the same field for concurrent peer sessions in one repository, and the useful result was mostly negative. No project read makes two agents writing one checkout safe. Most avoid the problem with a worktree each; the few that arbitrate a shared tree do it with advisory locks, leases and file reservations that their own documentation describes as non-blocking, so a conflict is reported and the write still goes through. The shipped instruction text of Superpowers, `mattpocock/skills` and agent-os never tells an agent that a peer may be writing the same tree at all. What is adapted is one distinction, generated into user repositories by `claude-flow`: reading in parallel is safe and writing is not, so the constraint is one writer per checkout rather than one agent per project. The rest is adapted as evidence rather than as mechanism. GSD is the only project that fought this in the open, and its own issue records worktrees enabled, silently degraded to the shared tree by a base check, with the conclusion that parallelism loses isolation exactly where it is most needed; a later release of the same project disabled its session isolation entirely through one wrong environment variable name with no visible symptom. `mattpocock/skills` documents in its engineering notes what its skills do not say: an amend landing on another session's commit, a stash vanishing, and commits on the wrong branch, in one afternoon in one checkout. Those are why the kernel now has a lane prove where it is before its first write, instead of trusting the mechanism that put it there.
-
-What was deliberately not adapted is every coordination mechanism these projects carry: GSD's milestone lock and byte-level state lock, Paperclip's ticket and runtime leases, `claude-presence`'s advisory resource claims, and `mcp_agent_mail`'s file reservations. They are code, not instructions, and each pays a running cost SkipHow would inherit without the runtime to manage it — leases that outlive the operation they cover, claims with no release path when a session dies, a lock that needed manual database intervention to clear. The port and process arbitration in Paperclip and humanlayer was read for the same reason and left alone: SkipHow has no receipt of a run damaging a peer's server or database, and prose cannot establish who owns a port. GSD supplies the warning that applies to this whole change, in its own hook comment: the prose guard was never enforced because the model under load skipped it, which is why the same project moved it into tooling. No source text was taken.
-
-Version 2.10.0 returns to `improve-codebase-architecture` in the same repository, which 2.x had read for its depth vocabulary and not for its process. Two things are adapted. Its scoping rule comes first: decide where to look before looking, weight the areas the commit history keeps returning to, and treat a deepening as paying off only where more change is coming. So does its handling of recorded decisions, which are followed rather than re-argued and reopened only when the friction is real. What is rejected is everything the upstream skill produces. Its output is a self-contained HTML report built on two content-delivery networks and opened in a browser, which is a record format SkipHow would be imposing on somebody else's project, the same ground on which `triage`'s `.out-of-scope/` directory was rejected for 2.6.0. It ends by asking the owner which candidate to explore, which is the engineering-shape menu already refused three times here, in `to-spec`, in `to-tickets`, and in `finishing-a-development-branch`. The skill's own frontmatter disables model invocation, so upstream treats it as owner-initiated too. SkipHow held that boundary with a trigger that named the owner's request. Version 3.0.0 moved the survey into `technical-design` under a task condition, and neither that module's scope line nor the kernel's pointer to it names an owner request, so nothing now stops a survey starting on an agent's own view that the code could be better. What still keeps the look from widening the work is the kernel's rule that recording a problem is not permission to work on it. The deletion test and the depth vocabulary were adapted earlier and are not restated. No source text was taken.
-
-The mechanics that make the tracker keep its own state came from reading what trackers actually provide rather than from another agent framework. Where the tracker performs closure through a link the change carries, wiring that link when the branch is created is what keeps an item correct after the run that built the change has ended. Version 3.0.0 deleted that instruction and rehomed nothing. What ships is the other half of the same reading: `tracked-work` says to confirm that a tracker's own linked closure happened rather than to assume it did, and nothing now tells a run to wire the link. Anthropic's own shipped practice on its repositories is narrower still and was read for comparison: its triage agent may only add and remove labels, never comment, create, or close, and timers close what goes stale.
-
-Version 2.10.1 acts on something this page had already cited as a symptom rather than as a source. A user report on the upstream tracker, [issue #962](https://github.com/mattpocock/skills/issues/962), filed by someone with no association to the project and still open when it was re-read, reports `grilling` putting enum values, code identifiers, and architecture terms directly into questions for nontechnical users, and proposes separating the question from the record: ask about the situation and the visible outcome in plain language, then map the answer to the technical term afterward. SkipHow already forbids asking the owner to choose engineering mechanics, but it held the plain-language separation itself only for a product choice, so nothing restated either one where a run decides how to word a protected ask it is entitled to make. An installed session put such an ask as a menu of two credential mechanisms it had already ranked. The kernel now applies the same separation to those asks. The upstream issue is cited as the articulation SkipHow adopts, not as evidence for the change; the reasoning and the unmet evidence bar are in [decision history](decisions.md). No source text was taken, and nothing of the surrounding interview is adapted.
-
-Version 2.13.1 re-read three current approaches to unresolved product intent. Matt Pocock's [`grilling`](https://github.com/mattpocock/skills/blob/6654f6b60cd9d5be8b54c6fafe44346dabeb3b76/skills/productivity/grilling/SKILL.md) supplies a recommended answer with every owner question and keeps facts the agent can find out of the interview. Superpowers' [`brainstorming`](https://github.com/obra/superpowers/blob/b36e0829c6d0140e93cfef2ca599b1b07d4a7797/skills/brainstorming/SKILL.md) classifies the work and requires human approval before implementation, including for bounded tasks. Autonomous PM's [`assumption-mapper`](https://github.com/mlobo2012/autonomous-pm-plugin/blob/6eac45cbd79182fa0920b24a33c988d4380b4fe3/agents/assumption-mapper.md) separates assumptions from evidence and records evidence strength through a standing role and evidence store. SkipHow takes only the provenance distinction: current state, a proposal, and an accepted owner decision are different evidence. It rejects the full interview, universal approval, standing role, score, and new record system. The owner answers only an unresolved material product consequence, with the recommended outcome first, and the project keeps the answer in its existing records. No source text was taken.
-
-Version 2.14.0 returns to `wayfinder` for the half of its frontier that 2.6.0 left behind. Read as it stands on 2026-09-02, it rules a ticket out of scope when an answer shows it sits beyond the destination, rather than resolving it on the route, and it keeps a human-in-the-loop ticket resolvable only through the live exchange, never by the agent standing in for the human. The out-of-scope rule is adapted as an idea and written in SkipHow's words, and what remains of it sits in the kernel rather than in a method: when the result waits on the owner, a grant, or an external party, what is left is measured against that result rather than against free capacity, and work whose place before the result rests only on a record's say-so waits with that record while the owner receives the batch. The frontier the 2.14.0 wording bounded, and defer as a named direction outcome, were removed in 3.0.0 along with `advancing-tracked-work` and `campaign-direction`; the judgment survives, the state model around it does not. Its one-ticket-per-session rule stays rejected, now with the owner's own prompt as a second reason. `implement-spec` in the same repository has a frontier and no stop or value rule, and Superpowers' `executing-plans` stops on every blocker to ask inside its mandatory plan workflow; neither is adapted. Paperclip's budgets stay in the control plane SkipHow does not ship. No source text was taken; the reasoning is in [decision history](decisions.md).
+Two adopted ideas were later removed. The `wayfinder` claim, where a session marks an item as its own before investigating it, and Paperclip's split between a sub-item and a real dependency both shipped for a while and are gone. Tracker assignment now proves nothing about who holds a lane.
 
 ## Ideas read and rejected
 
-Rejection is part of the record, so the same argument does not get reopened.
+I write the rejections down so the same argument does not get reopened.
 
-`grilling` is where SkipHow's question frontier comes from: ask the decisions whose prerequisites are settled, then recompute after the answers. The interview around it is not adapted. `grilling` runs until every branch of a design tree has been visited; SkipHow stops at the first point where nothing material is open, and never opens a round for a choice the project or a source can settle on its own.
+**Design approval before every task.** Superpowers' `brainstorming` gates work behind a human approving the design, including tasks it calls too simple to need one, and its `writing-plans` asks the owner to confirm the plan and pick the execution machinery. Settled small work gets no confirmation turn here.
 
-Superpowers' `brainstorming` was read and rejected whole. It gates every task behind a human approving the design, including the tasks it calls too simple to need one, which is the opposite of this project's boundary.
+**The exhaustive interview.** `grilling` gave SkipHow its question frontier: ask what is answerable now, recommend an answer, recompute after the replies. Its walk through every branch of a design tree, its compulsory fact-finding delegates and its final confirmation did not come along. SkipHow stops at the first point where nothing material is open and never asks what the project or a source can settle.
 
-`to-spec` and `to-tickets` were read twice and rejected twice. Both require the owner to approve engineering shape, one a specification and the other ticket granularity. SkipHow owns both.
+**The owner approving engineering shape.** `to-spec`, `to-tickets`, the setup interview, and a spec-to-tickets chain each make the owner supervise a specification, ticket granularity or a sequence of engineering steps. SkipHow owns all of that.
 
-The second half of `grill-with-docs` is adapted where the first half was not. Its interview is the `grilling` frontier already covered above, but it ends in documents rather than in the conversation, and the domain-modeling it runs alongside settles what each term means before the design is argued. SkipHow's `product` method takes that: a vocabulary in the owner's own words where the terms are genuinely ambiguous, and each decision recorded with the option that was turned down. It stays compatible with the rejection above because what the owner reads and checks is the product they want, never the engineering shape — no specification of implementation, no ticket granularity, and no approval gate. The idea was taken without source text and is written in SkipHow's own words.
+**Technical menus.** `finishing-a-development-branch` halts on a three-way choice between merging, opening a pull request and doing nothing. `improve-codebase-architecture` and `retro` end by handing the user candidates to pick from. Here the CTO decides and carries the change through. The typed-confirmation ritual for discarding work went too, because the grant rule for material deletion already covers it.
 
-A spec-to-tickets chain and an implement-spec fork were considered as orchestration and rejected for the same reason: they turn a product request into a sequence the owner has to supervise.
+**New record formats in someone else's project.** `triage`'s `.out-of-scope/` directory, the architecture skill's HTML report, `idea-refine`'s "not doing" list, `wayfinder`'s map and one-ticket-per-session rule, a dated handoff file per branch, and Ponytail's debt ledger each add a record the owner keeps paying to read. SkipHow uses the project's own tracker, and Git holds what Git can hold. The purpose of `.out-of-scope/` survives: tracked work searches closed records, so a refused idea is reported as refused instead of built.
 
-`triage`'s `.out-of-scope/` directory was read for 2.6.0 and rejected as a mechanism while its purpose was kept. Storing rejected concepts as one file each is a record format SkipHow would be imposing on somebody else's project, which `tracked-work` forbids and already answers by using whatever the project tracks work in. What the directory protects is real: an idea the owner turned down comes back in the next batch of feedback and gets recorded, ranked, and built. So `tracked-work` searches closed records as well as open ones and reports a match as previously refused rather than recording it again, and `product` never scores a refused idea back onto the list. No new directory, no new format.
+**Coordination runtimes.** GSD's state locks, Paperclip's leases and budgets, `claude-presence`'s resource claims, `mcp_agent_mail`'s file reservations, and the port arbitration in Paperclip and humanlayer are code. Leases outlive their operation and claims outlive a dead session, and SkipHow ships no runtime to manage them. Prose cannot establish who owns a port.
 
-The assumption audit and "not doing" list from `idea-refine` were read and rejected. `product` already says what is deliberately out of scope and already records what stays open with who has to settle it, and it ends at the first point where nothing material is open. A standing list of unvalidated bets is a section that grows from what is unsettled, which is the one thing that stopping rule exists to prevent. The method had also never run when the addition was proposed, so there was no evidence it left anything out.
+**Fixed counts and tiers.** Superpowers' three-tier model table, fix-round escalation, round caps, fifteen-line return cap and report file per assignment, and GSD's numeric guards, per-task commits, checkpoint records and blanket stash ban stop or pad work at a number, and a cap can hide findings. SkipHow routes each delegate by consequence and cost.
 
-Superpowers' `finishing-a-development-branch` was read for 2.7.0 and its shape adapted without its text. What SkipHow took: checks run on the tree actually being integrated rather than on the branch that fed it, a refused worktree removal read as evidence that something still owns it rather than as an obstacle, a host-owned workspace left to its host, and the checkout kept while a review is still open. What SkipHow rejected: its three-option menu, which halts to have the human choose between merging locally, opening a pull request, and doing nothing. That is the engineering mechanic the kernel explicitly forbids asking the owner about, and the project's own history answers it. Its typed-confirmation ritual for discarding work was rejected too, because the exact-grant rule already governs material deletion. The reasoning is in [decision history](decisions.md).
+**Stopping on every blocker.** Superpowers' `executing-plans` stops to ask whenever something blocks. The kernel keeps independent work moving while one part waits.
 
-Matt Pocock's `resolving-merge-conflicts` was re-read alongside it and nothing further was taken, because SkipHow's `integration` method already adapts it and is deliberately more permissive on one point. The source says never to abort, while SkipHow forbids an abort, a skip, or a discarded commit only where that would lose a live session's changes or anything Git cannot recover, and lifts even that on the exact grant the kernel requires. Dropping a recoverable commit is a decision taken by the integration goal and reported with its hash, and an abort risking nothing unrecoverable is routine Git mechanics, which the method says not to stop for.
+**Standing roles and scores.** Autonomous PM's assumption mapper, BMAD's personas and Mesa's fixed roles keep a role alive between tasks, and score tables make guesses look like measurements. SkipHow argues order in sentences.
 
-A command surface — `/bug`, `/idea`, `/continue`, `/prior`, in the shape Addy Osmani's repository uses for its lifecycle commands — was built for 2.6.0 and removed before release. Half of it restated policy the methods already carried, which drifts at the first edit to either copy, and Codex plugins support no command surface at all, so none of it was portable. The reasoning is in [decision history](decisions.md) under "One owner entry".
+**A command surface.** Slash commands in the shape Addy Osmani's repository uses were built for SkipHow and removed before release. Half of them restated policy the methods already carried, and Codex plugins have no command surface.
 
-A summary of each tracked-work rule in the kernel beside the method holding its detail was rejected for 2.8.0, and so was moving the whole lifecycle into the kernel. The reasoning is in [decision history](decisions.md) under "An item exists before the branch, and closes on integration".
+**Test policies that only add.** Defense in depth at every layer, coverage floors, a regression test for every bug, blanket DRY, and "build the check before writing the rule" each add code that stays. So does a separate coding-standards file for reviewers. A test here has to name the break it would catch, and code shape goes to the linter the project already runs.
 
-The handoff-file pattern that 2026 agent-tooling writing converges on was surveyed for 4.8.0 and rejected. No single
-implementation was inspected, so this records the pattern rather than a project: work parked by a finished session gets a dated
-handoff file per branch, committed beside the work, carrying a done/next/do-not-touch list that the next agent validates before
-spending tokens. SkipHow already refuses a parallel status file, and the state the convention writes down is state Git and
-the project's tracker already hold, so the association would drift from the first edit to either copy. What survives the
-rejection is the observation that the reader of such a file is always the *next* run, which is the same conclusion 2.7.0 reached
-about branches nobody retires. So 4.8.0 puts the duty on the next run's own inspection instead of on a file: what it turns up
-that nothing accounts for gets named, and nothing new is written down.
+**Shortest code as the goal.** Ponytail's line-count objective, unconditional native reuse and intensity modes optimize something other than the owner's result. SkipHow keeps the accepted behavior and minimizes total cost.
 
-A per-project switch declaring that humans write code in this repository, which would restore the 4.8.0 abstention where it was set, was considered for 5.0.0 and refused. The premise that no human writes in a governed project is the owner's statement about every project they run, and a switch would make the kernel's account of what a branch is depend on configuration nobody maintains; a project where a human does write code is the reopen condition in the decision index, not a setting. Lock and lease schemes for branches and worktrees, a status file naming which session owns what, and a separate custody method were refused for the reason the paragraph above already gives: they write down state Git and the host already expose, and liveness is read from what is still moving, not from a claim.
-
-A review of one of the maintainer's own sessions proposed moving the `integration` and `tracked-work` entry triggers off the
-owner's request and onto the pause or the end of an iteration. It was refused on the text: `integration` opens on a state, and
-`tracked-work` already ends its trigger with a pause, resume, or session boundary that could lose work. Its second suggestion,
-naming the branch a preview serves, was adopted and generalized past the iteration workflow.
-
-Version 5.0.1 read two sources again on 2026-09-16. Anthropic's current [skill authoring guidance](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices) treats the context window as a shared resource, tells authors to assume the model already knows what a capable model knows, keeps the skill body under 500 lines, and warns that a model may preview a long file with a partial read. SkipHow's 5.0.0 kernel was 114 lines and 25,024 characters, inside the line guidance and past the character limit a shell read shows whole, so the release measures characters rather than adopting a line count. Superpowers' [`subagent-driven-development`](https://github.com/obra/superpowers/blob/b36e0829c6d0140e93cfef2ca599b1b07d4a7797/skills/subagent-driven-development/SKILL.md) reached two of the same dispatch rules from its own sessions: an omitted model inherits the session's, usually the most expensive, and a worker it dispatches carries an explicit contract about dispatching its own. SkipHow adapts the idea, not the text: the inherited route is a choice to justify and the brief states the delegate's fan-out. It rejects the fixed three-tier model table and fix-round escalation, which the routing decision refused in 4.7.0, and the blanket rule that implementers never dispatch, since a bounded research lane can repay its own fan-out. That skill is itself 32,339 characters, which a host loading it through its skill tool shows whole and a shell read would not.
+**A switch saying humans write code here.** It would make the kernel's account of every branch depend on configuration nobody maintains. A project where a human writes code is a reason to reopen the decision.
 
 ## The adoption rule
 
-An idea from another project becomes a focused method or a kernel invariant only when it answers an observed task need or protects a high-risk boundary. Good practice somewhere else is not enough. The default stays the least process that reaches a fresh, verified result while preserving the owner's authority and unrelated work.
+An idea from another project becomes a playbook method or a kernel rule only when it answers an observed task need or protects a high-risk boundary. Good practice somewhere else is not enough. The default stays the least process that reaches a fresh, verified result while keeping the owner's authority and unrelated work intact.
 
-The reasoning behind each rule that survived is in [decision history](decisions.md), and what real runs have and have not shown is in [current evidence](evidence.md).
-
-## Rules and tooling taken as given in 7.0.1
-
-Read on 2026-10-18 at the revision in the link, because the owner asked whether agents had begun to work like Matt
-Pocock's [retro](https://github.com/mattpocock/skills/blob/a7d038f6bf7f01b516408e95e2fb56e0b338fa6f/skills/engineering/retro/SKILL.md)
-skill. They had not, and SkipHow had never taken it. The field question was narrower: agents kept agent-made rules and
-tooling because nothing marked the moment they paid for them and simplify called unclear rules the owner's. Retro
-shares the view that friction in a session is evidence about the environment, that an existing check left unwired or
-broken is the finding rather than a reason to build another, and that steering text which changes nothing should go.
-SkipHow already held those ideas in the kernel; 7.0.1 makes them apply when an agent repairs its own tooling or does
-work only a rule demands. It does not take the user-invoked retrospective that presents candidates to the user, because
-here those findings are the CTO's to act on and the owner-invoked simplify already covers a periodic pass. It does not
-take "default to building the check over writing the rule" or a separate coding-standards file for reviewers, because
-a custom check and a new standing file are additions that stay and cost the owner; the kernel sends code shape to the
-linter or type checker the project already has.
-
-## Keeping the system small in 7.0.0
-
-Read on 2026-10-17 at the revisions in the links. The question was why two governed projects filled with tests,
-tooling, and shims although SkipHow had read these sources from the start. The answer was in SkipHow's own text, not in
-the sources: it kept their vocabulary, dropped their concrete rules, and added sentences that made each addition safe and
-each removal suspect. 7.0.0 takes the concrete rules back, in its own words, and puts the ones that must hold on every
-request into the kernel.
-
-From Matt Pocock's [tdd](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/tdd/tests.md) and [mocking](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/tdd/mocking.md) notes: test through the interface callers
-use, mock only at system boundaries, and treat a test that bypasses the interface as a defect. From
-[codebase-design](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/codebase-design/SKILL.md): the deletion test, and that one adapter is a hypothetical seam. From
-[diagnosing-bugs](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/diagnosing-bugs/SKILL.md): the feedback loop comes first, hypotheses are ranked and falsifiable,
-and a regression test belongs at a seam that reaches the bug; SkipHow adds that no correct seam is an architecture
-finding rather than a reason to test at a wrong one. From [code-review](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/code-review/SKILL.md): two axes, the request
-and the project's standards, and skipping what tooling enforces. From [prototype](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/prototype/SKILL.md): throwaway
-work carries no tests.
-
-From Superpowers' [writing-good-tests](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/test-driven-development/writing-good-tests.md): name the production change
-that would make a test fail before writing it, and no change detectors. From
-[receiving-code-review](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/receiving-code-review/SKILL.md): verify a finding against the code, grep for real use before
-building what a reviewer calls necessary, and push back with a reason. From
-[systematic-debugging](https://github.com/obra/superpowers/blob/bb92a77741419a4ab5f06e711a283343f1ada0c3/skills/systematic-debugging/SKILL.md): repeated failed fixes mean the architecture is in question.
-
-From Addy Osmani's [code-review-and-quality](https://github.com/addyosmani/agent-skills/blob/aeac41d4d005999432bb7312f7ff06383a91d59d/skills/code-review-and-quality/SKILL.md): prefer deleting an abstraction to
-polishing it. From [deprecation-and-migration](https://github.com/addyosmani/agent-skills/blob/aeac41d4d005999432bb7312f7ff06383a91d59d/skills/deprecation-and-migration/SKILL.md): code is a liability, so removal
-takes its tests and docs with it. From [doubt-driven-development](https://github.com/addyosmani/agent-skills/blob/aeac41d4d005999432bb7312f7ff06383a91d59d/skills/doubt-driven-development/SKILL.md): stop when doubt
-stops producing new information.
-
-Still rejected from the same sources: defense in depth at every layer, coverage floors, a regression test for every
-bug, asking the owner to confirm technical seams, and any report that hands the owner a menu of technical options. The
-owner-invoked simplify workflow takes the purpose of
-[improve-codebase-architecture](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/improve-codebase-architecture/SKILL.md), a scan for what costs more than it
-protects, without its candidate menu: the CTO decides and carries the changes through. No source text or code is copied.
-All three repositories are MIT licensed.
-
-## Ownership at the change in 6.3.5
-
-Read on 2026-10-16 at Ponytail revision `84740e3d344b69b4a133201fa519eb37a62a2b2a`. Its
-[implementation skill](https://github.com/dietrichgebert/ponytail/blob/84740e3d344b69b4a133201fa519eb37a62a2b2a/skills/ponytail/SKILL.md)
-asks a change to list every caller, test, fixture, config, and export it must reach and to finish the callers it breaks,
-and it fixes a bug once in the shared code. SkipHow's new kernel obligation agrees: a replacement migrates in-repository
-callers. It goes further by removing the old path and the guidance it makes stale, and it limits compatibility to
-consumers the change cannot update. The
-[debt skill](https://github.com/dietrichgebert/ponytail/blob/84740e3d344b69b4a133201fa519eb37a62a2b2a/skills/ponytail-debt/SKILL.md)
-collects `shortcut:` comments into a ledger. It is not adopted. The field trace behind this release found comments and
-instructions did not stop recurrence, while failing checks did, and a persistent debt registry was already rejected.
-
-The [architecture-improvement skill at `49dd158`](https://github.com/mattpocock/skills/blob/49dd158d1076134a641b33efb035946536778336/skills/engineering/improve-codebase-architecture/SKILL.md)
-remains a user-invoked scan with an owner-chosen candidate report. It adds no rule for retiring an old path, and its
-owner-operated menu stays rejected as in 6.2.1. No source text or code is copied or adapted. Ponytail is MIT licensed.
-
-## Planning review continuation in 6.3.1
-
-Read on 2026-10-07. Superpowers' [scoped re-review prompt](https://github.com/obra/superpowers/blob/main/skills/subagent-driven-development/re-review-prompt.md)
-passes previous findings, the reviewed base, the correction candidate, and the fix diff. Its
-[orchestration skill](https://github.com/obra/superpowers/blob/main/skills/subagent-driven-development/SKILL.md)
-continues workers through corrections. SkipHow already had continuity in longrun and targeted re-review in verification;
-this change consolidates them and explicitly connects plan. It does not claim a new invention or copy upstream text.
-
-SkipHow retains inspection of affected consequences beyond edited lines and disposition of material outside findings.
-It does not adopt the upstream fixed role structure, round caps, report files, or progress ledger. Those impose ongoing
-coordination and maintenance costs beyond this text ambiguity. The current
-[writing-plans skill](https://github.com/obra/superpowers/blob/main/skills/writing-plans/SKILL.md)
-uses independently testable units but asks the owner to confirm the plan and choose execution machinery; that owner-operated
-engineering chain remains rejected. Matt Pocock's
-[to-tickets](https://github.com/mattpocock/skills/blob/main/skills/engineering/to-tickets/SKILL.md)
-still offers vertical outcomes and blocking edges, already represented here. No new slicing mechanism is adopted.
-
-[Claude Code's subagent documentation](https://code.claude.com/docs/en/sub-agents#resume-subagents)
-distinguishes fresh invocations from continuation retaining history. It also documents that ordinary subagents do not
-inherit invoked skills or the parent conversation, so assignment-specific constraints must reach the brief. Shared policy
-remains host-neutral: reuse continuation where supported, transfer necessary evidence to replacements, and expose missing
-capabilities. No comparative model performance was measured.
-
-## Planning interviews and readiness in 6.3.0
-
-Read again on 2026-10-05, after checking the 2.4.2, 2.13.1, 3.0.0, and 5.1.5 decisions and shipped history.
-Matt Pocock's [grill-me wrapper](https://github.com/mattpocock/skills/blob/24fe0ef7737efae15c87225755e9f6f5965e4888/skills/productivity/grill-me/SKILL.md)
-now delegates to [grilling](https://github.com/mattpocock/skills/blob/24fe0ef7737efae15c87225755e9f6f5965e4888/skills/productivity/grilling/SKILL.md).
-It batches independently answerable questions, researches facts itself, recommends an answer, and recomputes the question
-frontier after replies. SkipHow already adopted that frontier in 2.4.2. The upstream exhaustive design-tree interview,
-compulsory fact-finding delegates, and final shared-understanding confirmation remain rejected. SkipHow asks only material
-product questions the available evidence cannot settle and leaves engineering choices to the lead.
-
-[Superpowers brainstorming](https://github.com/obra/superpowers/blob/8ca22dba9a94f28898bbce59f2537ff4d87c747d/skills/brainstorming/SKILL.md)
-now states a recognizable intent note and separates the owner's statements from assumptions. Its bounded, spike, and
-architectural paths still require human approvals, with architectural work requiring separate spec, plan, and execution
-choices. SkipHow's provenance distinction was already recorded in 2.13.1 and was not adopted from brainstorming.
-The intent note, universal design approvals, and owner-operated technical chain remain rejected. Settled small work
-receives no new interview or confirmation turn.
-
-The existing influences are revalidated rather than borrowed again. The new behavior is an owner-requested clarification
-of plan completion, scope-reduction authority, waiting and resume, and an adaptive ordinary-SkipHow or longrun launch.
-Recommendations cannot freeze an unadopted consequential alternative across all question options. The existing product
-reference owns that framing. No upstream text or code is copied, no separate module or state format is added, and no
-comparative behavioral gain is measured. See the [decision](https://github.com/mzored/SkipHow/blob/72aef4540d30d3639a2f63af6663971345c6dc5a/docs/decisions.md#whole-scope-planning-and-interview-continuation).
-
-## Bounded project supervision in 6.2.1
-
-Primary sources read on 2026-10-04 support evidence-directed opportunistic improvement and bounded refactoring.
-[Fowler's refactoring definition](https://refactoring.com/) preserves observable behavior through small transformations
-and frequent checks. [Opportunistic refactoring](https://martinfowler.com/bliki/OpportunisticRefactoring.html) places
-improvements in ordinary work and requires judgment about when to stop. [Legacy displacement](https://martinfowler.com/articles/patterns-legacy-displacement/)
-starts with desired outcomes and makes replacement incremental where it reduces risk. SkipHow adopts these principles
-in its existing design guidance, without a mandatory migration plan or a refactor on every request.
-
-[Google's small-change guidance](https://google.github.io/eng-practices/review/developer/small-cls.html) favors a coherent
-conceptual change and separating substantial refactoring when helpful, while keeping relevant tests with the change.
-Its [review standard](https://google.github.io/eng-practices/review/reviewer/standard.html) seeks improved code health,
-not perfection. These support reviewable units and finite improvement; they do not imply a PR or hosted gate per tiny fix.
-
-[Google's testing chapter](https://abseil.io/resources/swe-book/html/ch12.html) favors stable behavioral tests and readable
-independent examples, including deliberate duplication where it helps clarity. Its notes on
-[narrow assertions](https://testing.googleblog.com/2024/04/prefer-narrow-assertions-in-unit-tests.html) and
-[brittle tests](https://testing.googleblog.com/2024/04/how-i-learned-to-stop-writing-brittle.html) support repairing
-incidental coupling. SkipHow preserves unique high-fidelity evidence and legitimate fixed expectations. It does not
-adopt blanket DRY, a ban on literals, a test-count target, or deletion based on elapsed time.
-
-The current [architecture-improvement skill](https://github.com/mattpocock/skills/blob/main/skills/engineering/improve-codebase-architecture/SKILL.md)
-uses project history and broad discovery when problems are scattered. SkipHow takes evidence-directed attention,
-without an owner-operated candidate menu or a recurring repository audit. Ponytail's existing sufficient-reuse and
-complexity ideas remain relevant as recorded below. No upstream prose or code is copied. These sources inform design;
-they are not behavioral receipts for SkipHow or evidence that every project benefits from the same procedure.
-
-## Bounded plans and first working paths in 6.2.0
-
-Read on 2026-10-03. The [Hunt and Thomas interview on tracer bullets](https://www.artima.com/articles/tracer-bullets-and-prototypes)
-describes a thin path through the real components, followed by complete use cases that grow the running result.
-SkipHow adopts that idea only where the accepted work lacks an established path. The first slice creates the structure
-it needs and preserves required safety, integrity, and compatibility. A mature project can extend its existing path.
-A disposable uncertainty probe and an evolving implementation remain different engineering choices.
-
-Matt Pocock's [to-tickets skill at `d81f3a1`](https://github.com/mattpocock/skills/blob/d81f3a183412e71a5b1e84ca21bc1a35eea03a60/skills/engineering/to-tickets/SKILL.md)
-uses demonstrable vertical tickets with explicit blocking edges. SkipHow keeps those ideas, distinguishes true
-prerequisites from shared-write and runtime-capacity constraints, and sizes the whole accepted task set for dispatch.
-It rejects a setup interview and owner approval of technical granularity, and treats one-agent feasibility as an
-evidence-based workload judgment rather than a guarantee about fresh context.
-
-GSD's [MVP planner at `84b4dfe`](https://github.com/open-gsd/gsd-core/blob/84b4dfe84f35e58d4b35d57a54bd92af1b21fbce/gsd-core/references/planner-mvp-mode.md)
-provides another example of starting with a working tracer and expanding it. SkipHow does not adopt its per-phase
-tracer requirement, mandatory skeleton record, or task-count guidance. The selected behavior belongs inside the
-existing optional plan workflow, with no new module, universal foundation stage, or parallel state files.
-
-The owner also selected a stable minimal launch: explicit target-host workflow invocation and a delivery sentence
-referencing the accepted plan and destination. This follows the host's native syntax, documented for
-[Codex skills](https://learn.chatgpt.com/docs/build-skills) and
-[Claude plugin skills](https://code.claude.com/docs/en/skills), while preserving an already selected workflow and
-authorization provenance. It does not copy tracker content or runtime policy. Wording and synthetic fixtures are
-original; no comparative behavioral benefit has been measured.
-
-## Sufficient reuse and complexity review in 6.1.2
-
-Read on 2026-10-03 at Ponytail revision `c982cd411abb53323c4baa1baa3c2f020b8d0b08`.
-Its [implementation skill](https://github.com/dietrichgebert/ponytail/blob/c982cd411abb53323c4baa1baa3c2f020b8d0b08/skills/ponytail/SKILL.md)
-and [review skill](https://github.com/dietrichgebert/ponytail/blob/c982cd411abb53323c4baa1baa3c2f020b8d0b08/skills/ponytail-review/SKILL.md)
-make reuse and complexity concrete. SkipHow adopts the ideas in original wording within its existing design and review
-paragraphs: compare sufficient solutions by total cost, and identify the unnecessary construct, consequence, replacement,
-and surviving responsibilities. Shorter code and native capabilities qualify only when accepted behavior survives.
-
-Ponytail's [comprehension experiment](https://github.com/dietrichgebert/ponytail/blob/c982cd411abb53323c4baa1baa3c2f020b8d0b08/benchmarks/results/2026-06-22-issue-245-217-comprehension.md)
-uses unreported related paths to distinguish a general repair from one matching the complaint. SkipHow's original
-synthetic fixture applies that question to two public balance operations; the oracle grades behavior and accepts
-different repair shapes. Paired date-selection probes distinguish sufficient native reuse from omitted availability
-requirements. The existing duplicated-composition probe requires the maintained replacement and preserved focus,
-unsaved-change protection, and recovery. These cases have not been run on a model.
-
-SkipHow does not adopt a shortest-diff or line-count objective, unconditional standard-library or native reuse, a rigid
-one-test rule, intensity modes, hook-managed state, or a persistent debt registry. Existing operation guidance already
-covers known ceilings and triggers, so no parallel rule is added. The owner's request authorizes the clarifications;
-inspection alone does not demonstrate a local behavior defect or justify a universal procedure.
-
-The upstream [agentic report](https://github.com/dietrichgebert/ponytail/blob/c982cd411abb53323c4baa1baa3c2f020b8d0b08/benchmarks/results/2026-06-18-agentic.md)
-and [cost report](https://github.com/dietrichgebert/ponytail/blob/c982cd411abb53323c4baa1baa3c2f020b8d0b08/benchmarks/results/2026-06-17-cost-verification.md)
-describe their own tasks, models, and measurements. They were not reproduced here and establish neither SkipHow's
-behavior nor its savings. Ponytail is MIT licensed; no source text or code is copied or adapted in this release.
-
-## Proportionate delegation handoffs in 6.1.1
-
-Read on 2026-10-01. Claude Code's [subagent guidance](https://code.claude.com/docs/en/sub-agents#run-parallel-research)
-warns that detailed returns from many agents consume main context. Its [best practices](https://code.claude.com/docs/en/best-practices#manage-context-aggressively)
-also count file reads, messages, and command output, so a return-size boundary cannot make coordination context-free.
-
-Superpowers' current [implementer prompt](https://github.com/obra/superpowers/blob/main/skills/subagent-driven-development/implementer-prompt.md)
-conveys the return contract at dispatch: full details in a report, then a short reply with status, commits, test summary,
-concerns, and its path, with blockers directly actionable. Its [orchestration skill](https://github.com/obra/superpowers/blob/main/skills/subagent-driven-development/SKILL.md)
-passes bulk by reference instead of copying accumulated history into each brief. SkipHow adopts that information
-boundary at its existing dispatch and return points. It does not adopt the fifteen-line cap, report file per assignment,
-or another lifecycle ledger: those add format and maintenance costs to small work, and a cap can hide findings.
-
-GSD's current [executor](https://github.com/open-gsd/gsd-core/blob/main/agents/gsd-executor.md) also returns completion
-metadata and a summary path. Its planning-state documents and per-task commit structure impose a larger persistent
-workflow than this defect needs. No additional mechanism is adopted from it. SkipHow keeps every actionable finding,
-accessible proof, and the lead's own verification while allowing small results to stay inline. Neither comparison
-establishes SkipHow's behavioral benefit.
-
-## Interaction design and capability use in 5.1.5
-
-Version 5.1.5 re-applies the earlier conclusions rather than reading new sources. The `grilling` question frontier
-already adopted now also covers a product choice that first appears as an algorithm or data rule. Superpowers'
-`brainstorming` stays rejected whole: its design approval gate is not adopted, and carrying accepted journey, design, and
-reuse decisions into plan tasks extends SkipHow's own decision-provenance and plan rules rather than adapting it. The full
-interview, universal design approval, and any owner choice of engineering method stay rejected. No source text was taken.
-
-## Delegation boundaries in 5.1.4
-
-Read on 2026-09-26. Superpowers' [implementer brief](https://github.com/obra/superpowers/blob/8ca22dba9a94f28898bbce59f2537ff4d87c747d/skills/subagent-driven-development/implementer-prompt.md)
-returns an assignment when its assumptions or scope no longer support implementation. Its
-[orchestration skill](https://github.com/obra/superpowers/blob/8ca22dba9a94f28898bbce59f2537ff4d87c747d/skills/subagent-driven-development/SKILL.md)
-also batches small same-shape edits. Those ideas fit the existing return and proportional-splitting boundaries.
-SkipHow takes no source text and adds no status vocabulary, standing ledger, fixed review loop, or mandatory commit.
-The brief's cost is conditional on a lengthy assignment; the lead still settles engineering questions.
-
-GSD's [executor](https://github.com/open-gsd/gsd-core/blob/4713ffba761a069bbd79e4833b4bea4e14848388/agents/gsd-executor.md)
-uses task commits, checkpoint records, and numeric guards on consecutive reads and repair attempts. These require
-per-task bookkeeping and can stop useful work merely because it crosses a count. The motivating session supplies no
-comparison that would justify that cost, so none is adopted.
-
-The same executor bans every stash subcommand and offers owned temporary commits or read-only Git inspection instead.
-SkipHow retains the narrower ownership boundary, allowing an already verified checkpoint to be restored without shared
-stack mutation. It does not adopt the blanket ban or the source's claim that branches have a per-worktree namespace.
-Git's shared-ref rules require distinct ownership even for a temporary branch.
-
-[Git's worktree reference rules](https://git-scm.com/docs/git-worktree#_REFS) establish that refs are generally shared,
-with named exceptions. The stash warning is therefore a shared-state preservation problem, not a missing worktree.
-The selected change uses ownership and coordination without a new lock service. Its alternatives and reopen conditions
-are in the [decision record](https://github.com/mzored/SkipHow/blob/72aef4540d30d3639a2f63af6663971345c6dc5a/docs/decisions.md#delegation-boundaries-and-progress).
+The reasoning behind each surviving rule is in [decision history](decisions.md), and what real runs have shown is in [current evidence](evidence.md). The per-release reading notes, with source revisions and dates, are in the [pre-cleanup snapshot](https://github.com/mzored/SkipHow/blob/72aef4540d30d3639a2f63af6663971345c6dc5a/docs/prior-art.md) and, for the newest releases, in [this file's history](https://github.com/mzored/SkipHow/blob/2f72c7f/docs/prior-art.md).

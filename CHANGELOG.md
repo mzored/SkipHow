@@ -17,7 +17,7 @@ All notable changes to SkipHow 2.x and later appear in this file. Earlier releas
 
 ### Why
 
-A trace of 22 root sessions and their delegates that ran 7.0.0 on three owner projects found loading much improved, but also four failures. Three sessions lost a kernel they had read as a file at compaction. Leads never mentioned again 41% of the items their delegates raised. Agents kept an agent-chosen line limit and an agent-built test selector as owner decisions. Test deletions that claimed other coverage left holes that only review caught. See [evidence](docs/evidence.md#current-package) and [decisions](docs/decisions.md).
+A trace of 22 root sessions and their delegates that ran 7.0.0 on three owner projects found loading much improved, but also four failures. Three sessions lost a kernel they had read as a file at compaction. Leads never mentioned again 41% of the items their delegates raised. Agents kept an agent-chosen line limit and an agent-built test selector as owner decisions. Test deletions that claimed other coverage left holes that only review caught. See [evidence](docs/evidence.md) and [decisions](docs/decisions.md).
 
 ### Checks and evidence
 
@@ -47,7 +47,7 @@ A trace of 22 root sessions and their delegates that ran 7.0.0 on three owner pr
 
 ### Why
 
-A trace of two owner projects governed by 4.3.0 through 6.3.5 found test and tooling code larger than product code, tests of the projects' own deploy and CI scripts, custom test-selection and gate tooling, production branches written for mocks, and review loops of up to six rounds that mostly asked for more tests. The package text made every addition a gain and every removal a risk, and its test guidance reached about one in twenty test-writing delegates. See [evidence](docs/evidence.md#current-package) and [decisions](docs/decisions.md).
+A trace of two owner projects governed by 4.3.0 through 6.3.5 found test and tooling code larger than product code, tests of the projects' own deploy and CI scripts, custom test-selection and gate tooling, production branches written for mocks, and review loops of up to six rounds that mostly asked for more tests. The package text made every addition a gain and every removal a risk, and its test guidance reached about one in twenty test-writing delegates. See [evidence](docs/evidence.md) and [decisions](docs/decisions.md).
 
 ### Checks and evidence
 

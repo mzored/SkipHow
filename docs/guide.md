@@ -1,8 +1,8 @@
 # Owner guide
 
-Tell SkipHow what should change for someone using the product. You do not need to name a library, design a schema, write tickets, or choose an agent workflow.
+Tell SkipHow what should change for the people who use your product. You do not name a library, design a schema, or write tickets. A workflow is optional, and ordinary requests need none. The agent asks you only about product choices and protected actions.
 
-This guide describes what the shipped instructions require of the agent. That is not the same as what has been measured. [Current evidence](evidence.md) records which of these behaviors real runs have shown, which a run has shown failing, and which stay intended but unproven. Short answers to common questions are in the [FAQ](faq.md).
+This guide says what the shipped instructions tell the agent to do. [Current evidence](evidence.md) says which of those behaviors real runs have shown.
 
 ## Install
 
@@ -20,131 +20,77 @@ claude plugin marketplace add https://github.com/mzored/SkipHow.git
 claude plugin install skiphow@skiphow
 ```
 
-Start a new session after installing or updating.
+To update, run `codex plugin marketplace upgrade skiphow` and then `codex plugin add skiphow@skiphow`. In Claude Code, run `claude plugin marketplace update skiphow` and then `claude plugin update skiphow@skiphow`. Start a new session after you install or update.
+
+To uninstall, first ask SkipHow to disable itself. Then run `codex plugin remove skiphow@skiphow` or `claude plugin uninstall skiphow@skiphow`. If you remove the plugin first, the activation block keeps asking the host to load a skill that is gone.
 
 ## Activate it
 
-Plugin installation makes the skill available. For ordinary-language default governance, ask the installed skill to enable itself once, in a fresh session:
+The installed skill works when you call it by name. To have it govern ordinary requests too, ask it once, in a new session:
 
 ```text
 $skiphow Enable SkipHow as my default virtual CTO on this machine.
 ```
 
-Use `/skiphow:skiphow` instead of `$skiphow` in Claude Code. The agent resolves the trusted user instruction file your host reads, previews the exact change, asks for one confirmation, writes one owned block, and reports three separate facts: configured (the block is in the effective file), available (the host lists the plugin installed and enabled), and loaded (only a fresh session shows this). Ask it to check or disable itself the same way. It never presents a configuration check as loading evidence, and if a managed policy on your machine restricts plugins or instructions it reports the exact file rather than working around it.
+In Claude Code, type `/skiphow:skiphow` in place of `$skiphow`.
 
-The agent uses a helper shipped inside the plugin, `skills/skiphow/scripts/activation.py`, which you can also run yourself with any Python 3 interpreter. It resolves the file the way the host discovers it: Codex reads `AGENTS.override.md` in its home when that file exists and is not empty, and `AGENTS.md` otherwise, with `CODEX_HOME` relocating the home; Claude Code reads `CLAUDE.md` and unconditional `rules/*.md` files under its configuration directory, with `CLAUDE_CONFIG_DIR` relocating it. Preview first, then add `--apply` to make the displayed change:
+The agent finds the user instruction file your host reads before every project. It shows you the exact change, asks you to confirm once, and writes one marked block there. The block names the skill and copies none of its rules, so plugin updates need no new block. Ask the same way to check or disable the setup.
 
-```sh
-python <installed plugin>/skills/skiphow/scripts/activation.py status --host codex
-python <installed plugin>/skills/skiphow/scripts/activation.py install --host codex
-python <installed plugin>/skills/skiphow/scripts/activation.py install --host codex --apply
-python <installed plugin>/skills/skiphow/scripts/activation.py remove --host claude-code --apply
-```
+It reports three facts. Configured means the block is in the file your host reads. Available means the host lists the plugin as installed and enabled. Loaded shows only in a new session. If a managed policy on your machine restricts plugins, the agent names that file and does not work around it. The [setup reference](../plugins/skiphow/skills/skiphow/references/setup.md) lists the helper script's commands and the file each host reads.
 
-Installation is idempotent, including after a plugin update. The block references the installed skill by name, so it contains no copied policy or version-specific cache path. `install` also moves a block found in a file the host does not read, such as `AGENTS.md` beside a non-empty `AGENTS.override.md`, and consolidates a duplicate copy from a Claude rule; `remove` deletes every copy it may edit. Linked files are inspected and reported, never written through. Removal preserves unrelated content and restores the original trailing-newline state when no content follows the block. A file created solely for the block is removed when it has no other content. Updates stage the complete file beside the target before replacing it, preserving its permissions and leaving the original intact if staging fails. Edited or duplicate blocks require inspection rather than automatic replacement. If you previously added the README line manually, remove that exact line yourself before installing a managed block; the tool does not claim ownership of existing prose. `--target <file>` names another trusted file explicitly when you keep your instructions elsewhere.
+### Turn it on by hand
 
-The package ships no session hook. Persistent user instructions are the smallest host-native setup that is present before the first project action without silently editing configuration or adding an executable surface. Their loading is documented on both hosts. What has been observed on each host is in the [dated support summary](evidence.md#support-summary-as-of-2026-09-06); the per-capability host matrix is in the [security policy](../SECURITY.md#host-support-as-of-2026-09-06). Use `$skiphow` in Codex or `/skiphow:skiphow` in Claude Code as the explicit fallback and diagnostic path.
-
-Update Codex:
-
-```sh
-codex plugin marketplace upgrade skiphow
-codex plugin add skiphow@skiphow
-```
-
-Update Claude Code:
-
-```sh
-claude plugin marketplace update skiphow
-claude plugin update skiphow@skiphow
-```
-
-Before uninstalling, ask SkipHow to disable itself, or run the helper's `remove --host <host> --apply` yourself. If you added the README line manually, remove that exact line instead. Then uninstall with `codex plugin remove skiphow@skiphow` or `claude plugin uninstall skiphow@skiphow`. Plugin removal alone does not edit your trusted instructions and would leave a request to load an unavailable skill.
-
-## Manual activation fallback
-
-If you prefer to edit trusted instructions yourself, append this line to the effective
-file your host reads without replacing existing content. Remove only this line to
-undo it. The host-resolution details are in [Activate it](#activate-it).
+You can append this line to the file your host reads yourself:
 
 ```text
 For current-project requests, load the installed SkipHow skill before consequential action and use it as the adaptive virtual CTO policy. Do not load it for unrelated conversation or for a request that only discusses SkipHow without adopting it.
 ```
 
-A manual line and a managed activation block are alternatives. Remove the manual line
-before installing a managed block; the helper does not take ownership of your prose.
-
-## Recurring workflows
-
-Use these when you know the work pattern you want. Ordinary requests still need no mode name. In Codex, invoke `$skiphow-plan`; in Claude Code, invoke `/skiphow:skiphow-plan`, with the same naming pattern for the other workflows.
-
-| Workflow | Example request | Completion |
-| --- | --- | --- |
-| `skiphow-bug` | `$skiphow-bug Discounts sometimes change when an order is retried. Find and repair the general cause.` | Verified repair at the authorized destination, with original and general-case evidence. |
-| `skiphow-plan` | `$skiphow-plan Prepare team invitations for implementation in this project's GitHub issues.` | Whole-scope preparation with a completed product interview, reviewed specification, executable tasks, and a launch suited to the work. Unanswered decisions keep preparation open. No implementation. |
-| `skiphow-longrun` | `$skiphow-longrun Deliver the accepted implementation children of this epic to our development branch.` | Verified delivery or recorded unfinished blockers, with delegated implementation and review scaled to each slice's consequence. |
-| `skiphow-deploy-ready` | `$skiphow-deploy-ready Prepare our agreed changes for delivery.` | Deferred checks, review, coherent commits, and any authorized non-production integration. |
-| `skiphow-fast-fixes` | `$skiphow-fast-fixes Fix the search and export bugs locally. I will add feedback while you work.` | Checked local results as they become ready; independent work continues while feedback is pending. |
-| `skiphow-simplify` | `$skiphow-simplify Our test suite is bigger than the product. Clean it up.` | A smaller project delivered through reviewed changes, with before and after numbers, what was removed and what it saved, and the guards that protect money, security, customer data, and the release path kept. |
-
-Explicit `skiphow-plan` invocation requests durable planning records within the authorized audience. A read-only constraint overrides that default. Automatic selection for an ordinary planning question does not grant tracker writes. Unavailable tracking leaves complete issue drafts and a blocker.
-
-Plan reviews each assignment's actual context, implementation, verification, review, and integration load. It prepares
-the whole accepted scope as bounded vertical slices with real dependencies and parallel work. A new component path
-starts with a thin working slice; a mature project reuses its established path. The planner keeps large checkable
-automated changes whole and avoids steps that have no independently verifiable result.
-
-Planning continues through product questions revealed by your answers. Recommendations and assumptions stay separate
-from your decisions, including consequences for existing records and dependent behavior. A pending answer keeps the
-interview open. The agent prepares useful independent work, then waits through available host controls or returns the
-question and what resumes preparation. Saving drafts does not finish planning or substitute a partial launch for the
-requested scope. You can explicitly choose a narrower scope.
-
-Ready plans end with a short launch using the target host's explicit invocation syntax. Small cohesive work uses
-ordinary SkipHow; substantial coordinated work uses longrun. A workflow you already selected takes precedence.
-For substantial work with a concrete accepted plan and destination:
-
-```text
-$skiphow-longrun
-Deliver the accepted implementation scope in issue #42 to the development branch.
-```
-
-Tasks carry requirements and dependencies, so the launch adds only otherwise-missing project, owner-selected subset, or run constraints.
-Preparation and inaccessible sources remain explicit blockers, and the prompt creates no new authorization.
-
-Fast-fixes accepts new changes, revisions, and cancellations while accepted work continues. The lead handles tiny fixes directly and delegates independent work when that pays, with verified writer isolation and coordination of shared resources. It shows an inspected preview, demonstrated behavior, or an artifact as appropriate to the project; a browser and Git are not prerequisites. Before replacing a shown state, it preserves a recoverable checkpoint, using local commits in Git projects. Focused tests may run, including pytest or browser tests, while full delivery gates wait. Explicit requests to wait or restrict tests still govern.
-
-Acceptance keeps fast-fixes in local iteration. Say `deploy-ready` or `clean` to reconcile the delivery set, including running assignments, and begin preparation. Corrections receive affected review and revalidation; later work stays accounted for outside that delivery. Say `deploy prod` to authorize the specified production release. Preparation and contextual clean alone do not authorize production or arbitrary deletion. Hosts determine when messages arrive and which delegation or continuation controls exist; the plugin adds no background scheduler.
-
-Simplify runs only when you ask to simplify, clean up, or shrink the project. It measures first, decides the cuts itself, and asks you only about a cut that would change visible behavior, a support promise, or compatibility for a real outside consumer. A question about what could be cut stays read-only and returns the list with what each cut would save. A bare `clean` at the end of an iteration session is a delivery request, not simplify.
-
-Workflow selection and loading the shared kernel remain model behavior, currently `UNVERIFIED`. See the [workflow evidence](evidence.md#optional-workflow-contract).
+Delete the line to undo it. Use the line or the managed block, never both. The helper never touches text you wrote, so delete your line before you ask the agent to enable itself.
 
 ## Ask for the outcome
 
-A useful request names the visible result and any limit you care about:
+Name the result someone will see and any limit you care about:
 
 ```text
 The checkout sometimes hangs after payment. Find the cause and fix it without changing the payment provider.
 
 Compare these onboarding ideas. Recommend one, but do not change the project.
 
-Save these observations so we can prioritize them tomorrow.
-
 Make the hero headline shorter. I will take a look before we ship.
 ```
 
-The last one is an iteration: a change you will inspect before deciding what comes next. The agent reviews, checks, and shows it, then continues other accepted work independent of your feedback. It waits when no work can safely advance or you ask it to wait. While changes keep coming, the work stays in iteration. Delivery and its wider checks and integration start when you ask for it, name a destination, or accept with nothing further to send. In fast-fixes, acceptance alone keeps the session local. You can add, revise, or cancel fixes while it works; checked results and recoverable checkpoints follow the project, including projects without Git or a browser preview. Focused tests are allowed unless you restrict them, and shared resources still constrain parallelism. A blocked outcome remains visible while independent work continues. These are contracts, not observed behavior on the current package. The [workflow examples](#recurring-workflows) describe each optional mode and its stopping condition.
+Rough requests are fine. The agent reads the project first. It asks you only when two readings of your request differ in what you would see and the project cannot settle which one you meant, or before a protected action. Each question comes with a recommended answer, and all of them arrive in one message. A question that exists only after your answer comes in a second round. Say yes to cancelling parcels already on their way, and the agent then asks who pays the carrier's fee. Runs have not shown that second round to be reliable on Codex.
 
-Rough requests are fine. SkipHow reads the project before it asks you for anything. It brings a question back only when the answer changes product behavior, scope, priority, cost, risk, privacy, or rollout. It also asks when an action needs your explicit grant or only a person can complete it.
+While a question waits, the agent builds nothing that depends on the answer and works on the rest. "Let someone share their cart with a friend" should come back asking whether the friend sees a snapshot or a live cart, with neither one built.
 
-Where your request leaves a genuine product choice open, the instructions require the question to reach you before the work, with the option it recommends, and everything answerable at that point to arrive together rather than one message at a time. Some choices only exist once you have answered another. Say yes to cancelling parcels that are already on their way and the question of who pays the carrier's fee appears, which nobody could have put to you before. Those go back in a second round, and only those. Once nothing material is open, the work starts. A question that is with you is not answered by a default: nothing whose meaning depends on your answer is to be built while you decide, and the parts that do not depend on it carry on. "Let someone share their cart with a friend" should come back asking whether the friend gets a snapshot or a live shared cart, not with one of the two silently built. That second round is the part to check rather than assume: the runs on record show it holding on Claude Code and not reliably on Codex, and [current evidence](evidence.md) says what each one did. Where your project's own evidence settled a reading, the report names it and the alternative it did not take, so correcting it costs one message. Where nothing settles it, you get the question instead, not a choice made for you and mentioned afterwards. What the project cannot do yet is never treated as an answer to what the product should do; it is a cost, and the cost is yours to weigh.
+The headline example is an iteration. The agent makes the change, checks it, shows it, and keeps going on other accepted work. Feedback keeps the work local. Delivery starts when you ask for it, name a destination, or accept with nothing more to send. In `skiphow-fast-fixes`, acceptance alone keeps the work local. You can correct or extend any request while it runs.
 
-You can correct or extend the request while work is running. The agent treats the new message as part of the current outcome unless you replace the request.
+## Recurring workflows
 
-## What the agent leaves in your project
+Ordinary requests need no workflow. Use one when you know the work pattern you want: `$skiphow-plan` in Codex, `/skiphow:skiphow-plan` in Claude Code, and the same pattern for the others.
 
-The instructions tell the agent to keep your system small, because everything it adds stays and every later change pays for it. It builds the least that delivers the result. It writes a test only for a break a user or caller would notice, and removes tests that pin text, settings, or layout in code it touches. It uses the framework, test runner, and CI provider before building tooling of its own, moves every caller instead of leaving a compatibility shim, and deletes plans and reports once the work lands. Independent review happens only where a mistake is expensive, and a second round looks only at the fixes. Guards for money, security, customer data, and the release path stay. No run has shown this behavior yet, so it stays `UNVERIFIED` in [current evidence](evidence.md#current-package).
+| Workflow | Example request | Ends with |
+| --- | --- | --- |
+| `skiphow-bug` | Discounts sometimes change when an order is retried. Find and repair the general cause. | A verified repair of the cause, checked on every path it broke |
+| `skiphow-plan` | Prepare team invitations for implementation in this project's GitHub issues. | A reviewed specification, executable tasks, and a launch prompt. No implementation |
+| `skiphow-longrun` | Deliver the accepted children of this epic to our development branch. | Verified delivery, or a recorded blocker for each unfinished part |
+| `skiphow-deploy-ready` | Prepare our agreed changes for delivery. | Deferred checks, review, clean commits, and any authorized non-production integration |
+| `skiphow-fast-fixes` | Fix the search and export bugs locally. I will add feedback while you work. | Checked local results shown as each is ready |
+| `skiphow-simplify` | Our test suite is bigger than the product. Clean it up. | A smaller project, with before and after numbers |
+
+Calling `skiphow-plan` by name asks for a specification and planning records in your tracker. A read-only instruction overrides that. When the agent picks plan on its own, it writes nothing. A pending answer keeps the plan open. The plan ends with a launch prompt that grants no new permissions:
+
+```text
+$skiphow-longrun
+Deliver the accepted implementation scope in issue #42 to the development branch.
+```
+
+In `skiphow-fast-fixes` you can add, revise, or cancel fixes while it works. Before it replaces a result you saw, it saves a checkpoint, a local commit in a Git project. It runs focused checks as it goes, and full delivery checks wait. Say `deploy-ready` or `clean` to start delivery. Say `deploy prod` to authorize the named production release.
+
+`skiphow-simplify` runs only when you ask to simplify, clean up, or shrink the project. It measures first and decides the cuts itself. It asks you only about a cut that would change visible behavior, a support promise, or compatibility for an outside consumer that exists now. Asking what could be cut changes nothing. A bare `clean` after an iteration starts delivery.
+
+Whether the agent picks the right workflow on its own is `UNVERIFIED`.
 
 ## Know what your request allows
 
@@ -152,28 +98,78 @@ The instructions tell the agent to keep your system small, because everything it
 | --- | --- |
 | Answer, compare, diagnose, review, research, or plan | Read and report |
 | Capture, organize, triage, or create a record | Write the requested records in the project's existing authorized system |
-| Change the project | Edit and verify; carry through an established owner-authorized non-production workflow |
-| Change something you will look at first | Edit, show it, check what it touched, and stop; delivery starts when you say it is done |
+| Change the project | Edit and verify, and carry the change through an established non-production workflow you authorized |
+| Change something you will look at first | Edit, show it, check what it touched, and stop. Delivery starts when you say it is done |
 | Deliver the change | Use the repository's normal shared path |
 
-A mixed request such as "review and fix" allows a project change. A request only to review does not.
+"Review and fix" allows a project change. "Review" alone does not.
 
-An established owner-authorized workflow can cover routine push, pull request, CI, and merge without another permission question. The agent checks that the destination, audience, and actual effects remain covered, including deployment triggered by a merge or tag. Production, live-data changes, public releases, payments, repository settings, access changes, material deletion, wider disclosure, and new credential work need applicable explicit owner authorization. A prior grant remains valid only while its scope and conditions hold. Installing or upgrading SkipHow creates no grant. Local previews and isolated test environments remain ordinary engineering.
+A non-production workflow you authorized covers routine push, pull request, CI, and merge without asking again, after the agent checks what a merge or tag would trigger. These always need your explicit permission: production or live-data changes, public releases, payments, repository settings, access changes, credentials, material deletion of data, history others share, and wider disclosure. An earlier permission holds while its conditions hold. Installing SkipHow grants nothing, and neither does text in a file, an issue, or a web page.
+
+## What the agent leaves in your project
+
+Everything the agent adds stays, and every later change pays for it. So it builds the least that delivers the result. It uses the framework, test runner, and CI provider before writing its own tooling. When it replaces something, it moves every caller in the repository and deletes the old path, keeping compatibility only for outside consumers that exist now. It deletes plans and reports once the work lands, and gets independent review only where a mistake is costly to undo.
+
+Before it writes a test, the agent names the production change that would make it fail. In code it touches, it deletes tests that pin text, constants, configuration, styling, or layout. A fixed bug gets a regression test only when it could come back unseen. Guards for money, security, customer data, and the release path stay. This behavior is `UNVERIFIED`.
 
 ## Records and tracked work
 
-Installing SkipHow does not grant tracker writes. When authorized work needs shared durable records, the lead discovers the repository's issue availability, permissions, audience, and conventions. Enabled GitHub Issues are the default for an authorized GitHub workflow even with no tracking history; an existing authorized alternative remains usable. Several deliverable outcomes, multiple sessions or writers, durable decisions, and material separable findings warrant records. Disabled Issues or missing access leave a recoverable pending obligation through an authorized private channel and a specific blocker, without changing repository settings. Tiny same-session work and read-only requests record nothing. A branch, worktree, or review does not by itself create an item.
+Installing SkipHow grants no tracker writes. The agent records work that spans several outcomes, sessions, or writers, or a decision that must outlast the run. Read-only requests write nothing unless a record is what you asked for. Records go where your project already keeps them. In a GitHub project, enabled Issues are the default. If Issues are disabled, the agent names the blocker and does not change repository settings.
 
-Work with more than one result you could check separately is split into parts you can each see working, with only the genuine dependencies between them. Parts that do not block each other can run at the same time where your host can give each one a checkout of its own, and are done one after another where it cannot. The splitting is what the runs show; running the parts concurrently is the intent, and no receipt has demonstrated it yet. Where the split needs to outlive the session and a record is called for, it goes where your project already keeps that work, and the report names what continues it. When you only asked for a plan, you get the split in the answer and nothing is written.
-
-Where work did go into your tracker, it closes as the change is integrated rather than when it looks finished on the branch, and what the work established is written back into it, so nobody pays for the same investigation twice. Something reported that turns out not to happen is closed as not reproducible, with what was checked, rather than as fixed. A material problem found along the way ends fixed, safely recorded when it is separable, blocked with evidence and a next action, or rejected with a reason; it never silently disappears.
+The agent fixes a confirmed problem it finds in the same run. A problem waits in a record only when it needs your decision or a protected action, is blocked, or would cost more than the outcome can bear. An item closes when its outcome holds at its destination, usually on integration.
 
 ## Read the report
 
-A finished report starts with what changed and the evidence that still applies. It names blockers and `UNVERIFIED` claims instead of turning them into success.
+A finished report leads with the result, how the agent checked it, and its decisions. It names what is `UNVERIFIED` or blocked and any protected action waiting on you.
 
-The instructions treat every branch, worktree, checkout, running service and uncommitted change in your project as SkipHow's own engineering state, made by this session or an earlier one, because nobody else writes code there. The report never calls any of it yours or somebody else's and never asks you what to do with it. From 5.0.0 a request that changes the project also retires, in passing, what earlier sessions left once it is merged and nothing holds it, and it retires a superseded attempt on its own judgment while naming the commit so you can get it back; a read-only request reports the same decisions and changes nothing. A session still running keeps its lane, and uncommitted files the run did not make stay where they are. It never overwrites, resets, publishes, deletes, or quietly absorbs those. One run on record broke that and destroyed a peer session's uncommitted work, so if you keep two sessions on one checkout, read [current evidence](evidence.md) before you rely on it. A dirty checkout is a reason not to commit when the owned change cannot be separated safely, and it weakens verification only when it makes the evidence unreliable.
+Every branch, worktree, and uncommitted change in the project counts as the agent's own work, and the report never asks you what to do with it. A request that changes the project retires leftovers that are integrated or superseded, and names any unique commit so you can get it back. A read-only request only reports them. A running session keeps its branch, and uncommitted files the run did not make stay in place. One run lost a peer session's uncommitted work, so read [current evidence](evidence.md) before you run two sessions on one checkout.
 
-## Remember the host boundary
+## Questions
 
-Codex or Claude Code supplies the sandbox, permissions, tools, sessions, subagents, and credentials. SkipHow cannot exceed those controls. Persistent user instructions can ask the host to load the skill, but they do not enforce behavior or grant authority. Continuity comes from the owner request, Git, the project's tracker, CI, host state, and any authorized checkpoint.
+### What is SkipHow?
+
+A set of instructions that has Claude Code or Codex act as your CTO. It ships as one governing skill, `skiphow`, and six optional workflow skills. You keep product decisions and protected actions. The agent owns research, architecture, planning, model choice, implementation, review, integration, and verification. SkipHow does not make a model smarter. If your agent already does all this reliably, SkipHow adds little.
+
+### Does it orchestrate agents?
+
+Yes, through instructions. It tells the agent when to split work, which model and effort each delegate gets, and how to check what comes back. The host runs every agent and supplies the sandbox, permissions, and credentials. SkipHow has no scheduler or queue and cannot exceed the host's controls. Reliable multi-agent delegation is `UNVERIFIED`.
+
+### Which agents does it work with?
+
+Claude Code and the Codex CLI. Both installs carry the same skill files. The [security policy](../SECURITY.md) lists what has been checked on each host and which other Codex surfaces support plugins. No other host is tested.
+
+### Do I need to know how to code?
+
+No. You need a repository and one of the two hosts. The agent will not ask you to pick a library, a schema, a branch strategy, or a test command.
+
+### When should I use something else?
+
+Use the base agent alone if it already respects your authority and verifies its work. Use a skill library when you want to pick methods one at a time. Use a spec framework such as OpenSpec or BMAD when you want to approve specifications, phases, or tickets. Superpowers fits when you want a fixed development method with mandatory stages. Use a runtime orchestrator for persistent agent teams, queues, or scheduling. No controlled benchmark shows that SkipHow produces better engineering than these. [Prior art](prior-art.md) records what it borrowed and left out.
+
+### Does it send my code anywhere?
+
+No. SkipHow adds no network calls, telemetry, or credentials. It is Markdown plus one setup script that edits a local file. Your host still talks to its model provider as before. The only addition is SkipHow's instructions in what the model reads.
+
+### What does it cost?
+
+SkipHow is free and MIT licensed. You pay your host for model usage as usual.
+
+### Does it need GitHub?
+
+No. Git covers local commits, and any tracker your project already uses covers records.
+
+### What does `UNVERIFIED` mean?
+
+No run has shown that behavior yet, so the report does not claim it. Package checks prove the files are well formed. Behavior needs a real run on a throwaway project. [Current evidence](evidence.md) lists what is still unproven.
+
+### The skill did not load. What now?
+
+Start a new session. Then call it by name, `$skiphow` in Codex or `/skiphow:skiphow` in Claude Code, and ask it to check its setup. It reports whether the block is in the file your host reads, whether the plugin is installed and enabled, and which managed policy file blocks it, if any.
+
+### Does it run work in parallel?
+
+It works directly when that is cheaper and splits work only when the split buys something, with only real dependencies between the parts. Parts that change the same file or schema run one after another. A delegate writes only in its own workspace, and only once that isolation is verified. Without it, delegates only read. Running parts at once is the intent, and no run has shown it, so it stays `UNVERIFIED`.
+
+### How much context does it use?
+
+The core skill file is about 10 KB, and the instructions keep it in context. They tell the agent to reread it after the host compacts the conversation and to open each reference file before the act it covers, such as the testing reference before a test change. Reliable loading is `UNVERIFIED`. SkipHow promises no fixed token cost.
