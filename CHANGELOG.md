@@ -2,6 +2,14 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 7.0.2 (2026-10-21)
+
+### Attribution matches the shipped files
+
+- The third-party notice said the kernel adapts the decision frontier from Matt Pocock's `grilling` skill. The frontier now lives in the `product` reference; the kernel keeps only a recommended answer for every owner question, all asked in one round. The notice now says so.
+- `SOURCES.json` was checked against the upstream files at the pinned revision, one by one. It now credits the four workflows that carry adapted ideas: `skiphow-bug` from `diagnosing-bugs`, `skiphow-longrun` from `implement-spec`, `skiphow-plan` from `to-tickets` and `grilling`, and `skiphow-simplify` from `improve-codebase-architecture`. It drops `setup-matt-pocock-skills`, `wizard`, and the `writing-for-agents` skill-mechanics file, because no shipped text carries an idea from them any longer. The upstream licence, copyright, and inspected revision are unchanged.
+- This is a patch release. Runtime instructions are unchanged.
+
 ## 7.0.1 (2026-10-18)
 
 ### Inherited rules and tooling are the CTO's to judge
