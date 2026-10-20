@@ -120,6 +120,6 @@ For contributors:
 - [Changelog](CHANGELOG.md): what changed in each release and why.
 
 Earlier release narratives and documentation live in git history. Commit
-[`2f72c7f`](https://github.com/mzored/SkipHow/tree/2f72c7f218f29db20421eddce6d280e0d6f52045/docs) holds the documentation as of 7.0.1, and
+[`2f72c7f`](https://github.com/mzored/SkipHow/tree/2f72c7f218f29db20421eddce6d280e0d6f52045/docs) holds the documentation before it was cut to the current state, and
 commit [`72aef45`](https://github.com/mzored/SkipHow/tree/72aef4540d30d3639a2f63af6663971345c6dc5a/docs)
 holds the longer ledgers through 6.3.3.
