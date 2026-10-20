@@ -90,7 +90,7 @@ SkipHow runs on each host's own execution and admits a thin binding only for a d
 
 ### Default governance comes from one owned instruction block
 
-Governance comes from one owned, reversible block in the user instruction file the host actually reads, managed by [`activation.py`](../plugins/skiphow/skills/skiphow/scripts/activation.py) and the setup playbook. Explicit invocation is the fallback, and no hook ships.
+Governance comes from one owned, reversible block in the trusted user instruction file the host actually reads, managed by [`activation.py`](../plugins/skiphow/skills/skiphow/scripts/activation.py) and the setup playbook. Explicit invocation is the fallback, and no hook ships.
 
 **Why.** A block in a shadowed file configures nothing. Codex reads a non-empty `AGENTS.override.md` over `AGENTS.md` in `CODEX_HOME`, and Claude Code reads `CLAUDE.md` and unconditional `rules/` under `CLAUDE_CONFIG_DIR`, so the helper resolves the file the same way and reports configured, available, and loaded apart.
 
@@ -228,7 +228,7 @@ Bulky artifacts travel by reference. A correction carries current evidence and t
 
 ### All project engineering state is the lead's
 
-Every branch, worktree, checkout, checkpoint, running service, and uncommitted change in the project is the lead's, made by this session, an earlier one, or a delegate, and work is done only when verified at its authorized destination. A change request retires integrated, unheld leftovers and superseded attempts, naming unique commits. Foreign uncommitted changes, live lanes, and anything under a read-only request stay untouched.
+Every branch, worktree, checkout, checkpoint, running service, and uncommitted change in the project is the lead's, made by this session, an earlier one, or a delegate, and work is done only when verified at its authorized destination. A change request retires integrated, unheld leftovers, and the lead retires a superseded or abandoned attempt on its own judgment, naming its unique commits. Foreign uncommitted changes, live lanes, and anything under a read-only request stay untouched.
 
 **Why.** The owner writes no code, so state reported as someone else's is false and hands a decision to the one person who cannot make it. Retiring recoverable state is engineering, not material deletion: Git recovers a deleted branch, and nothing recovers an uncommitted file. Liveness shows in moving changes, an open review, a live record, or a host-listed session, never in a name or timestamp.
 

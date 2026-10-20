@@ -119,6 +119,7 @@ Each line asks about behavior the current package ships. None has a qualifying r
 - Whether the plan workflow saves its plan in the authorized tracker.
 - The direction rule when the result waits on the owner. A fixture with one owner gate, one independent task, and one planted false prerequisite is designed, not run.
 - Whether delegates stay read-only without verified isolation, and a run leaves a live session's lane alone.
+- Whether isolated units are integrated one by one as each lands.
 - A Codex writer lane in a pre-created checkout inside the writable roots, or a `codex exec -C` session per lane. Untried.
 - Whether routing a delegate to the cheapest likely route is cheaper in total.
 - Automatic or persistent activation. Claude Code with persistent configuration has no receipt.

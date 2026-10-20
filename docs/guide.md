@@ -168,7 +168,7 @@ Start a new session. Then call it by name, `$skiphow` in Codex or `/skiphow:skip
 
 ### Does it run work in parallel?
 
-It works directly when that is cheaper and splits work only when the split buys something, with only real dependencies between the parts. Parts that change the same file or schema run one after another. A delegate writes only from its own verified checkout. Without one, delegates only read. Running parts at once is the intent, and no run has shown it, so it stays `UNVERIFIED`.
+It works directly when that is cheaper and splits work only when the split buys something, with only real dependencies between the parts. Parts that change the same file or schema run one after another. A delegate writes only in its own workspace, and only once that isolation is verified. Without it, delegates only read. Running parts at once is the intent, and no run has shown it, so it stays `UNVERIFIED`.
 
 ### How much context does it use?
 
