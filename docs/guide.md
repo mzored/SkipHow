@@ -148,7 +148,7 @@ Use the base agent alone if it already respects your authority and verifies its 
 
 ### Does it send my code anywhere?
 
-No. SkipHow adds no network calls, telemetry, or credentials. It is Markdown plus one setup script that edits a local file. What your host sends to its model provider stays the same.
+No. SkipHow adds no network calls, telemetry, or credentials. It is Markdown plus one setup script that edits a local file. Your host still talks to its model provider as before. The only addition is SkipHow's instructions in what the model reads.
 
 ### What does it cost?
 

@@ -264,7 +264,7 @@ Verification checks the final state at the interface callers use. Every role reu
 
 **Why.** Releases repeated equivalent gates, and wording that blessed building test selection preceded custom selectors and queues in both governed projects. A different tree still needs its own evidence, including revision-bound CI.
 
-**Status.** `Observed` in one session for reuse. Current wording `Contract`.
+**Status.** `Contract`. One installed session that repeated equivalent gates motivated it. Behavior `UNVERIFIED`.
 
 **Reopens when.** A run drops a protecting check, builds custom selection before the native one, or repeats an equivalent gate.
 
