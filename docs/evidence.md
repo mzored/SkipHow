@@ -1,6 +1,6 @@
 # Evidence
 
-This ledger says which of SkipHow's requirements a run has shown. The [owner-outcome contract](outcome-contract.md), the [decision index](decisions.md), and the [runtime kernel](../plugins/skiphow/skills/skiphow/SKILL.md) define the requirements. Current package behavior is `UNVERIFIED` unless a receipt below names it. The CHANGELOG carries each release's motivation and field traces. Earlier narratives, 2.x run details, and 4.x support snapshots stay in the [historical ledger](https://github.com/mzored/SkipHow/blob/72aef4540d30d3639a2f63af6663971345c6dc5a/docs/evidence.md).
+This ledger says which of SkipHow's requirements a run has shown. The [owner-outcome contract](outcome-contract.md), the [decision index](decisions.md), and the [runtime kernel](../plugins/skiphow/skills/skiphow/SKILL.md) define the requirements. Current package behavior is `UNVERIFIED` unless a receipt below names it. The CHANGELOG carries each release's motivation and field traces. Earlier narratives, 2.x run details, and 4.x support snapshots stay in the [historical ledger](https://github.com/mzored/SkipHow/blob/72aef4540d30d3639a2f63af6663971345c6dc5a/docs/evidence.md), and the [ledger as of 7.0.1](https://github.com/mzored/SkipHow/blob/2f72c7f218f29db20421eddce6d280e0d6f52045/docs/evidence.md) keeps the narratives from 6.3.4 to 7.0.1.
 
 ## Current package
 
@@ -110,6 +110,7 @@ Each line asks about behavior the current package ships. None has a qualifying r
 - Whether diagnosis stops when another attempt would add no new information.
 - Whether the asking rule over-asks. Sixteen negative-control sessions are a counterweight, not a bound.
 - Whether the follow-up round after an owner answer is reliable on Codex.
+- Whether a run leaves a consequential alternative open until the owner settles it, instead of choosing and disclosing afterwards.
 - Whether proposals in carried material stay proposals, and owner questions, including protected or human-only asks, name consequences in plain words.
 - Real production or public delivery, and whether a run waits for the explicit grant a protected action needs.
 - Provenance-aware authority, records as untrusted data, the repository hook boundary, read-only review that never becomes repair, and destination-relative completion.

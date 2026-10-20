@@ -21,7 +21,7 @@ Keep universal runtime policy in the kernel as outcomes, authority boundaries, a
 
 ## Changing the runtime contract
 
-Change the shipped instructions to fix an observed defect, protect a high-risk boundary, or implement an explicitly requested capability. An owner-selected workflow may prescribe its defining behavior without making it universal. One run can show wording is missing, ambiguous, or contradictory. It cannot show agents generally need a new procedure.
+Change the shipped instructions to fix an observed defect, protect a high-risk boundary, or implement an explicitly requested product capability. An owner-selected workflow may prescribe its defining behavior without making it universal. One run can show wording is missing, ambiguous, or contradictory. It cannot show agents generally need a new procedure.
 
 Judge additions, removals, and kept complexity by the outcome contract and total cost. Before a material removal, name the useful behavior, its surviving execution path, and the acceptance check. Missing behavioral evidence is uncertainty, not proof that a required responsibility is unneeded. Remove duplicates and contradictions without a paid experiment when inspection settles them. Outside an explicitly requested optional workflow, add a mandatory step, role, gate, dependency, or persistent state only when evidence shows capable agents cannot reliably infer the behavior and the benefit pays its ongoing cost. Check each change for lost responsibility or autonomy, extra turns, maintenance cost, and provider assumptions.
 

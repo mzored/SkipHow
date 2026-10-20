@@ -36,7 +36,7 @@ In Claude Code, type `/skiphow:skiphow` in place of `$skiphow`.
 
 The agent finds the user instruction file your host reads before every project. It shows you the exact change, asks you to confirm once, and writes one marked block there. The block names the skill and copies none of its rules, so plugin updates need no new block. Ask the same way to check or disable the setup.
 
-It reports three facts. Configured means the block is in the file your host reads. Available means the host lists the plugin as enabled. Loaded shows only in a new session. If a managed policy on your machine restricts plugins, the agent names that file and does not work around it. The [setup reference](../plugins/skiphow/skills/skiphow/references/setup.md) lists the helper script's commands and the file each host reads.
+It reports three facts. Configured means the block is in the file your host reads. Available means the host lists the plugin as installed and enabled. Loaded shows only in a new session. If a managed policy on your machine restricts plugins, the agent names that file and does not work around it. The [setup reference](../plugins/skiphow/skills/skiphow/references/setup.md) lists the helper script's commands and the file each host reads.
 
 ### Turn it on by hand
 
@@ -86,7 +86,7 @@ $skiphow-longrun
 Deliver the accepted implementation scope in issue #42 to the development branch.
 ```
 
-In `skiphow-fast-fixes` you can add, revise, or cancel fixes while it works. Before it replaces a result you saw, it saves a checkpoint, a local commit in a Git project. Focused tests run as it goes, and full delivery checks wait. Say `deploy-ready` or `clean` to start delivery. Say `deploy prod` to authorize the named production release.
+In `skiphow-fast-fixes` you can add, revise, or cancel fixes while it works. Before it replaces a result you saw, it saves a checkpoint, a local commit in a Git project. It runs focused checks as it goes, and full delivery checks wait. Say `deploy-ready` or `clean` to start delivery. Say `deploy prod` to authorize the named production release.
 
 `skiphow-simplify` runs only when you ask to simplify, clean up, or shrink the project. It measures first and decides the cuts itself. It asks you only about a cut that would change visible behavior, a support promise, or compatibility for an outside consumer that exists now. Asking what could be cut changes nothing. A bare `clean` after an iteration starts delivery.
 
@@ -164,7 +164,7 @@ No run has shown that behavior yet, so the report does not claim it. Package che
 
 ### The skill did not load. What now?
 
-Start a new session. Then call it by name, `$skiphow` in Codex or `/skiphow:skiphow` in Claude Code, and ask it to check its setup. It reports whether the block is in the file your host reads, whether the plugin is enabled, and which managed policy file blocks it, if any.
+Start a new session. Then call it by name, `$skiphow` in Codex or `/skiphow:skiphow` in Claude Code, and ask it to check its setup. It reports whether the block is in the file your host reads, whether the plugin is installed and enabled, and which managed policy file blocks it, if any.
 
 ### Does it run work in parallel?
 

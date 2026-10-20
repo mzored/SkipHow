@@ -1,6 +1,6 @@
 # Current decisions
 
-This page records SkipHow's live decisions under the [owner-outcome contract](outcome-contract.md), each with its reason, status, and what would reopen it. A decision reopens when host behavior, model evidence, product goals, security boundaries, or maintenance cost changes its premises, and the [older narratives](https://github.com/mzored/SkipHow/blob/72aef4540d30d3639a2f63af6663971345c6dc5a/docs/decisions.md) are context to weigh, never a veto.
+This page records SkipHow's live decisions under the [owner-outcome contract](outcome-contract.md), each with its reason, status, and what would reopen it. A decision reopens when host behavior, model evidence, product goals, security boundaries, or maintenance cost changes its premises, and the [older narratives](https://github.com/mzored/SkipHow/blob/72aef4540d30d3639a2f63af6663971345c6dc5a/docs/decisions.md) are context to weigh, never a veto. The [table as of 7.0.1](https://github.com/mzored/SkipHow/blob/2f72c7f218f29db20421eddce6d280e0d6f52045/docs/decisions.md) keeps each row's version history.
 
 `Contract` means the shipped text encodes it and no run has tested that text. `Deterministic` means a check proves it on every run. `Observed` means a retained run showed it; [evidence](evidence.md) holds the receipts.
 
@@ -198,7 +198,7 @@ Fast-fixes coordinates a stream of local work across stacks, keeps every shown s
 
 Delegates stay read-only unless the lead verifies writer isolation. The lead sets model and effort separately at the cheapest route likely to pass, keeps a route proven on comparable work, and counts an unset control as a choice because its default is often the parent's. Each brief carries the kernel path and bounds further delegation; the delegate is CTO of its brief, and the lead keeps owner questions, dispositions, and records.
 
-**Why.** One checkout has one index and branch, and a delegate's report of its own isolation is not proof. Nested delegates often inherit the route, so the brief is where fan-out is bounded. No portable isolation or model-level interface exists, so unverifiable isolation takes the safe fallback.
+**Why.** One checkout has one index and branch, and a delegate's report of its own isolation is not proof. Nested delegates often inherit the route, so the brief is where fan-out is bounded. A review's independence and framing matter more than its model level. No portable isolation or model-level interface exists, so unverifiable isolation takes the safe fallback.
 
 **Status.** `Contract`. The motivating failures are `Observed`: five lanes writing one checkout, and a worktree that reported success into the shared tree.
 
@@ -208,7 +208,7 @@ Delegates stay read-only unless the lead verifies writer isolation. The lead set
 
 An assignment's size counts implementation, verification, and review. A long assignment names expected progress and when to return. Checkout isolation leaves the stash, services, databases, ports, and output paths shared.
 
-**Why.** Independent repairs are not interface migrations, and useful progress can come before any commit. A bare stash pop can take another lane's work.
+**Why.** Independent repairs are not interface migrations, and useful progress can come before any commit. Existing evidence may be enough to size work, checkpoints follow project policy, and host waits and events let the lead observe without new state. A bare stash pop can take another lane's work.
 
 **Status.** `Contract`. Effect `UNVERIFIED`.
 
@@ -262,7 +262,7 @@ A disposable failed merge may stay for diagnosis. The lead contains or restores 
 
 Verification checks the final state at the interface callers use. Every role reuses a pass for the same command, tree, and environment, and reruns only on changed inputs, an unverifiable result, or a named doubt. Slow or flaky suites are measured and fixed at the layer that costs the time, with the runner's and CI provider's native features before custom tooling.
 
-**Why.** Releases repeated equivalent gates, and wording that blessed building test selection preceded custom selectors and queues in both governed projects. A different tree still needs its own evidence, including revision-bound CI.
+**Why.** Releases repeated equivalent gates, and wording that blessed building test selection preceded custom selectors and queues in both governed projects. A different tree still needs its own evidence, including revision-bound CI. Suite size and speed alone show neither the cause of slowness nor adequate coverage.
 
 **Status.** `Contract`. One installed session that repeated equivalent gates motivated it. Behavior `UNVERIFIED`.
 
