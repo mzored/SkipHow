@@ -172,4 +172,4 @@ It works directly when that is cheaper and splits work only when the split buys 
 
 ### How much context does it use?
 
-The core skill file is about 10 KB and stays in context. The agent rereads it after the host compacts the conversation. Each reference file opens before the act it covers, such as the testing reference before a test change. SkipHow promises no fixed token cost.
+The core skill file is about 10 KB, and the instructions keep it in context. They tell the agent to reread it after the host compacts the conversation and to open each reference file before the act it covers, such as the testing reference before a test change. Reliable loading is `UNVERIFIED`. SkipHow promises no fixed token cost.

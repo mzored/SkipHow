@@ -64,7 +64,7 @@ Each row is one claim about one identified set of records. For a 4.x row, `pytho
 | --- | --- | --- | --- | --- |
 | Kernel loaded from an `AGENTS.override.md` block, and on explicit `$skiphow` to enable and disable | 4.2.0 | Codex CLI 0.153.0 | `Observed` | [`isolated-host-420-20260906`](../evals/receipts/isolated-host-420-20260906/claims.json): `codex-override-delivery.json`, `codex-setup-enable.json`, `codex-setup-disable.json` |
 | Enable wrote one owned block and disable removed exactly it; the consent turn reinstalled the plugin instead of naming the command | 4.2.0 | Codex CLI 0.153.0 | `Observed` | `codex-setup-enable.json`, `codex-setup-disable.json` |
-| Four repairs delivered to `fix/catalog` on a synthetic remote; two foreign paths preserved | 4.2.0 | Codex CLI 0.153.0 | `Observed` | `codex-override-delivery.json`, `codex-delivery-verification.json` |
+| Four repairs delivered to `fix/catalog` on a synthetic remote; two foreign paths preserved; no publication | 4.2.0 | Codex CLI 0.153.0 | `Observed` | `codex-override-delivery.json`, `codex-delivery-verification.json` |
 | Report omits the sandbox refusal of the session's own cleanup | 4.2.0 | Codex CLI 0.153.0 | `FAIL` | same |
 | Kernel loaded from an `AGENTS.md` block, for read-only analysis, after native resume, and after native compaction | 4.1.0 | Codex CLI 0.153.0 | `Observed` | [`isolated-host-20260905`](../evals/receipts/isolated-host-20260905/claims.json): `codex-bootstrap.json`, `codex-analysis.json`, `codex-resume.json`, `codex-post-compaction.json` |
 | Kernel absent on two unrelated requests, as intended | 4.1.0 | Codex CLI 0.153.0 | `Observed` | `codex-unrelated.json`, `codex-discussion.json` |

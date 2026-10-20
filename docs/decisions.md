@@ -30,7 +30,7 @@ The agent settles engineering and reversible technical uncertainty itself and ex
 
 Answer, diagnosis, review, research, audit, and plan requests write nothing unless the owner asks for a record or repair. A change request carries routine engineering through the established non-production workflow, and the lead batches accepted results into delivery units without holding finished work behind unrelated blockers. Iteration stays local until the owner asks for delivery, names a destination, or, outside an invoked iteration workflow, accepts with nothing further to send.
 
-**Why.** Invoking the plan workflow requests records, and automatic selection grants nothing. Preparation and production are separate grants, a handoff and the final delivery can have different destinations, and local combination grants no publication.
+**Why.** Invoking the plan workflow requests records, and automatic selection grants nothing. Preparation and production are separate grants, a handoff and the final delivery can have different destinations, and local combination grants no publication. An owner-selected workflow keeps existing grants, audience boundaries, and downstream-effect checks.
 
 **Status.** `Contract`. Workflow behavior `UNVERIFIED`.
 
@@ -156,7 +156,7 @@ The agent uses available skills and tools when they pay, designs the affected jo
 
 The simplify workflow measures the project, removes what does not pay through reviewed delivery, measures again, and revises the agent-made rules and tooling that caused the waste. It judges project tooling by cost per run and in fixes against what it catches and what native options offer, since the agents and jobs that run it are not the callers that justify it. It keeps guards for money, security, customer data, and the release path, and a cut that cites other coverage holds only after someone reads that coverage.
 
-**Why.** An owner's hand cleanup went too far before the guards came back. Field runs kept an agent-built selector until the owner questioned it, and deleted tests on coverage nobody had opened. The shared frontmatter cannot disable implicit selection, so the description limits it to an owner request.
+**Why.** An owner's hand cleanup went too far before the guards came back. Field runs kept an agent-built selector until the owner questioned it, and deleted tests on coverage nobody had opened. The shared frontmatter cannot disable implicit selection, so the description limits it to an owner request. Protected actions keep their grants.
 
 **Status.** `Contract`, owner-requested. Behavior `UNVERIFIED`.
 
@@ -180,13 +180,13 @@ Every task in a prepared plan has one verifiable outcome that one agent can carr
 
 **Status.** `Contract`. Behavioral improvement `UNVERIFIED`.
 
-**Reopens when.** A plan still publishes a task with several outcomes or a deferred split, or the rule splits small cohesive work.
+**Reopens when.** A plan still publishes a task with several outcomes or a deferred split, or the rule forces small cohesive work into needless tasks or speculative decomposition.
 
 ### Fast-fixes keeps live work moving, deploy-ready lands it
 
 Fast-fixes coordinates a stream of local work across stacks, keeps every shown state recoverable, and continues independent work after showing a result. Deploy-ready reconciles active work into one checked candidate and carries it to the authorized destination.
 
-**Why.** The owner asked for live orchestration. An earlier fast-fixes required a browser and a worktree, stopped after every shown result, and deferred every test run. The shared playbooks already cover delegation, tracking, and integration. Host controls decide concurrency and when messages arrive.
+**Why.** The owner asked for live orchestration. An earlier fast-fixes required a browser and a worktree, stopped after every shown result, and deferred every test run. The shared playbooks already cover delegation, tracking, and integration. Host controls decide concurrency and when messages arrive. Restrictions and protected-action grants survive upgrades.
 
 **Status.** `Contract`, owner-requested. Nine corpus cases are not run.
 
@@ -230,7 +230,7 @@ Bulky artifacts travel by reference. A correction carries current evidence and t
 
 Every branch, worktree, checkout, checkpoint, running service, and uncommitted change in the project is the lead's, made by this session, an earlier one, or a delegate, and work is done only when verified at its authorized destination. A change request retires integrated, unheld leftovers, and the lead retires a superseded or abandoned attempt on its own judgment, naming its unique commits. Foreign uncommitted changes, live lanes, and anything under a read-only request stay untouched.
 
-**Why.** The owner writes no code, so state reported as someone else's is false and hands a decision to the one person who cannot make it. Retiring recoverable state is engineering, not material deletion: Git recovers a deleted branch, and nothing recovers an uncommitted file. Liveness shows in moving changes, an open review, a live record, or a host-listed session, never in a name or timestamp.
+**Why.** The owner writes no code, so state reported as someone else's is false and hands a decision to the one person who cannot make it. Retiring recoverable state is engineering, not material deletion: Git recovers a deleted branch, and nothing recovers an uncommitted file. Liveness shows in moving changes, an open review, a live record, or a host-listed session, never in a name, a timestamp, or a running process alone.
 
 **Status.** `Contract`. Custody corpus cases are not run.
 
