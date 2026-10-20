@@ -92,7 +92,7 @@ SkipHow runs on each host's own execution and admits a thin binding only for a d
 
 Governance comes from one owned, reversible block in the trusted user instruction file the host actually reads, managed by [`activation.py`](../plugins/skiphow/skills/skiphow/scripts/activation.py) and the setup playbook. Explicit invocation is the fallback, and no hook ships.
 
-**Why.** A block in a shadowed file configures nothing. Codex reads a non-empty `AGENTS.override.md` over `AGENTS.md` in `CODEX_HOME`, and Claude Code reads `CLAUDE.md` and unconditional `rules/` under `CLAUDE_CONFIG_DIR`, so the helper resolves the file the same way and reports configured, available, and loaded apart.
+**Why.** A block in a shadowed file configures nothing. Codex reads a non-empty `AGENTS.override.md` over `AGENTS.md` in `CODEX_HOME`, and Claude Code reads `CLAUDE.md` and unconditional `rules/` under `CLAUDE_CONFIG_DIR`, so the helper resolves the file the same way and reports configured, available, and loaded apart. An isolated Codex profile can log in, and an isolated Claude profile still cannot, which blocks a clean Claude activation receipt.
 
 **Status.** `Deterministic` for the helper. `Observed` once each for Codex loading from both files. Claude loading `UNVERIFIED`. A comparison with a `SessionStart` hook and an `@import` is specified and not run.
 
@@ -174,7 +174,7 @@ The plan workflow prepares the whole requested scope, keeps the product intervie
 
 ### Plan tasks are dispatchable slices
 
-Every task in a prepared plan has one verifiable outcome that one agent can carry to a reviewed change. The plan sizes every task now, and its independent review covers every task as published.
+Every task in a prepared plan has one verifiable outcome that one agent can carry from its record to a verified, reviewable change. The plan sizes every task now, and its independent review covers every task as published.
 
 **Why.** Tasks that defer their own split leave a plan undispatchable, and a review of the specification alone lets them through. Ordinary delegation sizes only the next outcome, so the lead rechecks a later task at dispatch when an earlier result changes it.
 
@@ -186,7 +186,7 @@ Every task in a prepared plan has one verifiable outcome that one agent can carr
 
 Fast-fixes coordinates a stream of local work across stacks, keeps every shown state recoverable, and continues independent work after showing a result. Deploy-ready reconciles active work into one checked candidate and carries it to the authorized destination.
 
-**Why.** The owner asked for live orchestration. An earlier fast-fixes required a browser and a worktree, stopped after every shown result, and deferred every test run. The shared playbooks already cover delegation, tracking, and integration.
+**Why.** The owner asked for live orchestration. An earlier fast-fixes required a browser and a worktree, stopped after every shown result, and deferred every test run. The shared playbooks already cover delegation, tracking, and integration. Host controls decide concurrency and when messages arrive.
 
 **Status.** `Contract`, owner-requested. Nine corpus cases are not run.
 
@@ -324,7 +324,7 @@ The package carries no model IDs, cost tables, host tiers, dated host snapshots,
 
 ### Public receipts carry no private data
 
-Public receipts exclude account and authentication metadata, known credential formats, private paths, raw host identifiers, and encoded home-derived directory names. Pseudonyms keep per-run usage and correlation.
+Public receipts exclude account and authentication metadata, known credential formats, private paths, raw host identifiers, and encoded home-derived directory names. Per-run usage, synthetic artifacts, and correlation through pseudonyms stay.
 
 **Why.** Literal path replacement once left account metadata in a retained trace, and no filter can certify arbitrary prose.
 

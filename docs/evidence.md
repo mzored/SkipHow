@@ -105,7 +105,7 @@ Each line asks about behavior the current package ships. None has a qualifying r
 - Whether workflows reload the kernel after compaction, and a genuinely compacted or resumed session reconstructs outcome, authority, live state, and valid evidence.
 - Whether a kernel rule is followed. One installed session breached the worktree-placement rule with it in context.
 - Why playbooks go unread in long installed sessions. Plan mode is refuted as the cause.
-- Whether technical design opens before a run adds a dependency, module, abstraction, or tooling, and whether a new project gets the questions about unstated constraints that would change a choice.
+- Whether technical design opens before a run adds a dependency, module, abstraction, or tooling, whether a new project gets the questions about unstated constraints that would change a choice, and what a run does on a request to improve an existing structure.
 - Whether review scales to consequence and stops when a round finds nothing that qualifies. A fixed known-bad reviewer fixture, the one-box two-line shipping case, is designed and not run.
 - Whether diagnosis stops when another attempt would add no new information.
 - Whether the asking rule over-asks. Sixteen negative-control sessions are a counterweight, not a bound.
