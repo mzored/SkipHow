@@ -20,6 +20,7 @@ Matt Pocock's skills and Superpowers, read as they stand today, scope a fix to t
 ### Checks and evidence
 
 - This is a patch release. It restores what the decision record already promised: a fix reaches the other instances. Authority and protected-action boundaries are unchanged.
+- An isolated read-only Codex review ran one round, which also checked that the removed re-review clause keeps its path through the review playbook. It found nothing that qualified.
 - The owner declined paid model sessions for this release. No model sessions or clean-install runs were made, and the new behavior remains `UNVERIFIED`.
 
 ## 7.0.2 (2026-10-21)
