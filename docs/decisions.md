@@ -140,15 +140,15 @@ Rules, tools, and records earlier sessions made are the lead's own decisions, ev
 
 **Reopens when.** A run rewrites a rule the owner set in their own words, or keeps an agent-made rule or tool whose cost it has measured.
 
-### Fix the shared cause of a repeated failure
+### Fix every place that shares the cause or role
 
-When a failure repeats, the lead fixes its shared cause and the other instances, with no guard per instance.
+A defect or an owner's correction covers every place that shares its cause or role. The lead fixes them all where the cause lives, with no guard per place. In an iteration, feedback on one element applies to every element in its role unless the owner limits it, and the result is inspected on every screen that renders what changed.
 
-**Why.** Per-instance fixes sent the owner hunting the next one, and "fix the class" was read in the field as "add a guard for the class", so the rule names the cause as the fix, not a check.
+**Why.** Per-instance fixes sent the owner hunting the next one, and "fix the class" was read in the field as "add a guard for the class", so the rule names the cause as the fix, not a check. A rule that spoke only of repeated failures left an owner's design correction to the one element they pointed at, and a shared piece changed for one screen broke others nobody looked at.
 
 **Status.** `Contract`. Effect `UNVERIFIED`.
 
-**Reopens when.** A run sweeps unrelated surfaces on a first report or adds one guard per instance.
+**Reopens when.** A run changes places that serve a different purpose on a first report, adds one guard per place, or leaves the owner pointing at each instance of one correction.
 
 ### Design the journey and reuse maintained compositions
 
