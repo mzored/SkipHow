@@ -6,10 +6,10 @@ All notable changes to SkipHow 2.x and later appear in this file. Earlier releas
 
 ### Reports the owner can read, follow-ups the lead carries
 
-- The final report reaches the owner in the language they write in and in product terms: what changed for users, where it runs and on which branch, decisions they would notice, and what is unverified, blocked, or waiting on them. Commit hashes, check names, and the account of every part, branch, worktree, finding, and blocker go in the commit, pull request, or issue. The kernel no longer orders the report to lead with how the work was checked or to use the `UNVERIFIED` label.
+- The final report reaches the owner in the language they write in and in product terms: what changed for users, where it runs and on which branch, decisions they would notice, and what is unverified, blocked, or waiting on them. Commit hashes, check names, and the account of every part, branch, worktree, finding, and blocker go in the commit, pull request, or issue the work may write and its audience may read, and otherwise stay in the report, so a read-only request still writes nothing. The kernel no longer orders the report to lead with how the work was checked or to use the `UNVERIFIED` label.
 - Parts and findings of the requested outcome stay with the lead, done directly or through delegates. The lead never leaves them to sessions the owner has to start.
 - When the host or sandbox refuses something the work needs, the lead asks the owner once, plainly, for a lasting permission instead of handing over a one-off command.
-- The kernel is 61 characters shorter at the same word count. Three sentences that the delegation and tracked-work playbooks already carry at the act left it, along with the delegation entry in References, which the dispatch rule already links.
+- The kernel is 83 characters and two words shorter. Three sentences that the delegation, tracked-work, testing, and integration playbooks already carry at the act left it, along with the delegation entry in References, which the dispatch rule already links.
 
 ### Why
 
@@ -21,6 +21,7 @@ Superpowers and Matt Pocock's skills, read as they stand today, set no rule on t
 
 - This is a patch release. It restores what the owner-outcome contract already promised: one accountable lead and an honest report the owner can use. Authority and protected-action boundaries are unchanged.
 - The corpus gains `owner-report-in-owner-language`, and `tracked-work-finding-reported-not-recorded` now forbids handing a confirmed finding to a session the owner must start. Neither has run.
+- An isolated read-only Codex review ran two rounds. Round 1 found that the new accounting sentence told a read-only request, or a project with no tracker, to write a commit, pull request, or issue, against the Authority section and the tracked-work rule on audience. It now names only records the work may write and its audience may read, and otherwise the report; the decision and the contract match. Round 1 also found that the new corpus case claimed to check the commit message, which no event observes; the case and its README note now claim only what the report leaves out. Round 2 found nothing that qualified.
 - The owner declined paid model sessions for this release. No model sessions or clean-install runs were made, and the new behavior remains `UNVERIFIED`.
 
 ## 7.0.1 (2026-10-18)

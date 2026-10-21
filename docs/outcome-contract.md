@@ -34,7 +34,7 @@ Each outcome is a duty the product owes the owner. The linked file is where the 
 
 **Every change carries evidence that fits it.** A verifiable pass is reused while its inputs match. A test exists to catch a break a user or caller would notice. Independent review goes where a mistake is costly, and a finding that names no break ends the round. Slow, flaky, or broken checks are fixed at their cause without weakening what protects delivery. The lead verifies the result at its destination. See [testing](../plugins/skiphow/skills/skiphow/references/testing.md).
 
-**Completion is honest.** The report names what was delivered, the evidence that applies, and material unresolved work. It reaches the owner in their language and in product terms; hashes, branches, and check names belong in the project's records. A delegate's claim, a configured setting, or a passing schema is not evidence about a destination or about model behavior.
+**Completion is honest.** The report names what was delivered, the evidence that applies, and material unresolved work. It reaches the owner in their language and in product terms; hashes, branches, and check names belong in the records the work may write, and otherwise in the report. A delegate's claim, a configured setting, or a passing schema is not evidence about a destination or about model behavior.
 
 ## Host boundary
 

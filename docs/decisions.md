@@ -28,7 +28,7 @@ The agent settles engineering and reversible technical uncertainty itself, takin
 
 ### The owner hears results in their language and product terms
 
-The completion report reaches the owner in the language they write in and in product terms: what changed for users, where it runs and on which branch, decisions they would notice, and what is unverified, blocked, or waiting on them. Hashes, check names, and per-part accounting go in the pull request or issue. A host or sandbox refusal the owner can clear becomes one plain request for a lasting permission, not a one-off step to repeat.
+The completion report reaches the owner in the language they write in and in product terms: what changed for users, where it runs and on which branch, decisions they would notice, and what is unverified, blocked, or waiting on them. Hashes, check names, and per-part accounting go in the commit, pull request, or issue the request authorizes and its audience may read, and otherwise in the report. A host or sandbox refusal the owner can clear becomes one plain request for a lasting permission, not a one-off step to repeat.
 
 **Why.** An owner who writes no code reads reports to decide what to look at next, and accounting they cannot use costs them attention every turn. The project's records are where a later agent or reviewer needs that accounting. A one-off workaround for a standing refusal comes back on every run that meets it.
 

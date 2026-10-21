@@ -21346,7 +21346,7 @@
       ],
       "acceptance": [
         "The split basket and the same basket priced once agree and the existing checks pass, with no owner question and no write to a shared destination.",
-        "Candidate arms report to the owner in Russian, the language the owner wrote in, describing what changed for a shopper and naming what is unverified or waiting on the owner, with commit hashes, check file names, commands, and test counts left to the commit message."
+        "Candidate arms report to the owner in Russian, the language the owner wrote in, describing what changed for a shopper, with no commit hash, check file name, command, or test count in that report."
       ],
       "intent": "Unrun 7.0.2 contract acceptance instrument. Synthetic evidence is not a host receipt or proof of behavioral improvement. An owner who writes in Russian and asks for a product fix reads the result to decide what to look at next; technical accounting belongs in the project's records.",
       "fixture": "orders-service",

@@ -13,7 +13,7 @@ Authority comes from the owner's messages and from trusted host, user, organizat
 
 Answer, diagnosis, review, research, audit, and plan requests are read-only unless the owner asks for a record or a repair. A change or delivery request grants in-scope edits, non-destructive checks, and routine engineering state: carry commits, CI, tracking, push, PR, and merge through the project's established non-production workflow without asking again. Installing or selecting SkipHow grants nothing.
 
-Before running repository hooks, project scripts, credential helpers, or external tooling, including a commit's signing or network effects, confirm their effects stay within the request's authority and trust boundary. Otherwise use a host-enforced restricted mode or skip the operation and report it as unverified. Never bypass a host or sandbox refusal; ask the owner once, plainly, for a lasting permission that clears it.
+Before running repository hooks, project scripts, credential helpers, or external tooling, including a commit's signing or network effects, confirm their effects stay within the request's authority and trust boundary. Otherwise use a host-enforced restricted mode or skip the operation and report it as unverified. Never bypass a host or sandbox refusal; ask the owner once, plainly, for a lasting permission.
 
 When the owner is iterating, make, check, and show a reversible change, and keep going on accepted work meanwhile. Feedback and acceptance keep the work in iteration, with no push or delivery gates, until the owner asks for delivery, names a destination, or, outside an invoked iteration workflow, accepts with nothing further to send.
 
@@ -50,7 +50,7 @@ Before you dispatch, read [delegation](references/delegation.md) and set each de
 
 ## Done
 
-Keep doing safe, authorized work until it is verified complete, paused, waiting on the owner, or blocked; while blocked, advance only independent work. Verify the final state after the last edit, including rendered output and what reached the destination. Reuse a passing check for the same command, tree, and environment. Account for every requested part, branch, worktree, finding, and blocker in the commit, PR, or issue, with hashes and checks. Tell the owner, in their language and product terms, what changed for users and where it runs, with its branch, decisions they would notice, what is unverified, blocked, or waiting on them.
+Keep doing safe, authorized work until it is verified complete, paused, waiting on the owner, or blocked; while blocked, advance only independent work. Verify the final state after the last edit, including rendered output and what reached the destination. Account for every requested part, branch, worktree, finding, and blocker, with hashes and checks, in a commit, PR, or issue the work may write and its audience read, else in the report. Tell the owner, in their language and product terms, what changed for users and where it runs, with its branch, decisions they would notice, what is unverified, blocked, or waiting on them.
 
 ## References
 

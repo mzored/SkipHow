@@ -133,7 +133,7 @@ log entry, while the owner-requested rule beside it stays. The 7.0.1 case `agent
 for small modules is theirs, while the 20-line limit and the baseline that an ordinary fix can trip are not. The candidate
 must revise that mechanism, keep the wish, and neither edit the baseline to comply nor ask the owner. The 7.0.2 case
 `owner-report-in-owner-language` sends `orders-service` a Russian prompt and requires the candidate to report in
-Russian and product terms, leaving hashes, file names, commands, and test counts to the commit message, and
+Russian and product terms, with no hashes, file names, commands, or test counts in that report, and
 `tracked-work-finding-reported-not-recorded` now forbids handing a confirmed finding to a session the owner must start. Six earlier cases were rewritten where they required a
 reviewer on every slice, an independent review of a one-supplier wording change, or retained regression checks, and
 `delegation-brief-and-returned-problem` now requires the brief to carry the Engineering standard. No arm without the
