@@ -4,7 +4,7 @@ This ledger says which of SkipHow's requirements a run has shown. The [owner-out
 
 ## Current package
 
-No retained receipt covers the current package. Retained current-package CTO scenarios with Observed receipts: 0 of 12. All 135 cases in [the corpus](../evals/cases.json) are unrun, and every check in [the host ledger](../evals/host-smoke.json) is `UNVERIFIED` for the current candidate. Every observation below names an older package and supports only the wording and conditions it exercised.
+No retained receipt covers the current package. Retained current-package CTO scenarios with Observed receipts: 0 of 12. All 136 cases in [the corpus](../evals/cases.json) are unrun, and every check in [the host ledger](../evals/host-smoke.json) is `UNVERIFIED` for the current candidate. Every observation below names an older package and supports only the wording and conditions it exercised.
 
 ## Three labels
 
