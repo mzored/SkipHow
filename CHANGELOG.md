@@ -2,6 +2,27 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 7.0.2 (2026-10-21)
+
+### Reports the owner can read, follow-ups the lead carries
+
+- The final report reaches the owner in the language they write in and in product terms: what changed for users, where it runs and on which branch, decisions they would notice, and what is unverified, blocked, or waiting on them. Commit hashes, check names, and the account of every part, branch, worktree, finding, and blocker go in the commit, pull request, or issue. The kernel no longer orders the report to lead with how the work was checked or to use the `UNVERIFIED` label.
+- Parts and findings of the requested outcome stay with the lead, done directly or through delegates. The lead never leaves them to sessions the owner has to start.
+- When the host or sandbox refuses something the work needs, the lead asks the owner once, plainly, for a lasting permission instead of handing over a one-off command.
+- The kernel is 61 characters shorter at the same word count. Three sentences that the delegation and tracked-work playbooks already carry at the act left it, along with the delegation entry in References, which the dispatch rule already links.
+
+### Why
+
+An owner reported spending their time managing agents instead of the product and listed seven behaviors to fix. Each was checked against the 34 root sessions that ran 7.0.1 on that owner's project: 112 owner messages, 348 closing messages, and the merges in the same window. Three items already held on 7.0.1: finished change sessions ended merged into the non-production branch with their worktrees retired, the one exception following a project rule that reserves merges for a grant; the window's merges were mostly removals; and ordinary requests worked without naming a workflow. Three items traced to the kernel's own wording. 64% of closings to an owner writing in Russian were mostly English, and 64% carried hashes, branches, pull request numbers, or `UNVERIFIED`, which the Done section literally asked for. Six sessions ended with follow-up session cards for findings of their own work, which the owner then started, and the kernel never said those were the lead's. Three sessions handed the owner the same one-off command for a step the owner's own settings refused, where the kernel said only to name the blocker.
+
+Superpowers and Matt Pocock's skills, read as they stand today, set no rule on the language or detail of the final report. Superpowers' parallel dispatch returns results to the lead, and nothing in either was worth taking.
+
+### Checks and evidence
+
+- This is a patch release. It restores what the owner-outcome contract already promised: one accountable lead and an honest report the owner can use. Authority and protected-action boundaries are unchanged.
+- The corpus gains `owner-report-in-owner-language`, and `tracked-work-finding-reported-not-recorded` now forbids handing a confirmed finding to a session the owner must start. Neither has run.
+- The owner declined paid model sessions for this release. No model sessions or clean-install runs were made, and the new behavior remains `UNVERIFIED`.
+
 ## 7.0.1 (2026-10-18)
 
 ### Inherited rules and tooling are the CTO's to judge

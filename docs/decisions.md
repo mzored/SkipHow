@@ -26,6 +26,16 @@ The agent settles engineering and reversible technical uncertainty itself, takin
 
 **Reopens when.** The recommendation channel hands product choices back, or an owner asks for the technical options they no longer see.
 
+### The owner hears results in their language and product terms
+
+The completion report reaches the owner in the language they write in and in product terms: what changed for users, where it runs and on which branch, decisions they would notice, and what is unverified, blocked, or waiting on them. Hashes, check names, and per-part accounting go in the pull request or issue. A host or sandbox refusal the owner can clear becomes one plain request for a lasting permission, not a one-off step to repeat.
+
+**Why.** An owner who writes no code reads reports to decide what to look at next, and accounting they cannot use costs them attention every turn. The project's records are where a later agent or reviewer needs that accounting. A one-off workaround for a standing refusal comes back on every run that meets it.
+
+**Status.** `Contract`. Behavior `UNVERIFIED`; one corpus case is not run.
+
+**Reopens when.** A run's report drops a fact the owner needed to act, the accounting is missing from the records, or owners ask for the technical detail back.
+
 ### Read-only stays read-only, and a grant sets what travels
 
 Answer, diagnosis, review, research, audit, and plan requests write nothing unless the owner asks for a record or repair. A change request carries routine delivery and tracking through the established non-production workflow, which settles what may travel, not how often. The lead batches accepted results into delivery units without holding finished work behind unrelated blockers. Iteration stays local until the owner asks for delivery, names a destination, or, outside an invoked iteration workflow, accepts with nothing further to send.
@@ -223,6 +233,16 @@ Briefs convey a compact, evidenced handoff. Bulky artifacts travel by reference 
 **Status.** `Contract`. Four corpus cases are not run.
 
 **Reopens when.** A run loses findings, accepts inaccessible proof, writes blanket report files, copies bulk into the coordinator, or takes a filter's status as the check's.
+
+### Parts and findings of one outcome stay with the lead
+
+The lead carries every part and confirmed finding of the requested outcome itself or through delegates whose returns it settles. It never leaves them to sessions the owner must start or coordinate.
+
+**Why.** A session the owner has to start makes the owner the coordinator this product exists to replace, and its result never returns to the lead that owns the outcome. Separate work the owner did not ask for stays a recommendation, and deferral keeps its own rule.
+
+**Status.** `Contract`. Behavior `UNVERIFIED`; one corpus case is not run.
+
+**Reopens when.** A run drops a finding instead of carrying it, a delegate fan-out costs more than the owner-started session it replaced, or a host makes owner-visible sessions report back to the lead.
 
 ## Delivery and custody
 
