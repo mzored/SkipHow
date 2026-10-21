@@ -2,6 +2,27 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 7.0.3 (2026-10-21)
+
+### A correction reaches every place it applies
+
+- A defect or an owner's correction now covers every place that shares its cause or role. The lead fixes them all where the cause lives, with no guard per place. Before, the kernel spoke only of a failure that repeats.
+- In fast-fixes, feedback on one element, such as a selected component or a screenshot, is feedback on its role. The lead finds every element in that role, applies the change through the piece they share, and names the places it reached. It stays in one place only when the owner says so or the other places serve a different purpose.
+- In fast-fixes, the lead inspects the rendered result on every screen that renders what it changed, against the state it replaces, not only the screen the owner pointed at.
+- The kernel is 18 characters shorter. "Re-review only the fixes and stop when a round returns nothing that qualifies" left it, because the review playbook says the same and opens before any review or any work on findings.
+
+### Why
+
+One root session on 7.0.2 iterated on an interface for seven and a half hours. In about 24 of some 140 owner messages, the owner asked again for a change they had already asked for on another instance. Three times a shared piece changed for one screen broke another screen that had relied on it. The kernel and the workflow were in context throughout, because the host re-attached them after each of about twenty compactions, and the owner's wish for consistency survived in every summary. The wording was the gap. 6.3.4 said a second failure of one kind is a class whose other members get fixed, and its design playbook fixed the class with its sibling paths. 7.0.0 narrowed this to "when a failure repeats, fix the shared cause", which says nothing about the other instances that the decision record still promised and nothing about an owner's design correction. A comparable interface session on 6.3.4 drew one such complaint in 152 owner messages. The tasks differ, so that comparison proves no cause.
+
+Matt Pocock's skills and Superpowers, read as they stand today, scope a fix to the reported defect and say nothing about a shared component's other consumers. Nothing in either was worth taking.
+
+### Checks and evidence
+
+- This is a patch release. It restores what the decision record already promised: a fix reaches the other instances. Authority and protected-action boundaries are unchanged.
+- An isolated read-only Codex review ran one round, which also checked that the removed re-review clause keeps its path through the review playbook. It found nothing that qualified.
+- The owner declined paid model sessions for this release. No model sessions or clean-install runs were made, and the new behavior remains `UNVERIFIED`.
+
 ## 7.0.2 (2026-10-21)
 
 ### Reports the owner can read, follow-ups the lead carries
