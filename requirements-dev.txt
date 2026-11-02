@@ -6,4 +6,4 @@ markdown-it-py==4.2.0
 mdurl==0.1.2
 packaging==26.3
 pluggy==1.6.0
-pytest==9.1.1
+pytest==9.2.0
