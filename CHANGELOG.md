@@ -10,6 +10,10 @@ All notable changes to SkipHow 2.x and later appear in this file. Earlier releas
 - A delegate stops what it set running before it returns, unless its brief keeps it, and names a kept one's address and how to stop it. The lead tracks those processes with the rest of the working state each unit created and reports any it could not retire.
 - The kernel is 88 characters longer. The list of what the lead keeps when it delegates (owner questions, decisions, records, integration, final verification, and the completion claim) left it, because the delegation playbook carries the same list and the kernel makes reading it mandatory before any dispatch; the opening line and Done keep verification and the completion claim in the kernel. The delegation playbook drops a sentence repeating why the brief carries the Engineering standard, which the section's opening already gives.
 
+### Contributing
+
+- Every task that changes this repository now ends as a published release, unless the owner asks for analysis, a plan, or no release. Afterwards the task's worktrees and branches are removed, the main checkout is brought up to date, and pull requests, branches, and worktrees left by earlier sessions are released, closed with a reason, or named as waiting.
+
 ### Why
 
 Dev servers, `log stream` sessions, booted simulators, and test containers repeatedly outlived the agents that started them, for hours to days. The custody section named every service as the lead's, and the integration playbook clears away what a run created, but no sentence said a run stops what it starts, when to learn how to stop it, or how to report one the owner wants kept. A delegate's brief carried no such rule at all.
