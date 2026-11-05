@@ -44,9 +44,9 @@ Rules, tools, and records past sessions made, even an owner's technical pick, ar
 
 ## Custody and delegates
 
-Every branch, worktree, checkout, service, and uncommitted change in the project is yours, made by a session or delegate; never hand its decision back. Never overwrite, reset, delete, or absorb a live session's lane. A change request retires integrated or superseded leftovers, naming unique commits; a read-only request only reports them. Leave uncommitted changes this run did not make in place and out of its commits. Retiring recoverable engineering state is not material deletion.
+Every branch, worktree, checkout, service, and uncommitted change in the project is yours, made by a session or delegate; never hand its decision back. Never overwrite, reset, delete, or absorb a live session's lane. A change request retires integrated or superseded leftovers, naming unique commits; a read-only request only reports them. Leave uncommitted changes this run did not make in place and out of its commits. Retiring recoverable engineering state is not material deletion. Note how to stop each process, server, simulator, or container as you start it; stop it before reporting completion unless the owner asked to keep it, and name a kept one's address and branch.
 
-Before you dispatch, read [delegation](references/delegation.md) and set each delegate's model and effort to the cheapest route likely to pass in one try. Delegates may not inherit this skill: paste the Engineering standard section and this file's path into every implementation and review brief. Never leave parts or findings of the outcome to sessions the owner must start; you keep owner questions, decisions, records, integration, final verification, and the completion claim.
+Before you dispatch, read [delegation](references/delegation.md) and set each delegate's model and effort to the cheapest route likely to pass in one try. Delegates may not inherit this skill: paste the Engineering standard section and this file's path into every implementation and review brief. Never leave parts or findings of the outcome to sessions the owner must start.
 
 ## Done
 

@@ -2,6 +2,23 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 7.0.4 (2026-11-05)
+
+### A run stops what it started running
+
+- A run owns every process, server, simulator, and container it starts. It notes how to stop each one as it starts it and stops it before reporting completion, unless the owner asked to keep it. The report names a kept one with its address and branch. Previews shown during an iteration are not completion and stay up for inspection as before.
+- A delegate stops what it set running before it returns, unless its brief keeps it, and names a kept one's address and how to stop it. The lead tracks those processes with the rest of the working state each unit created and reports any it could not retire.
+- The kernel is 88 characters longer. The list of what the lead keeps when it delegates (owner questions, decisions, records, integration, final verification, and the completion claim) left it, because the delegation playbook carries the same list and the kernel makes reading it mandatory before any dispatch; the opening line and Done keep verification and the completion claim in the kernel. The delegation playbook drops a sentence repeating why the brief carries the Engineering standard, which the section's opening already gives.
+
+### Why
+
+Dev servers, `log stream` sessions, booted simulators, and test containers repeatedly outlived the agents that started them, for hours to days. The custody section named every service as the lead's, and the integration playbook clears away what a run created, but no sentence said a run stops what it starts, when to learn how to stop it, or how to report one the owner wants kept. A delegate's brief carried no such rule at all.
+
+### Checks and evidence
+
+- This is a patch release. It carries out what custody already promised: a run's leftovers end retired or reported. Authority and protected-action boundaries are unchanged, and a live session's process stays untouched.
+- No model sessions or clean-install runs were made, and the new behavior remains `UNVERIFIED`. No corpus case was added, because no recorded event observes a running process.
+
 ## 7.0.3 (2026-10-21)
 
 ### A correction reaches every place it applies

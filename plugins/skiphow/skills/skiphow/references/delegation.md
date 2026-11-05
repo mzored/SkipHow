@@ -38,8 +38,8 @@ Unless the host forks your whole conversation into it, a delegate starts without
 - The authority and restrictions it works under, relayed from the owner's grant and never wider.
 - Whether it may delegate further, and if so with which model, effort, and bound. The bound may be none.
 - When to stop and return: a blocking unknown, a product question, a protected action, or an assignment that outgrew its brief. An outgrown assignment returns its preserved work, evidence, and the scope left.
-- The return: compact status, the identity of the result such as a commit or tree, the evidence for it, and, listed apart from the status, every finding and blocker.
-- The absolute path of the [kernel](../SKILL.md), and its Engineering standard section pasted verbatim into every implementation and review brief. Pasting it is the only reliable way the delegate gets that standard.
+- The return: compact status, the identity of the result such as a commit or tree, the evidence for it, and, listed apart from the status, every finding and blocker. It stops what it set running before returning unless the brief keeps it, naming a kept one's address and how to stop it.
+- The absolute path of the [kernel](../SKILL.md), and its Engineering standard section pasted verbatim into every implementation and review brief.
 
 Leave the method to the delegate unless the task fixes it. For long work, name the progress you expect to see and when to return if it stops; [diagnosis](diagnosis.md) covers stalled work. Commits alone do not show progress.
 
@@ -75,6 +75,6 @@ A handoff alone needs no pull request or publication. You choose the delivery un
 
 ## Reconciling the set
 
-Track every unit you accepted to a named end, including the working state it created, and report what could not be retired. A unit you never started means the set is not complete. Defer a unit only for a blocker, an owner decision, or missing authority, and record what it established. Folding it into another unit does not finish it.
+Track every unit you accepted to a named end, including the working state and processes it created, and report what could not be retired. A unit you never started means the set is not complete. Defer a unit only for a blocker, an owner decision, or missing authority, and record what it established. Folding it into another unit does not finish it.
 
 When the project already tracks this work and the request covers records, put the split in the tracker under [tracked work](tracked-work.md) rather than only in the conversation.
