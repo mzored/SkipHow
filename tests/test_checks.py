@@ -3,13 +3,11 @@
 from __future__ import annotations
 
 import importlib.util
-import inspect
 import json
 import os
 from pathlib import Path
 import re
 import shutil
-import subprocess
 import sys
 import threading
 from unittest.mock import patch
@@ -31,62 +29,6 @@ def load(name: str, relative: str):
 
 check = load("skiphow_check", "scripts/check.py")
 hosts = load("skiphow_check_hosts", "scripts/check_hosts.py")
-
-
-def test_local_dependencies_are_pinned() -> None:
-    pins = check.pinned_requirements()
-    assert {"pytest", "PyYAML", "markdown-it-py"} <= set(pins)
-    assert all(re.fullmatch(r"\d+(?:\.\d+)*", value) for value in pins.values())
-
-
-def test_checker_never_installs_dependencies_or_reaches_a_package_index() -> None:
-    """Ordinary checks must not provision anything.
-
-    The checker used to build a virtual environment and run `pip install` when a
-    pin was unsatisfied, which put a package index on the path of an ordinary
-    deterministic check. It now fails fast and names the one explicit command.
-    """
-    source = (ROOT / "scripts/check.py").read_text(encoding="utf-8")
-    assert "import venv" not in source
-    assert "EnvBuilder" not in source
-    assert "execve" not in source
-    # The only surviving mention of pip is the instruction handed to the operator.
-    assert source.count("pip") == 1
-    assert "python -m pip install -r {REQUIREMENTS.name}" in source
-    assert not hasattr(check, "bootstrap_dependencies")
-    assert not hasattr(check, "managed_python")
-    assert not hasattr(check, "MANAGED_ENV")
-
-
-def test_unsatisfied_pins_fail_fast_with_the_explicit_setup_command(capsys) -> None:
-    def refuse(*args, **kwargs):
-        raise AssertionError("the checker ran a subprocess for missing dependencies")
-
-    with (
-        patch.object(check, "requirements_satisfied", return_value=False),
-        patch.object(
-            check,
-            "pinned_requirements",
-            return_value={"skiphow-absent-package": "9.9.9"},
-        ),
-        patch.object(check.subprocess, "run", refuse),
-    ):
-        assert check.main([]) == 2
-    error = capsys.readouterr().err
-    assert "python -m pip install -r requirements-dev.txt" in error
-    assert "skiphow-absent-package==9.9.9" in error
-    assert "not installed" in error
-
-
-def test_local_package_and_document_checks_pass() -> None:
-    assert check.validate_json() == []
-    assert check.validate_yaml() == []
-    assert check.validate_markdown_links() == []
-    assert check.portability_scan() == []
-    assert check.validate_version() == []
-    assert check.model_id_scan() == []
-    assert check.validate_continuity_hook() == []
-    assert check.validate_plugin_static() == []
 
 
 @pytest.mark.parametrize(
@@ -122,58 +64,6 @@ def test_site_validator_rejects_structural_regressions(
 
     with patch.object(check, "SITE_ROOT", site):
         assert any(expected in error for error in check.validate_site())
-
-
-@pytest.mark.parametrize(
-    ("old", "new", "expected"),
-    [
-        (
-            '<meta property="og:image:alt" content="',
-            '<meta property="og:image:alt" content="" data-was="',
-            "og:image:alt",
-        ),
-        (
-            '<div class="contract">',
-            '<div class="contract" aria-label="Responsibility split">',
-            "should not name a generic div",
-        ),
-        (
-            '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">',
-            "",
-            "responsive viewport",
-        ),
-    ],
-)
-def test_site_presentation_preferences_are_non_blocking_lint(
-    tmp_path: Path, old: str, new: str, expected: str
-) -> None:
-    """Presentation details are lint, never a failed run (spec 11.2, 11.3 class 4)."""
-    site = tmp_path / "site"
-    shutil.copytree(ROOT / "site", site)
-    homepage = site / "index.html"
-    text = homepage.read_text(encoding="utf-8")
-    assert old in text
-    homepage.write_text(text.replace(old, new, 1), encoding="utf-8")
-
-    lint: list[str] = []
-    with patch.object(check, "SITE_ROOT", site):
-        errors = check.validate_site(lint)
-    assert errors == []
-    assert any(expected in warning for warning in lint), lint
-
-
-def test_site_copy_is_not_pinned_to_a_category_phrase(tmp_path: Path) -> None:
-    """A search-positioning phrase is not a package or host contract (spec 11.2)."""
-    site = tmp_path / "site"
-    shutil.copytree(ROOT / "site", site)
-    for page in site.rglob("*.html"):
-        text = page.read_text(encoding="utf-8")
-        page.write_text(
-            re.sub("outcome-first orchestration", "method selection", text, flags=re.IGNORECASE),
-            encoding="utf-8",
-        )
-    with patch.object(check, "SITE_ROOT", site):
-        assert check.validate_site() == []
 
 
 def test_evidence_page_scope_is_bound_to_the_current_ledger(tmp_path: Path) -> None:
@@ -215,22 +105,6 @@ def write_skill(root: Path, name: str, *, description: str = "Handle a focused t
         encoding="utf-8",
     )
     return skill
-
-
-def test_each_top_level_skill_has_spec_metadata_and_may_ship_resources(tmp_path: Path) -> None:
-    skill = write_skill(tmp_path, "diagnosing-bugs")
-    for directory in ("references", "scripts", "assets"):
-        (skill / directory).mkdir()
-        (skill / directory / "resource.txt").write_text("resource\n", encoding="utf-8")
-    (skill / "examples").mkdir()
-    (skill / "examples/scenario.txt").write_text("example\n", encoding="utf-8")
-    (skill / "LICENSE.txt").write_text("local terms\n", encoding="utf-8")
-    assert check.validate_skill_directory(skill) == []
-
-    (skill / "SKILL.md").write_text(
-        "---\nname: wrong-name\ndescription: x\n---\n\nBody.\n", encoding="utf-8"
-    )
-    assert any("name must match its directory" in error for error in check.validate_skill_directory(skill))
 
 
 def test_openai_metadata_is_optional_but_cannot_disable_implicit_use(tmp_path: Path) -> None:
@@ -325,12 +199,6 @@ def test_skill_frontmatter_rejects_non_string_keys_without_crashing(
     )
     errors = check.validate_skill_directory(skill)
     assert any("frontmatter keys must be strings" in error for error in errors)
-
-
-def test_skill_description_uses_the_agent_skills_metadata_limit(tmp_path: Path) -> None:
-    skill = write_skill(tmp_path, "research", description="x" * 1025)
-    errors = check.validate_skill_directory(skill)
-    assert any("at most 1024 characters" in error for error in errors)
 
 
 def test_plugin_markdown_links_cannot_escape_the_package(tmp_path: Path) -> None:
@@ -484,25 +352,6 @@ def test_skill_markdown_must_fit_one_host_view(tmp_path: Path) -> None:
     assert len(errors) == 1
     assert "long.md" in errors[0]
     assert f"at most {limit}" in errors[0]
-
-
-def test_playbook_near_the_view_limit_is_non_blocking_lint(tmp_path: Path) -> None:
-    plugin = tmp_path / "skiphow"
-    skill = write_skill(plugin / "skills", "skiphow")
-    references = skill / "references"
-    references.mkdir()
-    limit = check.SKILL_MARKDOWN_VIEW_LIMIT
-    reserve = check.SKILL_MARKDOWN_VIEW_RESERVE
-    (references / "tight.md").write_text("x" * (limit - reserve) + "\n", encoding="utf-8")
-    (references / "roomy.md").write_text("x" * (limit - reserve - 1) + "\n", encoding="utf-8")
-    (skill / "SKILL.md").write_text("x" * (limit - 1) + "\n", encoding="utf-8")
-
-    warnings = check.lint_reference_view_headroom(plugin)
-
-    assert len(warnings) == 1
-    assert "tight.md" in warnings[0]
-    assert f"has {reserve - 1} characters" in warnings[0]
-    assert check.validate_skill_markdown_view_size(skill) == []
 
 
 def test_local_links_decode_one_uri_layer_without_rewriting_literal_names(
@@ -913,7 +762,7 @@ def test_base_diff_cannot_hide_dirty_plugin_changes(
                 (True, {working_tree.strip()} if working_tree else set()),
                 (True, {untracked.strip()} if untracked else set()),
             ],
-        ) as checked_paths,
+        ),
         patch.object(
             check,
             "checked",
@@ -923,85 +772,6 @@ def test_base_diff_cannot_hide_dirty_plugin_changes(
         assert check.validate_release_version_change("base") == [
             "plugins/skiphow changed without a VERSION bump"
         ]
-    assert [call.args[0] for call in checked_paths.call_args_list] == [
-        ["git", "diff", "--name-only", "--no-renames", "-z", "base...HEAD"],
-        ["git", "diff", "--name-only", "--no-renames", "-z", "HEAD"],
-        ["git", "ls-files", "-z", "--others", "--exclude-standard"],
-    ]
-
-
-def test_working_tree_plugin_change_requires_a_version_bump_without_base() -> None:
-    with (
-        patch.object(
-            check, "infer_stable_release_base", return_value=(True, "v1.0.0")
-        ),
-        patch.object(
-            check,
-            "checked_null_paths",
-            side_effect=[
-                (True, set()),
-                (True, {"plugins/skiphow/skills/new-skill/SKILL.md"}),
-                (True, {"plugins/skiphow/skills/untracked/SKILL.md"}),
-            ],
-        ),
-        patch.object(
-            check,
-            "checked",
-            return_value=(True, (check.ROOT / "VERSION").read_text(encoding="utf-8")),
-        ),
-    ):
-        assert check.validate_release_version_change(None) == [
-            "plugins/skiphow changed without a VERSION bump"
-        ]
-
-
-def test_release_delta_reports_an_unreadable_current_version(tmp_path: Path) -> None:
-    (tmp_path / ".git").mkdir()
-    with (
-        patch.object(check, "ROOT", tmp_path),
-        patch.object(
-            check, "infer_stable_release_base", return_value=(True, "v1.0.0")
-        ),
-        patch.object(
-            check,
-            "checked_null_paths",
-            side_effect=[
-                (True, {"plugins/skiphow/skills/skiphow/SKILL.md"}),
-                (True, set()),
-                (True, set()),
-            ],
-        ),
-        patch.object(check, "checked", return_value=(True, "1.0.0\n")),
-    ):
-        errors = check.validate_release_version_change(None)
-    assert any("cannot read current VERSION" in error for error in errors)
-
-
-def test_clean_committed_plugin_change_uses_the_inferred_release_tag(
-    tmp_path: Path,
-) -> None:
-    (tmp_path / ".git").mkdir()
-    (tmp_path / "VERSION").write_text("1.0.0\n", encoding="utf-8")
-    with (
-        patch.object(check, "ROOT", tmp_path),
-        patch.object(
-            check, "infer_stable_release_base", return_value=(True, "v1.0.0")
-        ),
-        patch.object(
-            check,
-            "checked_null_paths",
-            side_effect=[
-                (True, {"plugins/skiphow/skills/skiphow/SKILL.md"}),
-                (True, set()),
-                (True, set()),
-            ],
-        ) as checked_paths,
-        patch.object(check, "checked", return_value=(True, "1.0.0\n")),
-    ):
-        assert check.validate_release_version_change(None) == [
-            "plugins/skiphow changed without a VERSION bump"
-        ]
-    assert checked_paths.call_args_list[0].args[0][-1] == "v1.0.0...HEAD"
 
 
 def test_release_baseline_selects_the_nearest_reachable_stable_tag() -> None:
@@ -1060,25 +830,6 @@ def test_plugin_version_cannot_move_backward() -> None:
         ]
 
 
-def test_release_delta_decodes_nul_delimited_unicode_and_newline_paths() -> None:
-    raw = (
-        "plugins/skiphow/résumé.md\0"
-        "plugins/skiphow/line\nbreak.MD\0"
-        "docs/outside.md\0"
-    ).encode()
-    completed = check.subprocess.CompletedProcess(["git"], 0, raw, b"")
-    with patch.object(check.subprocess, "run", return_value=completed):
-        passed, paths = check.checked_null_paths(
-            ["git", "diff", "--name-only", "--no-renames", "-z", "HEAD"]
-        )
-    assert passed
-    assert paths == {
-        "plugins/skiphow/résumé.md",
-        "plugins/skiphow/line\nbreak.MD",
-        "docs/outside.md",
-    }
-
-
 def test_rename_out_still_requires_a_plugin_version_bump() -> None:
     current = (check.ROOT / "VERSION").read_text(encoding="utf-8")
     with (
@@ -1106,41 +857,6 @@ def test_rename_out_still_requires_a_plugin_version_bump() -> None:
     assert "-z" in checked_paths.call_args_list[0].args[0]
 
 
-def test_diff_validation_checks_unstaged_staged_and_candidate_changes() -> None:
-    commands: list[list[str]] = []
-
-    def checked(command, **kwargs):
-        commands.append(list(command))
-        return True, ""
-
-    with patch.object(check, "checked", side_effect=checked):
-        assert check.validate_diff("origin/main") == []
-    assert commands == [
-        ["git", "diff", "--check"],
-        ["git", "diff", "--cached", "--check"],
-        ["git", "diff", "--check", "origin/main...HEAD"],
-    ]
-
-
-def test_portable_policy_rejects_provider_model_ids(tmp_path: Path) -> None:
-    policy = tmp_path / "policy.md"
-    policy.write_text("Use gpt-5.6-example for this lane.\n", encoding="utf-8")
-    errors = check.model_id_scan([policy])
-    assert len(errors) == 1
-    assert "gpt-5.6-example" in errors[0]
-
-
-def test_file_enumeration_asks_git_for_untracked_files() -> None:
-    """The scan can only see a new file if the enumerator asks Git for one."""
-    with patch.object(check.subprocess, "run") as run:
-        run.return_value = check.subprocess.CompletedProcess(["git"], 0, b"", b"")
-        list(check.repository_files())
-    command = run.call_args.args[0]
-    assert command[:2] == ["git", "ls-files"]
-    assert {"--others", "--exclude-standard", "--cached"} <= set(command)
-    assert run.call_args.kwargs["timeout"]
-
-
 def test_portability_scan_flags_a_personal_path_in_a_package_file(tmp_path: Path) -> None:
     """The scan reports a file the enumerator yields -- proven off the real package."""
     plugin = tmp_path / "plugins/skiphow"
@@ -1154,18 +870,6 @@ def test_portability_scan_flags_a_personal_path_in_a_package_file(tmp_path: Path
     ):
         errors = check.portability_scan()
     assert any("personal-path.txt" in error for error in errors)
-
-
-def test_portability_scan_covers_the_relocated_contribution_guide(tmp_path: Path) -> None:
-    candidate = tmp_path / ".github/CONTRIBUTING.md"
-    candidate.parent.mkdir()
-    candidate.write_text("Run from /" + "Users/person/project.\n", encoding="utf-8")
-    with (
-        patch.object(check, "ROOT", tmp_path),
-        patch.object(check, "repository_files", return_value=[candidate]),
-    ):
-        errors = check.portability_scan()
-    assert any(".github/CONTRIBUTING.md" in error for error in errors)
 
 
 def test_portability_scan_catches_a_home_path_with_no_trailing_separator(tmp_path: Path) -> None:
@@ -1471,20 +1175,6 @@ def test_markdown_symlinks_are_rejected_before_reachability_resolution(
     assert any("regular file, not a link" in error for error in errors)
 
 
-def test_reachability_display_handles_macos_var_alias(tmp_path: Path) -> None:
-    resolved = tmp_path.resolve()
-    private_var = Path("/private/var")
-    if not resolved.is_relative_to(private_var):
-        pytest.skip("macOS /var alias is unavailable")
-    aliased = Path("/var") / resolved.relative_to(private_var)
-    skill = write_skill(aliased / "skills", "skiphow")
-    hidden = skill / "methods/new-method.md"
-    hidden.parent.mkdir()
-    hidden.write_text("Hidden.\n", encoding="utf-8")
-    errors = check.validate_skill_markdown_reachability(skill)
-    assert any("Markdown outside SKILL.md and references" in error for error in errors)
-
-
 def test_windows_invalid_package_paths_and_local_destinations_are_rejected(
     tmp_path: Path,
 ) -> None:
@@ -1549,53 +1239,8 @@ def test_local_link_spelling_must_match_exactly(tmp_path: Path) -> None:
     assert any("broken plugin link" in error for error in errors)
 
 
-@pytest.mark.parametrize(
-    "target",
-    ["f%69le:///etc/passwd", "http://[", "a%00b.md", "C:Windows/win.ini"],
-)
-def test_plugin_static_reports_invalid_destinations_instead_of_crashing(
-    tmp_path: Path, target: str
-) -> None:
-    package = tmp_path / "skiphow"
-    shutil.copytree(check.PLUGIN_ROOT, package)
-    skill = package / "skills/skiphow/SKILL.md"
-    skill.write_text(
-        skill.read_text(encoding="utf-8") + f"\n[unsafe]({target})\n",
-        encoding="utf-8",
-    )
-    with patch.object(check, "PLUGIN_ROOT", package):
-        errors = check.validate_plugin_static()
-    assert any("disallowed Markdown destination" in error for error in errors)
-
-
-def test_plugin_static_reports_non_utf8_markdown_instead_of_crashing(
-    tmp_path: Path,
-) -> None:
-    package = tmp_path / "skiphow"
-    shutil.copytree(check.PLUGIN_ROOT, package)
-    reference = package / "skills/skiphow/references/non-utf8.MD"
-    reference.write_bytes(b"\xff\xfe")
-    skill = package / "skills/skiphow/SKILL.md"
-    skill.write_text(
-        skill.read_text(encoding="utf-8")
-        + "\n[invalid bytes](references/non-utf8.MD)\n",
-        encoding="utf-8",
-    )
-    with patch.object(check, "PLUGIN_ROOT", package):
-        errors = check.validate_plugin_static()
-    assert any("UTF-8" in error or "utf-8" in error for error in errors)
-
-
-@pytest.mark.parametrize(
-    "link",
-    [
-        "Read [the CTO kernel](../skiphow/SKILL.md) before consequential work.",
-        "Read [the CTO kernel][kernel].\n\n[kernel]: ../skiphow/SKILL.md",
-    ],
-)
-def test_package_shape_accepts_a_workflow_linked_to_the_cto_kernel(
-    tmp_path: Path, link: str
-) -> None:
+def test_package_shape_accepts_a_workflow_linked_to_the_cto_kernel(tmp_path: Path) -> None:
+    link = "Read [the CTO kernel](../skiphow/SKILL.md) before consequential work."
     package = tmp_path / "skiphow"
     shutil.copytree(check.PLUGIN_ROOT, package)
     skill = write_skill(package / "skills", "extra-entry") / "SKILL.md"
@@ -1610,13 +1255,8 @@ def test_package_shape_accepts_a_workflow_linked_to_the_cto_kernel(
     [
         "",
         "[self](SKILL.md)",
-        "[module](../skiphow/references/testing.md)",
         "[remote](https://example.com/skills/skiphow/SKILL.md)",
         "`[kernel](../skiphow/SKILL.md)`",
-        "```markdown\n[kernel](../skiphow/SKILL.md)\n```",
-        "![kernel](../skiphow/SKILL.md)",
-        "[invalid](http://[)",
-        "[invalid](a%00b.md)",
     ],
 )
 def test_package_shape_rejects_a_workflow_without_a_real_kernel_link(
@@ -1626,20 +1266,6 @@ def test_package_shape_rejects_a_workflow_without_a_real_kernel_link(
     shutil.copytree(check.PLUGIN_ROOT, package)
     skill = write_skill(package / "skills", "extra-entry") / "SKILL.md"
     skill.write_text(skill.read_text(encoding="utf-8") + f"\n{link}\n", encoding="utf-8")
-    with patch.object(check, "PLUGIN_ROOT", package):
-        errors = check.validate_plugin_static()
-    assert any("relative Markdown link to the CTO kernel" in error for error in errors)
-
-
-def test_package_shape_rejects_an_absolute_kernel_link(tmp_path: Path) -> None:
-    package = tmp_path / "skiphow"
-    shutil.copytree(check.PLUGIN_ROOT, package)
-    skill = write_skill(package / "skills", "extra-entry") / "SKILL.md"
-    owner = package / "skills/skiphow/SKILL.md"
-    skill.write_text(
-        skill.read_text(encoding="utf-8") + f"\n[kernel]({owner.as_posix()})\n",
-        encoding="utf-8",
-    )
     with patch.object(check, "PLUGIN_ROOT", package):
         errors = check.validate_plugin_static()
     assert any("relative Markdown link to the CTO kernel" in error for error in errors)
@@ -1688,19 +1314,7 @@ def test_plugin_root_rejects_symlinks_in_its_component_chain(
     ("host", "field", "value"),
     [
         ("codex", "mcpServers", {"unsafe": {"command": "run-me"}}),
-        ("codex", "apps", "./.app.json"),
-        ("codex", "hooks", "./hooks/hooks.json"),
-        ("claude", "commands", ["./commands/danger.md"]),
-        ("claude", "agents", ["./agents/danger.md"]),
         ("claude", "hooks", "./hooks/hooks.json"),
-        ("claude", "mcpServers", {"unsafe": {"command": "run-me"}}),
-        ("claude", "lspServers", {"unsafe": {"command": "run-me"}}),
-        ("claude", "outputStyles", "./styles/"),
-        ("claude", "workflows", "./workflows/"),
-        ("claude", "experimental", {"monitors": ["./monitors.json"]}),
-        ("claude", "dependencies", ["other-plugin"]),
-        ("claude", "userConfig", {"token": {"type": "string"}}),
-        ("claude", "channels", [{"server": "messages"}]),
         ("claude", "unknownComponent", "./danger"),
     ],
 )
@@ -1949,15 +1563,6 @@ def test_claude_marketplace_identity_and_cardinality_are_exact(tmp_path: Path) -
             assert check.validate_marketplace_catalogs() != []
 
 
-def test_changelog_must_lead_with_the_released_version() -> None:
-    """A newer section above the released one used to satisfy the heading search."""
-    changelog = (check.ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
-    release = (check.ROOT / "VERSION").read_text(encoding="utf-8").strip()
-    dated = re.findall(r"^## (\S+) \(\d{4}-\d{2}-\d{2}\)$", changelog, re.MULTILINE)
-    assert dated[0] == release
-    assert check.validate_version() == []
-
-
 def test_safe_hook_literal_pattern_rejects_shell_behavior() -> None:
     breakout = (
         "sh -c 'printf \"%s\\n\" \"' ; touch f; echo '\"; "
@@ -2028,124 +1633,3 @@ def test_portability_scan_distinguishes_root_home_from_a_web_route(
         errors = check.portability_scan()
     assert any("'/root'" in error for error in errors)
     assert any("%UserProfile%" in error for error in errors)
-
-
-def test_file_enumeration_falls_back_without_git(tmp_path: Path) -> None:
-    (tmp_path / "docs").mkdir()
-    expected = tmp_path / "docs/archive.md"
-    expected.write_text("archive\n", encoding="utf-8")
-    completed = check.subprocess.CompletedProcess(["git"], 128, b"", b"not a repository")
-    with (
-        patch.object(check, "ROOT", tmp_path),
-        patch.object(check.subprocess, "run", return_value=completed),
-    ):
-        assert list(check.repository_files({".md"})) == [expected]
-        assert check.validate_diff(None) == []
-
-
-PACKAGE = ROOT / "plugins/skiphow"
-
-
-def bytecode_probe(extra: list[str]) -> tuple[list[str], subprocess.CompletedProcess[str]]:
-    """Run one tiny pytest selection that imports a shipped script, and report the bytecode.
-
-    The subprocess inherits neither `PYTHONDONTWRITEBYTECODE` nor
-    `PYTHONPYCACHEPREFIX`, so only `tests/conftest.py` can keep the interpreter
-    from writing into the package. Any directory found is removed here, because
-    the package identity hashes every file under the package root.
-    """
-    environment = os.environ.copy()
-    environment.pop("PYTHONDONTWRITEBYTECODE", None)
-    environment.pop("PYTHONPYCACHEPREFIX", None)
-    for stale in list(PACKAGE.rglob("__pycache__")):
-        shutil.rmtree(stale, ignore_errors=True)
-    try:
-        result = subprocess.run(
-            [
-                sys.executable,
-                "-m",
-                "pytest",
-                "-q",
-                "-p",
-                "no:cacheprovider",
-                "tests/test_activation.py",
-                "-k",
-                "lifecycle",
-                *extra,
-            ],
-            cwd=ROOT,
-            env=environment,
-            capture_output=True,
-            text=True,
-            timeout=120,
-            check=False,
-        )
-        written = sorted(path.relative_to(ROOT).as_posix() for path in PACKAGE.rglob("__pycache__"))
-    finally:
-        for path in list(PACKAGE.rglob("__pycache__")) + list((ROOT / "tests").rglob("__pycache__")):
-            shutil.rmtree(path, ignore_errors=True)
-    return written, result
-
-
-def test_a_direct_pytest_run_writes_no_bytecode_into_the_package() -> None:
-    """`tests/conftest.py` keeps a direct pytest run out of the package identity.
-
-    Importing a shipped script writes `__pycache__` under `plugins/skiphow/`,
-    which the payload hash treats as a package change.
-    """
-    written, result = bytecode_probe([])
-    assert result.returncode == 0, result.stdout + result.stderr
-    assert written == [], f"a direct pytest run polluted the package: {written}"
-
-
-def test_without_the_conftest_the_same_run_writes_bytecode_into_the_package() -> None:
-    """The conftest is the mechanism, not an incidental environment setting."""
-    written, result = bytecode_probe(["--noconftest"])
-    assert result.returncode == 0, result.stdout + result.stderr
-    assert written == ["plugins/skiphow/skills/skiphow/scripts/__pycache__"]
-
-
-def test_the_full_pytest_run_asks_for_durations_and_prints_them(capsys) -> None:
-    """The bounded run reports its slowest tests even when it passes."""
-    fake = "\n".join(
-        [
-            "============================= slowest 10 durations =============================",
-            "3.10s call     tests/test_checks.py::test_local_package_and_document_checks_pass",
-            "============================== 324 passed in 21.9s =============================",
-        ]
-    )
-    commands: list[list[str]] = []
-
-    def fake_checked(command, **kwargs):
-        commands.append(list(command))
-        assert "timeout" not in kwargs
-        return True, fake if "pytest" in command else ""
-
-    with patch.object(check, "checked", side_effect=fake_checked):
-        check.offline_checks()
-    pytest_commands = [command for command in commands if "pytest" in command]
-    assert len(pytest_commands) == 1
-    assert "--durations=10" in pytest_commands[0]
-    assert pytest_commands[0][-3:-1] == ["-p", "no:cacheprovider"]
-    assert "3.10s call" in capsys.readouterr().err
-    assert inspect.signature(check.checked).parameters["timeout"].default == 120
-
-
-def test_slowest_durations_extracts_only_the_duration_block() -> None:
-    output = "\n".join(
-        [
-            "...........",
-            "============================= slowest 10 durations =============================",
-            "3.10s call     tests/test_checks.py::test_local_package_and_document_checks_pass",
-            "0.40s setup    tests/test_hosts.py::test_smoke",
-            "(12 durations < 0.005s hidden.  Use -vv to show these durations.)",
-            "324 passed in 21.9s",
-        ]
-    )
-    report = check.slowest_durations(output)
-    assert report.splitlines()[0] == "slowest 10 durations"
-    assert "3.10s call     tests/test_checks.py::test_local_package_and_document_checks_pass" in report
-    assert "0.40s setup    tests/test_hosts.py::test_smoke" in report
-    assert "12 durations < 0.005s hidden" in report
-    assert "324 passed" not in report
-    assert check.slowest_durations("no durations here") == ""

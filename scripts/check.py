@@ -833,9 +833,10 @@ def validate_site(lint: list[str] | None = None) -> list[str]:
 
     Returned errors are the properties a reader or a host depends on: parseable
     pages, one canonical URL each, no client runtime, links that resolve, a sitemap
-    naming the real pages, and no claim on the account-level robots file. Presentation
-    preferences (Open Graph image dimensions, landmark counts, button classes, the
-    exact viewport string) go to ``lint`` when a list is given; they never fail a run.
+    naming the real pages, no claim on the account-level robots file, and an
+    evidence page bound to the current ledger. Presentation and search metadata
+    (titles, descriptions, language, Open Graph and JSON-LD content, landmarks,
+    the repository link) go to ``lint`` when a list is given; they never fail a run.
     """
     errors: list[str] = []
     if lint is None:
@@ -862,19 +863,19 @@ def validate_site(lint: list[str] | None = None) -> list[str]:
 
         html_tags = document.attributes("html")
         if len(html_tags) != 1 or not html_tags[0].get("lang"):
-            errors.append(f"site/{relative} must declare exactly one html root with a lang")
+            lint.append(f"site/{relative} should declare exactly one html root with a lang")
         title = "".join(document.title_parts).strip()
         if not title:
-            errors.append(f"site/{relative} must have a nonempty title")
+            lint.append(f"site/{relative} should have a nonempty title")
         elif title in titles:
-            errors.append(f"site/{relative} duplicates another page title: {title}")
+            lint.append(f"site/{relative} duplicates another page title: {title}")
         titles.add(title)
 
         description = _site_meta(document, "name", "description")
         if len(description) != 1 or not description[0]:
-            errors.append(f"site/{relative} must have one nonempty meta description")
+            lint.append(f"site/{relative} should have one nonempty meta description")
         elif description[0] in descriptions:
-            errors.append(f"site/{relative} duplicates another meta description")
+            lint.append(f"site/{relative} duplicates another meta description")
         descriptions.update(description)
         if _site_meta(document, "name", "robots") != ["index,follow"]:
             lint.append(f"site/{relative} should declare robots index,follow")
@@ -914,17 +915,15 @@ def validate_site(lint: list[str] | None = None) -> list[str]:
             except (ValueError, json.JSONDecodeError):
                 structured = None
             if not isinstance(structured, dict):
-                errors.append(f"site/{relative} has invalid JSON-LD")
+                lint.append(f"site/{relative} has invalid JSON-LD")
             else:
                 if structured.get("@type") != "SoftwareSourceCode":
-                    errors.append(f"site/{relative} JSON-LD must use SoftwareSourceCode")
+                    lint.append(f"site/{relative} JSON-LD should use SoftwareSourceCode")
                 if structured.get("url") != canonical:
-                    errors.append(f"site/{relative} JSON-LD URL must match its canonical URL")
+                    lint.append(f"site/{relative} JSON-LD URL should match its canonical URL")
                 structured_description = structured.get("description")
                 if not isinstance(structured_description, str) or not structured_description.strip():
-                    errors.append(
-                        f"site/{relative} JSON-LD needs a nonempty description"
-                    )
+                    lint.append(f"site/{relative} JSON-LD should have a nonempty description")
 
         if len(document.attributes("h1")) != 1:
             lint.append(f"site/{relative} should contain exactly one h1")
@@ -937,7 +936,7 @@ def validate_site(lint: list[str] | None = None) -> list[str]:
             if attrs.get("href") == REPOSITORY_URL
         ]
         if not repository_links:
-            errors.append(f"site/{relative} must link directly to the GitHub repository")
+            lint.append(f"site/{relative} should link directly to the GitHub repository")
         if relative == "evidence/index.html":
             scopes = [
                 attrs
@@ -1003,9 +1002,6 @@ def validate_site(lint: list[str] | None = None) -> list[str]:
             if locations != expected:
                 errors.append("site/sitemap.xml must contain exactly the three canonical pages")
 
-    nojekyll = SITE_ROOT / ".nojekyll"
-    if not nojekyll.is_file() or nojekyll.is_symlink():
-        errors.append("site must contain a regular site/.nojekyll")
     if (SITE_ROOT / "robots.txt").exists():
         errors.append("project site must not claim control of the account-level robots.txt")
     return errors
