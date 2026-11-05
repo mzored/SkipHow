@@ -2,6 +2,28 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 7.0.5 (2026-11-05)
+
+### Attribution matches the shipped files
+
+- The third-party notice said the kernel adapts the decision frontier from Matt Pocock's `grilling` skill. The frontier now lives in the `product` reference; the kernel keeps only a recommended answer for every owner question, all asked in one round. The notice now says so.
+- `SOURCES.json` was checked against the upstream files at the pinned revision, one by one. It now credits the four workflows that carry adapted ideas: `skiphow-bug` from `diagnosing-bugs`, `skiphow-longrun` from `implement-spec`, `skiphow-plan` from `to-tickets` and `grilling`, and `skiphow-simplify` from `improve-codebase-architecture`. It drops `setup-matt-pocock-skills`, `wizard`, and the `writing-for-agents` skill-mechanics file, because no shipped text carries an idea from them any longer. The upstream licence, copyright, and inspected revision are unchanged.
+- Runtime instructions are unchanged.
+
+### Contributing
+
+- Contributor tests that pinned shape instead of a contract are gone: `tests/test_package.py` and `tests/test_host_pilot_capture.py` whole, the unreferenced synthetic receipt `evals/receipts/capture-synthetic-pilot.json`, and duplicate, call-order, source-reading, and tooling-only tests elsewhere. The per-job workflow pins become one rule: no job holding a `write` permission checks out code, sets up Python, or runs installs or scripts. Site metadata checks are lint, as the decision on deterministic checks already said, and `site/.nojekyll` is no longer required.
+- Development pins move to pytest 9.2.0 and pluggy 1.7.0, and both workflows use `actions/setup-python` 7.1.0.
+
+### Why
+
+Five pull requests from earlier sessions had passed CI and sat open for three days to nearly three weeks: the attribution fix, the test audit, and three dependency bumps. The attribution fix was prepared as 7.0.2, but 7.0.2 shipped other work, so its version stamps no longer applied. This release carries all five onto the current `main`.
+
+### Checks and evidence
+
+- This is a patch release. Authority and protected-action boundaries are unchanged.
+- No model sessions or clean-install runs were made.
+
 ## 7.0.4 (2026-11-05)
 
 ### A run stops what it started running

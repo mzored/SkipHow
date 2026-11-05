@@ -19,7 +19,7 @@ The checks never install anything and never reach a package index. An interprete
 Run a focused test:
 
 ```sh
-python scripts/check.py --pytest tests/test_package.py -q
+python scripts/check.py --pytest tests/test_contract.py -q
 ```
 
 A direct `pytest tests` run is safe too. `tests/conftest.py` turns off bytecode writing before any test imports a shipped script. The package identity in `scripts/check_hosts.py` hashes every regular file under `plugins/skiphow/` by design, so a stray `__pycache__` directory there would change it. `python scripts/check.py` stays the gate. It rejects dated or version-qualified host mechanics in runtime Markdown, permits historical versions in maintainer evidence, and reports the ten slowest tests on stderr even when it passes.

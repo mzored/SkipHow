@@ -314,8 +314,3 @@ def test_json_status_carries_every_fact_separately(codex_home, capsys):
                            "availability", "managed_policy", "loading"}
     assert report["configured"] is False
     assert "observed only in a fresh session" in report["loading"]
-
-
-def test_packaged_helper_is_a_plain_non_executable_resource():
-    assert not SCRIPT.stat().st_mode & 0o111
-    assert "scripts/activation.py" in (ROOT / "plugins/skiphow/skills/skiphow/references/setup.md").read_text()

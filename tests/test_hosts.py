@@ -33,13 +33,6 @@ def portable_host_checks():
         yield
 
 
-def test_skip_install_cannot_satisfy_a_required_install() -> None:
-    for required in ("--require-codex-install", "--require-claude-install"):
-        with pytest.raises(SystemExit) as raised:
-            hosts.main(["--skip-install", required])
-        assert raised.value.code == 2
-
-
 def test_only_a_source_policy_denial_is_downgraded() -> None:
     observed = (
         "Error: marketplace source `/tmp/skiphow-codex-install-x/marketplace` is not "
@@ -82,33 +75,6 @@ def test_configured_codex_validator_failure_blocks_release(tmp_path: Path) -> No
         patch.object(hosts, "checked", return_value=(False, "invalid plugin")),
     ):
         assert hosts.main(["--skip-install"]) == 1
-
-
-def test_missing_yaml_leaves_codex_validation_unverified_without_preparing(capsys) -> None:
-    """A validator interpreter is never provisioned on the caller's behalf.
-
-    The fallback used to run `scripts/check.py --prepare-only`, which reached a
-    package index by proxy. An interpreter without PyYAML now leaves that one
-    category unrun and says how to install it.
-    """
-    with patch.object(hosts, "checked", return_value=(False, "missing yaml")) as checked:
-        python, detail = hosts.validator_python()
-    assert python is None
-    assert "python -m pip install -r requirements-dev.txt" in detail
-    assert checked.call_count == 1
-    assert "--prepare-only" not in " ".join(checked.call_args[0][0])
-
-    validator = Path(__file__)
-    with (
-        patch.object(hosts, "codex_validator", return_value=validator),
-        patch.object(hosts, "validator_python", return_value=(None, detail)),
-        patch.object(hosts.shutil, "which", return_value=None),
-    ):
-        assert hosts.main(["--skip-install"]) == 0
-        assert hosts.main(["--skip-install", "--require-codex-validator"]) == 1
-    output = capsys.readouterr().out
-    assert "| Codex schema validation | UNVERIFIED |" in output
-    assert "PASS" not in output
 
 
 def test_plain_marketplace_matches_exact_candidate_and_rejects_repositories(
@@ -425,15 +391,6 @@ def test_matrix_reports_every_capability_on_its_own_row(capsys) -> None:
     assert "Observed" not in output
 
 
-def test_render_matrix_requires_the_tracked_capabilities_in_order() -> None:
-    rows = [(name, "UNVERIFIED", "x") for name in hosts.MATRIX_CAPABILITIES]
-    rendered = hosts.render_matrix(rows)
-    assert rendered.splitlines()[0] == "Scope: this release runner. External candidate and model-session receipts are recorded separately."
-    assert rendered.splitlines()[2] == "| Capability | Status | Detail |"
-    with pytest.raises(ValueError):
-        hosts.render_matrix(rows[:-1])
-
-
 def test_package_gate_runs_check_py_and_fails_the_run(capsys) -> None:
     def checked(command, **kwargs):
         if command[1].endswith("check.py"):
@@ -457,13 +414,6 @@ def test_matrix_out_writes_the_printed_matrix(tmp_path: Path, capsys) -> None:
     ):
         assert hosts.main(["--skip-install", "--matrix-out", str(target)]) == 0
     assert target.read_text(encoding="utf-8") == capsys.readouterr().out
-
-
-def test_smoke_requires_a_receipt_dir_and_excludes_skip_install() -> None:
-    for argv in (["--smoke"], ["--smoke", "--skip-install", "--receipt-dir", "x"]):
-        with pytest.raises(SystemExit) as raised:
-            hosts.main(argv)
-        assert raised.value.code == 2
 
 
 def fake_smoke_host(host: str, calls: list[list[str]], *, uninstall_ok: bool = True):
@@ -673,42 +623,3 @@ def test_inventory_absent_accepts_only_a_missing_or_uninstalled_entry() -> None:
     assert not hosts._inventory_absent("codex", json.dumps({"installed": [{"pluginId": "skiphow@skiphow", "installed": True}]}))
     assert hosts._inventory_absent("claude", json.dumps([]))
     assert not hosts._inventory_absent("claude", json.dumps([{"id": "skiphow@skiphow", "enabled": True}]))
-
-
-def test_payload_difference_names_extra_missing_and_changed_paths() -> None:
-    expected = {"SKILL.md": "a", "hooks/hooks.json": "b", "README.md": "c"}
-    observed = {"SKILL.md": "a", "hooks/hooks.json": "changed", "scripts/__pycache__/x.pyc": "d"}
-    report = hosts._payload_difference(expected, observed)
-    assert report == (
-        "extra scripts/__pycache__/x.pyc; missing README.md; changed hooks/hooks.json"
-    )
-    assert hosts._payload_difference(expected, dict(expected)) == "identical per-file payloads"
-
-
-def test_receipt_payload_mismatch_names_the_polluting_path() -> None:
-    """A stray file under the package root is diagnosed, not just reported as a mismatch."""
-    stray = "skills/skiphow/scripts/__pycache__/activation.cpython-313.pyc"
-    committed_payload = hosts._payload(hosts.PLUGIN_ROOT)
-    package = fake_committed_package()
-    receipt = {
-        "package_version": package["version"],
-        "package_commit": "c" * 40,
-        "package_tree": package["git_tree"],
-        "package_payload_sha256": "d" * 64,
-    }
-    committed = {
-        "version": receipt["package_version"],
-        "git_tree": receipt["package_tree"],
-        "payload_sha256": receipt["package_payload_sha256"],
-    }
-    with (
-        patch.object(hosts, "package_identity", return_value=package),
-        patch.object(hosts, "committed_package_identity", return_value=committed),
-        patch.object(hosts, "committed_package_payload", return_value=committed_payload),
-        patch.object(hosts, "_payload", return_value=committed_payload | {stray: "e" * 64}),
-        pytest.raises(ValueError) as error,
-    ):
-        hosts.validate_committed_package_identity(receipt)
-    assert str(error.value) == (
-        f"receipt package_payload_sha256 does not match the candidate: extra {stray}"
-    )
