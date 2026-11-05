@@ -12,12 +12,12 @@ All notable changes to SkipHow 2.x and later appear in this file. Earlier releas
 
 ### Contributing
 
-- Contributor tests that pinned shape instead of a contract are gone: `tests/test_package.py` and `tests/test_host_pilot_capture.py` whole, the unreferenced synthetic receipt `evals/receipts/capture-synthetic-pilot.json`, and duplicate, call-order, source-reading, and tooling-only tests elsewhere. Workflow tests now check one rule: no job holding a `write` permission checks out code, sets up Python, or runs installs or scripts. Site metadata checks are lint, as the decision on deterministic checks already said, and `site/.nojekyll` is no longer required.
+- Contributor tests that pinned shape instead of a contract are gone: `tests/test_package.py` and `tests/test_host_pilot_capture.py` whole, the unreferenced synthetic receipt `evals/receipts/capture-synthetic-pilot.json`, and duplicate, call-order, source-reading, and tooling-only tests elsewhere. The per-job workflow pins become one rule: no job holding a `write` permission checks out code, sets up Python, or runs installs or scripts. Site metadata checks are lint, as the decision on deterministic checks already said, and `site/.nojekyll` is no longer required.
 - Development pins move to pytest 9.2.0 and pluggy 1.7.0, and both workflows use `actions/setup-python` 7.1.0.
 
 ### Why
 
-Five pull requests from earlier sessions had passed CI and sat open for two to three weeks: the attribution fix, the test audit, and three dependency bumps. The attribution fix was prepared as 7.0.2, but 7.0.2 shipped other work, so its version stamps no longer applied. This release carries all five onto the current `main`.
+Five pull requests from earlier sessions had passed CI and sat open for three days to nearly three weeks: the attribution fix, the test audit, and three dependency bumps. The attribution fix was prepared as 7.0.2, but 7.0.2 shipped other work, so its version stamps no longer applied. This release carries all five onto the current `main`.
 
 ### Checks and evidence
 

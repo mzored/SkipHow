@@ -310,10 +310,9 @@ has an aggregate behavioral label. Unrun scenarios remain `not_run` and
 `UNVERIFIED`; recorded scenarios derive their state from their own receipts.
 
 The maintainer-only case about missing check pins was removed from this
-corpus. The behavior it observed is repository policy in `AGENTS.md`, and
-[`../tests/test_checks.py`](../tests/test_checks.py) already holds the
-deterministic regression for it; it is not a runtime product behavior and
-never belonged in an arm comparison.
+corpus. The behavior it observed is repository policy in `AGENTS.md`, which
+`scripts/check.py` enforces without a dedicated test; it is not a runtime
+product behavior and never belonged in an arm comparison.
 
 The large-programme case names `catalog-integration-ready`, the derived
 fixture whose setup creates `fix/catalog`; the older `catalog-integration`
@@ -477,8 +476,7 @@ or grading. Mixed forwarded message shapes and failures in those later steps
 must not destroy the original evidence. Existing captures or sidecars stop a
 duplicate invocation before setup or spend. If complete capture fails after a
 model starts, the ignored private workspace remains with a printed recovery
-path until its evidence can be retained and the workspace removed. The
-offline lifecycle tests inject these failures without starting a model.
+path until its evidence can be retained and the workspace removed.
 
 Recorded traces retain exact model identities for provenance. Portable
 fixture definitions and prompts still contain no concrete model IDs. Privacy
