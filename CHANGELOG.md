@@ -11,6 +11,10 @@ All notable changes to SkipHow 2.x and later appear in this file. Earlier releas
 - The opening section no longer promises a launch unconditionally; it defers to the handoff section.
 - `tracked-work` no longer pairs a launch line with "blocked work is not ready to execute". A launch line for blocked work names what resumes it.
 
+### Contributing
+
+- The development pin moves to markdown-it-py 4.3.0.
+
 ### Why
 
 A user's report on 7.0.5 showed two sessions. In one, an explicitly invoked plan was prepared and reviewed, but it returned no launch, because its last task needed a spreadsheet connection the owner had to restore and no partial scope had been selected. The final report did not say the launch was withheld. The text supported that reading: the launch was due "when the scope is ready", and the sentence that followed listed known human prerequisites as blockers next to "readiness". In the other session, a requested launch came back in the owner's language, with first-person grants. "Write engineering artifacts in English" sat in the tracker sentence, while the kernel reports to the owner in their language, and the launch reaches the owner inside that report. Nothing forbade restating an existing grant.
