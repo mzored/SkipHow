@@ -25,6 +25,7 @@ Prior art read for this shape: Superpowers' `writing-plans` always ends with a h
 ### Checks and evidence
 
 - This is a patch release. It restores the promised "the plan ends with a launch prompt". Authority boundaries are unchanged except that the launch now restates no grant.
+- An isolated read-only Codex review ran two rounds. Round 1 found that "the launch restates and grants no authority" contradicted the kernel: a pasted launch is an owner change request and grants ordinary in-scope execution. The wording now says that the launch restates no grant and adds no protected action. Round 2 found nothing that qualified. The isolated Codex home cached a SkipHow plugin at startup, and the transcripts show no read of it.
 - The corpus gains `planning-execution-prerequisite-launch`, which is not run and remains `UNVERIFIED`. No model sessions or clean-install runs were made, so whether the new wording changes behavior is `UNVERIFIED`.
 
 ## 7.0.5 (2026-11-05)
