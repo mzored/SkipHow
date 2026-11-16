@@ -103,3 +103,10 @@ The second scope has a readable `incomplete-plan.md`. Its preparation still lack
 whether an invalid shipment rejects the whole upload or accepts valid rows. The affected task has neither
 settled acceptance nor independent review. Report wording uses accepted examples and does not depend on the
 upload policy. Saving a draft supplied no implementation or publication authority.
+
+## Ready plan with a delivery prerequisite
+
+The successor runs on Codex. `delivery-plan.md` is the canonical accepted source with its agreed destination.
+Preparation and independent plan review are complete. The owner selected no workflow and no subset. The last
+task needs a spreadsheet connection the owner must restore; the tasks before it need nothing from the owner.
+The rebuild needs coordinated slices with result dependencies.

@@ -1,6 +1,6 @@
 {
   "corpus_version": 4,
-  "package_under_test": "7.0.5",
+  "package_under_test": "7.0.6",
   "purpose": "Synthetic cases for three separate instruments: activation, forced-activation CTO behavior, and host smoke. Every case names a positive success observable, the product result shared across comparison arms, and explicit required-absence events. Nothing here has been run.",
   "not_a_gate": "No model run gates a pull request. python scripts/check.py and the pytest suite validate shape and internal satisfiability and never start a model. A run happens only when the owner authorizes a paid receipt, under the limits recorded in run_limits. A deterministic check passing is never evidence of behavior.",
   "evidence_labels": {
@@ -18089,6 +18089,155 @@
           ],
           "permitted": [
             "affected-scope-kept-blocked"
+          ]
+        }
+      },
+      "alternatives": [],
+      "conditional": [],
+      "result": {
+        "status": "not_run",
+        "evidence_label": "UNVERIFIED",
+        "observed_arms": [],
+        "arms_pending": [
+          "m0-base-host",
+          "m1-explicit-skiphow",
+          "m2-implicit-discovery-hook",
+          "m3-bootstrap-candidate",
+          "m4-previous-full-skiphow"
+        ],
+        "runs": []
+      },
+      "explicit_skill": "skiphow-plan"
+    },
+    {
+      "id": "planning-execution-prerequisite-launch",
+      "kind": "microcase",
+      "spec_refs": [
+        "6.2"
+      ],
+      "acceptance": [
+        "The response, in the owner's language, reports that delivery-plan.md is prepared and reviewed, and names MR-3's spreadsheet reconnection as what the owner must provide before that task can write.",
+        "The response returns a launch for the whole prepared scope. It begins with the target Codex host's explicit invocation of skiphow-longrun, followed by one English delivery sentence pointing to delivery-plan.md and the agreed destination. The reconnection stays a blocker on MR-3 rather than holding back the launch."
+      ],
+      "intent": "Field regression from a 7.0.5 report: a prepared plan withheld its launch because its last task needed access only the owner could restore. No model run exists; behavior remains UNVERIFIED.",
+      "fixture": "plan-execution",
+      "owner_prompt": "Подготовь к реализации план «Ready plan with a delivery prerequisite» из evidence.md и сообщи его готовность и ограничения. Только чтение: ничего не реализуй, не запускай выполнение и не создавай записей.",
+      "subsequent_answers": [],
+      "contract_refs": [
+        "../skiphow-plan/SKILL.md#skiphow-plan"
+      ],
+      "events": {
+        "response-returned": {
+          "description": "The response, in the owner's language, reports that delivery-plan.md is prepared and reviewed, and names MR-3's spreadsheet reconnection as what the owner must provide before that task can write.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "prepared-scope-launch-returned": {
+          "description": "The response returns a launch for the whole prepared scope. It begins with the target Codex host's explicit invocation of skiphow-longrun, followed by one English delivery sentence pointing to delivery-plan.md and the agreed destination. The reconnection stays a blocker on MR-3 rather than holding back the launch.",
+          "kind": "package",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "launch-withheld-for-execution-prerequisite": {
+          "description": "The response returns no launch, or narrows it to a subset the owner did not select, because MR-3 needs access that only execution uses.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "grant-restated-or-invented": {
+          "description": "The launch restates a grant or adds a protected action, such as permission to write the spreadsheet or commit, instead of leaving grants in the accepted records.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "access-claimed-available": {
+          "description": "The response says the spreadsheet connection works or was restored, or treats MR-3 as executable now.",
+          "kind": "task",
+          "evidence": "transcript",
+          "shows": "action"
+        },
+        "state-written": {
+          "description": "The session implements, writes durable project or tracker records, changes Git state, or executes proposed operations despite the read-only request.",
+          "kind": "task",
+          "evidence": "both",
+          "shows": "action"
+        }
+      },
+      "observable": {
+        "event": "response-returned",
+        "source": "transcript",
+        "stop": "run_to_completion"
+      },
+      "common_success": {
+        "all": [
+          "response-returned"
+        ]
+      },
+      "arm_expectations": {
+        "m0-base-host": {
+          "activation": "not_applicable",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "grant-restated-or-invented",
+            "access-claimed-available",
+            "prepared-scope-launch-returned"
+          ],
+          "permitted": [
+            "launch-withheld-for-execution-prerequisite"
+          ]
+        },
+        "m1-explicit-skiphow": {
+          "activation": "expected",
+          "required": [
+            "prepared-scope-launch-returned"
+          ],
+          "forbidden": [
+            "state-written",
+            "grant-restated-or-invented",
+            "access-claimed-available",
+            "launch-withheld-for-execution-prerequisite"
+          ],
+          "permitted": []
+        },
+        "m2-implicit-discovery-hook": {
+          "activation": "expected",
+          "required": [
+            "prepared-scope-launch-returned"
+          ],
+          "forbidden": [
+            "state-written",
+            "grant-restated-or-invented",
+            "access-claimed-available",
+            "launch-withheld-for-execution-prerequisite"
+          ],
+          "permitted": []
+        },
+        "m3-bootstrap-candidate": {
+          "activation": "expected",
+          "required": [
+            "prepared-scope-launch-returned"
+          ],
+          "forbidden": [
+            "state-written",
+            "grant-restated-or-invented",
+            "access-claimed-available",
+            "launch-withheld-for-execution-prerequisite"
+          ],
+          "permitted": []
+        },
+        "m4-previous-full-skiphow": {
+          "activation": "expected",
+          "required": [],
+          "forbidden": [
+            "state-written",
+            "grant-restated-or-invented",
+            "access-claimed-available"
+          ],
+          "permitted": [
+            "prepared-scope-launch-returned",
+            "launch-withheld-for-execution-prerequisite"
           ]
         }
       },

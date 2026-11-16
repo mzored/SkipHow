@@ -88,7 +88,8 @@ scenarios cover an answer that reveals a further product choice, an exhausted pr
 answer, consequential effects on existing registrations without converting a recommendation into a constraint,
 an explicitly owner-selected ready subset, and ordinary invocation for settled small cohesive work. The existing
 unanswered-choice probe also rejects an agent-selected partial launch. Ready `plan-execution` records retain
-substantial coordination and selected-workflow launch coverage. Settled work starts no gratuitous interview.
+substantial coordination and selected-workflow launch coverage, and a prepared plan whose last task needs
+access only the owner can restore still gets its English launch. Settled work starts no gratuitous interview.
 
 The pending-answer probe conditions its wait path on a usable actual host control, not on a fixture claim or a
 tool merely being installed. Without that capability it accepts an explicitly incomplete waiting response with

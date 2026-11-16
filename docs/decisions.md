@@ -176,11 +176,11 @@ The simplify workflow measures the project, removes what does not pay through re
 
 The plan workflow prepares the whole requested scope, keeps the product interview open while answers are pending, and returns an explicit short launch for the fitting workflow. Only the owner reduces scope, and an execution workflow the owner chose is kept. The lead owns default workflow selection, technical questions, slicing, and routing.
 
-**Why.** A recorded question is not finished preparation, and a ready task does not authorize a smaller scope. One outcome can hide uneven work, so the plan reviews actual one-agent workload. Host controls govern waiting, and no scheduler is added. A mature path needs no foundation stage, uniform automated work needs no artificial quotas, and file, line, and acceptance counts set no universal limit.
+**Why.** A recorded question is not finished preparation, and a ready task does not authorize a smaller scope. One outcome can hide uneven work, so the plan reviews actual one-agent workload. Host controls govern waiting, and no scheduler is added. A mature path needs no foundation stage, uniform automated work needs no artificial quotas, and file, line, and acceptance counts set no universal limit. Readiness to launch is finished preparation: access, credentials, data, or a human step that only execution needs stays a recorded blocker on its task and does not withhold the launch, and the launch restates no grant, because a pasted launch is an owner message.
 
 **Status.** `Contract`. Behavioral improvement `UNVERIFIED`.
 
-**Reopens when.** A run launches early, loses follow-up, takes assumptions as product choices, interviews endlessly or technically, fragments needlessly, omits safety, or expands authority.
+**Reopens when.** A run launches early, withholds a prepared launch, loses follow-up, takes assumptions as product choices, interviews endlessly or technically, fragments needlessly, omits safety, or expands authority.
 
 ### Plan tasks are dispatchable slices
 
