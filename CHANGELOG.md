@@ -2,6 +2,31 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 7.0.6 (2026-11-17)
+
+### A prepared plan always hands off
+
+- `skiphow-plan` now says that a launch is due once preparation is complete: no product choice is open, the accepted sources can be read, and every task is written and sized. Access, credentials, data, or a human step that only execution needs no longer withholds the launch. It stays a blocker on the affected task, and the report tells the owner what to provide. When preparation is incomplete, the report says what withholds the launch.
+- The launch is written in English. It points at where each added constraint was decided, and it restates no grant. Grants stay in the execution records, because a pasted launch becomes an owner message and would carry the grant without its conditions.
+- The opening section no longer promises a launch unconditionally; it defers to the handoff section.
+- `tracked-work` no longer pairs a launch line with "blocked work is not ready to execute". A launch line for blocked work names what resumes it.
+
+### Why
+
+A user's report on 7.0.5 showed two sessions. In one, an explicitly invoked plan was prepared and reviewed, but it returned no launch, because its last task needed a spreadsheet connection the owner had to restore and no partial scope had been selected. The final report did not say the launch was withheld. The text supported that reading: the launch was due "when the scope is ready", and the sentence that followed listed known human prerequisites as blockers next to "readiness". In the other session, a requested launch came back in the owner's language, with first-person grants. "Write engineering artifacts in English" sat in the tracker sentence, while the kernel reports to the owner in their language, and the launch reaches the owner inside that report. Nothing forbade restating an existing grant.
+
+Confirmed against the 7.0.5 text and kept out of the change:
+
+- The long launch in the second session also copied requirements and model routing. "Requirements and dependencies stay in the task records; execution policy stays in SkipHow" was plain, so this is a run deviation that one session cannot show to be systematic.
+- Both sessions kept the plan in repository files. The excerpts cannot show whether the project had an authorized local convention, so this stays `UNVERIFIED`. The question is already open in the evidence summary.
+
+Prior art read for this shape: Superpowers' `writing-plans` always ends with a handoff after review and records no execution prerequisites. Nothing was adopted.
+
+### Checks and evidence
+
+- This is a patch release. It restores the promised "the plan ends with a launch prompt". Authority boundaries are unchanged except that the launch now restates no grant.
+- The corpus gains `planning-execution-prerequisite-launch`, which is not run and remains `UNVERIFIED`. No model sessions or clean-install runs were made, so whether the new wording changes behavior is `UNVERIFIED`.
+
 ## 7.0.5 (2026-11-05)
 
 ### Attribution matches the shipped files

@@ -79,7 +79,7 @@ Ordinary requests need no workflow. Use one when you know the work pattern you w
 | `skiphow-fast-fixes` | Fix the search and export bugs locally. I will add feedback while you work. | Checked local results shown as each is ready |
 | `skiphow-simplify` | Our test suite is bigger than the product. Clean it up. | A smaller project, with before and after numbers |
 
-Calling `skiphow-plan` by name asks for a specification and planning records in your tracker. A read-only instruction overrides that. When the agent picks plan on its own, it writes nothing. A pending answer keeps the plan open. The plan ends with a launch prompt that grants no new permissions:
+Calling `skiphow-plan` by name asks for a specification and planning records in your tracker. A read-only instruction overrides that. When the agent picks plan on its own, it writes nothing. A pending answer keeps the plan open. The plan ends with a launch prompt in English that grants no new permissions. Access the delivery still needs, such as a spreadsheet you must reconnect, is named beside it rather than holding it back:
 
 ```text
 $skiphow-longrun
