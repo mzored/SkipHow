@@ -9,7 +9,7 @@ All notable changes to SkipHow 2.x and later appear in this file. Earlier releas
 - Under a change request, the lead fixes every confirmed finding in the project in the same run, whether or not it relates to the request. The deferral reasons are unchanged: an owner decision, a protected action, a blocker, or a cost that would hurt the outcome, with the reason recorded. Before, the kernel said "within authority", and the Authority section granted "in-scope edits", so an agent could read a finding unrelated to the request as outside its grant and only list it.
 - A finding is checked before it is reported, not only before it is acted on. The review playbook's copy of that rule is gone, because the kernel's Engineering standard reaches every review brief.
 - The custody rule now says a part or a finding never goes to a session the owner must start. Before, it said "parts or findings of the outcome", which let an unrelated finding fall outside it.
-- The kernel stays under its size limit. "Look past the diff" left the Engineering standard, because the finding rule now names the project as its scope, and a few phrases were shortened without changing what they ask. The tracked-work playbook drops two sentences the kernel already carries: separability is not a reason to defer, and plans and reports are deleted when the work lands.
+- The kernel stays under its size limit by shortening phrases without changing what they ask: the risks past the diff are "defects" rather than "defects to fix", because the finding rule now says to fix them. The tracked-work playbook drops two sentences the kernel already carries: separability is not a reason to defer, and plans and reports are deleted when the work lands.
 
 ### Why
 
@@ -22,6 +22,7 @@ Superpowers and Matt Pocock's skills, read as they stand today, both keep incide
 ### Checks and evidence
 
 - This is a patch release. It restores what the owner-outcome contract and decisions already promised: supervision reaches past the request, and findings stay with the lead. Authority and protected-action boundaries are unchanged; production changes still need the owner's grant.
+- An isolated read-only Codex review ran two rounds. Round 1 found that the first candidate removed "Look past the diff" from the kernel and with it the duty to look for risk beyond the change, which the outcome contract promises and no always-loaded sentence kept; fixing confirmed findings does not oblige anyone to look for them. The sentence is back. ROUND-2
 - No model sessions or clean-install runs were made, and whether the new wording changes behavior is `UNVERIFIED`.
 
 ## 7.0.6 (2026-11-17)
