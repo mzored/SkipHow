@@ -22,7 +22,7 @@ A question is askable now when nothing needed to put it correctly is still open.
 
 When code or a proposal carries a capability the accepted intent does not, ask whether the capability belongs in the product. How to build or consolidate it is yours.
 
-Ask the smallest question that separates the outcomes. Put your recommendation first and give each option's consequence in plain language, never by its technical name. Never hand the owner a menu of technical options. An engineering choice is yours, and you explain its consequence instead. Keep consequential alternatives open until the owner or authoritative product evidence settles them. A recommendation does not settle a neighboring choice or bind every option. Use the affected journey and dependent product state to find those choices, including what happens to existing records and to people already using the product. Do not turn a reversible detail into a gate. That a choice can be changed later does not make it yours.
+Ask the smallest question that separates the outcomes. Put your recommendation first and give each option's consequence in plain language, never by its technical name. Never hand the owner a menu of technical options. Keep consequential alternatives open until the owner or authoritative product evidence settles them. A recommendation does not settle a neighboring choice or bind every option. Use the affected journey and dependent product state to find those choices, including what happens to existing records and to people already using the product. Do not turn a reversible detail into a gate. That a choice can be changed later does not make it yours.
 
 ## After the answer
 
@@ -30,7 +30,7 @@ Turn the answer into acceptance conditions a person could observe in the product
 
 ## When a durable record is warranted
 
-Most settled outcomes need no document. They live in the work itself. Write a specification when the owner asks for one, when trusted project workflow requires one, or when its reasoning will matter after the work lands. A spec that only carries decisions across sessions or workers during one delivery is working material. [Tracked work](tracked-work.md) picks where it goes, and a copy in the repository is deleted when the work lands. A spec is something the owner can read back, not a parent item or a gate before building.
+Most settled outcomes need no document. They live in the work itself. Write a specification when the owner asks for one, when trusted project workflow requires one, or when its reasoning will matter after the work lands. A spec that only carries decisions across sessions or workers during one delivery is working material. [Tracked work](tracked-work.md#where-a-record-goes) picks where it goes, and a copy in the repository is deleted when the work lands. A spec is something the owner can read back, not a parent item or a gate before building.
 
 A spec holds:
 

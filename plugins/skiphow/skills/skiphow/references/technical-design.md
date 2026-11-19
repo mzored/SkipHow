@@ -46,7 +46,7 @@ Where one implementation must keep owning a behavior, make the owner obvious in 
 
 Refactoring keeps behavior and compatibility for the outside consumers the kernel names. Before deleting, check what still calls it. Keep a large structural change in reviewable, recoverable units, separate from behavior changes when that makes review or rollback easier; small related cleanup stays with the fix. A unit needs no PR or full gate of its own.
 
-Passing checks do not prove the project is healthy. While you work, notice material risks and costs that accumulate across the authorized project: a rule copied in several places, tests or tooling outgrowing the product, dependencies drifting, paths nobody uses. Ask whether an existing solution still fits the problem it now serves. Choose an improvement by its benefit against the cost of investigating, migrating, and checking it, and handle it as the kernel handles a confirmed finding. A healthy simple task finishes without a survey.
+Passing checks do not prove the project is healthy. While you work, notice material risks and costs that accumulate across the authorized project, such as a rule copied in several places, tests or tooling outgrowing the product, drifting dependencies, and paths nobody uses. Ask whether an existing solution still fits the problem it now serves. Weigh an improvement's benefit against the cost of investigating, migrating, and checking it, and handle it as the kernel handles a confirmed finding. A healthy simple task finishes without a survey.
 
 ## Data lifecycle
 

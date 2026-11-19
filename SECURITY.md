@@ -5,77 +5,54 @@
 | Version | Supported |
 | --- | --- |
 | 7.0.x | Yes |
-| 6.3.x, 6.2.x, 6.1.x, 6.0.x, 5.1.x, 5.0.x, 4.8.x, 4.7.x, 4.6.x, 4.5.x, 4.4.x, 4.3.x, 4.2.x, 4.1.x, and 4.0.x | No; upgrade to 7.0.x, reviewing the 7.0 engineering standard and the 6.0 iteration defaults when coming from 5.x or earlier; existing authorization stays unchanged |
+| 4.0.x through 6.3.x | No. Upgrade to 7.0.x. When coming from 5.x or earlier, review the 7.0 engineering standard and the 6.0 iteration defaults. Existing authorization stays unchanged. |
 | 3.0.x and earlier | No |
 
-Security review covers the packaged owner skill, its linked playbooks, host manifests,
-marketplace metadata, release checks, and documented authority
-boundaries. Codex, Claude Code, GitHub, Git, operating systems, and third-party
-services keep their own security policies.
+Security review covers the packaged owner skill, its linked playbooks, host manifests, marketplace metadata, release checks, and documented authority boundaries. Codex, Claude Code, GitHub, Git, operating systems, and third-party services keep their own security policies.
+
+A request that changes the project also repairs the engineering problems the run finds, within the grants that request already carries. It adds no grant. Read-only requests, protected actions, owner decisions, audience boundaries, and a trusted project's own narrower procedure keep their limits. [The kernel](plugins/skiphow/skills/skiphow/SKILL.md) is the governing text.
 
 ## Package validation, 2026-09-08
 
-Version 5.1.0 has a request that changes the project also repair the engineering problems the run found, after the requested change, within the grants that request already carries. Read-only requests, protected actions, owner decisions, audience boundaries, and a trusted project's own narrower procedure are unchanged, and no new grant, activation mechanism, package layout, or host binding is added. The new behavior remains `UNVERIFIED`.
+No host receipt covers the current package. [The current host ledger](evals/host-smoke.json) and the release validation matrix hold its per-capability status. Each receipt below applies only to the package it names. Schema validation and installation prove no runtime behavior, and clean installation does not establish model loading.
 
-Version 4.7.0 adds verification-health guidance and focused behavioral cases without changing the authority boundary, public workflow set, activation mechanism, package layout, or host binding. The new behavior remains `UNVERIFIED`; deterministic corpus checks prove only the case contract and internal satisfiability.
+| Package | What the receipts show | Record |
+| --- | --- | --- |
+| 4.6.0 | Both host schema validators passed on commit `1fadf014357ca2f743ceaa46affb10aa0b1f4844`. Claude Code 2.1.263 installed all 22 regular package files byte for byte into an isolated configuration directory and uninstalled them. Codex CLI 0.153.0 refused the local marketplace under managed source policy before installation, so its clean-install cell stays `UNVERIFIED`. The receipts and candidate ledger retain package tree `7e70f8645cf782c0681308001696033d9ac69b36` and payload `f5a89b5137afc70e88cbd7be26fcd2463b7daba0ff18d3cc0e20d456bf1a9e15`. | [4.6.0 receipts](evals/receipts/host-validation-460-20260908/) |
+| 4.5.1 | The same three results on commit `4250c7abc55673230946af4ba662fa2d28ef0ab5`, with the same 22 files. | [4.5.1 receipts](evals/receipts/host-validation-451-20260908/) |
+| 4.5.0 | Clean-install evidence. | [Immutable 4.5.0 ledger](https://github.com/mzored/SkipHow/blob/02eb504aa59b372a688bf4ed85b4157f317c70dd/evals/host-smoke.json) |
+| 4.4.0 | Claude Code 2.1.263 clean install and uninstall, one receipt on the exact package. Every other row is `UNVERIFIED` until a receipt made on 4.4.0 is recorded. | [`evals/receipts/host-validation-440-20260906/`](evals/receipts/host-validation-440-20260906/), [immutable 4.4.0 ledger](https://github.com/mzored/SkipHow/blob/dca3b674af9cca2e58e630d06fe3e0b0c7aebcfa/evals/host-smoke.json) |
+| 4.3.0 | Claude Code 2.1.263 clean install and uninstall. Codex CLI 0.153.0 clean install from the approved Git source, and uninstall. | [`evals/receipts/host-validation-430-20260906/`](evals/receipts/host-validation-430-20260906/), [immutable 4.3.0 ledger](https://github.com/mzored/SkipHow/blob/8b196f6943f4e7347621ef9809ceeea52546469c/evals/host-smoke.json) |
+| 4.2.0 | Receipts that include persistent setup, explicit fallback, and playbook load. The September 6 diagnostics are separate 4.2.0 observations. | [Immutable 4.2.0 ledger](https://github.com/mzored/SkipHow/blob/f684eb2f3d2e7baf8b8488e8efb5ac4703d67cff/evals/host-smoke.json), [September 6 diagnostics](evals/receipts/isolated-host-420-20260906/README.md) |
+| 4.1.1 | Host validation receipts. | [`evals/receipts/host-validation-411-20260905/`](evals/receipts/host-validation-411-20260905/) |
+| 4.1.0 | Both host schema validators passed. Claude Code 2.1.261 installed all fifteen regular files byte for byte and uninstalled them in a clean host configuration. Codex CLI 0.153.0 clean installation stays `UNVERIFIED` because managed marketplace-source policy refused the local source. The September 5 isolated Codex diagnostics are 4.1.0 observations. | [Per-capability matrix](evals/receipts/host-validation-20260905.md) |
 
-Version 4.6.0 adds request-scoped project-state reconciliation without changing the authority boundary, public workflow set, or activation mechanism. Its per-capability status is in [the current host ledger](evals/host-smoke.json) and the release validation matrix. Historical receipts below apply only to their named versions. Context selection, reconciliation behavior, workflow invocation, shared-kernel loading, and model behavior remain `UNVERIFIED`.
+The [dated support summary](https://github.com/mzored/SkipHow/blob/2f72c7f/docs/evidence.md#support-summary-as-of-2026-09-06) states what each host has shown for each package it names.
 
-On exact package commit `1fadf014357ca2f743ceaa46affb10aa0b1f4844`, both host schema validators passed. Claude Code 2.1.263 installed all 22 regular package files byte for byte and uninstalled them from an isolated configuration directory. Codex CLI 0.153.0 refused the local marketplace under managed source policy before installation, so its clean-install cell stays `UNVERIFIED`. The [4.6.0 receipts](evals/receipts/host-validation-460-20260908/) and candidate ledger retain the exact package tree `7e70f8645cf782c0681308001696033d9ac69b36` and payload `f5a89b5137afc70e88cbd7be26fcd2463b7daba0ff18d3cc0e20d456bf1a9e15`; neither schema validation nor installation proves runtime behavior.
-
-Version 4.5.1 keeps portable delegation safety in the runtime and corrects fast-fixes context routing. On exact candidate commit `4250c7abc55673230946af4ba662fa2d28ef0ab5`, both host schema validators passed. Claude Code 2.1.263 installed all 22 regular package files byte for byte and uninstalled them from an isolated configuration directory. Codex CLI 0.153.0 refused the local marketplace under managed source policy before installation, so its clean-install cell remained `UNVERIFIED`. The [4.5.1 receipts](evals/receipts/host-validation-451-20260908/) retain the exact scope; neither schema validation nor installation proves runtime behavior.
-
-Version 4.5.0 added optional workflow skills under the existing authority boundaries. Its retained clean-install evidence remains at the [immutable 4.5.0 ledger](https://github.com/mzored/SkipHow/blob/02eb504aa59b372a688bf4ed85b4157f317c70dd/evals/host-smoke.json).
-
-Version 4.4.0 was validated per capability in the [immutable 4.4.0 ledger](https://github.com/mzored/SkipHow/blob/dca3b674af9cca2e58e630d06fe3e0b0c7aebcfa/evals/host-smoke.json); Claude Code 2.1.263 clean install and uninstall carry one receipt on the exact 4.4.0 package in [`evals/receipts/host-validation-440-20260906/`](evals/receipts/host-validation-440-20260906/), and every other row is `UNVERIFIED` until a receipt made on 4.4.0 is recorded. The 4.3.0 receipts, Claude Code 2.1.263 clean install and uninstall and Codex CLI 0.153.0 clean install from the approved Git source and uninstall, remain in [`evals/receipts/host-validation-430-20260906/`](evals/receipts/host-validation-430-20260906/) and at the [immutable 4.3.0 ledger](https://github.com/mzored/SkipHow/blob/8b196f6943f4e7347621ef9809ceeea52546469c/evals/host-smoke.json), and the 4.2.0 receipts, including persistent setup, explicit fallback, and playbook load, remain at their [immutable source](https://github.com/mzored/SkipHow/blob/f684eb2f3d2e7baf8b8488e8efb5ac4703d67cff/evals/host-smoke.json). The [dated support summary](https://github.com/mzored/SkipHow/blob/2f72c7f/docs/evidence.md#support-summary-as-of-2026-09-06) states what each host has shown for each package it names. The previous 4.1.1 receipts remain in `evals/receipts/host-validation-411-20260905/`; the September 5 isolated Codex diagnostics remain 4.1.0 observations, and the [September 6 diagnostics](evals/receipts/isolated-host-420-20260906/README.md) are separate 4.2.0 observations.
-
-The historical 4.1.0 candidate passed both host schema validators. Claude Code 2.1.261
-installed all fifteen regular files byte for byte and uninstalled them in a
-clean host configuration. Codex CLI 0.153.0 clean installation remains
-`UNVERIFIED` because managed marketplace-source policy refused the local source.
-The [candidate receipts](evals/host-smoke.json) and
-[per-capability matrix](evals/receipts/host-validation-20260905.md) retain the exact
-package identity and scope. Clean installation does not establish model loading.
-
-An isolated Codex profile authenticated natively on 2026-09-05; an isolated Claude Code
-profile still cannot. Ordinary-language loading, delivery to a synthetic remote, and
-native resume were observed once each on the exact 4.1.0 package in the
-[isolated Codex diagnostics](https://github.com/mzored/SkipHow/blob/72aef4540d30d3639a2f63af6663971345c6dc5a/docs/evidence.md#later-isolated-codex-diagnostics); nothing
-comparable exists for Claude Code, and no activation mode has a measured reliability on
-either host. Claude's documented plugin subagents
-ignore `permissionMode`; a declared field alone must not be described as an
-enforced read-only boundary. Actual tool restrictions and workspace identity need
-their own evidence. See [Claude subagents](https://code.claude.com/docs/en/sub-agents).
+An isolated Codex profile authenticated natively on 2026-09-05. An isolated Claude Code profile still cannot. On the exact 4.1.0 package, the [isolated Codex diagnostics](https://github.com/mzored/SkipHow/blob/72aef4540d30d3639a2f63af6663971345c6dc5a/docs/evidence.md#later-isolated-codex-diagnostics) observed ordinary-language loading, delivery to a synthetic remote, and native resume once each. Nothing comparable exists for Claude Code, and no activation mode has a measured reliability on either host.
 
 ## Host support, as of 2026-09-06
 
-Host behavior changes. Each row below is only as current as its verification date, and
-each row cites the first-party page it was read from. Check that page again before
-relying on the row.
+The tables track only the capabilities shipped rules depend on: skill loading, persistent instruction loading, per-agent read-only controls, worktree isolation, plugin validation, and clean installation. They are not a host feature database.
 
-Only capabilities on which shipped rules depend are tracked: skill loading, persistent
-instruction loading, per-agent read-only controls, worktree isolation,
-plugin validation, and clean installation. This is not a host feature database.
+How to read a row:
 
-The rows are separate claims and must not be read as one. Schema validation shows that
-a host accepts the package's shape; it never establishes that the host activates the
-skill, that persistent instructions select it, that a delegate is isolated, or how a model behaves once the
-text reaches it. A `PASS` is a run that happened on the named host version; a
-documentation-only row is `UNVERIFIED` however clearly the page describes the feature.
+- Host behavior changes. A row is only as current as its verification date. Check the first-party page it cites before relying on it.
+- The source column records what the linked official documentation said on the verification date. The tested-version and status columns record only the named command or receipt.
+- Each row is a separate claim. Schema validation shows that a host accepts the package's shape. It never shows that the host activates the skill, that persistent instructions select it, that a delegate is isolated, or how a model behaves once the text reaches it.
+- A `PASS` is a run that happened on the named host version. A documentation-only row is `UNVERIFIED` however clearly the page describes the feature.
+- A declared field is not an enforced read-only boundary. Claude's documented plugin subagents ignore `permissionMode`, and actual tool restrictions and workspace identity need their own evidence.
+- Findings from Codex CLI 0.153.0 source and runs are historical observations, not a guarantee about current Codex behavior.
+- Earlier tested host versions include Claude Code 2.1.259 for schema validation, Claude Code 2.1.260 for clean installation, and Codex CLI 0.153.0. Those values are host-reported receipt metadata, not a tested range and not a substitute for the current documentation.
+- Where a row cites `developers.openai.com`, that address redirected on 2026-09-04 to a page under `learn.chatgpt.com`. The redirect target is the page actually read.
 
-Three evidence scopes stay separate. [`evals/host-smoke.json`](evals/host-smoke.json)
-is the candidate ledger for external host receipts tied to exact package bytes and a
-committed package tree. A release's generated matrix reports only what its release
-runner performed. Model activation and behavior belong in [`docs/evidence.md`](docs/evidence.md)
-with their session receipts. A skipped release-runner row does not erase an external
-candidate receipt, and a successful install does not imply activation.
+Three evidence scopes stay separate:
 
-Current documentation and historical host runs are different evidence. The source column records what the linked official documentation said on the verification date. The tested-version and status columns record only the named command or receipt. In particular, findings from Codex CLI 0.153.0 source and runs are historical observations, not a general guarantee about current Codex behavior.
+- [`evals/host-smoke.json`](evals/host-smoke.json) is the candidate ledger for external host receipts tied to exact package bytes and a committed package tree.
+- Each release publishes the compact matrix `scripts/check_hosts.py` prints, one row per capability. It reports only what the release runner performed. A skipped or unavailable check stays `UNVERIFIED` there and is never folded into a passing aggregate. The release runner neither starts nor ingests model sessions, so explicit, implicit, and persistent-instruction activation always stay `UNVERIFIED` in that matrix.
+- [`docs/evidence.md`](docs/evidence.md) holds model activation and behavior with their session receipts.
 
-Earlier tested host versions include Claude Code 2.1.259 for schema validation, Claude Code 2.1.260 for clean installation, and Codex CLI 0.153.0. Those values are host-reported receipt metadata, not a tested range and not substitutes for the current documentation.
-
-Where a row cites `developers.openai.com`, that address redirected on 2026-09-04 to a
-page under `learn.chatgpt.com`; the redirect target is the page actually read.
+A skipped release-runner row does not erase an external candidate receipt, and a successful install does not imply activation.
 
 ### Claude Code
 
@@ -101,12 +78,7 @@ page under `learn.chatgpt.com`; the redirect target is the page actually read.
 
 ### Codex surfaces
 
-Codex is more than one product surface, and only the CLI has rows above. On 2026-09-04
-the first-party plugins page ([Plugins](https://developers.openai.com/codex/plugins),
-redirecting to `learn.chatgpt.com/docs/plugins`) said that plugins work in Codex in the
-ChatGPT desktop app and that Codex CLI has a plugin browser, and that the IDE extension
-does not support plugins. No run on this project has been made on any surface other
-than the CLI.
+Codex is more than one product surface. Only the CLI has rows above, and no run on this project used any other surface. On 2026-09-04 the first-party [Plugins](https://developers.openai.com/codex/plugins) page, redirecting to `learn.chatgpt.com/docs/plugins`, said that plugins work in Codex in the ChatGPT desktop app, that Codex CLI has a plugin browser, and that the IDE extension does not support plugins.
 
 | Surface | What the source says | Verified | Status |
 | --- | --- | --- | --- |
@@ -115,46 +87,28 @@ than the CLI.
 | IDE extension | Does not support plugins. Whether the same skill loads there as a standalone `.agents/skills` entry is not stated. | 2026-09-04 | `UNVERIFIED` (unsupported as a plugin per the page) |
 | Cloud and web Codex | Not mentioned on the page read. | 2026-09-04 | `UNVERIFIED` |
 
-Behavioral coverage is `UNVERIFIED` on both hosts and is a separate claim from every
-row above. Eight Claude run records remain useful for diagnosis, but none retained both
-the verified pre-session manifest and concrete end-state artifact required for an
-eligible receipt. No host documents
-that identical instruction text produces equivalent behavior,
-and the two loading models differ materially: one keeps every description in context,
-the other lists a capped inventory and loads the file on selection. What runs have and
-have not shown is in [current evidence](docs/evidence.md).
+### Behavioral coverage
 
-Each release publishes the compact matrix that `scripts/check_hosts.py` prints, with one
-row per capability. A skipped or unavailable check stays `UNVERIFIED` there; it is never
-folded into a passing aggregate. The release runner neither starts nor ingests model
-sessions, so explicit, implicit, and persistent-instruction activation always stay
-`UNVERIFIED` in that matrix. External model-session evidence is retained separately in
-the behavioral ledger.
+Behavioral coverage is `UNVERIFIED` on both hosts and is a separate claim from every row above. [Current evidence](docs/evidence.md) records what runs have and have not shown. No host documents that identical instruction text produces equivalent behavior, and the two loading models differ materially. One keeps every description in context. The other lists a capped inventory and loads the file on selection.
 
-This repository's continuous integration is not dual-host behavioral support and does
-not claim to be. It requires the pinned Codex validator, validates the Claude package
-only where that executable is present, and skips isolated installation entirely.
+This repository's continuous integration is not dual-host behavioral support. It requires the pinned Codex validator, validates the Claude package only where that executable is present, and skips isolated installation entirely.
 
 ## Untrusted repository profile
 
-SkipHow is policy, not enforcement. When a repository, branch, pull request, download,
-or incident snapshot is not yet trusted, use the host's controls before reading its
-instructions as procedure or running its code. Start from a disposable checkout, use
-synthetic or redacted data, inherit no unrelated credentials, deny network access unless
-the task requires named destinations, and keep writing delegates disabled. Do not run
-project hooks, build scripts, tests, or project-supplied skills until their effects fit
-the request's authority and the repository's provenance is established.
+SkipHow is policy, not enforcement. When a repository, branch, pull request, download, or incident snapshot is not yet trusted, use the host's controls before reading its instructions as procedure or running its code:
 
-On Codex, start the root session under a read-only sandbox and approval policy;
-subagents inherit it. Current documentation describes a custom-agent `sandbox_mode`
-field, while the historical CLI 0.153.0 source did not apply that field. Do not treat
-that historical finding as a guarantee about another version, and verify the active
-host's effective controls before relying on them. The `AGENTS.md`
-chain remains behavioral context rather than an enforcement boundary. On Claude Code,
-use plan or equivalent read-only permissions plus the OS-enforced filesystem and
-network sandbox; set sandbox unavailability to fail closed when the review depends on
-it, and disable the unsandboxed-command escape. In either host, a requested repair moves
-to a fresh bounded write environment only after the source and effects are understood.
+- Start from a disposable checkout.
+- Use synthetic or redacted data.
+- Inherit no unrelated credentials.
+- Deny network access unless the task requires named destinations.
+- Keep writing delegates disabled.
+- Do not run project hooks, build scripts, tests, or project-supplied skills until their effects fit the request's authority and the repository's provenance is established.
+
+On Codex, start the root session under a read-only sandbox and approval policy. Subagents inherit it. Current documentation describes a custom-agent `sandbox_mode` field, and the historical CLI 0.153.0 source did not apply it. That finding guarantees nothing about another version, so verify the active host's effective controls before relying on them. The `AGENTS.md` chain is behavioral context, not an enforcement boundary.
+
+On Claude Code, use plan or equivalent read-only permissions plus the OS-enforced filesystem and network sandbox. Set sandbox unavailability to fail closed when the review depends on it, and disable the unsandboxed-command escape.
+
+On either host, move a requested repair to a fresh bounded write environment only after the source and effects are understood.
 
 ## Report a vulnerability
 

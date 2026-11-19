@@ -28,11 +28,11 @@ Classify the failure before choosing the remedy: product ambiguity, code, archit
 
 Fix where the cause lives, not where the symptom shows, and fix the shared cause when several symptoms trace to it. Then rerun the original signal, not only the check that came with the fix.
 
-A regression test follows [testing](testing.md): write one only at a correct seam where it would catch a recurrence nobody would otherwise see. When no correct seam exists, that is an architecture finding, not a reason to test at a wrong one.
+A regression test follows [testing](testing.md#regression-tests).
 
 ## What you may not do to a failure
 
-Never silence a failure you cannot explain. Raising a timeout, adding a retry, skipping or disabling a check, weakening an assertion, and accepting an intermittent pass each need a diagnosis that shows the change is the fix rather than a cover. Never use a bypass flag or a destructive reset to make a failing path go quiet.
+Never silence a failure you cannot explain. Raising a timeout, adding a retry, skipping or disabling a check, weakening an assertion, and accepting an intermittent pass each need a diagnosis that shows the change is the fix, not a cover. Never quiet a failing path with a bypass flag or a destructive reset.
 
 Repeated workarounds point at the system. When the same failure, manual step, or coordination defect keeps returning, fix what produces it; if that lies outside the request, handle it as the [kernel](../SKILL.md) handles a confirmed finding.
 
@@ -55,6 +55,6 @@ Some defects recur across unrelated projects and are cheap to check when the sym
 
 ## Long work that stops producing evidence
 
-Give a step that could take real time an expectation of healthy progress, and treat a breach as information, not a reason to wait longer. Count progress toward acceptance, such as parts checked or fewer relevant failures. Process liveness, tool calls, and commit counts show neither progress nor a stall. When monitoring delegated work, prefer host waits or events to repeated status reads or a sleep loop that holds your turn open. A long synchronous build or test with a sensible expectation is fine. An unchanged timeout tells you nothing new: reuse the wait once without narration. After another expiry, a stated deadline, an error, or a missed expectation, inspect state once and decide whether to continue, change approach, stop affected work, or report a blocker.
+Give a step that could take real time an expectation of healthy progress, and treat a breach as information, not a reason to wait longer. Count progress toward acceptance, such as parts checked or fewer relevant failures. Process liveness, tool calls, and commit counts show neither progress nor a stall. When monitoring delegated work, prefer host waits or events to repeated status reads or a sleep loop that holds your turn open. A long synchronous build or test with a sensible expectation is fine. An unchanged timeout tells you nothing new, so reuse the wait once without narration. After another expiry, a stated deadline, an error, or a missed expectation, inspect state once and decide whether to continue, change approach, stop affected work, or report a blocker.
 
 Reassess direction when repairs, conflicts, or process work keep growing while the owner's result does not. Ask of the next piece of work whether it removes a named obstacle to that result, delivers a needed part of it, or only adds mechanism and checks around the mechanism. Work that only adds mechanism is a reason to change direction, not to continue more carefully. Make this judgment when the signal appears; nothing tracks it for you. Stop affected work at its next safe boundary, keep independent work moving, keep what it established, and do not add a review pass to decide it.

@@ -26,23 +26,23 @@ A finding qualifies when it names one of these:
 - A contradiction with the request or an accepted product rule.
 - A simpler design that removes code or a concept, with what it replaces.
 
-"Add a test" or "cover more cases" qualifies only when it names the break the test would catch and the kernel's bar for a test is met. A preference, a rewording, or a sentence that could be clearer without naming what breaks is not a finding.
+A request for a test, a guard, or a rewording qualifies only when it names what breaks, and a new test must also meet the kernel's bar. A preference is not a finding.
 
 Make one pass. Report each finding with location, scenario, and impact, most consequential first, and list the important areas you did not check, even when you found nothing. Read-only review reports and edits nothing. Urgency grants no repair authority.
 
 Keep security, privacy, customer-data, and credential findings minimal and inside their authorized audience. Describe the exposure without reproducing the secret or the data, and do not put them in a public issue, PR comment, or log unless the owner granted that disclosure.
 
-When you dispatch a reviewer, the brief carries the request, the candidate, the scope, the constraints, what result is enough, and when to return, as [delegation](delegation.md) describes. For a long review, say what progress looks like and when to come back, as [diagnosis](diagnosis.md) describes for long work. A reviewer that runs out of time returns its findings, what it checked, and what it did not, not a passing verdict.
+When you dispatch a reviewer, write the brief as [delegation](delegation.md#the-brief) describes, with the request, the candidate, the scope, and what result is enough. A reviewer that runs out of time returns its findings, what it checked, and what it did not, not a passing verdict.
 
 ## Receiving findings
 
 Treat each finding as a claim. Read the code it points at and confirm the break yourself. Before building something a reviewer says is needed, grep for the callers or the case it would serve; if nothing uses it, say so. Push back with the reason when a finding is wrong, and do not perform agreement with one you have not confirmed.
 
-Fix confirmed qualifying findings in this run, within authority, as the kernel says. Preferences and findings that do not qualify do not enter a fix loop; note them or drop them. A confirmed break qualifies however small it is. When a confirmed finding points at a repeated failure, fix the shared cause.
+Fix confirmed qualifying findings in this run, as the kernel says. Preferences and findings that do not qualify enter no fix loop. Note them or drop them. A confirmed break qualifies however small it is. When a confirmed finding points at a repeated failure, fix the shared cause.
 
 Where the work is delegated, keep the same implementer and reviewer through corrections when the host supports it. A replacement gets the findings, what you did with each, the candidate it is reviewing, and the checks that already passed. The lead corrects plans.
 
-After fixes, re-review only the fix diff and what it can affect. Give the reviewer the prior candidate, the changes, and your disposition of each finding, and reuse checks that still apply. Stop after a round that returns nothing that qualifies. Another broad review needs a high-consequence disagreement or contradictory results, not a hope that it finds more. Repeated rounds on an ordinary change are a defect in the review, not diligence. A review that did not finish does not make the change reviewed.
+After fixes, re-review only the fix diff and what it can affect. Give the reviewer the prior candidate, the changes, and your disposition of each finding, and reuse checks that still apply. Stop after a round that returns nothing that qualifies. Another broad review needs a high-consequence disagreement or contradictory results, not a hope that it finds more. Repeated rounds on an ordinary change are a defect in the review. A review that did not finish does not make the change reviewed.
 
 ## Security, reliability, and operations
 

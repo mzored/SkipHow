@@ -9,7 +9,7 @@ Make the owner's project smaller and cheaper to change without losing behavior a
 
 ## What the request grants
 
-An owner's request to simplify, clean up, or shrink the project is a change and delivery request: carry the cuts through the project's established non-production workflow without asking again. A question about what could be cut stays read-only and returns what you would remove and what it would save. Material deletion of data, history others share, production changes, and other protected actions still need the kernel's grant. Deleting code, tests, tooling, and documents through reviewed commits is ordinary engineering.
+An owner's request to simplify, clean up, or shrink the project is a change and delivery request. Carry the cuts through the project's established non-production workflow without asking again. A question about what could be cut stays read-only and returns what you would remove and what it would save. Protected actions, including material deletion of data and history others share, still need the kernel's grant. Deleting code, tests, tooling, and documents through reviewed commits is ordinary engineering.
 
 ## Measure first
 
@@ -19,9 +19,7 @@ Get the numbers before you cut, from what the project already has: lines of prod
 
 Look for these first, because they are where agent-built projects grow:
 
-- Tests of the project's own tooling, CI, scripts, or other tests.
-- Change detectors and duplicate tests, and other shapes [testing](../skiphow/references/testing.md#bad-test-shapes) lists.
-- Tests that read source files to enforce code shape.
+- The bad test shapes [testing](../skiphow/references/testing.md#bad-test-shapes) lists, such as change detectors, duplicates, source-reading tests, and tests of the project's own tooling.
 - Custom selectors, gates, queues, wrappers, or report generators that duplicate the test runner, the CI provider, or the linter.
 - Shims and compatibility paths whose only callers are in the repository.
 - One business rule copied in several places.
@@ -40,7 +38,7 @@ Guards for money, security, customer data, and the release path stay, as [testin
 
 ## Carry it through
 
-Decide what goes yourself; do not hand the owner a menu of technical cuts. Ask only about a cut that would change visible behavior, a support promise, or compatibility for a real outside consumer, because those are product decisions.
+Decide what goes yourself. Ask the owner only about a cut that would change visible behavior, a support promise, or compatibility for a real outside consumer, because those are product decisions.
 
 Deliver the cuts in reviewable units, each one kind of removal with its tests, docs, flags, and CI jobs going with it, through [integration](../skiphow/references/integration.md). Each unit keeps behavior unchanged and the project's required checks passing. When a removal breaks a test but not behavior, the test goes too. Review each unit at the depth [review](../skiphow/references/review.md) sets for its consequence; most deletions need no independent reviewer. Use [technical design](../skiphow/references/technical-design.md#reuse-before-custom-code) when replacing custom tooling with the runner's or CI provider's own features.
 
@@ -50,4 +48,4 @@ Revise project instructions, limits, and tooling that earlier sessions chose whe
 
 ## Measure again and report
 
-Take the same measurements on the delivered state. Report the before and after numbers, what was removed by kind and what it saved, guards kept or replaced, rules revised and changes proposed, and anything left with the reason.
+Repeat the measurements on the delivered state. Report the before and after numbers, what was removed by kind and what it saved, guards kept or replaced, rules revised and changes proposed, and anything left with the reason.

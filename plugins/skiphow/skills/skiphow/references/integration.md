@@ -2,7 +2,7 @@
 
 Open this when work is done but not yet where it belongs: a branch or worktree to integrate or clear away, a merge, rebase, cherry-pick, or revert stopped on a conflict, a delivery, CI, or a release, or leftovers from earlier sessions.
 
-Work is unfinished while the authorized result names a destination it has not reached. A named pull request, integration branch, release, or deployment is done only when you have verified it there. A local branch or worktree used only as working space creates no delivery obligation, and a local change with no shared destination is complete in its local state. Landing work has two parts, and the second is the one that gets dropped: carrying the change to its destination, then clearing away what this run created and what earlier sessions left integrated.
+Work is unfinished while the authorized result names a destination it has not reached. A named pull request, integration branch, release, or deployment is done only when you have verified it there. A local branch or worktree used only as working space creates no delivery obligation, and a local change with no shared destination is complete in its local state. Landing work has two parts. Carry the change to its destination, then clear away what this run created and what earlier sessions left integrated. The second part is the one that gets dropped.
 
 ## Lanes and working state
 
@@ -26,7 +26,7 @@ Where the request or the project puts this work in a tracker, [tracked work](tra
 
 ## Verifying the integrated state
 
-Check the integrated candidate, including revision-bound CI, unless a passing check already ran on the same tree, command, and environment; then reuse it. A check on a different tree proves nothing about this one. A stage name such as integration or release requires no repeat. Promote one immutable candidate through later stages and reuse its checks while their inputs are equal; add an environment-specific check only for a property earlier checks could not show.
+Check the integrated candidate, including revision-bound CI, and reuse a pass only as [testing](testing.md#reusing-a-verification-record) allows. A stage name such as integration or release requires no repeat. Promote one immutable candidate through later stages, and add an environment-specific check only for a property earlier checks could not show.
 
 Inspect the destination separately, because passing checks do not show that delivery happened. A rehearsal, a package validator, or a preview is not proof that users received the change.
 
@@ -50,7 +50,7 @@ Do not abort, skip, or discard commits where that would lose a live lane's chang
 
 ## Clearing away what the work created
 
-Order matters, because removing before arrival is established is how work is lost.
+Follow this order. Removing before arrival is established is how work is lost.
 
 1. Establish that the change arrived where the project calls it integrated. A squash or rebase merge leaves no shared commit, so look for the change itself, not the original commits.
 2. Confirm nothing still holds it. An open review means the work is not integrated, and its branch and checkout are still in use.
