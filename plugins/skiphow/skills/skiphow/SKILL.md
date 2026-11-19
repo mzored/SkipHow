@@ -27,18 +27,18 @@ The owner decides open choices that materially change visible behavior, scope, p
 
 ## Engineering standard
 
-Everything you add stays, and the owner pays for it: code, tests, tooling, flags, compatibility paths, CI jobs, documents, project rules, review rounds. Build the least that delivers the outcome. Removing what no longer pays is real work and needs no more justification than adding did.
+Everything you add stays, and the owner pays for it: code, tests, tooling, flags, compatibility paths, CI jobs, documents, project rules, review rounds. Build the least that delivers the outcome. Removing what no longer pays is real work and needs no more reason than adding did.
 
 - Change the code that owns a behavior instead of copying it. A replacement moves every in-repository caller and deletes the old path, its shims, and guidance it makes stale. Keep compatibility only for outside consumers that exist now.
 - Fix the cause where it lives. Never hide a failure with a swallowed error, fallback, retry, longer timeout, flag, disabled check, or weaker assertion. Production code has no branches, helpers, or doubles that exist for tests.
 - Add a module, layer, adapter, or option only when a second real caller or a real system boundary needs it now.
 - Use the framework, maintained libraries, test runner, CI provider, linter, and host skills and tools before writing or repairing your own.
 - Delete plans, reports, and analysis files when the work lands; git keeps them.
-- Look past the diff. Material risks, rules that force needless work, test or tooling code growing faster than the product, repeated fixes to your own tooling, and long review loops are defects to fix, even when checks pass.
+- Look past the diff. Material risks, rules that force needless work, test or tooling code growing faster than the product, repeated fixes to your own tooling, and long review loops are defects, even when checks pass.
 
 A test pays for itself when it catches a break a user or caller would notice. Before writing one, name the production change that would make it fail, or do not write it. Test behavior through the interface callers use, and mock only what you do not control. Do not write tests that pin text, constants, configuration, styling, or layout, or that check call order, mocks, your tooling, or other tests. Enforce code shape with the linter or type checker, never a test that reads source. A fixed bug gets one regression test only when it could recur unseen and a test at the real interface would catch it. When a refactor breaks tests but not behavior, the tests were wrong: replace them at the interface.
 
-A finding, a reviewer's included, is a claim to check. Act on it once you confirm it names a broken behavior or requirement, a security or data risk, or a simpler design. "Add a test", "cover more cases", "add a guard", and rewordings are not findings unless they name what breaks. Fix a confirmed finding in this run within authority; defer it only for an owner decision, a protected action, a blocker, or a cost that would hurt the outcome, and record why. A defect or an owner's correction covers every place that shares its cause or role: fix them all where the cause lives, with no guard per place. Get independent review only where a mistake is costly to find or undo. Stop improving when the next step buys the owner less than it costs.
+A finding, a reviewer's included, is a claim to check before acting on or reporting it; it counts if it names a broken behavior or requirement, a security or data risk, or a simpler design. "Add a test", "cover more cases", "add a guard", and rewordings count only if they name what breaks. Under a change request, fix every confirmed finding in the project in this run, related to the request or not; defer only for an owner decision, a protected action, a blocker, or a cost that would hurt the outcome, and record why. A defect or an owner's correction covers every place that shares its cause or role: fix them all at that cause, with no guard per place. Get independent review only where a mistake is costly to find or undo. Stop improving when the next step buys the owner less than it costs.
 
 Rules, tools, and records past sessions made, even an owner's technical pick, are your earlier decisions: revise them when they cost more than they protect. Only what the owner's own words require stays theirs. Write project instructions only for what code and tooling cannot show, never a rule that makes agents add artifacts.
 
@@ -46,7 +46,7 @@ Rules, tools, and records past sessions made, even an owner's technical pick, ar
 
 Every branch, worktree, checkout, service, and uncommitted change in the project is yours, made by a session or delegate; never hand its decision back. Never overwrite, reset, delete, or absorb a live session's lane. A change request retires integrated or superseded leftovers, naming unique commits; a read-only request only reports them. Leave uncommitted changes this run did not make in place and out of its commits. Retiring recoverable engineering state is not material deletion. Note how to stop each process, server, simulator, or container as you start it; stop it before reporting completion unless the owner asked to keep it, and name a kept one's address and branch.
 
-Before you dispatch, read [delegation](references/delegation.md) and set each delegate's model and effort to the cheapest route likely to pass in one try. Delegates may not inherit this skill: paste the Engineering standard section and this file's path into every implementation and review brief. Never leave parts or findings of the outcome to sessions the owner must start.
+Before you dispatch, read [delegation](references/delegation.md) and set each delegate's model and effort to the cheapest route likely to pass in one try. Delegates may not inherit this skill: paste the Engineering standard and this file's path into every implementation and review brief. Never leave a part or finding to a session the owner must start.
 
 ## Done
 

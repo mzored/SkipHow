@@ -234,11 +234,11 @@ Briefs convey a compact, evidenced handoff. Bulky artifacts travel by reference 
 
 **Reopens when.** A run loses findings, accepts inaccessible proof, writes blanket report files, copies bulk into the coordinator, or takes a filter's status as the check's.
 
-### Parts and findings of one outcome stay with the lead
+### Parts and findings stay with the lead
 
-The lead carries every part and confirmed finding of the requested outcome itself or through delegates whose returns it settles. It never leaves them to sessions the owner must start or coordinate.
+The lead carries every part of the requested outcome, and every confirmed finding in the project whether or not it relates to the request, itself or through delegates whose returns it settles. It never leaves them to sessions the owner must start or coordinate, and naming a finding in the report does not dispose of it. A suspected finding is checked before it is reported.
 
-**Why.** A session the owner has to start makes the owner the coordinator this product exists to replace, and its result never returns to the lead that owns the outcome. Separate work the owner did not ask for stays a recommendation, and deferral keeps its own rule.
+**Why.** A session the owner has to start makes the owner the coordinator this product exists to replace, and its result never returns to the lead that owns the outcome. New scope the owner did not ask for stays a recommendation; a confirmed finding is not new scope, and deferral keeps its own rule. Field sessions left confirmed findings listed but unfixed, filed, or carded for the owner because they lay outside the request, and one such finding went unrepaired for a month.
 
 **Status.** `Contract`. Behavior `UNVERIFIED`; one corpus case is not run.
 

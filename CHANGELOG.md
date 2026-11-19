@@ -2,6 +2,29 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 7.0.7 (2026-11-19)
+
+### A finding off the request's path is still the lead's to fix
+
+- Under a change request, the lead fixes every confirmed finding in the project in the same run, whether or not it relates to the request. The deferral reasons are unchanged: an owner decision, a protected action, a blocker, or a cost that would hurt the outcome, with the reason recorded. Before, the kernel said "within authority", and the Authority section granted "in-scope edits", so an agent could read a finding unrelated to the request as outside its grant and only list it.
+- A finding is checked before it is reported, not only before it is acted on. The review playbook's copy of that rule is gone, because the kernel's Engineering standard reaches every review brief.
+- The custody rule now says a part or a finding never goes to a session the owner must start. Before, it said "parts or findings of the outcome", which let an unrelated finding fall outside it.
+- The kernel stays under its size limit by shortening phrases without changing what they ask: the risks past the diff are "defects" rather than "defects to fix", because the finding rule now says to fix them. The tracked-work playbook drops two sentences the kernel already carries: separability is not a reason to defer, and plans and reports are deleted when the work lands.
+
+### Why
+
+A `skiphow-bug` session on 7.0.6 fixed a sign-in defect and ended with "found along the way, did not fix": production logs disappear at every deploy, and merge confirmation might return a server error, inferred from reading code and not checked. Its plan had labeled both "outside this change (report, don't fix here)" and called the logs "ops work of its own". It wrote no issue and named no deferral reason. When the owner objected, the same session found the logs' cause in under a minute, a nightly cleanup on the server, and refuted the server error in another minute. The kernel was in context throughout. The tracked-work playbook, which says separability is no reason to defer, was never opened, because the agent did not see itself as deferring.
+
+The same shape recurs in at least ten of the owner's sessions on 7.0.0 to 7.0.6, found by a phrase search that undercounts. Confirmed findings ended listed as found and not fixed, filed as issues, or proposed as session cards for the owner to start, and the usual stated reason was that they lay outside the request. The same production-log loss was first listed this way on 20 October. The finding sentence has not changed since 7.0.0, so these sessions pool. The corpus already required the lead to fix a separable finding and forbade handing it to an owner-started session; the kernel's text did not say so.
+
+Superpowers and Matt Pocock's skills, read as they stand today, both keep incidental findings out of the current task: Superpowers sends out-of-scope observations to a ledger as deferred minors, and Matt Pocock's skills keep explicit out-of-scope sections. SkipHow already rejected standing ledgers, and its owner asked for the opposite. Nothing was adopted.
+
+### Checks and evidence
+
+- This is a patch release. It restores what the owner-outcome contract and decisions already promised: supervision reaches past the request, and findings stay with the lead. Authority and protected-action boundaries are unchanged; production changes still need the owner's grant.
+- An isolated read-only Codex review ran two rounds. Round 1 found that the first candidate removed "Look past the diff" from the kernel and with it the duty to look for risk beyond the change, which the outcome contract promises and no always-loaded sentence kept; fixing confirmed findings does not oblige anyone to look for them. The sentence is back. Round 2 reviewed only that fix and found nothing that qualified. The isolated Codex home cached a SkipHow plugin at startup, and the transcripts show no read of it.
+- No model sessions or clean-install runs were made, and whether the new wording changes behavior is `UNVERIFIED`.
+
 ## 7.0.6 (2026-11-17)
 
 ### A prepared plan always hands off

@@ -26,7 +26,7 @@ A finding qualifies when it names one of these:
 - A contradiction with the request or an accepted product rule.
 - A simpler design that removes code or a concept, with what it replaces.
 
-"Add a test" or "cover more cases" qualifies only when it names the break the test would catch and the kernel's bar for a test is met. A preference, a rewording, or a sentence that could be clearer without naming what breaks is not a finding. Settle a suspected defect with a focused check before reporting it.
+"Add a test" or "cover more cases" qualifies only when it names the break the test would catch and the kernel's bar for a test is met. A preference, a rewording, or a sentence that could be clearer without naming what breaks is not a finding.
 
 Make one pass. Report each finding with location, scenario, and impact, most consequential first, and list the important areas you did not check, even when you found nothing. Read-only review reports and edits nothing. Urgency grants no repair authority.
 
