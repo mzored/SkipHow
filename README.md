@@ -56,12 +56,7 @@ Ask the installed skill to enable itself once:
 $skiphow Enable SkipHow as my default virtual CTO on this machine.
 ```
 
-In Claude Code, use `/skiphow:skiphow` instead of `$skiphow`. The agent resolves
-the trusted instruction file your host reads, previews one reversible block, and
-writes it after confirmation. Configured, available, and loaded are separate facts;
-loading is only visible in a fresh session. Installation and activation grant no
-actions. The [activation guide](docs/guide.md#activate-it) explains the lifecycle
-and manual fallback.
+In Claude Code, use `/skiphow:skiphow` instead of `$skiphow`. The agent previews one reversible block and writes it after you confirm. Installation and activation grant no actions. The [activation guide](docs/guide.md#activate-it) covers the lifecycle and manual fallback.
 
 Explicit invocation remains available:
 
@@ -71,44 +66,32 @@ $skiphow The totals overlap on small screens. Find the cause and fix it.
 
 ## Recurring workflows
 
-Ordinary project requests need no mode. Optional workflows share the same CTO
-kernel, authority boundaries, and internal references.
+Ordinary requests need no mode. Six optional workflows share the same CTO kernel and authority boundaries.
 
 | Skill | Requested result |
 | --- | --- |
 | `skiphow-bug` | Find and repair the general cause, then verify at the authorized destination |
-| `skiphow-plan` | Prepare the whole scope, resolve product questions, review executable tasks, and return a launch; no implementation |
-| `skiphow-longrun` | Deliver agreed substantial work with coordinated implementation and review scaled to consequence |
+| `skiphow-plan` | Prepare the whole scope, resolve product questions, and return a launch, with no implementation |
+| `skiphow-longrun` | Deliver agreed substantial work with review scaled to consequence |
 | `skiphow-deploy-ready` | Complete deferred checks, review, commits, and authorized integration |
-| `skiphow-fast-fixes` | Show checked local fixes while you send feedback; delivery starts when requested |
-| `skiphow-simplify` | Measure the project, remove tests, tooling, shims, and rules that do not pay, and report what it saved; only when you ask |
+| `skiphow-fast-fixes` | Show checked local fixes while you send feedback |
+| `skiphow-simplify` | Measure the project and remove what does not pay, only when you ask |
 
-Use `$skiphow-plan` in Codex or `/skiphow:skiphow-plan` in Claude Code, with the
-same naming pattern for the other workflows. The [workflow guide](docs/guide.md#recurring-workflows)
-covers examples, planning readiness, feedback, and delivery boundaries.
+The [workflow guide](docs/guide.md#recurring-workflows) has an example request for each.
 
 ## Authority and evidence
 
-Answering, research, diagnosis, review, and ordinary planning are read-only. A change
-request permits editing and verification within its scope. Applicable authorization
-can cover routine shared delivery; production, public releases, credentials, access,
-material deletion, and wider disclosure need explicit owner authorization. The
-[owner guide](docs/guide.md#know-what-your-request-allows) explains the boundaries.
+Answering, research, diagnosis, review, and ordinary planning are read-only. A change request permits editing and verification within its scope, and carries routine delivery through the project's established non-production workflow. Production, public releases, credentials, access, material deletion, and wider disclosure need explicit owner authorization. The [owner guide](docs/guide.md#know-what-your-request-allows) explains the boundaries.
 
-SkipHow adds no intelligence and enforces no security boundary. Package checks
-prove structure and declared invariants. Identified historical runs show bounded
-loading, task, and delivery observations; current-package CTO behavior, reliable
-multi-agent execution, general activation reliability, and comparative benefit
-remain `UNVERIFIED`. See the [evidence ledger](docs/evidence.md) and the
-[dated host-support matrix](SECURITY.md#host-support-as-of-2026-09-06).
+SkipHow adds no intelligence and enforces no security boundary. Package checks prove structure and declared invariants. Current-package CTO behavior, reliable multi-agent execution, general activation reliability, and comparative benefit remain `UNVERIFIED`. See the [evidence ledger](docs/evidence.md) and the [host facts](docs/evidence.md#host-facts).
 
 ## Documentation
 
 For owners:
 
 - [Owner guide](docs/guide.md): install, activation, workflows, what a request allows, reports, and common questions.
-- [Evidence](docs/evidence.md): which claims real runs have shown and which stay `UNVERIFIED`.
-- [Security and host support](SECURITY.md): private reporting and the host capability matrix.
+- [Evidence](docs/evidence.md): which claims real runs have shown, which stay `UNVERIFIED`, and host facts.
+- [Security](SECURITY.md): supported versions, the untrusted-repository profile, and private reporting.
 
 For contributors:
 
@@ -119,7 +102,8 @@ For contributors:
 - [Evaluation corpus](evals/README.md): cases, fixtures, and retained receipts.
 - [Changelog](CHANGELOG.md): what changed in each release and why.
 
-Earlier release narratives and documentation live in git history. Commit
-[`2f72c7f`](https://github.com/mzored/SkipHow/tree/2f72c7f218f29db20421eddce6d280e0d6f52045/docs) holds the documentation before it was cut to the current state, and
-commit [`72aef45`](https://github.com/mzored/SkipHow/tree/72aef4540d30d3639a2f63af6663971345c6dc5a/docs)
-holds the longer ledgers through 6.3.3.
+Earlier documentation lives in git history:
+
+- [`90cfdbb`](https://github.com/mzored/SkipHow/tree/90cfdbbbf2a354973ede4d716853ce62886e2c6b) holds the documents as of 7.0.8, before they were cut to one governing copy per fact.
+- [`2f72c7f`](https://github.com/mzored/SkipHow/tree/2f72c7f218f29db20421eddce6d280e0d6f52045/docs) holds the documentation as of 7.0.1.
+- [`72aef45`](https://github.com/mzored/SkipHow/tree/72aef4540d30d3639a2f63af6663971345c6dc5a/docs) holds the longer ledgers through 6.3.3.

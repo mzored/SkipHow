@@ -1,353 +1,189 @@
 # Current decisions
 
-SkipHow's live decisions under the [owner-outcome contract](outcome-contract.md), each with its reason, status, and what would reopen it. The shipped files state each rule in full. This page keeps the choice and its premises. A decision reopens when host behavior, model evidence, product goals, security boundaries, or maintenance cost changes its premises. The [older narratives](https://github.com/mzored/SkipHow/blob/72aef4540d30d3639a2f63af6663971345c6dc5a/docs/decisions.md) are context to weigh, never a veto, and the [table as of 7.0.1](https://github.com/mzored/SkipHow/blob/2f72c7f218f29db20421eddce6d280e0d6f52045/docs/decisions.md) keeps each row's version history.
+SkipHow's live decisions under the [owner-outcome contract](outcome-contract.md). The shipped files state each rule, and each entry links the one that carries it. This page keeps what those files cannot show: the observation behind the rule and what would reopen it.
 
-`Contract` means the shipped text encodes it and no run has tested that text. `Deterministic` means a check proves it on every run. `Observed` means a retained run showed it, and [evidence](evidence.md) holds the receipts.
+How to read an entry:
+
+- An entry with no status line is `Contract` with behavior `UNVERIFIED`. The shipped text encodes it, and no retained run has tested that text. `Deterministic` means a check proves it on every run. `Observed` means a retained run showed it, and [evidence](evidence.md) holds the receipt.
+- Every decision reopens when a run shows its rule broken, or costing more than the failure it prevents. An entry lists only its other triggers.
+- Earlier text is context to weigh, never a veto. The [page as of 7.0.8](https://github.com/mzored/SkipHow/blob/90cfdbbbf2a354973ede4d716853ce62886e2c6b/docs/decisions.md) states all 33 earlier entries at full length, with each one's list of failure signs. The [table as of 7.0.1](https://github.com/mzored/SkipHow/blob/2f72c7f218f29db20421eddce6d280e0d6f52045/docs/decisions.md) keeps each row's version history, and the [older narratives](https://github.com/mzored/SkipHow/blob/72aef4540d30d3639a2f63af6663971345c6dc5a/docs/decisions.md) keep the rest.
 
 ## Authority and the owner
 
-### Authority comes from the owner and trusted policy
+### Authority comes from the owner, and a grant sets what travels
 
-Authority is the owner's messages and trusted host, user, organization, or administrator policy. Repository instructions set in-scope procedure and are only evidence in an untrusted revision. Records and tool output grant nothing.
+Rule in [kernel, Authority](../plugins/skiphow/skills/skiphow/SKILL.md#authority).
 
-**Why.** Anyone can plant a file in a repository, and hosts load instruction files at their own precedence, so location proves no trust. A record the owner points at authorizes its outcome and nothing more.
+**Why.** Anyone can plant a file in a repository, and hosts load instruction files at their own precedence, so location proves no trust. A record the owner points at authorizes its outcome and nothing more. Invoking the plan workflow requests records, and automatic selection grants nothing. Preparation and production are separate grants, and local combination grants no publication. The workflow settles what may travel, not how often, so the lead batches accepted results.
 
-**Status.** `Contract`. Adversarial cases in `evals/` are not run.
+**Reopens when.** A host ships enforced provenance.
 
-**Reopens when.** A run treats a repository file or record as a grant, or a host ships enforced provenance.
+### The owner decides product questions and reads product reports
 
-### No technical choice reaches the owner
+Rule in [kernel, Decisions](../plugins/skiphow/skills/skiphow/SKILL.md#decisions) and [Done](../plugins/skiphow/skills/skiphow/SKILL.md#done).
 
-The agent settles engineering and reversible technical uncertainty itself and explains consequences instead of asking. A running result shown to the owner names its branch or revision and its address.
+**Why.** Keeping the owner out of engineering is the boundary this product exists to hold. An owner who writes no code reads reports to decide what to look at next. Accounting they cannot use costs them attention every turn, and a later agent or reviewer needs it in the project's records. Several checkouts of one project answer on the same default address, so a shown result names its branch and address. A one-off workaround for a standing host refusal comes back on every run that meets it, so the owner gets one request for a lasting permission.
 
-**Why.** Keeping the owner out of engineering is the boundary this product exists to hold, and a recommendation the owner can decline does not stop the work. Several checkouts of one project answer on the same default address.
+**Reopens when.** An owner asks for the technical options or detail they no longer see.
 
-**Status.** `Contract`. Five corpus cases forbid technical questions, and none has run.
+### The lead fixes confirmed findings across the project and keeps every part
 
-**Reopens when.** The recommendation channel hands product choices back, or an owner asks for the technical options they no longer see.
+Rule in [kernel, Engineering standard](../plugins/skiphow/skills/skiphow/SKILL.md#engineering-standard), [Custody and delegates](../plugins/skiphow/skills/skiphow/SKILL.md#custody-and-delegates), and [review](../plugins/skiphow/skills/skiphow/references/review.md#receiving-findings).
 
-### The owner hears results in their language and product terms
+**Why.** A narrow pass can leave material risk or recurring cost elsewhere. An earlier rule to resolve every feasible finding, with no bar on what counted, turned reviewer requests for more tests and guards into code every round in two governed projects. Field sessions left confirmed findings listed but unfixed, filed, or carded for the owner because they lay outside the request, and one went unrepaired for a month. A session the owner has to start makes the owner the coordinator this product exists to replace, and its result never returns to the lead.
 
-The completion report reaches the owner in the language they write in and in product terms. Hashes, check names, and per-part accounting go in the commit, pull request, or issue the request authorizes and its audience may read, and otherwise in the report. A host or sandbox refusal the owner can clear becomes one plain request for a lasting permission.
-
-**Why.** An owner who writes no code reads reports to decide what to look at next, and accounting they cannot use costs them attention every turn. A later agent or reviewer needs that accounting in the project's records. A one-off workaround for a standing refusal comes back on every run that meets it.
-
-**Status.** `Contract`. Behavior `UNVERIFIED`. One corpus case is not run.
-
-**Reopens when.** A run's report drops a fact the owner needed to act, the accounting is missing from the records, or owners ask for the technical detail back.
-
-### Read-only stays read-only, and a grant sets what travels
-
-Answer, diagnosis, review, research, audit, and plan requests write nothing unless the owner asks for a record or repair. A change request carries routine delivery and tracking through the established non-production workflow, which settles what may travel, not how often. The lead batches accepted results and holds no finished work behind unrelated blockers. Iteration stays local until the owner asks for delivery, names a destination, or, outside an invoked iteration workflow, accepts with nothing further to send.
-
-**Why.** Invoking the plan workflow requests records, and automatic selection grants nothing. Preparation and production are separate grants, a handoff and the final delivery can have different destinations, and local combination grants no publication. An owner-selected workflow keeps ordinary SkipHow behavior, existing grants, audience boundaries, and downstream-effect checks.
-
-**Status.** `Contract`. Workflow behavior `UNVERIFIED`.
-
-**Reopens when.** A run shows unauthorized effects, missing requested records, needless permission questions, per-assignment publication, closure after a local handoff, or blocked work delaying unrelated delivery.
-
-### Supervision covers the project, bounded by confirmed findings
-
-The lead looks across the authorized project and fixes confirmed engineering findings at safe boundaries, including during iteration, with the owner's outcome first. A finding counts when it names a broken behavior or requirement, a security or data risk, a contradiction with the request, or a simpler design. The lead stops when the next step buys the owner less than it costs.
-
-**Why.** A narrow pass can leave material risk or recurring cost elsewhere. An earlier rule to resolve every feasible finding, with no bar on what counted, turned reviewer requests for more tests and guards into code every round in two governed projects. Existing authority, owner decisions, protected actions, read-only restrictions, and delivery boundaries still bound every fix, and evidence directs attention without an exhaustive audit.
-
-**Status.** `Contract`. Behavior `UNVERIFIED`.
-
-**Reopens when.** A run shows speculative redesign, authority expansion, endless improvement, a missed supported risk, or a real break declined as a non-finding.
+**Reopens when.** A delegate fan-out costs more than the owner-started session it replaced, or a host makes owner-visible sessions report back to the lead.
 
 ## Kernel and package shape
 
-### One CTO kernel with optional workflows
+### One kernel holds every invariant, and workflows and playbooks hold method
 
-The `skiphow` kernel governs every request about the current project. Six optional workflows add owner-chosen patterns: bug, plan, longrun, deploy-ready, fast-fixes, and simplify. Each links the kernel by relative path instead of copying it, and all share one set of references.
+The `skiphow` kernel governs every request about the current project and fits one host tool view. Six optional workflows link it by relative path: bug, plan, longrun, deploy-ready, fast-fixes, and simplify. Method lives in the playbook whose trigger names the act. The kernel's one point-of-use duty is to read `delegation` and set each delegate's route before dispatch.
 
-**Why.** The owner wants recurring work patterns under one CTO, and ordinary requests need none. A link is not enforced loading, and a linked file reaches context whole only when it fits one tool view.
+**Why.** Correct behavior must not depend on opening an optional file. A topic list gets a playbook opened less reliably than an obligation phrased against the act. A link is not enforced loading, and a file reaches context whole only when it fits one tool view. Claude Code cuts a failing command's output to about 10,000 characters, and agents read skill files in chained commands that fail. Successful output shows far more, so the failing path binds. The Read tool showed a 36.7 KB file whole. 545 of 569 recorded shell reads of the kernel were unnumbered, so [`check.py`](../scripts/check.py) caps raw characters at 9,900, leaving room for a short error line.
 
-**Status.** `Deterministic` for package shape, kernel links, and the one-view size of every runtime Markdown file. Workflow loading `UNVERIFIED`.
+**Status.** `Deterministic` for package shape, kernel links, and the size limit. A non-blocking lint flags a playbook within 500 characters of it. `Observed`: the dispatch duty opened `delegation` before the first dispatch where a topic list did not. Workflow loading `UNVERIFIED`.
 
-**Reopens when.** Runs show missed kernel loading, misselection, or contradictory contracts, a host offers a stronger dependency mechanism, or the view limit changes.
-
-### Invariants in the kernel, method in playbooks
-
-The always-loaded kernel holds authority, owner decisions, the engineering standard, custody, delegate obligations, direction when the result waits on the owner, and completion, and it fits one host tool view. Method lives in the playbook whose trigger names the act. The kernel's one point-of-use duty is to read `delegation` and set each delegate's route before dispatch.
-
-**Why.** Correct behavior must not depend on opening an optional file, and small work should not inherit a fixed workflow. A topic list gets a playbook opened less reliably than an obligation phrased against the act. A kernel larger than one tool view loses its middle whenever a shell command reads it. Claude Code cuts a failing command's output to about 10,000 characters, and agents read skill files in chained commands that fail. Successful output shows far more, so the failing path binds. The Read tool showed a 36.7 KB file whole. 545 of 569 recorded shell reads of the kernel were unnumbered, so [`check.py`](../scripts/check.py) caps raw characters at 9,900, leaving room for a short error line.
-
-**Status.** `Deterministic` for the limit. A non-blocking lint flags a playbook within 500 characters of it. `Observed`: the dispatch duty opened `delegation` before the first dispatch where a topic list did not.
-
-**Reopens when.** The kernel causes ceremony or misses a duty, a trigger is unrecognizable unopened, the failing-output cut changes, or numbered shell reads become common.
+**Reopens when.** A host offers a stronger dependency mechanism, the failing-output cut changes, or numbered shell reads become common.
 
 ### Governed sessions reopen the kernel after compaction
 
-A session the kernel or a workflow governed reopens the kernel, and that workflow, after compaction. A workflow loads the kernel by invoking the `skiphow` skill where the host has a skill tool.
+Rule in each workflow's opening paragraph, for example [bug](../plugins/skiphow/skills/skiphow-bug/SKILL.md), and in [kernel, References](../plugins/skiphow/skills/skiphow/SKILL.md#references).
 
 **Why.** Codex keeps no package text across compaction, and only the skill description survives on both hosts. Three Claude sessions that read the kernel as a file lost it after compaction and never re-read it. Three that invoked the skill had it re-attached each time.
 
-**Status.** `Contract`. Effect `UNVERIFIED`.
+### Host-native execution, and one owned instruction block
 
-**Reopens when.** A governed session still never reopens the kernel after compaction.
+SkipHow ships no hook, service, or custom worker. Default governance is one owned, reversible block in the trusted user instruction file the host reads, managed by [`activation.py`](../plugins/skiphow/skills/skiphow/scripts/activation.py) and the [setup playbook](../plugins/skiphow/skills/skiphow/references/setup.md). Explicit invocation is the fallback.
 
-### Host-native execution first
+**Why.** Duplicated runtime state adds cost, and a new component needs host schema, safety, and compatibility checks. Host documentation establishes instruction loading, not correct selection, and a block in a shadowed or unread file configures nothing. Codex reads a non-empty `AGENTS.override.md` over `AGENTS.md` in `CODEX_HOME`, and Claude Code reads `CLAUDE.md` and unconditional `rules/` under `CLAUDE_CONFIG_DIR`. The helper resolves the file the same way and reports configured, available, and loaded apart.
 
-SkipHow runs on each host's own execution and admits a thin binding only for a demonstrated gap.
+**Status.** `Deterministic` for the package shape and the helper. `Observed` once each for Codex loading from `AGENTS.md` and from `AGENTS.override.md`. Claude loading `UNVERIFIED`, because an isolated Claude profile cannot log in. A comparison with a `SessionStart` hook and an `@import` is specified and not run.
 
-**Why.** Duplicated runtime state adds cost, and a new component needs host schema, safety, and compatibility checks. The workflows reuse one kernel with no service or custom workers. Required outcomes survive implementation changes.
-
-**Status.** `Deterministic` for the package shape. Adapter benefit needs receipts.
-
-**Reopens when.** A controlled check shows a binding is needed to preserve an outcome.
-
-### Default governance comes from one owned instruction block
-
-Default ordinary-language governance references the installed skill from one owned, reversible block in the trusted user instruction file the host reads. The skill enables, checks, and disables itself through [`activation.py`](../plugins/skiphow/skills/skiphow/scripts/activation.py) and the [setup playbook](../plugins/skiphow/skills/skiphow/references/setup.md). Explicit invocation is the fallback, and no hook ships.
-
-**Why.** Host documentation establishes instruction loading, not correct selection, and a block in a shadowed or unread file configures nothing. Codex reads a non-empty `AGENTS.override.md` over `AGENTS.md` in `CODEX_HOME`, and Claude Code reads `CLAUDE.md` and unconditional `rules/` under `CLAUDE_CONFIG_DIR`. The helper resolves the file the same way and reports configured, available, and loaded apart. An isolated Codex profile can log in. An isolated Claude profile still cannot, which blocks a clean Claude activation receipt.
-
-**Status.** `Deterministic` for the helper. `Observed` once each for Codex loading from both files. Claude loading `UNVERIFIED`. A comparison with a `SessionStart` hook and an `@import` is specified and not run.
-
-**Reopens when.** A host changes discovery order, a receipt shows missed or false activation, or another mechanism passes the whole enable, disable, upgrade, and uninstall lifecycle.
+**Reopens when.** A host changes discovery order, a controlled check shows a binding is needed to preserve an outcome, or another mechanism passes the whole enable, disable, upgrade, and uninstall lifecycle.
 
 ## Engineering standard
 
 ### The kernel carries an engineering standard
 
-Every request loads a standard that counts everything added as a permanent cost to the owner, and every implementation and review brief pastes it. The [kernel](../plugins/skiphow/skills/skiphow/SKILL.md#engineering-standard) states it.
+Rule in [kernel, Engineering standard](../plugins/skiphow/skills/skiphow/SKILL.md#engineering-standard). Every implementation and review brief pastes it.
 
-**Why.** Two governed projects grew test and tooling code past product code, built custom selectors and gates, and kept shims and copied rules. The earlier package text made each addition a gain and each removal a risk. Test and design guidance in references reached about one in twenty test-writing delegates, because delegates do not inherit skills and briefs did not carry it. The brief is the one channel that reaches a delegate. Guards for money, security, customer data, and the release path still pay.
+**Why.** Two governed projects grew test and tooling code past product code, built custom selectors and gates, and kept shims and copied rules. The earlier package text made each addition a gain and each removal a risk. Test and design guidance in references reached about one in twenty test-writing delegates, because delegates do not inherit skills and briefs did not carry it. Advice to enforce ownership with failing checks, such as import-rule or exhaustiveness tests, produced source-reading tests in the field, so the linter or type checker enforces it.
 
-**Status.** `Contract`. Behavior `UNVERIFIED`.
-
-**Reopens when.** Sessions still add pin tests, source-reading tests, custom selectors, or three or more review rounds on ordinary changes, or agents drop a guard for money, security, or data.
-
-### Change the owner of a behavior and delete what it replaces
-
-A change extends the code that owns a behavior instead of copying it. A replacement moves every in-repository caller and deletes the old path, shims, and stale guidance, keeping compatibility only for outside consumers that exist now. Where one implementation must keep owning a behavior, the linter or type checker enforces it, never a test that reads source.
-
-**Why.** Debt builds up one locally reasonable change at a time, and audits found it in kept shims, copied rules, and stale guidance. Advice to enforce ownership with failing checks such as import-rule or exhaustiveness tests produced source-reading tests in the field.
-
-**Status.** `Contract`. Behavior `UNVERIFIED`.
-
-**Reopens when.** A run keeps needless machinery, removes a form an outside consumer needs, or loses behavior a caller relied on.
+**Reopens when.** Sessions still add pin tests, source-reading tests, custom selectors, or three or more review rounds on ordinary changes, or a run drops a guard for money, security, or data.
 
 ### Inherited rules and tooling are the lead's to judge
 
-Rules, tools, and records earlier sessions made are the lead's own decisions, even a technical option the owner picked from an agent's list. The lead revises them when they cost more than they protect. Only what the owner's own words require stays the owner's. Project instructions cover only what code and tooling cannot show, and never make agents add artifacts.
+Rule in [kernel, Authority](../plugins/skiphow/skills/skiphow/SKILL.md#authority). Only what the owner's own words require stays the owner's.
 
-**Why.** Agent rules such as "a recurring problem becomes a test", "every bug gets a regression test", and a coverage floor drove much of the growth, and the earlier package treated every repository instruction as owner procedure. Field agents trimmed code to fit an agent-chosen line limit with its baseline to maintain, patched an agent-built test selector, and kept both as owner decisions because the owner picked from a menu and commits carried the owner's account. Simplify fell back to owner ownership whenever history was unclear. Provenance is the owner's words in messages, issues, or history, never commit authorship or an answer to an agent's technical menu. Product choices stay the owner's even when picked from a list, and repository instructions still grant nothing outside the request.
-
-**Status.** `Contract`. Behavior `UNVERIFIED`.
-
-**Reopens when.** A run rewrites a rule the owner set in their own words, or keeps an agent-made rule or tool whose cost it has measured.
+**Why.** Agent rules such as "a recurring problem becomes a test", "every bug gets a regression test", and a coverage floor drove much of the growth, and the earlier package treated every repository instruction as owner procedure. Field agents trimmed code to fit an agent-chosen line limit, patched an agent-built test selector, and kept both as owner decisions because the owner picked from a menu and commits carried the owner's account. Provenance is the owner's words in messages, issues, or history, never commit authorship or an answer to an agent's technical menu.
 
 ### Fix every place that shares the cause or role
 
-A defect or an owner's correction covers every place that shares its cause or role, fixed where the cause lives, with no guard per place. In an iteration, feedback on one element applies to every element in its role unless the owner limits it, and the result is inspected on every screen that renders what changed.
+Rule in [kernel, Engineering standard](../plugins/skiphow/skills/skiphow/SKILL.md#engineering-standard).
 
 **Why.** Per-instance fixes sent the owner hunting the next one. "Fix the class" was read in the field as "add a guard for the class", so the rule names the cause as the fix. A rule that spoke only of repeated failures left an owner's design correction to the one element they pointed at, and a shared piece changed for one screen broke others nobody looked at.
 
-**Status.** `Contract`. Effect `UNVERIFIED`.
-
-**Reopens when.** A run changes places that serve a different purpose on a first report, adds one guard per place, or leaves the owner pointing at each instance of one correction.
-
 ### Design the journey and reuse maintained compositions
 
-The agent uses available skills and tools when they pay, designs the affected journey in its product context, and reuses maintained compositions, not only primitives. Plans record those decisions apart from the capability that produced them.
+Rule in [product](../plugins/skiphow/skills/skiphow/references/product.md#designing-the-interaction) and [technical design](../plugins/skiphow/skills/skiphow/references/technical-design.md#reuse-before-custom-code).
 
-**Why.** A planner loaded specialist guidance and required reuse, and the implementation still recreated part of an established composition. The package had described asking a product question, not designing the journey or choosing capabilities. Hosts list capabilities differently, an executing host may lack the planner's plugins, and a project with no design system still needs coherent shared pieces. A reuse constraint can be a justified contract and need not count as prescription.
-
-**Status.** `Contract`. Effect `UNVERIFIED`.
-
-**Reopens when.** A run recreates a composition despite a reuse constraint, adds specialist ceremony to settled or non-interface work, invents or installs capabilities, or asks the owner about routine interaction details.
+**Why.** A planner loaded specialist guidance and required reuse, and the implementation still recreated part of an established composition. The package had described asking a product question, not designing the journey. Hosts list capabilities differently and an executing host may lack the planner's plugins, so plans record design decisions apart from the capability that produced them.
 
 ## Workflows
 
 ### Simplify runs only on the owner's request
 
-The [simplify workflow](../plugins/skiphow/skills/skiphow-simplify/SKILL.md) measures the project, removes what does not pay through the normal delivery path, measures again, and revises the agent-made rules that caused the waste. It judges project-built tooling by cost against what it catches and what native options offer. Guards for money, security, customer data, and the release path stay, and a cut that cites other coverage holds only after someone reads that coverage.
+Rule in the [simplify workflow](../plugins/skiphow/skills/skiphow-simplify/SKILL.md).
 
-**Why.** An owner's hand cleanup went too far before the guards came back. A CTO should own aggregate health without the owner commissioning it from outside tools. Field runs kept an agent-built selector until the owner questioned it, because the agents and jobs that run a tool are not the callers that justify it. Reviews found real holes in test deletions justified by coverage nobody had opened. The shared frontmatter cannot disable implicit selection, so the description limits it to an owner request. Protected actions keep their grants.
+**Why.** An owner's hand cleanup went too far before the guards came back. Field runs kept an agent-built selector until the owner questioned it, because the agents and jobs that run a tool are not the callers that justify it. Reviews found real holes in test deletions justified by coverage nobody had opened. The shared frontmatter cannot disable implicit selection, so the description limits it to an owner request.
 
-**Status.** `Contract`, owner-requested. Behavior `UNVERIFIED`.
+### Plan prepares the whole scope as dispatchable tasks
 
-**Reopens when.** A run removes a protecting guard, offers the owner a technical menu, or activates on an ordinary change.
+Rule in the [plan workflow](../plugins/skiphow/skills/skiphow-plan/SKILL.md).
 
-### Plan prepares the whole scope
-
-The [plan workflow](../plugins/skiphow/skills/skiphow-plan/SKILL.md) prepares the whole requested scope, keeps the product interview open while answers are pending, and returns a short launch for the fitting workflow. Only the owner reduces scope, and an execution workflow the owner chose is kept.
-
-**Why.** A recorded question is not finished preparation, and a ready task does not authorize a smaller scope. One outcome can hide uneven work, so the plan reviews actual one-agent workload. Host controls govern waiting, and no scheduler is added. A mature path needs no foundation stage, uniform automated work needs no artificial quotas, and file, line, and acceptance counts set no universal limit. Readiness to launch is finished preparation. Access, credentials, data, or a human step that only execution needs stays a recorded blocker on its task and does not withhold the launch. The launch restates no grant, because a pasted launch is an owner message.
-
-**Status.** `Contract`. Behavioral improvement `UNVERIFIED`.
-
-**Reopens when.** A run launches early, withholds a prepared launch, loses follow-up, takes assumptions as product choices, interviews endlessly or technically, fragments needlessly, omits safety, or expands authority.
-
-### Plan tasks are dispatchable slices
-
-Every task in a prepared plan is one slice with one verifiable outcome that one agent can carry from its record to a verified, reviewable change. The plan sizes every task now, and its independent review covers every task as published.
-
-**Why.** A tracker group can name an outcome without establishing a feasible assignment. Tasks that defer their own split leave a plan undispatchable, and a review of the specification alone lets them through. Source size and shared writes affect execution. The owner selects this workflow for a dispatchable task set, so it sizes the whole accepted scope where ordinary delegation sizes only the next outcome. An earlier result can still change a later task, which the plan names and the lead rechecks at dispatch.
-
-**Status.** `Contract`. Behavioral improvement `UNVERIFIED`.
-
-**Reopens when.** A plan still publishes a task with several outcomes or a deferred split, or the rule forces small cohesive work into needless tasks or speculative decomposition.
+**Why.** A recorded question is not finished preparation, and a ready task does not authorize a smaller scope. Tasks that defer their own split leave a plan undispatchable, and a review of the specification alone lets them through. The owner selects this workflow for a dispatchable task set, so it sizes the whole accepted scope where ordinary delegation sizes only the next outcome. An access, credential, or human step that only execution needs stays a blocker on its task and does not withhold the launch. The launch restates no grant, because a pasted launch is an owner message.
 
 ### Fast-fixes keeps live work moving, deploy-ready lands it
 
-Fast-fixes coordinates a stream of local work across stacks, keeps every shown state recoverable, and continues independent work after showing a result. Deploy-ready reconciles active work into one checked candidate and carries it to the authorized destination.
+Rule in [fast-fixes](../plugins/skiphow/skills/skiphow-fast-fixes/SKILL.md) and [deploy-ready](../plugins/skiphow/skills/skiphow-deploy-ready/SKILL.md).
 
-**Why.** The owner asked for live orchestration. An earlier fast-fixes required a browser and a worktree, stopped after every shown result, and deferred every test run. The shared playbooks already cover delegation, tracking, integration, and verification. Host controls decide concurrency and when messages arrive. Restrictions and protected-action grants survive upgrades.
-
-**Status.** `Contract`, owner-requested. Nine corpus cases are not run.
-
-**Reopens when.** A run loses incoming work, accepts stale returns, lets blocked work stop independent outcomes, misuses shared resources, loses checkpoints, adds needless infrastructure, or hides verification gaps.
+**Why.** The owner asked for live orchestration. An earlier fast-fixes required a browser and a worktree, stopped after every shown result, and deferred every test run.
 
 ## Delegation
 
 ### Delegates write only in verified isolation, at a chosen route
 
-Delegates stay read-only unless the lead verifies writer isolation, and the root serializes writes. The lead sets each delegate's model and effort separately, through the host's controls, at the cheapest route likely to pass, and counts an unset control as a choice. Each brief carries the kernel path and bounds the delegate's own dispatch. The delegate acts as CTO of its brief, fixing what it finds inside its area and returning the rest.
+Rule in [kernel, Custody and delegates](../plugins/skiphow/skills/skiphow/SKILL.md#custody-and-delegates) and [delegation](../plugins/skiphow/skills/skiphow/references/delegation.md).
 
-**Why.** One checkout has one index and branch, and a delegate's report of its own isolation is not proof. Host controls change independently of this package, and the active host supplies the controls a run can use. A delegate may not have this guidance in context, and nested delegates often inherit the route, so the brief is where fan-out is bounded. An unset control's default is often the parent's. A review's independence and framing matter more than its model level. No portable isolation or model-level interface exists, so unverifiable isolation takes the safe fallback.
+**Why.** One checkout has one index and branch, and a delegate's report of its own isolation is not proof. A delegate may not have this guidance in context, and nested delegates often inherit the route, so the brief is where fan-out is bounded. An unset control's default is often the parent's. No portable isolation or model-level interface exists, so unverifiable isolation takes the safe fallback.
 
-**Status.** `Contract`. The motivating failures are `Observed`: five lanes writing one checkout, and a worktree that reported success into the shared tree. Writer lanes stay host-specific and need verification.
+**Status.** `Contract`. The motivating failures are `Observed`: five lanes writing one checkout, and a worktree that reported success into the shared tree.
 
 **Reopens when.** A portable capability interface appears, a host makes isolation verifiable and default, or paired runs settle the routing cost question.
 
-### Size assignments for the whole job
+### Assignments are sized whole, and handoffs keep every finding
 
-An assignment's size counts implementation, verification, and review. A long assignment names expected progress and when to return. Checkout isolation leaves the stash, services, databases, ports, and output paths shared.
+Rule in [delegation, The size of a unit](../plugins/skiphow/skills/skiphow/references/delegation.md#the-size-of-a-unit) and [What comes back](../plugins/skiphow/skills/skiphow/references/delegation.md#what-comes-back).
 
-**Why.** Independent repairs are not interface migrations, and useful progress can come before any commit. Existing evidence may be enough to size work, checkpoints follow project policy, and host waits and events let the lead observe without new state. A shared latest pointer can identify another lane's work, and a bare stash pop can take it.
+**Why.** In field sessions leads never mentioned again 51 of 124 items their delegates raised. A lead can read a return-size rule without passing it on, and a filter can succeed while the check fails. Checkout isolation leaves the stash, services, databases, ports, and output paths shared. A shared latest pointer can identify another lane's work, and a bare stash pop can take it.
 
-**Status.** `Contract`. Effect `UNVERIFIED`.
-
-**Reopens when.** A run splits needlessly, interrupts healthy work, misses progress breaches, or damages shared state.
-
-### Handoffs stay compact and keep every finding
-
-Briefs and returns stay compact, and bulk travels by reference. A return lists findings apart from its status, and the lead settles each one on acceptance. Shortened check output keeps the check's own exit status.
-
-**Why.** In field sessions leads never mentioned again 51 of 124 items their delegates raised. A lead can read a return-size rule without passing it on, and a filter can succeed while the check fails. Small results can stay inline. The lead still verifies current state and destination, and no file format, size quota, or new coordinator is required.
-
-**Status.** `Contract`. Four corpus cases are not run.
-
-**Reopens when.** A run loses findings, accepts inaccessible proof, writes blanket report files, copies bulk into the coordinator, or takes a filter's status as the check's.
-
-### Parts and findings stay with the lead
-
-The lead carries every part of the requested outcome, and every confirmed finding in the project whether or not it relates to the request, itself or through delegates whose returns it settles. It never leaves them to sessions the owner must start, and naming a finding in the report does not dispose of it. A suspected finding is checked before it is reported.
-
-**Why.** A session the owner has to start makes the owner the coordinator this product exists to replace, and its result never returns to the lead that owns the outcome. New scope the owner did not ask for stays a recommendation. A confirmed finding is not new scope, and deferral keeps its own rule. Field sessions left confirmed findings listed but unfixed, filed, or carded for the owner because they lay outside the request, and one such finding went unrepaired for a month.
-
-**Status.** `Contract`. Behavior `UNVERIFIED`. One corpus case is not run.
-
-**Reopens when.** A run drops a finding instead of carrying it, a delegate fan-out costs more than the owner-started session it replaced, or a host makes owner-visible sessions report back to the lead.
-
-## Delivery and custody
+## Delivery and verification
 
 ### All project engineering state is the lead's
 
-Every branch, worktree, checkout, checkpoint, running service, and uncommitted change in the project is the lead's, and none is handed back to the owner. A change request retires integrated, unheld leftovers and superseded attempts, naming unique commits. Foreign uncommitted changes, live lanes, and anything under a read-only request stay untouched. A run stops what it started before reporting completion unless the owner, or for a delegate its brief, asked to keep it.
+Rule in [kernel, Custody and delegates](../plugins/skiphow/skills/skiphow/SKILL.md#custody-and-delegates), [integration, verifying the integrated state](../plugins/skiphow/skills/skiphow/references/integration.md#verifying-the-integrated-state), and [clearing away what the work created](../plugins/skiphow/skills/skiphow/references/integration.md#clearing-away-what-the-work-created).
 
-**Why.** The owner writes no code and no third party does, so state reported as someone else's is false and hands a decision to the one person who cannot make it. Retiring recoverable state is engineering, not material deletion: Git recovers a deleted branch, and nothing recovers an uncommitted file. Liveness shows in moving changes, an open review, a live record, or a host-listed session, never in a name, a timestamp, or a running process alone. Dev servers, log streams, booted simulators, and test containers outlived the agents that started them for hours to days, because no rule said when to stop one.
+**Why.** The owner writes no code and no third party does, so state reported as someone else's is false and hands a decision to the one person who cannot make it. Git recovers a deleted branch, and nothing recovers an uncommitted file, so retiring recoverable state is engineering and not material deletion. Liveness shows in moving changes, an open review, a live record, or a host-listed session, never in a name, a timestamp, or a running process alone. Dev servers, log streams, booted simulators, and test containers outlived the agents that started them for hours to days. Leaving every failed merge in place made a broken shared branch the default while diagnosis ran.
 
-**Status.** `Contract`. Custody corpus cases are not run.
-
-**Reopens when.** A run retires a live lane, an uncommitted file, a still-defective attempt, or anything under a read-only request. Also when small changes grow sweeps or custody ceremony, a human-coded project comes under SkipHow, the owner asks for a retired branch or report-and-wait back, a run stops a process a live session holds, or an owner loses a running preview they needed.
+**Reopens when.** A human-coded project comes under SkipHow, the owner asks for a retired branch or report-and-wait back, or an owner loses a running preview they needed.
 
 ### Reconcile project state before changing it
 
-Project-state reconciliation rebuilds state from live Git, reviews, destinations, and revision-specific checks before changing anything. A status request reports each leftover with the disposition a change request would give it, and record correction changes only records. Only an outcome-to-workspace link that cannot be rebuilt becomes durable.
+Rule in [tracked work](../plugins/skiphow/skills/skiphow/references/tracked-work.md#reconciling-project-state).
 
-**Why.** Tracker state, branch names, merge status, and CI can each be stale or point at the wrong outcome, revision, or destination. A parallel registry would be one more claim to reconcile, and workspace ownership cannot always be rebuilt after a session ends. Live Git, reviews, destinations, and revision-specific checks establish every transition in the current cases.
+**Why.** Tracker state, branch names, merge status, and CI can each be stale or point at the wrong outcome, revision, or destination. A parallel registry would be one more claim to reconcile. Live Git, reviews, destinations, and revision-specific checks establish every transition in the current cases, so only an outcome-to-workspace link that cannot be rebuilt becomes durable.
 
 **Status.** `Contract`, with `Deterministic` corpus validation.
 
-**Reopens when.** Live evidence cannot recover a material transition, the stored link proves insufficient for safe recovery, or the ordering adds ceremony without preventing a failure.
-
-### Recover a failed merge by consequence
-
-A disposable failed merge may stay for diagnosis. The lead contains or restores a shared target others depend on, and restoring production keeps its own grant.
-
-**Why.** Leaving every failed merge in place made a broken shared branch the default while diagnosis ran. Containing a covered non-production destination is within the established workflow.
-
-**Status.** `Contract`. Behavior `UNVERIFIED`.
-
-**Reopens when.** A run restores a target it should have left for diagnosis, or leaves a shared target broken.
-
-## Verification
+**Reopens when.** Live evidence cannot recover a material transition, or the stored link proves insufficient for safe recovery.
 
 ### Verify the final state once and reuse the pass
 
-Verification checks the final state at the interface callers use. Every role reuses a pass for the same command, tree, and environment, and reruns only on changed inputs, an unverifiable result, or a named doubt. Slow or flaky suites are measured and fixed at the layer that costs the time, with native runner and CI features before custom tooling.
+Rule in [testing](../plugins/skiphow/skills/skiphow/references/testing.md#reusing-a-verification-record).
 
-**Why.** Releases repeated equivalent gates, and wording that blessed building test selection preceded custom selectors and queues in both governed projects. A different tree still needs its own evidence, including revision-bound CI. Suite size and speed alone show neither the cause of slowness nor adequate coverage.
-
-**Status.** `Contract`. One installed session that repeated equivalent gates motivated it. Behavior `UNVERIFIED`.
-
-**Reopens when.** A run drops a protecting check, builds custom selection before the native one, or repeats an equivalent gate.
+**Why.** Releases repeated equivalent gates, and one installed session did the same. Wording that blessed building test selection preceded custom selectors and queues in both governed projects. Suite size and speed alone show neither the cause of slowness nor adequate coverage.
 
 ## Evaluation and evidence
 
-### Receipts prove model behavior
+### Receipts prove model behavior, and checks protect contracts only
 
-Only receipts from real runs prove model behavior. Checks and CI never start a model, and a paid run is the owner's call.
+Rule in [`AGENTS.md`](../AGENTS.md#evidence).
 
-**Why.** A green check proves no behavior, and receipt cost does not track what it settles: one pass spent $165 on a question four sessions under six dollars answered.
+**Why.** A green check proves no behavior, and receipt cost does not track what it settles. One pass spent $165 on a question four sessions under six dollars answered. A check that pinned a sentence or a topology froze editorial choices and protected nothing a host depends on.
 
-**Status.** Policy.
+**Status.** Policy, with `Deterministic` checks.
 
-**Reopens when.** A host offers repository-preserving runs against an exact installed package with trustworthy receipts.
+**Reopens when.** A host offers repository-preserving runs against an exact installed package with trustworthy receipts, or a host starts depending on a detail now treated as editorial.
 
-### Evaluation oracles name outcomes
+### Oracles name outcomes, and labels belong to a claim
 
-Graders name outcomes, never implementations, and [`capture_eval.py`](../scripts/capture_eval.py) preflights each fixture against `evals/preflight.json` before model spend.
+Rule in [evidence](evidence.md#what-an-observed-claim-must-retain). [`capture_eval.py`](../scripts/capture_eval.py) preflights each fixture against `evals/preflight.json` before model spend.
 
-**Why.** An oracle once banned a binding the contract permits, and a prompt named a branch its fixture never created. A grader that encodes the expected behavior independently of the code under test can grade any retained end state.
+**Why.** An oracle once banned a binding the contract permits, and a prompt named a branch its fixture never created. One run cannot support eleven unrun scenarios or imply another host, activation arm, or trial. A per-run standard left every earlier observation unlabelled while the ledger quoted them. The per-claim rules were fixed before any new run and validated against retained captures.
 
-**Status.** `Deterministic`.
+**Status.** `Deterministic` in [`claim_eligibility.py`](../scripts/claim_eligibility.py) and the corpus tests. Suite behavior `UNVERIFIED`.
 
-**Reopens when.** A scenario needs an outcome the registry or grader cannot express.
-
-### Deterministic checks protect contracts only
-
-Blocking checks cover package and host contracts, security and release invariants, and corpus semantics. Wording and presentation get a lint at most.
-
-**Why.** A check that pinned a sentence or a topology froze editorial choices and protected nothing a host depends on.
-
-**Status.** `Deterministic`.
-
-**Reopens when.** A host starts depending on a detail now treated as editorial.
-
-### Evidence labels belong to a claim
-
-Each claim has its own evidence rule: loaded, delivered at destination, foreign work preserved, completion honesty, or comparative benefit. Suite status reports declared coverage with no behavioral label. A confirmed failure is `FAIL`, never missing evidence, and a loading observation labels nothing else. [Evidence](evidence.md#what-an-observed-claim-must-retain) states the rules.
-
-**Why.** One run cannot support eleven unrun scenarios or imply another host, activation arm, or trial, and prose cannot replace inspectable state. A per-run standard left every earlier observation unlabelled while the ledger quoted them. Coverage, terminal outcome, and receipt sufficiency are independent, and a complete run set may contain failures. The per-claim rules were fixed before any new run and validated against retained captures.
-
-**Status.** `Deterministic` in [`claim_eligibility.py`](../scripts/claim_eligibility.py). Suite behavior `UNVERIFIED`.
-
-**Reopens when.** A claim needs evidence no rule expresses, or a rule weakens what `Observed` means.
+**Reopens when.** A scenario needs an outcome the registry or grader cannot express, a claim needs evidence no rule expresses, or a rule weakens what `Observed` means.
 
 ## Portability and privacy
 
-### Runtime policy names no provider
+### Runtime policy names no provider, and public receipts carry no private data
 
-The package carries no model IDs, cost tables, host tiers, dated host snapshots, or version-qualified host products.
+Rule in [the contributor rules](../AGENTS.md#portability-and-safety). The package carries no model IDs, cost tables, host tiers, dated host snapshots, or version-qualified host products. Public receipts exclude account quota and authentication metadata, known credential formats, private paths, raw host identifiers, and encoded home-derived directory names.
 
-**Why.** Both hosts change model names and controls independently and faster than releases, and host metadata can be checked at use time. A versioned mechanics snapshot goes stale independently of the portable safety fallback. Maintainer evidence and security records keep dated host versions.
+**Why.** Both hosts change model names and controls independently and faster than releases, and host metadata can be checked at use time. Literal path replacement once left account metadata in a retained trace, and no filter can certify arbitrary prose.
 
-**Status.** `Deterministic` for model IDs, scanned on every run.
+**Status.** `Deterministic`: model IDs are scanned on every run, and [`receipt_privacy.py`](../scripts/receipt_privacy.py) checks receipts.
 
-**Reopens when.** A portable capability interface appears or a host version joins the public contract.
-
-### Public receipts carry no private data
-
-Public receipts exclude account quota and authentication metadata, known credential formats, private paths, raw host identifiers, and encoded home-derived directory names. Per-run usage, synthetic artifacts, and correlation through pseudonyms stay.
-
-**Why.** Literal path replacement once left account metadata in a retained trace, and no filter can certify arbitrary prose.
-
-**Status.** `Deterministic` in [`receipt_privacy.py`](../scripts/receipt_privacy.py).
-
-**Reopens when.** A host adds a private field or a receipt needs stronger privacy review.
+**Reopens when.** A portable capability interface appears, a host version joins the public contract, a host adds a private field, or a receipt needs stronger privacy review.
