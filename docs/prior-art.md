@@ -35,9 +35,7 @@ So the methods were fine. The owner was the one expected to drive them.
 
 ## What SkipHow does instead
 
-One CTO kernel stays in context on every request about the project. It holds authority, owner decisions, an engineering standard that keeps the owner's system small, custody of engineering state, and honest completion. The agent opens a focused playbook when the act in front of it calls for one: a test to write, a change to review, work to split, a branch to integrate. Playbooks are not routes, stages, commands or personas. The owner can pick an optional workflow such as plan, bug, or simplify, and the CTO still owns the engineering inside it.
-
-That is orchestration policy. Claude Code or Codex runs the model, tools, sessions and subagents.
+One CTO kernel stays in context on every request about the project, and the agent opens a focused playbook when the act in front of it calls for one. Playbooks are not routes, stages, commands or personas. The [owner-outcome contract](outcome-contract.md) states what the product owes.
 
 That leaves a different division of labour. You decide what people will see, scope, priority, cost, risk, privacy and rollout. SkipHow decides libraries, schemas, tests, branches, decomposition and review. It comes back to you only for an open product choice, an action that needs your grant, work only a person can do, or a blocker outside the project.
 

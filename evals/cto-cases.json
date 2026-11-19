@@ -1,6 +1,6 @@
 {
   "instrument": "forced_activation_behavior",
-  "package_under_test": "7.0.8",
+  "package_under_test": "7.0.9",
   "suite_status": "not_run",
   "minimum_coverage": {
     "case_ids": [

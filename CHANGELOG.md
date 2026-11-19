@@ -2,6 +2,31 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 7.0.9 (2026-11-19)
+
+### Documentation cut to one governing copy per fact
+
+- Nine documents drop from 168.9 KB to 102.6 KB. The package is unchanged apart from its version.
+- `SECURITY.md` goes from 19.4 KB to 4.1 KB. It keeps the supported versions, the scope, the untrusted-repository profile, and private reporting. The dated host-support and validation tables and their 4.x receipts are gone from it, and the host capability table lives once, in `docs/evidence.md`.
+- `evals/README.md` goes from 35.4 KB to 15.4 KB. A table of case families replaces the prose that restated `cases.json`, `cto-cases.json`, and each `fixture.json` case by case. The schema, the run procedure, and the recording procedure stay.
+- `docs/evidence.md` goes from 23.9 KB to 10.5 KB. It keeps the labels, the per-claim rules, the 4.x receipts, the 2.x claims a live decision or the site cites, and the host facts. The other 1.x and 2.x rows, the run-record field list, and most of the open-question list are gone.
+- `docs/decisions.md` goes from 32.8 KB to 18.9 KB. Thirty-three entries merge into twenty-one. An entry with no status line is `Contract` with behavior `UNVERIFIED`, and every decision reopens when a run shows its rule broken or costing more than the failure it prevents, so an entry states only what differs.
+- `docs/outcome-contract.md`, `docs/guide.md`, `docs/prior-art.md`, and the README lose restated rules and link the governing file. The owner guide keeps its examples and its authority boundaries.
+- Removed history stays readable at the 7.0.8 commit, which each shortened file links.
+- `AGENTS.md` gains one paragraph that names the governing file for each kind of fact, so the same text does not grow back.
+
+### Why
+
+The owner asked whether the documentation was overloaded and to cut it hard. It was. About 220 KB of maintainer prose surrounded 105 KB of shipped Markdown, because each release appended a table or a paragraph and four layers restated the same rules. Published guidance agrees on the direction: Google's documentation guide says to keep documents short and to delete by default, Write the Docs says to remove overlap between sources, and GitHub describes a security policy as supported versions plus how to report. Comparable skill repositories ship a README and a short agent instruction file, and none carries a decision log or an evidence page. SkipHow keeps both, because its claims about agent behavior need a ledger, and keeps them short.
+
+### Checks and evidence
+
+- This is a patch release. No authority boundary, default side effect, skill name, or skill description changed.
+- `python scripts/check.py` and `git diff --check` pass on the candidate. A script confirmed that every relative link and heading anchor in the tracked Markdown resolves.
+- One independent read-only review compared the old and new text of every changed document against the package, the scripts, the corpus data, and the site. It confirmed the receipt lists against `claim_eligibility.py` and the family counts against `cases.json`, and found eleven qualifying items. All are fixed. The corpus README named a terminal state `capture_eval.py` rejects, and had lost the feedback timing for the explicit-wait fast-fixes cases and the rule that raw run files stay private. The README no longer said a change request carries routine delivery. Two decision entries linked no rule, one linked the wrong section, and two had lost a reopen trigger. The site cites four 2.4.x observations and the host facts, so the ledger keeps those rows and the site links the page that holds the host facts.
+- The same review found one error older than this release. The host table said only the Codex CLI was ever run, and a retained receipt records Codex Desktop. It now says only the CLI has rows.
+- No model session and no clean-install run was made. Every behavior claim keeps its existing label.
+
 ## 7.0.8 (2026-11-19)
 
 ### One copy of each rule, and shorter contributor documents
