@@ -22,7 +22,7 @@ Superpowers and Matt Pocock's skills, read as they stand today, both keep incide
 ### Checks and evidence
 
 - This is a patch release. It restores what the owner-outcome contract and decisions already promised: supervision reaches past the request, and findings stay with the lead. Authority and protected-action boundaries are unchanged; production changes still need the owner's grant.
-- An isolated read-only Codex review ran two rounds. Round 1 found that the first candidate removed "Look past the diff" from the kernel and with it the duty to look for risk beyond the change, which the outcome contract promises and no always-loaded sentence kept; fixing confirmed findings does not oblige anyone to look for them. The sentence is back. ROUND-2
+- An isolated read-only Codex review ran two rounds. Round 1 found that the first candidate removed "Look past the diff" from the kernel and with it the duty to look for risk beyond the change, which the outcome contract promises and no always-loaded sentence kept; fixing confirmed findings does not oblige anyone to look for them. The sentence is back. Round 2 reviewed only that fix and found nothing that qualified. The isolated Codex home cached a SkipHow plugin at startup, and the transcripts show no read of it.
 - No model sessions or clean-install runs were made, and whether the new wording changes behavior is `UNVERIFIED`.
 
 ## 7.0.6 (2026-11-17)
