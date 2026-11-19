@@ -24,7 +24,7 @@ month's structure.
 
 Ordinary search plus a few lines of Python is the whole toolchain. Finding the session is one `grep`; reading
 it, and adding up time and tokens per subagent, is a short script written on the spot. Do not build a standing
-tool for this — one existed, grew to thousands of lines defending against tampering with the owner's own local
+tool for this. One existed, grew to thousands of lines defending against tampering with the owner's own local
 transcripts, and answered the question worse than a `grep` does.
 
 Transcripts hold other projects' private work. Treat everything in them as confidential, keep session content
@@ -63,6 +63,7 @@ honest default, not a failure.
 Count honestly and in whole sessions, and pool only sessions where the same text governed. Two deviations in
 one session are one observation. A finding the run noticed and silently dropped leaves no trace, so anything
 that looks like conformance is an upper bound.
+
 ## Reproduce before naming a cause
 
 A pattern across installed sessions is an observation, not a cause. Before saying which sentence produced it,

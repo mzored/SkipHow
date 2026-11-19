@@ -9,15 +9,15 @@ Prepare the agreed change set for delivery, and complete any destination the own
 
 ## What the request grants
 
-Deploy-ready and clean end an iteration session and ask for preparation. Here clean is not permission to delete arbitrary work. Deploy prod also authorizes the named production release within its stated scope. Honor an applicable earlier grant without asking again; preparation alone supplies none.
+Deploy-ready and clean end an iteration session and ask for preparation. Clean grants no deletion of arbitrary work. Deploy prod also authorizes the named production release within its stated scope. Honor an applicable earlier grant without asking again. Preparation alone supplies none.
 
 ## The delivery set
 
-Recover the requested set, this session's state, what other sessions left, existing check results, and the delivery path. Reconcile running assignments, shown results, pending feedback, and cancellations so in-flight requested work is not dropped without a word. Finish independent ready work in the set and keep concrete blockers under [tracked work](../skiphow/references/tracked-work.md); a blocked remainder is not delivered. New messages may revise this delivery or add later work. Keep both, and ask only when telling them apart leaves a material product choice open.
+Recover the requested set, this session's state, what other sessions left, existing check results, and the delivery path. Reconcile running assignments, shown results, pending feedback, and cancellations, so no in-flight requested work drops unreported. Finish independent ready work in the set and keep concrete blockers under [tracked work](../skiphow/references/tracked-work.md). A blocked remainder is not delivered. New messages may revise this delivery or add later work. Keep both, and ask only when telling them apart leaves a material product choice open.
 
 ## Preparing the candidate
 
-Run the checks deferred during iteration and those this change and destination need, reusing passing results for the same command, tree, and environment, as [testing](../skiphow/references/testing.md) describes. Review at the depth the change warrants under [review](../skiphow/references/review.md) and fix what qualifies. Remove plan, report, and analysis files the work left in the repository. Make coherent commits of owned changes through the permitted commit path.
+Run the checks deferred during iteration and those this change and destination need, reusing passes as [testing](../skiphow/references/testing.md#reusing-a-verification-record) allows. Review at the depth the change warrants under [review](../skiphow/references/review.md) and fix what qualifies. Remove plan, report, and analysis files the work left in the repository. Make coherent commits of owned changes through the permitted commit path.
 
 Bind acceptance and publication to the actual candidate. A late return or correction enters it only after review and a recheck of what it affects. Unrelated additions do not enlarge the candidate, and they keep their place in accepted work.
 

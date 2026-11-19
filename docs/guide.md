@@ -99,7 +99,7 @@ Whether the agent picks the right workflow on its own is `UNVERIFIED`.
 | Answer, compare, diagnose, review, research, or plan | Read and report |
 | Capture, organize, triage, or create a record | Write the requested records in the project's existing authorized system |
 | Change the project | Edit and verify, and carry the change through an established non-production workflow you authorized |
-| Change something you will look at first | Edit, show it, check what it touched, and stop. Delivery starts when you say it is done |
+| Change something you will look at first | Edit, check, and show it locally. Delivery starts when you ask, name a destination, or accept with nothing more to send |
 | Deliver the change | Use the repository's normal shared path |
 
 "Review and fix" allows a project change. "Review" alone does not.

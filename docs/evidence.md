@@ -1,10 +1,10 @@
 # Evidence
 
-This ledger says which of SkipHow's requirements a run has shown. The [owner-outcome contract](outcome-contract.md), the [decision index](decisions.md), and the [runtime kernel](../plugins/skiphow/skills/skiphow/SKILL.md) define the requirements. Current package behavior is `UNVERIFIED` unless a receipt below names it. The CHANGELOG carries each release's motivation and field traces. Earlier narratives, 2.x run details, and 4.x support snapshots stay in the [historical ledger](https://github.com/mzored/SkipHow/blob/72aef4540d30d3639a2f63af6663971345c6dc5a/docs/evidence.md), and the [ledger as of 7.0.1](https://github.com/mzored/SkipHow/blob/2f72c7f218f29db20421eddce6d280e0d6f52045/docs/evidence.md) keeps the narratives from 6.3.4 to 7.0.1.
+This ledger says which of SkipHow's requirements a run has shown. The [owner-outcome contract](outcome-contract.md), the [decision index](decisions.md), and the [runtime kernel](../plugins/skiphow/skills/skiphow/SKILL.md) define the requirements. Current package behavior is `UNVERIFIED` unless a receipt below names it. Earlier narratives, 2.x run details, and 4.x support snapshots stay in the [historical ledger](https://github.com/mzored/SkipHow/blob/72aef4540d30d3639a2f63af6663971345c6dc5a/docs/evidence.md), and the [ledger as of 7.0.1](https://github.com/mzored/SkipHow/blob/2f72c7f218f29db20421eddce6d280e0d6f52045/docs/evidence.md) keeps the narratives from 6.3.4 to 7.0.1.
 
 ## Current package
 
-No retained receipt covers the current package. Retained current-package CTO scenarios with Observed receipts: 0 of 12. All 136 cases in [the corpus](../evals/cases.json) are unrun, and every check in [the host ledger](../evals/host-smoke.json) is `UNVERIFIED` for the current candidate. Every observation below names an older package and supports only the wording and conditions it exercised.
+No retained receipt covers the current package. Retained current-package CTO scenarios with Observed receipts: 0 of 12. All 137 cases in [the corpus](../evals/cases.json) are unrun, and every check in [the host ledger](../evals/host-smoke.json) is `UNVERIFIED` for the current candidate. Every observation below names an older package and supports only the wording and conditions it exercised.
 
 ## Three labels
 
@@ -16,7 +16,7 @@ The labels never substitute for one another. A contract claim never implies an o
 
 ## What an Observed claim must retain
 
-Eligibility belongs to a claim. A record that settles what a session loaded settles nothing about what it delivered, and one that settles delivery settles nothing about comparative benefit. Judging a whole run would discard facts a retained record establishes and admit facts it does not. Each claim below names the evidence that settles it, what makes it a confirmed failure, and what leaves it `UNVERIFIED` with the missing item named. The rules were fixed before any further run. [`scripts/claim_eligibility.py`](../scripts/claim_eligibility.py) applies them to a receipt directory's `claims.json` deterministically and offline. It starts no model and changes no label anywhere else.
+Eligibility belongs to a claim, not a run. A record that settles what a session loaded settles nothing about what it delivered, and one that settles delivery settles nothing about comparative benefit. Each claim below names the evidence that settles it, what makes it a confirmed failure, and what leaves it `UNVERIFIED` with the missing item named. The rules were fixed before any further run. [`scripts/claim_eligibility.py`](../scripts/claim_eligibility.py) applies them to a receipt directory's `claims.json` offline. It starts no model and changes no label anywhere else.
 
 A claim is `Observed` when its named evidence is present, well formed, matches the record it is declared against, and shows the claim holding in that run. It is `FAIL` when the same evidence shows the claim not holding. A confirmed failure is an observation and never decays into missing evidence. It is `UNVERIFIED` when evidence is missing, malformed, or mismatched, and the reason names the missing item. An unknown cost is not a missing item: a subscription session reports no dollar figure, and that blocks nothing another record proves. A loading observation never labels delivery, reliability, or comparative benefit, and no claim carries a rate.
 

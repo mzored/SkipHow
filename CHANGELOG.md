@@ -2,6 +2,33 @@
 
 All notable changes to SkipHow 2.x and later appear in this file. Earlier release notes remain available on [GitHub Releases](https://github.com/mzored/SkipHow/releases).
 
+## 7.0.8 (2026-11-19)
+
+### One copy of each rule, and shorter contributor documents
+
+- The review playbook no longer says "within authority" about fixing confirmed findings. 7.0.7 removed that phrase from the kernel because agents read it as "outside the grant", and the playbook kept it. The owner-outcome contract kept it too and now says "in the project, related to the request or not".
+- Rules that several files repeated now live in one place, and the others link it. The regression-test rule stays in the kernel and `testing`, and `diagnosis` and `skiphow-bug` point there. The pass-reuse rule stays in `testing`, and `integration` and `skiphow-deploy-ready` point there. `skiphow-simplify` names the bad test shapes once, through `testing`. `review` no longer repeats the kernel's sentence about requests for more tests.
+- `skiphow-plan` splits its last section into Records and Handoff. The handoff says when a launch is due before it says what the launch contains. No rule changed.
+- Wording is shorter across the workflows and five playbooks. `technical-design` keeps its own list of areas that earn an independent design read, because it is narrower than the list in `review`. The kernel is unchanged. Runtime Markdown shrinks by about 1.3 KB of 106 KB, because earlier releases had already removed most duplicates.
+- `docs/decisions.md` states each decision in a few sentences and links the shipped file for the full rule, as the documentation rule in `AGENTS.md` asks. Its premises, statuses, and reopen conditions are unchanged.
+- `.github/CONTRIBUTING.md` no longer restates `AGENTS.md`. Its release section said to bump the version on `main`, while `AGENTS.md` bumps it once at the start of the release branch, and it listed three of the seven files that carry the version. It now matches.
+- The pull request template asked for a test whenever behavior changed, which the package's own Engineering standard calls waste. It now asks that any added test name a break a user or caller would notice.
+- `evals/README.md` drops from 38.7 KB to 35.4 KB and `SECURITY.md` from 21.3 KB to 19.4 KB. The corpus README groups its cases into families, and the security policy lists its historical host receipts in one table. Both lost stale statements. The corpus README opened with the 4.0.1 ledger's coverage in the present tense and now says first that every current case is unrun, and the security policy linked the current host ledger as the 4.1.0 candidate receipts.
+- `docs/evidence.md` said 136 corpus cases. `evals/cases.json` holds 137.
+- The owner guide's request table said an iteration ends with "and stop" and that delivery starts "when you say it is done". The kernel keeps accepted work going and starts delivery on a request, a named destination, or acceptance with nothing more to send. The row now says the change is shown locally and delivery waits for the owner's word.
+
+### Why
+
+The owner asked for an audit of the whole repository for duplication, conflicting logic, and prose that could be shorter. Reading every shipped file against the others found one stale phrase from the 7.0.7 correction, four rules kept in three or four places each, and no other contradiction inside the package. The larger savings were in contributor documents that restated the package or `AGENTS.md`.
+
+### Checks and evidence
+
+- This is a patch release. No authority boundary, default side effect, skill name, or skill description changed.
+- `python scripts/check.py` and `git diff --check` pass on the candidate.
+- One independent read-only review compared every removed clause in the package, `docs/`, and `.github/CONTRIBUTING.md` against a surviving path. It found no lost responsibility in the package and four qualifying items in the documents: a guide row that dropped two of the three delivery triggers, ten premises missing from `docs/decisions.md`, a dangling "both files" there, and two facts dropped from the contributor guide. All four are restored. It also noted that pointing `technical-design` at the `review` list widened the design-read triggers, so that sentence is back to its 7.0.7 text.
+- The cross-host review did not run. The isolated Codex home is not logged in, and no credential was copied into it.
+- No model session and no clean-install run was made. Every behavior claim keeps its existing label, and agent behavior on the shorter text is `UNVERIFIED`.
+
 ## 7.0.7 (2026-11-19)
 
 ### A finding off the request's path is still the lead's to fix

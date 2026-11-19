@@ -11,7 +11,7 @@ Prepare the whole requested scope so another agent can execute it without redisc
 
 Explicit invocation of this skill requests a specification and planning records in the project's authorized tracker. Selecting it automatically for a read-only planning request grants no writes, and an explicit read-only constraint overrides the durable default. Implementation, commits, and delivery stay outside this workflow. Completion means the requested scope is prepared, not that its current questions and drafts are recorded.
 
-Interview answers and grants for planned actions belong in the execution records; they do not switch this session to execution. An explicit request to execute after planning authorizes that switch once preparation is complete, within host restrictions and existing grants, without another confirmation. Otherwise end with the handoff below, then stop.
+Interview answers and grants for planned actions belong in the execution records; they do not switch this session to execution. An explicit request to execute after planning authorizes that switch once preparation is complete, within host restrictions and existing grants, without another confirmation. Otherwise end with the [handoff](#handoff), then stop.
 
 ## The interview
 
@@ -29,7 +29,7 @@ For user-facing work, carry the relevant journeys, design direction, and reuse c
 
 Slice with [delegation](../skiphow/references/delegation.md#the-size-of-a-unit), and use it for substantial independent research. Every execution task is one that a single implementation agent can carry from its record to a verified, reviewable candidate within normal tool calls and review corrections. A grouping record collects tasks and is never dispatched. Size every task in the accepted scope now, and split one that needs several agents or defers its own split. Small cohesive work stays one task. Size is a judgment from evidence, and the executing lead reslices a task that proves larger.
 
-Judge one-agent feasibility from the context needed, how many materially different changes there are, and the checking, review, and integration load together. Where workload is uncertain, use existing measurements, comparable finished work, or a look at representative source; a full inventory is not needed. Split where reliability and total cost improve, counting repeated context, coordination, and integration. File, line, and acceptance counts are no universal limit.
+Judge one-agent feasibility from the context needed, the number of materially different changes, and the checking, review, and integration load together. Where workload is uncertain, use existing measurements, comparable finished work, or a look at representative source. A full inventory is not needed. Split where reliability and total cost improve, counting repeated context, coordination, and integration. File, line, and acceptance counts are no universal limit.
 
 Where the work has no proven path through its components, choose a thin first slice with real behavior. Build only the structure that slice needs, verify the working path, then expand through the remaining slices. In a mature project, reuse the established path. The first working behavior keeps required safety, integrity, and compatibility. Name what its result unblocks and which later assumptions the lead must recheck at dispatch. There is no universal foundation stage.
 
@@ -37,7 +37,7 @@ Write tasks to the [task contract](../skiphow/references/tracked-work.md#writing
 
 ## Review
 
-Get one independent review of the specification and task set against the request and source evidence, by the bar in [review](../skiphow/references/review.md), unless the plan is small and low risk, where a cold self-review against the same list is enough. Ask it to look for:
+Get one independent review of the specification and task set against the request and source evidence, by the bar in [review](../skiphow/references/review.md). A small, low-risk plan gets a cold self-review against the same list. Look for:
 
 - Missing or uncovered outcomes, conflicting decisions, and acceptance that cannot be checked.
 - Consequential choices taken without the owner, and changes to existing behavior or dependent state.
@@ -47,15 +47,21 @@ Get one independent review of the specification and task set against the request
 
 Technical slicing cannot shrink the execution scope. Fix what qualifies. Re-review only the fixes that change a consequential decision or task boundary, never the whole plan again, and stop when a round returns nothing that qualifies. If independent review was unavailable, report it as `UNVERIFIED` with the plan's readiness.
 
-## Records and handoff
+## Records
 
 Use [tracked work](../skiphow/references/tracked-work.md) to reconcile existing records and save the plan when authorized. Use GitHub Issues within the established audience unless the project uses another authorized tracker. Write engineering artifacts in English. If tracking is unavailable or unsafe, return complete issue drafts in the authorized private channel with the blocker. Keep the plan in the tracker, not in repository files. Analysis and plan files written while working are deleted when the work lands, unless the owner asked for that file as the durable record.
 
-Return the specification and issue links or drafts, material decisions, the review result, unresolved limits, and whole-scope readiness. Account for any implementation candidate already created; a planning handoff does not erase that work. Return an execution launch once preparation of the scope is complete, or for a prepared subset the owner explicitly selected, and otherwise say what withholds it. Keep an unresolved interview open rather than offering a partial launch in its place. Choose ordinary SkipHow for small cohesive work and longrun for substantial work that needs coordinated slices. Keep an execution workflow the owner already selected. Use the target host's explicit invocation syntax and this launch shape, in English, replacing the skill with the selected one.
+## Handoff
+
+Return the specification and issue links or drafts, material decisions, the review result, unresolved limits, and whole-scope readiness. Account for any implementation candidate already created. A planning handoff does not erase that work.
+
+Return an execution launch once preparation is complete, or for a prepared subset the owner explicitly selected. Preparation is incomplete while a product choice is open, an accepted source cannot be read, or a task is not yet written and sized. Then say what withholds the launch, and keep the interview open instead of offering a partial launch. A saved plan proves neither readiness nor permission. What only execution needs, such as access, credentials, data, or a human step at delivery, does not withhold the launch. Keep it on the affected task with what resumes it, and tell the owner what they must provide.
+
+Choose ordinary SkipHow for small cohesive work and longrun for substantial work that needs coordinated slices. Keep an execution workflow the owner already selected. Use the target host's explicit invocation syntax and this launch shape, in English, with the selected skill.
 
 ```text
 $skiphow-longrun
 Deliver the accepted implementation scope in <plan-reference> to <agreed-destination>.
 ```
 
-Replace placeholders with concrete accepted records and the agreed destination. Add only an otherwise missing project location, owner-selected subset, or necessary run constraint, each pointing at where it was decided. Requirements and dependencies stay in the task records, grants in the execution records, and execution policy in SkipHow; the launch restates no grant and adds no protected action. Preparation is incomplete while a product choice is open, an accepted source cannot be read, or a task is not yet written and sized; a saved plan proves neither readiness nor permission. What only execution needs, such as access, credentials, data, or a human step at delivery, does not withhold the launch: keep it on the affected task with what resumes it, and tell the owner what they must provide. Stop before implementation.
+Replace placeholders with concrete accepted records and the agreed destination. Add only an otherwise missing project location, owner-selected subset, or necessary run constraint, each pointing at where it was decided. Requirements and dependencies stay in the task records, grants in the execution records, and execution policy in SkipHow. The launch restates no grant and adds no protected action. Stop before implementation.
